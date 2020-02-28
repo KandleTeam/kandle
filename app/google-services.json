@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "995375087648",
+    "firebase_url": "https://kandle-1b646.firebaseio.com",
+    "project_id": "kandle-1b646",
+    "storage_bucket": "kandle-1b646.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:995375087648:android:031e4e74117c94bda3bc45",
+        "android_client_info": {
+          "package_name": "ch.epfl.sdp.kandle"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "995375087648-fpbu1e1ob83f18f5fhvfg4katltt326v.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "ch.epfl.sdp.kandle",
+            "certificate_hash": "badd94331c4d7c2e0e83f962456a0d513e6ac9d3"
+          }
+        },
+        {
+          "client_id": "995375087648-sj5m9cqum2vi1r70tll88spq39ae9cpe.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAWDkBNs-hs63boB5fu3y7aWn795Tbj4X4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "995375087648-sj5m9cqum2vi1r70tll88spq39ae9cpe.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
