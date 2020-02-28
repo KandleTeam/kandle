@@ -23,14 +23,18 @@ public class LoginActivity extends AppCompatActivity {
     TextView mSignIn;
     EditText mEmail,mPassword;
     Button mSignUpBtn;
-    TextView mCreateBtn;
-   // ProgressBar progressBar;
     FirebaseAuth fAuth;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
+        fAuth = FirebaseAuth.getInstance();
+
+        if(fAuth.getCurrentUser() != null){
+            startActivity(new Intent(getApplicationContext(),MainActivity.class));
+            finish();
+        }
 
         mSignIn = findViewById(R.id.signUpLink);
 
@@ -43,8 +47,7 @@ public class LoginActivity extends AppCompatActivity {
 
         mEmail = findViewById(R.id.email);
         mPassword = findViewById(R.id.password);
-        //progressBar = findViewById(R.id.progressBar);
-        fAuth = FirebaseAuth.getInstance();
+
         mSignUpBtn = findViewById(R.id.signUpBtn);
 
         mSignUpBtn.setOnClickListener(new View.OnClickListener() {

@@ -16,6 +16,11 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.FirebaseFirestore;
+
+import java.util.HashMap;
+import java.util.Map;
 
 public class RegisterActivity extends AppCompatActivity {
 
@@ -23,9 +28,8 @@ public class RegisterActivity extends AppCompatActivity {
     Button mSignInBtn;
     TextView mSignUp;
     FirebaseAuth fAuth;
-    ProgressBar mProgressBar;
 
-    //FirebaseFirestore fStore;
+    FirebaseFirestore fStore;
     String userID;
 
     @Override
@@ -39,9 +43,9 @@ public class RegisterActivity extends AppCompatActivity {
         mPassword   = findViewById(R.id.password);
         mPasswordConfirm = findViewById(R.id.passwordConfirm);
         mSignInBtn= findViewById(R.id.signUpBtn);
-        mProgressBar = findViewById(R.id.progressBar);
         mSignUp=findViewById(R.id.signUpLink);
-       // mLoginBtn   = findViewById(R.id.createText);
+
+        fStore = FirebaseFirestore.getInstance();
 
         fAuth = FirebaseAuth.getInstance();
 
@@ -52,16 +56,13 @@ public class RegisterActivity extends AppCompatActivity {
             }
         });
 
-        if(fAuth.getCurrentUser() != null){
-            startActivity(new Intent(getApplicationContext(),MainActivity.class));
-            finish();
-        }
+
 
         mSignInBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String fullName = mFullName.getText().toString();
-                String email = mEmail.getText().toString().trim();
+                final String fullName = mFullName.getText().toString();
+                final String email = mEmail.getText().toString().trim();
                 String password = mPassword.getText().toString().trim();
                 String passwordConfirm = mPasswordConfirm.getText().toString().trim();
 
@@ -91,13 +92,24 @@ public class RegisterActivity extends AppCompatActivity {
 
                 //Sign in Process
 
-              //  mProgressBar.setVisibility(View.VISIBLE);
 
                 fAuth.createUserWithEmailAndPassword(email, password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if (task.isSuccessful()){
                             Toast.makeText(RegisterActivity.this, "User has been created", Toast.LENGTH_LONG ).show();
+
+                            //store user in the database
+                            userID = fAuth.getCurrentUser().getUid();
+                            DocumentReference documentReference = fStore.collection("users").document(userID);
+                            Map<String,Object> user = new HashMap<>();
+                            user.put("fullName",fullName);
+                            user.put("email",email);
+                            documentReference.set(user);
+
+
+
+
                             startActivity(new Intent(getApplicationContext(), MainActivity.class));
 
                         }
