@@ -101,7 +101,7 @@
         app:layout_constraintVertical_bias="0.41000003" />
 
     <Button
-        android:id="@+id/signUpBtn"
+        android:id="@+id/signInBtn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:background="@drawable/button_background"
@@ -117,6 +117,7 @@
         android:id="@+id/signUpLink"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginBottom="64dp"
         android:clickable="true"
         android:text="Already have an account ?"
         android:textColor="#C1F44336"

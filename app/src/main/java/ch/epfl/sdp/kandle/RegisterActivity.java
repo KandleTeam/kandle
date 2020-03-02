@@ -8,7 +8,6 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -42,7 +41,7 @@ public class RegisterActivity extends AppCompatActivity {
         mEmail      = findViewById(R.id.email);
         mPassword   = findViewById(R.id.password);
         mPasswordConfirm = findViewById(R.id.passwordConfirm);
-        mSignInBtn= findViewById(R.id.signUpBtn);
+        mSignInBtn= findViewById(R.id.signInBtn);
         mSignUp=findViewById(R.id.signUpLink);
 
         fStore = FirebaseFirestore.getInstance();
@@ -53,6 +52,7 @@ public class RegisterActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 startActivity(new Intent(getApplicationContext(),LoginActivity.class));
+                finish();
             }
         });
 
@@ -111,6 +111,7 @@ public class RegisterActivity extends AppCompatActivity {
 
 
                             startActivity(new Intent(getApplicationContext(), MainActivity.class));
+                            finish();
 
                         }
 
