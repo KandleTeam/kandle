@@ -1,4 +1,37 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <group android:checkableBehavior="single">
+        <item
+            android:id="@+id/map"
+            android:icon="@drawable/ic_map_24dp"
+            android:title="Map"
+            android:checked="true"/>
 
+        <item
+            android:id="@+id/your_posts"
+            android:icon="@drawable/ic_whatshot_24dp"
+            android:title="Posts"
+            android:checked="true"/>
+
+    </group>
+
+
+    <item android:title="Tools">
+        <menu>
+            <group android:checkableBehavior="single">
+                <item
+                    android:id="@+id/settings"
+                    android:icon="@drawable/ic_settings_24dp"
+                    android:title="Settings" />
+                <item
+                    android:id="@+id/about"
+                    android:icon="@drawable/ic_about_24dp"
+                    android:title="About us" />
+                <item
+                    android:id="@+id/logout"
+                    android:icon="@drawable/ic_logout_black_24dp"
+                    android:title="Logout" />
+            </group>
+        </menu>
+    </item>
 </menu>
