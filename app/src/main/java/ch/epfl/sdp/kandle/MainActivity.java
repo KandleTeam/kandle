@@ -3,6 +3,7 @@ package ch.epfl.sdp.kandle;
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.Menu;
 import android.view.MenuItem;
 
 import androidx.appcompat.app.ActionBarDrawerToggle;
@@ -17,9 +18,9 @@ import com.google.firebase.auth.FirebaseAuth;
 
 public class MainActivity extends AppCompatActivity {
 
-    private DrawerLayout drawerLayout;
+    private DrawerLayout mDrawerLayout;
     private Toolbar toolbar;
-    private NavigationView navigationView;
+    private NavigationView mNavigationView;
    // FirebaseAuth fAuth;
 
     // Make sure to be using androidx.appcompat.app.ActionBarDrawerToggle version.
@@ -30,20 +31,23 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
         // Set a Toolbar to replace the ActionBar.
         toolbar = findViewById(R.id.toolbar);
-        drawerLayout = findViewById(R.id.drawer_layout);
-        navigationView = findViewById(R.id.navigation_view);
+        mDrawerLayout = findViewById(R.id.drawer_layout);
+        mNavigationView = findViewById(R.id.navigation_view);
 
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        drawerToggle = new ActionBarDrawerToggle(this,drawerLayout,toolbar,R.string.drawer_open,R.string.drawer_close);
+        drawerToggle = new ActionBarDrawerToggle(this,mDrawerLayout,toolbar,R.string.drawer_open,R.string.drawer_close);
         drawerToggle.setDrawerIndicatorEnabled(true);
-        setupDrawerContent(navigationView);
+        setupDrawerContent(mNavigationView);
         drawerToggle.syncState();
-        drawerLayout.addDrawerListener(drawerToggle);
+        mDrawerLayout.addDrawerListener(drawerToggle);
+
     }
+
+
+
     /*Listens if a navigation item is selected
      */
     private void setupDrawerContent(NavigationView navigationView) {
@@ -62,6 +66,8 @@ public class MainActivity extends AppCompatActivity {
         Fragment fragment = null;
         Class fragmentClass;
         Intent intent = null;
+        int size = mNavigationView.getMenu().size();
+
         switch(menuItem.getItemId()) {
             /*
             //For fragments
@@ -89,6 +95,10 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(intent);
 
              */
+            case R.id.logout :
+                FirebaseAuth.getInstance().signOut();
+                startActivity(new Intent(getApplicationContext(), LoginActivity.class));
+                finish();
 
 
 
@@ -109,20 +119,12 @@ public class MainActivity extends AppCompatActivity {
         // Highlight the selected item has been done by NavigationView
 
         // Set action bar title
-
-        if (menuItem.getTitle().equals("Logout")) {
-            FirebaseAuth.getInstance().signOut();
-            startActivity(new Intent(getApplicationContext(), LoginActivity.class));
-            finish();
-        }
-
-        else {
             menuItem.setChecked(true);
             setTitle(menuItem.getTitle());
-
+            mDrawerLayout.closeDrawers();
             // Close the navigation drawer
-            drawerLayout.closeDrawers();
-        }
+
+
     }
 
 
