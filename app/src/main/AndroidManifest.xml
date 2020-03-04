@@ -12,8 +12,7 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.AppCompat.Light.NoActionBar">
 
-        <activity android:name=".MenuActivity" />
-        <activity android:name=".MainActivity">
+        <activity android:name=".MainActivity"/>
 
         <activity android:name=".LoginActivity">
 
@@ -27,7 +26,6 @@
         <activity android:name=".RegisterActivity" />
        
 
-        </activity>
     </application>
 
 </manifest>
