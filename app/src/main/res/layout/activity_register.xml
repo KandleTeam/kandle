@@ -10,6 +10,7 @@
         android:id="@+id/passwordConfirm"
         android:layout_width="341dp"
         android:layout_height="38dp"
+        android:backgroundTint="@color/backGroundRed"
         android:ems="10"
         android:hint="Confirm your password"
         android:inputType="textPersonName"
@@ -17,8 +18,8 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView"
-        app:layout_constraintVertical_bias="0.55" />
+        app:layout_constraintTop_toBottomOf="@+id/password"
+        app:layout_constraintVertical_bias="0.050000012" />
 
     <ImageView
         android:id="@+id/logo"
@@ -66,6 +67,7 @@
         android:layout_height="38dp"
         android:ems="10"
         android:hint="Full name"
+        android:backgroundTint="@color/backGroundRed"
         android:inputType="textPersonName"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -77,19 +79,21 @@
         android:id="@+id/email"
         android:layout_width="341dp"
         android:layout_height="38dp"
+        android:backgroundTint="@color/backGroundRed"
         android:ems="10"
         android:hint="E-mail"
         android:inputType="textPersonName"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView"
-        app:layout_constraintVertical_bias="0.26" />
+        app:layout_constraintTop_toBottomOf="@+id/fullName"
+        app:layout_constraintVertical_bias="0.05" />
 
     <EditText
         android:id="@+id/password"
         android:layout_width="341dp"
         android:layout_height="38dp"
+        android:backgroundTint="@color/backGroundRed"
         android:ems="10"
         android:hint="Password"
         android:inputType="textPersonName"
@@ -97,8 +101,8 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView"
-        app:layout_constraintVertical_bias="0.41000003" />
+        app:layout_constraintTop_toBottomOf="@+id/email"
+        app:layout_constraintVertical_bias="0.056" />
 
     <Button
         android:id="@+id/signInBtn"
@@ -117,14 +121,14 @@
         android:id="@+id/signUpLink"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="64dp"
+        android:layout_marginBottom="52dp"
         android:clickable="true"
         android:text="Already have an account ?"
         android:textColor="#C1F44336"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/signUpBtn"
-        app:layout_constraintVertical_bias="0.22000003" />
+        app:layout_constraintTop_toBottomOf="@+id/signInBtn"
+        app:layout_constraintVertical_bias="0.644" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
