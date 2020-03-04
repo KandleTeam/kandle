@@ -82,6 +82,8 @@ public class LoginActivity extends AppCompatActivity {
                         }
                         else {
                             Toast.makeText(LoginActivity.this, "An error has occurred : " + task.getException().getMessage(), Toast.LENGTH_SHORT).show();
+                            mPassword.setError("Wrong Credentials");
+                            mEmail.setError("Wrong Credentials" );
 
                         }
 
