@@ -38,11 +38,12 @@ public class MainActivityTest {
 
 
     @Test
-    public void openMenuandNavigateToAboutUsAndFinallyLogout() {
+    public void openMenuAndNavigateToAboutUsAndFinallyLogout() throws InterruptedException {
         onView(withId(R.id.drawer_layout)).check(matches(isClosed(Gravity.LEFT))).perform(DrawerActions.open());
         onView(withId(R.id.navigation_view)).perform(NavigationViewActions.navigateTo(R.id.about));
         onView(withId(R.id.toolbar)).check(matches(hasDescendant(withText("About us"))));
 
+        Thread.sleep(500);
         onView(withId(R.id.drawer_layout)).check(matches(isClosed(Gravity.LEFT))).perform(DrawerActions.open());
         onView(withId(R.id.navigation_view)).perform(NavigationViewActions.navigateTo(R.id.logout));
 

@@ -17,6 +17,7 @@ import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.SetOptions;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -107,9 +108,7 @@ public class RegisterActivity extends AppCompatActivity {
                             user.put("fullName",fullName);
                             user.put("email",email);
                             documentReference.set(user);
-
-
-
+                            documentReference.set(user, SetOptions.merge());
 
                             startActivity(new Intent(getApplicationContext(), MainActivity.class));
                             finish();
@@ -118,7 +117,6 @@ public class RegisterActivity extends AppCompatActivity {
 
                         else {
                             Toast.makeText(RegisterActivity.this, "An error has occurred : " + task.getException().getMessage(), Toast.LENGTH_SHORT).show();
-                         //   mProgressBar.setVisibility(View.GONE);
 
                         }
                     }
