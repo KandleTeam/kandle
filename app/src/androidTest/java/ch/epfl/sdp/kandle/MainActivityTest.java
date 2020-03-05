@@ -34,7 +34,7 @@ public class MainActivityTest {
     public final ActivityTestRule<MainActivity> mainActivityRule =
             new ActivityTestRule<>(MainActivity.class);
 
-    
+
 
 
     @Test
