@@ -4,7 +4,7 @@ android:
     # The BuildTools version used by your project (make sure it's exactly the same as in the build.gradle)
     - build-tools-29.0.3
     # The SDK version used to compile your project
-    - android-28
+    - android-22
     # The SDK version used by the system image
     - android-28
     # The system image, to run an emulator during the tests
