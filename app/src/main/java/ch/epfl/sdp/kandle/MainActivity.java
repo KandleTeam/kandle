@@ -98,10 +98,12 @@ public class MainActivity extends AppCompatActivity {
              */
 
             //For activities
-            /*
+
             case R.id.map :
-                intent = new Intent(this, MenuActivity.class);
+                intent = new Intent(this, MapsActivity.class);
                 startActivity(intent);
+                break;
+                /*
             case R.id.settings :
                 intent = new Intent(this, SettingsActivity.class);
                 startActivity(intent);

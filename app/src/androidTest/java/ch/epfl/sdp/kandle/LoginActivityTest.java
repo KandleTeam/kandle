@@ -34,7 +34,7 @@ public class LoginActivityTest {
 
 
     @Test
-    public void emptyEmail (){
+    public void emptyEmailTest (){
 
         onView(withId (R.id.signUpBtn)).perform(click());
         onView(withId(R.id.email)).check(matches( hasErrorText("Your email is required !")));
@@ -42,7 +42,7 @@ public class LoginActivityTest {
    }
 
     @Test
-    public void emptyPassword (){
+    public void emptyPasswordTest (){
 
         onView(withId (R.id.email)).perform(typeText ("test@test.com"));
         onView(withId (R.id.email)).perform(closeSoftKeyboard());
@@ -52,7 +52,7 @@ public class LoginActivityTest {
     }
 
     @Test
-    public void wrongCredentials () throws InterruptedException {
+    public void wrongCredentialsTest () throws InterruptedException {
 
         onView(withId (R.id.email)).perform(typeText ("zzzz@test.com"));
         onView(withId (R.id.email)).perform(closeSoftKeyboard());
@@ -68,7 +68,7 @@ public class LoginActivityTest {
     }
 
     @Test
-    public void authentication() throws InterruptedException {
+    public void authenticationTest() throws InterruptedException {
 
         Intents.init();
 

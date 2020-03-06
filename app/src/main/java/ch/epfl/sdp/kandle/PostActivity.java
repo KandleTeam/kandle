@@ -1,17 +1,22 @@
 package ch.epfl.sdp.kandle;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.Toast;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.SetOptions;
 
@@ -56,12 +61,12 @@ public class PostActivity extends AppCompatActivity {
 
 
                 //store user in the database
-                userID = fAuth.getCurrentUser().getUid();
-                DocumentReference documentReference = fStore.collection("users").document(userID);
 
-                Map<String,Object> user = new HashMap<>();
-                user.put("posts",postText);
-                documentReference.set(user);
+                /*userID = fAuth.getCurrentUser().getUid();
+                DocumentReference documentReference = fStore.collection("users").document(userID);
+                Map<String,Object> post = new HashMap<>();
+                post.put("posts",postText);
+                documentReference.set(post, SetOptions.merge());*/
 
             }
         });

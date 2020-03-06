@@ -108,7 +108,6 @@ public class RegisterActivity extends AppCompatActivity {
                             user.put("fullName",fullName);
                             user.put("email",email);
                             documentReference.set(user);
-                            documentReference.set(user, SetOptions.merge());
 
                             startActivity(new Intent(getApplicationContext(), MainActivity.class));
                             finish();

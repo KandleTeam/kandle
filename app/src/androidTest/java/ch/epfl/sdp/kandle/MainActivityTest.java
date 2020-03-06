@@ -6,6 +6,7 @@ import android.view.Gravity;
 import androidx.test.espresso.Espresso;
 import androidx.test.espresso.contrib.DrawerActions;
 import androidx.test.espresso.contrib.NavigationViewActions;
+import androidx.test.espresso.intent.Intents;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 import androidx.test.rule.ActivityTestRule;
 
@@ -22,6 +23,8 @@ import static androidx.test.espresso.action.ViewActions.swipeUp;
 import static androidx.test.espresso.action.ViewActions.typeText;
 import static androidx.test.espresso.assertion.ViewAssertions.matches;
 import static androidx.test.espresso.contrib.DrawerMatchers.isClosed;
+import static androidx.test.espresso.intent.Intents.intended;
+import static androidx.test.espresso.intent.matcher.IntentMatchers.hasComponent;
 import static androidx.test.espresso.matcher.ViewMatchers.hasDescendant;
 import static androidx.test.espresso.matcher.ViewMatchers.withId;
 import static androidx.test.espresso.matcher.ViewMatchers.withText;
@@ -68,5 +71,15 @@ public class MainActivityTest {
         onView(withId(R.id.navigation_view)).perform(NavigationViewActions.navigateTo(R.id.map));
         onView(withId(R.id.toolbar)).check(matches(hasDescendant(withText("Map"))));
 
+    }
+
+    @Test
+    public void postButtonNavigateToPostActivity() throws InterruptedException {
+        Intents.init();
+
+        onView(withId(R.id.postButton)).perform(click());
+        Thread.sleep(1000);
+        intended(hasComponent(PostActivity.class.getName()));
+        Intents.release();
     }
 }

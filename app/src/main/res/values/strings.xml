@@ -2,4 +2,5 @@
     <string name="app_name">Kandle</string>
     <string name="drawer_open">drawerOpen</string>
     <string name="drawer_close">drawerClose</string>
+    <string name="title_activity_maps">Map</string>
 </resources>
