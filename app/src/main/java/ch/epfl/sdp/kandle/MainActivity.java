@@ -5,6 +5,9 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.Button;
+import android.widget.Toast;
 
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
@@ -21,6 +24,7 @@ public class MainActivity extends AppCompatActivity {
     private DrawerLayout mDrawerLayout;
     private Toolbar toolbar;
     private NavigationView mNavigationView;
+    private Button mPostButton;
    // FirebaseAuth fAuth;
 
     // Make sure to be using androidx.appcompat.app.ActionBarDrawerToggle version.
@@ -35,6 +39,7 @@ public class MainActivity extends AppCompatActivity {
         toolbar = findViewById(R.id.toolbar);
         mDrawerLayout = findViewById(R.id.drawer_layout);
         mNavigationView = findViewById(R.id.navigation_view);
+        mPostButton = findViewById(R.id.postButton);
 
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -43,6 +48,13 @@ public class MainActivity extends AppCompatActivity {
         setupDrawerContent(mNavigationView);
         drawerToggle.syncState();
         mDrawerLayout.addDrawerListener(drawerToggle);
+
+        mPostButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(getApplicationContext(), PostActivity.class));
+            }
+        });
 
     }
 
