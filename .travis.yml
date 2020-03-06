@@ -14,6 +14,7 @@ android:
     - chmod +x ./gradlew
     - yes | sdkmanager "platforms;android-29"
     - yes | sdkmanager "build-tools;29.0.3"
+    - yes | sdkmanager --licenses
 before_script:
   # Emulator Management: Create, Start and Wait
   - echo no | android create avd --force -n test -t android-22 --abi armeabi-v7a
