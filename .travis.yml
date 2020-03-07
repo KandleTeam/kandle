@@ -4,17 +4,12 @@ android:
     # The BuildTools version used by your project (make sure it's exactly the same as in the build.gradle)
     - build-tools-29.0.3
     # The SDK version used to compile your project
-    - android-22
+    - android-29
     # The SDK version used by the system image
     - android-22
     # The system image, to run an emulator during the tests
     - sys-img-armeabi-v7a-android-22
 
-  before_install:
-    - chmod +x ./gradlew
-    - yes | sdkmanager "platforms;android-29"
-    - yes | sdkmanager "build-tools;29.0.3"
-    - yes | sdkmanager --licenses
 before_script:
   # Emulator Management: Create, Start and Wait
   - echo no | android create avd --force -n test -t android-22 --abi armeabi-v7a
