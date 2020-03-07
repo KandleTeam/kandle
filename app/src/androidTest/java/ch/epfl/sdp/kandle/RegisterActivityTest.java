@@ -3,10 +3,7 @@ package ch.epfl.sdp.kandle;
 import org.junit.Rule;
 import org.junit.Test;
 
-import java.time.LocalDateTime;
-
-import androidx.test.espresso.intent.Intents;
-import androidx.test.rule.ActivityTestRule;
+import androidx.test.espresso.intent.rule.IntentsTestRule;
 
 import static androidx.test.espresso.Espresso.onView;
 import static androidx.test.espresso.action.ViewActions.click;
@@ -21,21 +18,21 @@ import static androidx.test.espresso.matcher.ViewMatchers.withId;
 public class RegisterActivityTest {
 
     @Rule
-    public final ActivityTestRule<RegisterActivity>mActivityRule =
-            new ActivityTestRule<>(RegisterActivity.class);
+    public final IntentsTestRule<RegisterActivity>mActivityRule =
+            new IntentsTestRule<>(RegisterActivity.class);
 
 
 
     @Test
     public void errorsInForm (){
 
-        onView(withId (R.id.signInBtn)).perform(click());
+        onView(withId (R.id.loginBtn)).perform(click());
         onView(withId(R.id.fullName)).check(matches( hasErrorText("Your full name is required !")));
 
         onView(withId (R.id.fullName)).perform(typeText ("test"));
         onView(withId (R.id.fullName)).perform(closeSoftKeyboard());
 
-        onView(withId (R.id.signInBtn)).perform(click());
+        onView(withId (R.id.loginBtn)).perform(click());
         onView(withId(R.id.email)).check(matches( hasErrorText("Your email is required !")));
 
         onView(withId (R.id.email)).perform(typeText ("test@test.com" ));
@@ -44,7 +41,7 @@ public class RegisterActivityTest {
         onView(withId (R.id.password)).perform(typeText ("123" ));
         onView(withId (R.id.password)).perform(closeSoftKeyboard());
 
-        onView(withId (R.id.signInBtn)).perform(click());
+        onView(withId (R.id.loginBtn)).perform(click());
         onView(withId(R.id.password)).check(matches( hasErrorText("Please choose a password of more than 8 characters !")));
 
         onView(withId (R.id.password)).perform(typeText ("12345678" ));
@@ -52,25 +49,22 @@ public class RegisterActivityTest {
         onView(withId (R.id.passwordConfirm)).perform(typeText ("123" ));
         onView(withId (R.id.passwordConfirm)).perform(closeSoftKeyboard());
 
-        onView(withId (R.id.signInBtn)).perform(click());
+        onView(withId (R.id.loginBtn)).perform(click());
         onView(withId(R.id.passwordConfirm)).check(matches( hasErrorText("Your passwords do not match !")));
 
     }
 
     @Test
-    public void doNotHaveAnAccount() throws InterruptedException {
-        Intents.init();
+    public void alreadyHaveAnAccount() throws InterruptedException {
 
-        onView(withId(R.id.signUpLink)).perform(click());
-        Thread.sleep(1000);
+        onView(withId(R.id.signInLink)).perform(click());
+        Thread.sleep(3000);
         intended(hasComponent(LoginActivity.class.getName()));
-        Intents.release();
     }
 
 
     @Test
     public void accountCreation() throws InterruptedException {
-        Intents.init();
 
         onView(withId (R.id.fullName)).perform(typeText ("Test Register"));
         onView(withId (R.id.fullName)).perform(closeSoftKeyboard());
@@ -97,7 +91,6 @@ public class RegisterActivityTest {
         Thread.sleep(1000);
         intended(hasComponent(MainActivity.class.getName()));
         */
-        Intents.release();
     }
 
 
