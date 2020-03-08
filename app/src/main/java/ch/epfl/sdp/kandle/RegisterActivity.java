@@ -107,27 +107,29 @@ public class RegisterActivity extends AppCompatActivity {
 
     private boolean checkFields (String fullName, String email, String password, String passwordConfirm){
 
+        boolean bool = true;
+
         if (fullName.isEmpty() ){
             mFullName.setError("Your full name is required !");
-            return false;
+            bool = false;
         }
 
-        if (email.isEmpty() ){
+         else if (email.isEmpty() ){
             mEmail.setError("Your email is required !" );
-            return false;
+            bool =  false;
         }
 
-        if (password.length()<8){
+        else if (password.length()<8){
             mPassword.setError("Please choose a password of more than 8 characters !");
-            return false ;
+            bool = false;
         }
 
-        if (!password.equals(passwordConfirm)){
+        else if (!password.equals(passwordConfirm)){
             mPasswordConfirm.setError("Your passwords do not match !");
-            return false;
+            bool = false;
         }
 
-        return true;
+        return bool;
 
     }
 
