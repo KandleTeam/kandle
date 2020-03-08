@@ -43,6 +43,7 @@ public class LoginActivity extends AppCompatActivity {
         });
 
 
+
         mEmail = findViewById(R.id.email);
         mPassword = findViewById(R.id.password);
         mSignUpBtn = findViewById(R.id.loginBtn);
