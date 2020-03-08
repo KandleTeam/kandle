@@ -54,13 +54,7 @@ public class RegisterActivityTest {
 
     }
 
-    @Test
-    public void alreadyHaveAnAccount() throws InterruptedException {
 
-        onView(withId(R.id.signInLink)).perform(click());
-        Thread.sleep(3000);
-        intended(hasComponent(LoginActivity.class.getName()));
-    }
 
 
     @Test
@@ -91,6 +85,15 @@ public class RegisterActivityTest {
         Thread.sleep(1000);
         intended(hasComponent(MainActivity.class.getName()));
         */
+    }
+
+
+    @Test
+    public void alreadyHaveAnAccount() throws InterruptedException {
+
+        Thread.sleep(10000);
+        onView(withId(R.id.signInLink)).perform(click());
+        intended(hasComponent(LoginActivity.class.getName()));
     }
 
 

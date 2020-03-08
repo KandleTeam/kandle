@@ -99,7 +99,7 @@ public class MainActivity extends AppCompatActivity {
 
             //For activities
 
-           
+
                 /*
             case R.id.settings :
                 intent = new Intent(this, SettingsActivity.class);
