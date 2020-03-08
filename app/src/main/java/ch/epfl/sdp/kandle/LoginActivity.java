@@ -20,7 +20,7 @@ public class LoginActivity extends AppCompatActivity {
 
 
     TextView mSignIn;
-    EditText mEmail,mPassword;
+    EditText mEmail, mPassword;
     Button mSignUpBtn;
     FirebaseAuth fAuth;
 
@@ -30,7 +30,7 @@ public class LoginActivity extends AppCompatActivity {
         setContentView(R.layout.activity_login);
         fAuth = FirebaseAuth.getInstance();
 
-        if(fAuth.getCurrentUser() != null){
+        if (fAuth.getCurrentUser() != null) {
             startActivity(new Intent(getApplicationContext(), MainActivity.class));
             finish();
         }
@@ -57,41 +57,40 @@ public class LoginActivity extends AppCompatActivity {
                 String email = mEmail.getText().toString().trim();
                 String password = mPassword.getText().toString().trim();
 
-                if (email.isEmpty() ){
+                if (email.isEmpty()) {
                     mEmail.setError(getString(R.string.login_email_required));
                     return;
                 }
 
-                if (password.isEmpty()){
+                if (password.isEmpty()) {
                     mPassword.setError(getString(R.string.login_password_required));
                     return;
                 }
 
                 //authentication
 
-                fAuth.signInWithEmailAndPassword(email, password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
-                    @Override
-                    public void onComplete(@NonNull Task<AuthResult> task) {
-
-                        if (task.isSuccessful()){
-
-                            Toast.makeText(LoginActivity.this, getString(R.string.login_success), Toast.LENGTH_LONG ).show();
-                            startActivity(new Intent(getApplicationContext(), MainActivity.class));
-                            finish();
-
-                        }
-                        else {
-                            Toast.makeText(LoginActivity.this, "An error has occurred : " + task.getException().getMessage(), Toast.LENGTH_SHORT).show();
-                        }
-
-                    }
-                });
-
-
+                performLoginViaFirebase(email, password);
             }
         });
 
+    }
 
+    private void performLoginViaFirebase(String email, String password) {
+        fAuth.signInWithEmailAndPassword(email, password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+            @Override
+            public void onComplete(@NonNull Task<AuthResult> task) {
 
+                if (task.isSuccessful()) {
+
+                    Toast.makeText(LoginActivity.this, getString(R.string.login_success), Toast.LENGTH_LONG).show();
+                    startActivity(new Intent(getApplicationContext(), MainActivity.class));
+                    finish();
+
+                } else {
+                    Toast.makeText(LoginActivity.this, "An error has occurred : " + task.getException().getMessage(), Toast.LENGTH_SHORT).show();
+                }
+
+            }
+        });
     }
 }
