@@ -35,19 +35,14 @@ public class RegisterActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_register);
-
-
         mFullName   = findViewById(R.id.fullName);
         mEmail      = findViewById(R.id.email);
         mPassword   = findViewById(R.id.password);
         mPasswordConfirm = findViewById(R.id.passwordConfirm);
         mSignUpBtn = findViewById(R.id.loginBtn);
         mSignInLink = findViewById(R.id.signInLink);
-
         fStore = FirebaseFirestore.getInstance();
-
         fAuth = FirebaseAuth.getInstance();
-
 
         mSignInLink.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -67,63 +62,74 @@ public class RegisterActivity extends AppCompatActivity {
                 String password = mPassword.getText().toString().trim();
                 String passwordConfirm = mPasswordConfirm.getText().toString().trim();
 
-
-                //Check every field
-
-                if (fullName.isEmpty() ){
-                    mFullName.setError("Your full name is required !");
+                if (!checkFields(fullName,email, password, passwordConfirm)){
                     return;
                 }
 
-                if (email.isEmpty() ){
-                    mEmail.setError("Your email is required !" );
-                    return;
-                }
-
-                if (password.length()<8){
-                    mPassword.setError("Please choose a password of more than 8 characters !");
-                    return;
-                }
-
-                if (!password.equals(passwordConfirm)){
-                    mPasswordConfirm.setError("Your passwords do not match !");
-                    return;
-                }
-
-
-                //Sign in Process
-
-
-                fAuth.createUserWithEmailAndPassword(email, password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
-                    @Override
-                    public void onComplete(@NonNull Task<AuthResult> task) {
-                        if (task.isSuccessful()){
-                            Toast.makeText(RegisterActivity.this, "User has been created", Toast.LENGTH_LONG ).show();
-
-                            //store user in the database
-                            userID = fAuth.getCurrentUser().getUid();
-                            DocumentReference documentReference = fStore.collection("users").document(userID);
-                            Map<String,Object> user = new HashMap<>();
-                            user.put("fullName",fullName);
-                            user.put("email",email);
-                            documentReference.set(user);
-
-                            startActivity(new Intent(getApplicationContext(), MainActivity.class));
-                            finish();
-
-                        }
-
-                        else {
-                            Toast.makeText(RegisterActivity.this, "An error has occurred : " + task.getException().getMessage(), Toast.LENGTH_SHORT).show();
-
-                        }
-                    }
-                });
-
+                performRegisterViaFirebase(fullName, email, password);
 
             }
         });
 
 
     }
+
+    private void performRegisterViaFirebase (final String fullName, final String email, String password) {
+        fAuth.createUserWithEmailAndPassword(email, password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+            @Override
+            public void onComplete(@NonNull Task<AuthResult> task) {
+                if (task.isSuccessful()){
+                    Toast.makeText(RegisterActivity.this, "User has been created", Toast.LENGTH_LONG ).show();
+
+                    //store user in the database
+                    userID = fAuth.getCurrentUser().getUid();
+                    DocumentReference documentReference = fStore.collection("users").document(userID);
+                    Map<String,Object> user = new HashMap<>();
+                    user.put("fullName",fullName);
+                    user.put("email",email);
+                    documentReference.set(user);
+
+                    startActivity(new Intent(getApplicationContext(), MainActivity.class));
+                    finish();
+
+                }
+
+                else {
+                    Toast.makeText(RegisterActivity.this, "An error has occurred : " + task.getException().getMessage(), Toast.LENGTH_SHORT).show();
+
+                }
+            }
+        });
+
+
+    }
+
+
+    private boolean checkFields (String fullName, String email, String password, String passwordConfirm){
+
+        if (fullName.isEmpty() ){
+            mFullName.setError("Your full name is required !");
+            return false;
+        }
+
+        if (email.isEmpty() ){
+            mEmail.setError("Your email is required !" );
+            return false;
+        }
+
+        if (password.length()<8){
+            mPassword.setError("Please choose a password of more than 8 characters !");
+            return false ;
+        }
+
+        if (!password.equals(passwordConfirm)){
+            mPasswordConfirm.setError("Your passwords do not match !");
+            return false;
+        }
+
+        return true;
+
+    }
+
+
 }

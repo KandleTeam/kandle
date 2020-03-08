@@ -59,25 +59,13 @@ public class PostActivity extends AppCompatActivity {
                 startActivity(new Intent(getApplicationContext(), MainActivity.class));
                 finish();
 
-
-                //store user in the database
-
-                /*userID = fAuth.getCurrentUser().getUid();
-                DocumentReference documentReference = fStore.collection("users").document(userID);
-                Map<String,Object> post = new HashMap<>();
-                post.put("posts",postText);
-                documentReference.set(post, SetOptions.merge());*/
-
             }
         });
 
         mCameraButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
                 Toast.makeText(PostActivity.this, "Doesn't work for now... ", Toast.LENGTH_LONG ).show();
-
-
             }
         });
 
@@ -85,11 +73,16 @@ public class PostActivity extends AppCompatActivity {
         mGaleryButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
                 Toast.makeText(PostActivity.this, "Doesn't work for now... ", Toast.LENGTH_LONG ).show();
-
-
             }
         });
     }
 }
+
+//store user in the database
+
+                /*userID = fAuth.getCurrentUser().getUid();
+                DocumentReference documentReference = fStore.collection("users").document(userID);
+                Map<String,Object> post = new HashMap<>();
+                post.put("posts",postText);
+                documentReference.set(post, SetOptions.merge());*/

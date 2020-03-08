@@ -29,14 +29,11 @@ public class LoginActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
         fAuth = FirebaseAuth.getInstance();
-
         if (fAuth.getCurrentUser() != null) {
             startActivity(new Intent(getApplicationContext(), MainActivity.class));
             finish();
         }
-
         mSignIn = findViewById(R.id.signUpLink);
-
         mSignIn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -45,35 +42,46 @@ public class LoginActivity extends AppCompatActivity {
             }
         });
 
+
         mEmail = findViewById(R.id.email);
         mPassword = findViewById(R.id.password);
-
         mSignUpBtn = findViewById(R.id.loginBtn);
+
+
 
         mSignUpBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
                 String email = mEmail.getText().toString().trim();
                 String password = mPassword.getText().toString().trim();
 
-                if (email.isEmpty()) {
-                    mEmail.setError(getString(R.string.login_email_required));
+                if (!checkFields(email, password))  {
                     return;
                 }
-
-                if (password.isEmpty()) {
-                    mPassword.setError(getString(R.string.login_password_required));
-                    return;
-                }
-
-                //authentication
 
                 performLoginViaFirebase(email, password);
             }
         });
 
     }
+
+
+    private boolean checkFields (String email, String password){
+
+        if (email.isEmpty()) {
+            mEmail.setError(getString(R.string.login_email_required));
+            return false ;
+        }
+        if (password.isEmpty()) {
+            mPassword.setError(getString(R.string.login_password_required));
+            return false ;
+        }
+
+        return true;
+
+    }
+
+
 
     private void performLoginViaFirebase(String email, String password) {
         fAuth.signInWithEmailAndPassword(email, password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {

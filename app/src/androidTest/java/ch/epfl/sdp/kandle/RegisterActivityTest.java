@@ -27,6 +27,7 @@ public class RegisterActivityTest {
     @Test
     public void errorsInForm (){
 
+
         onView(withId (R.id.loginBtn)).perform(click());
         onView(withId(R.id.fullName)).check(matches( hasErrorText("Your full name is required !")));
 
