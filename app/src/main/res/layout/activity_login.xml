@@ -17,7 +17,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.025"
-        app:srcCompat="@drawable/ic_whatshot_24dp" />
+        app:srcCompat="@drawable/logo" />
 
     <TextView
         android:id="@+id/appName"
