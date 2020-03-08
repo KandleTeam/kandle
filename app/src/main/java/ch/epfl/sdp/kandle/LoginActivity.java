@@ -20,7 +20,7 @@ public class LoginActivity extends AppCompatActivity {
 
 
     TextView mSignIn;
-    EditText mEmail,mPassword;
+    EditText mEmail, mPassword;
     Button mSignUpBtn;
     FirebaseAuth fAuth;
 
@@ -30,8 +30,8 @@ public class LoginActivity extends AppCompatActivity {
         setContentView(R.layout.activity_login);
         fAuth = FirebaseAuth.getInstance();
 
-        if(fAuth.getCurrentUser() != null){
-            startActivity(new Intent(getApplicationContext(),MainActivity.class));
+        if (fAuth.getCurrentUser() != null) {
+            startActivity(new Intent(getApplicationContext(), MainActivity.class));
             finish();
         }
 
@@ -48,7 +48,7 @@ public class LoginActivity extends AppCompatActivity {
         mEmail = findViewById(R.id.email);
         mPassword = findViewById(R.id.password);
 
-        mSignUpBtn = findViewById(R.id.signUpBtn);
+        mSignUpBtn = findViewById(R.id.loginBtn);
 
         mSignUpBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -57,44 +57,40 @@ public class LoginActivity extends AppCompatActivity {
                 String email = mEmail.getText().toString().trim();
                 String password = mPassword.getText().toString().trim();
 
-                if (email.isEmpty() ){
-                    mEmail.setError("Your email is required !" );
+                if (email.isEmpty()) {
+                    mEmail.setError(getString(R.string.login_email_required));
                     return;
                 }
 
-                if (password.isEmpty()){
-                    mPassword.setError("Please enter a password");
+                if (password.isEmpty()) {
+                    mPassword.setError(getString(R.string.login_password_required));
                     return;
                 }
 
                 //authentication
 
-                fAuth.signInWithEmailAndPassword(email, password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
-                    @Override
-                    public void onComplete(@NonNull Task<AuthResult> task) {
-
-                        if (task.isSuccessful()){
-
-                            Toast.makeText(LoginActivity.this, "You are logged in ! ", Toast.LENGTH_LONG ).show();
-                            startActivity(new Intent(getApplicationContext(), MainActivity.class));
-                            finish();
-
-                        }
-                        else {
-                            Toast.makeText(LoginActivity.this, "An error has occurred : " + task.getException().getMessage(), Toast.LENGTH_SHORT).show();
-                            mPassword.setError("Wrong Credentials");
-                            mEmail.setError("Wrong Credentials" );
-
-                        }
-
-                    }
-                });
-
-
+                performLoginViaFirebase(email, password);
             }
         });
 
+    }
 
+    private void performLoginViaFirebase(String email, String password) {
+        fAuth.signInWithEmailAndPassword(email, password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+            @Override
+            public void onComplete(@NonNull Task<AuthResult> task) {
 
+                if (task.isSuccessful()) {
+
+                    Toast.makeText(LoginActivity.this, getString(R.string.login_success), Toast.LENGTH_LONG).show();
+                    startActivity(new Intent(getApplicationContext(), MainActivity.class));
+                    finish();
+
+                } else {
+                    Toast.makeText(LoginActivity.this, "An error has occurred : " + task.getException().getMessage(), Toast.LENGTH_SHORT).show();
+                }
+
+            }
+        });
     }
 }

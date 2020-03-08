@@ -17,7 +17,6 @@ import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.SetOptions;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -25,8 +24,8 @@ import java.util.Map;
 public class RegisterActivity extends AppCompatActivity {
 
     EditText mFullName,mEmail,mPassword, mPasswordConfirm;
-    Button mSignInBtn;
-    TextView mSignUp;
+    Button mSignUpBtn;
+    TextView mSignInLink;
     FirebaseAuth fAuth;
 
     FirebaseFirestore fStore;
@@ -42,15 +41,15 @@ public class RegisterActivity extends AppCompatActivity {
         mEmail      = findViewById(R.id.email);
         mPassword   = findViewById(R.id.password);
         mPasswordConfirm = findViewById(R.id.passwordConfirm);
-        mSignInBtn= findViewById(R.id.signInBtn);
-        mSignUp=findViewById(R.id.signUpLink);
+        mSignUpBtn = findViewById(R.id.loginBtn);
+        mSignInLink = findViewById(R.id.signInLink);
 
         fStore = FirebaseFirestore.getInstance();
 
         fAuth = FirebaseAuth.getInstance();
 
 
-        mSignUp.setOnClickListener(new View.OnClickListener() {
+        mSignInLink.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 startActivity(new Intent(getApplicationContext(),LoginActivity.class));
@@ -60,7 +59,7 @@ public class RegisterActivity extends AppCompatActivity {
 
 
 
-        mSignInBtn.setOnClickListener(new View.OnClickListener() {
+        mSignUpBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 final String fullName = mFullName.getText().toString();

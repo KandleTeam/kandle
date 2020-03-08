@@ -3,4 +3,17 @@
     <string name="drawer_open">drawerOpen</string>
     <string name="drawer_close">drawerClose</string>
     <string name="title_activity_maps">Map</string>
+
+
+    <string name="login_email_hint">e-mail address</string>
+    <string name="login_password_hint">password</string>
+    <string name="login_btn_text">Log In</string>
+    <string name="login_signup_btn_text">Do not have an account?</string>
+    <string name="app_logo_desc">Kandle logo</string>
+    <string name="login_password_required">Please enter a password</string>
+    <string name="login_email_required">Please enter an email address</string>
+    <string name="login_success">You are now logged in</string>
+    <string name="login_fail_password_error">Wrong credentials</string>
+    <string name="login_fail_email_error">Wrong credentials</string>
+
 </resources>
