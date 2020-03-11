@@ -9,8 +9,6 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import org.w3c.dom.Text;
-
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.List;
@@ -34,7 +32,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder>{
         LayoutInflater inflater = LayoutInflater.from(context);
 
         // Inflate the custom layout
-        View postsView = inflater.inflate(R.layout.item_post, parent, false);
+        View postsView = inflater.inflate(R.layout.post_item, parent, false);
 
         // Return a new holder instance
         ViewHolder viewHolder = new ViewHolder(postsView);

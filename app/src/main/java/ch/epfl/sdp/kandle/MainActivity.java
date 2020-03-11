@@ -17,8 +17,6 @@ import androidx.fragment.app.FragmentManager;
 import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.auth.FirebaseAuth;
 
-import ch.epfl.sdp.kandle.Fragment.PostFragment;
-
 public class MainActivity extends AppCompatActivity {
 
     private DrawerLayout mDrawerLayout;
@@ -77,21 +75,13 @@ public class MainActivity extends AppCompatActivity {
         int size = mNavigationView.getMenu().size();
 
         switch(menuItem.getItemId()) {
-            /*
-            //For fragments
-            case R.id.nav_first_fragment:
-                fragmentClass = FirstFragment.class;
-                break;
-            case R.id.nav_second_fragment:
-                fragmentClass = SecondFragment.class;
-                break;
-            case R.id.nav_third_fragment:
-                fragmentClass = ThirdFragment.class;
-                break;
-
-             */
 
 
+
+
+            case R.id.your_posts :
+                fragmentClass = PostFragment.class;
+                break;
 
 
             //For activities
@@ -108,8 +98,10 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(new Intent(getApplicationContext(), LoginActivity.class));
                 finish();
 
+
             default:
                 fragmentClass = PostFragment.class;
+                break;
 
 
 
