@@ -12,7 +12,7 @@
         <item
             android:id="@+id/your_posts"
             android:icon="@drawable/ic_whatshot_24dp"
-            android:title="Posts" />
+            android:title="Your Posts" />
 
 
         <item android:title="Communication">
