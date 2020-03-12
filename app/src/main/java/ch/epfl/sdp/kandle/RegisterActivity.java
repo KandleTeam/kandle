@@ -3,6 +3,7 @@ package ch.epfl.sdp.kandle;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
@@ -15,6 +16,8 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 
@@ -27,6 +30,7 @@ public class RegisterActivity extends AppCompatActivity {
     Button mSignUpBtn;
     TextView mSignInLink;
     FirebaseAuth fAuth;
+    //ProgressDialog pd;
 
     FirebaseFirestore fStore;
     String userID;
@@ -75,19 +79,41 @@ public class RegisterActivity extends AppCompatActivity {
     }
 
     private void performRegisterViaFirebase (final String fullName, final String email, String password) {
+
+       // pd = new ProgressDialog(RegisterActivity.this);
+       // pd.setMessage("Connection...");
+        //pd.show();
+
         fAuth.createUserWithEmailAndPassword(email, password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
             @Override
             public void onComplete(@NonNull Task<AuthResult> task) {
                 if (task.isSuccessful()){
                     Toast.makeText(RegisterActivity.this, "User has been created", Toast.LENGTH_LONG ).show();
 
-                    //store user in the database
+
                     userID = fAuth.getCurrentUser().getUid();
+
+                    //store user in the firestore
                     DocumentReference documentReference = fStore.collection("users").document(userID);
                     Map<String,Object> user = new HashMap<>();
                     user.put("fullName",fullName);
                     user.put("email",email);
                     documentReference.set(user);
+
+
+
+                    System.out.println("rjfnheruifh");
+
+                    //store user in realtimedatabase
+                    DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference().child("Users").child(userID);
+                    HashMap<String, Object> map = new HashMap<>();
+                    map.put("id", userID);
+                    map.put("fullname", fullName);
+                    map.put("email",email);
+
+                    databaseReference.setValue(map);
+
+                   // pd.dismiss();
 
                     startActivity(new Intent(getApplicationContext(), MainActivity.class));
                     finish();
@@ -95,6 +121,7 @@ public class RegisterActivity extends AppCompatActivity {
                 }
 
                 else {
+                    //pd.dismiss();
                     Toast.makeText(RegisterActivity.this, "An error has occurred : " + task.getException().getMessage(), Toast.LENGTH_SHORT).show();
 
                 }

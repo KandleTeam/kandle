@@ -3,6 +3,7 @@ package ch.epfl.sdp.kandle;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
@@ -23,6 +24,7 @@ public class LoginActivity extends AppCompatActivity {
     EditText mEmail, mPassword;
     Button mSignUpBtn;
     FirebaseAuth fAuth;
+    ProgressDialog pd;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -85,17 +87,25 @@ public class LoginActivity extends AppCompatActivity {
 
 
     private void performLoginViaFirebase(String email, String password) {
+
+
         fAuth.signInWithEmailAndPassword(email, password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
             @Override
             public void onComplete(@NonNull Task<AuthResult> task) {
 
+                pd = new ProgressDialog(LoginActivity.this);
+                pd.setMessage("Connection...");
+                pd.show();
+
                 if (task.isSuccessful()) {
 
+                    pd.dismiss();
                     Toast.makeText(LoginActivity.this, getString(R.string.login_success), Toast.LENGTH_LONG).show();
                     startActivity(new Intent(getApplicationContext(), MainActivity.class));
                     finish();
 
                 } else {
+                    pd.dismiss();
                     Toast.makeText(LoginActivity.this, "An error has occurred : " + task.getException().getMessage(), Toast.LENGTH_SHORT).show();
                 }
 

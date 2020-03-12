@@ -14,6 +14,11 @@
             android:icon="@drawable/ic_whatshot_24dp"
             android:title="Posts" />
 
+        <item
+            android:id="@+id/follow"
+            android:icon="@drawable/ic_addpost"
+            android:title="Follow" />
+
 
         <item android:title="Communication">
             <menu>
