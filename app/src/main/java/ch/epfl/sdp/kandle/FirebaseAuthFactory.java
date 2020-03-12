@@ -8,7 +8,8 @@ public class FirebaseAuthFactory {
     private static FirebaseAuth dependency = FirebaseAuth.getInstance();
 
     public static void setDependency(FirebaseAuth fAuth){
-        dependency = fAuth.getInstance();
+        dependency = fAuth;
+        //dependency = FirebaseAuth.getInstance();
     }
 
     public static FirebaseAuth getDependency(){

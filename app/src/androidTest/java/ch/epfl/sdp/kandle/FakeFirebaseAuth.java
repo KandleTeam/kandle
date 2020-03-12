@@ -29,6 +29,9 @@ import java.util.concurrent.Executor;
 public class FakeFirebaseAuth extends FirebaseAuth {
 
 
+    private boolean isConnected = false;
+
+
     public FakeFirebaseAuth(FirebaseApp firebaseApp) {
         super(firebaseApp);
     }
@@ -58,25 +61,37 @@ public class FakeFirebaseAuth extends FirebaseAuth {
     }
 
     public Task<AuthResult> signInWithEmailAndPassword(@NonNull String s,@NonNull String s1) {
+
+        isConnected = true;
+
+        System.out.println("done");
         return new Task<AuthResult>() {
             @Override
             public boolean isComplete() {
-                return false;
+
+                System.out.println("getc");
+                return true;
             }
 
             @Override
-            public boolean isSuccessful() {
+            public boolean isSuccessful()
+            {
+                System.out.println("gets");
                 return true;
             }
 
             @Override
             public boolean isCanceled() {
+
+                System.out.println("getcled");
                 return false;
             }
 
             @Nullable
             @Override
             public AuthResult getResult() {
+                System.out.println("getresult");
+
                 return null;
             }
 
@@ -131,133 +146,140 @@ public class FakeFirebaseAuth extends FirebaseAuth {
     }
 
     public FirebaseUser getCurrentUser() {
-        return new FirebaseUser() {
-            @NonNull
-            @Override
-            public String getUid() {
-                return "MockID";
-            }
 
-            @NonNull
-            @Override
-            public String getProviderId() {
-                return null;
-            }
+        if (isConnected) {
 
-            @Override
-            public boolean isAnonymous() {
-                return false;
-            }
 
-            @Nullable
-            @Override
-            public List<String> zza() {
-                return null;
-            }
+            return new FirebaseUser() {
+                @NonNull
+                @Override
+                public String getUid() {
+                    return "MockID";
+                }
 
-            @NonNull
-            @Override
-            public List<? extends UserInfo> getProviderData() {
-                return null;
-            }
+                @NonNull
+                @Override
+                public String getProviderId() {
+                    return null;
+                }
 
-            @NonNull
-            @Override
-            public FirebaseUser zza(@NonNull List<? extends UserInfo> list) {
-                return null;
-            }
+                @Override
+                public boolean isAnonymous() {
+                    return false;
+                }
 
-            @Override
-            public FirebaseUser zzb() {
-                return null;
-            }
+                @Nullable
+                @Override
+                public List<String> zza() {
+                    return null;
+                }
 
-            @NonNull
-            @Override
-            public FirebaseApp zzc() {
-                return null;
-            }
+                @NonNull
+                @Override
+                public List<? extends UserInfo> getProviderData() {
+                    return null;
+                }
 
-            @Nullable
-            @Override
-            public String getDisplayName() {
-                return null;
-            }
+                @NonNull
+                @Override
+                public FirebaseUser zza(@NonNull List<? extends UserInfo> list) {
+                    return null;
+                }
 
-            @Nullable
-            @Override
-            public Uri getPhotoUrl() {
-                return null;
-            }
+                @Override
+                public FirebaseUser zzb() {
+                    return null;
+                }
 
-            @Nullable
-            @Override
-            public String getEmail() {
-                return null;
-            }
+                @NonNull
+                @Override
+                public FirebaseApp zzc() {
+                    return null;
+                }
 
-            @Nullable
-            @Override
-            public String getPhoneNumber() {
-                return null;
-            }
+                @Nullable
+                @Override
+                public String getDisplayName() {
+                    return null;
+                }
 
-            @Nullable
-            @Override
-            public String zzd() {
-                return null;
-            }
+                @Nullable
+                @Override
+                public Uri getPhotoUrl() {
+                    return null;
+                }
 
-            @NonNull
-            @Override
-            public zzff zze() {
-                return null;
-            }
+                @Nullable
+                @Override
+                public String getEmail() {
+                    return null;
+                }
 
-            @Override
-            public void zza(@NonNull zzff zzff) {
+                @Nullable
+                @Override
+                public String getPhoneNumber() {
+                    return null;
+                }
 
-            }
+                @Nullable
+                @Override
+                public String zzd() {
+                    return null;
+                }
 
-            @NonNull
-            @Override
-            public String zzf() {
-                return null;
-            }
+                @NonNull
+                @Override
+                public zzff zze() {
+                    return null;
+                }
 
-            @NonNull
-            @Override
-            public String zzg() {
-                return null;
-            }
+                @Override
+                public void zza(@NonNull zzff zzff) {
 
-            @Nullable
-            @Override
-            public FirebaseUserMetadata getMetadata() {
-                return null;
-            }
+                }
 
-            @NonNull
-            @Override
-            public zzz zzh() {
-                return null;
-            }
+                @NonNull
+                @Override
+                public String zzf() {
+                    return null;
+                }
 
-            @Override
-            public void zzb(List<zzy> list) {
+                @NonNull
+                @Override
+                public String zzg() {
+                    return null;
+                }
 
-            }
+                @Nullable
+                @Override
+                public FirebaseUserMetadata getMetadata() {
+                    return null;
+                }
 
-            @Override
-            public void writeToParcel(Parcel dest, int flags) {
+                @NonNull
+                @Override
+                public zzz zzh() {
+                    return null;
+                }
 
-            }
+                @Override
+                public void zzb(List<zzy> list) {
 
-            @Override
-            public boolean isEmailVerified() {
-                return false;
-            }
-        };
+                }
+
+                @Override
+                public void writeToParcel(Parcel dest, int flags) {
+
+                }
+
+                @Override
+                public boolean isEmailVerified() {
+                    return false;
+                }
+            };
+
+        }
+        else return null;
     }
 
     public Task<AuthResult> createUserWithEmailAndPassword(@NonNull String s,@NonNull String s1){

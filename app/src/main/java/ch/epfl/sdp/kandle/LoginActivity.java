@@ -28,9 +28,11 @@ public class LoginActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
+       // FirebaseAuthFactory fAuthFactory = new FirebaseAuthFactory();
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
-        fAuth = (FirebaseAuth) FirebaseAuthFactory.getDependency();
+        fAuth = FirebaseAuthFactory.getDependency();
         if (fAuth.getCurrentUser() != null) {
             startActivity(new Intent(getApplicationContext(), MainActivity.class));
             finish();
@@ -88,10 +90,11 @@ public class LoginActivity extends AppCompatActivity {
 
     private void performLoginViaFirebase(String email, String password) {
 
-
+        System.out.println("begin");
         fAuth.signInWithEmailAndPassword(email, password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
             @Override
             public void onComplete(@NonNull Task<AuthResult> task) {
+               // System.out.println("begin");
 
                 //pd = new ProgressDialog(LoginActivity.this);
                 //pd.setMessage("Connection...");
@@ -99,6 +102,7 @@ public class LoginActivity extends AppCompatActivity {
 
                 if (task.isSuccessful()) {
 
+                    System.out.println("done task");
                     //pd.dismiss();
                     Toast.makeText(LoginActivity.this, getString(R.string.login_success), Toast.LENGTH_LONG).show();
                     startActivity(new Intent(getApplicationContext(), MainActivity.class));
@@ -106,6 +110,7 @@ public class LoginActivity extends AppCompatActivity {
 
                 } else {
                     //pd.dismiss();
+                    System.out.println("dont task");
                     Toast.makeText(LoginActivity.this, "An error has occurred : " + task.getException().getMessage(), Toast.LENGTH_SHORT).show();
                 }
 
