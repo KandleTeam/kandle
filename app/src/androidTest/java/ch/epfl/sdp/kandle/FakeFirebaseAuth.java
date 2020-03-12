@@ -11,6 +11,7 @@ import com.google.android.gms.internal.firebase_auth.zzff;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+import com.google.android.gms.tasks.TaskCompletionSource;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
@@ -65,7 +66,12 @@ public class FakeFirebaseAuth extends FirebaseAuth {
         isConnected = true;
 
         System.out.println("done");
-        return new Task<AuthResult>() {
+        TaskCompletionSource source = new TaskCompletionSource<AuthResult>();
+        source.setResult(null);
+        return source.getTask();
+
+        /*
+        Task<AuthResult> task = new Task<AuthResult>() {
             @Override
             public boolean isComplete() {
 
@@ -142,7 +148,12 @@ public class FakeFirebaseAuth extends FirebaseAuth {
             public Task<AuthResult> addOnFailureListener(@NonNull Activity activity, @NonNull OnFailureListener onFailureListener) {
                 return null;
             }
+
         };
+
+        return task;
+
+         */
     }
 
     public FirebaseUser getCurrentUser() {

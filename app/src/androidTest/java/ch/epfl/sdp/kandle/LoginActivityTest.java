@@ -96,7 +96,7 @@ public class LoginActivityTest {
 
         onView(withId(R.id.loginBtn)).perform(click());
 
-        Thread.sleep(2000);
+
 
 
         intended(hasComponent(MainActivity.class.getName()));
