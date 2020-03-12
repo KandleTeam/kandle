@@ -24,4 +24,7 @@
     <string name="hello_search_fragment">Search</string>
     <string name="hello_profile_fragment">Profile</string>
 
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+
 </resources>

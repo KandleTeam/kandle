@@ -102,14 +102,15 @@ public class RegisterActivity extends AppCompatActivity {
 
 
 
-                    System.out.println("rjfnheruifh");
 
                     //store user in realtimedatabase
                     DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference().child("Users").child(userID);
                     HashMap<String, Object> map = new HashMap<>();
                     map.put("id", userID);
                     map.put("fullname", fullName);
+                   // map.put ("fullnameWithoutSpace", fullName.replace(" ", ""));
                     map.put("email",email);
+                    map.put("fullnameSearch", fullName.toLowerCase().trim().replace(" ", ""));
 
                     databaseReference.setValue(map);
 

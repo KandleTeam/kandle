@@ -1,9 +1,12 @@
 package ch.epfl.sdp.kandle.Fragment;
 
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
@@ -13,6 +16,7 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
@@ -28,27 +32,52 @@ import ch.epfl.sdp.kandle.UserAdapter;
 
 public class SearchFragment extends Fragment {
 
+    private FirebaseAuth fAuth;
+
+    private FirebaseDatabase fData;
+
     private RecyclerView mRecyclerView;
 
     private ArrayList<User> mUsers = new ArrayList<>(0);
     private UserAdapter userAdapter = new UserAdapter(mUsers);
-   // private EditText mSearchText;
 
-    public static SearchFragment newInstance() {
-        return new SearchFragment();
+    EditText search_bar;
+
+    // private EditText mSearchText;
+
+    public SearchFragment( FirebaseAuth fAuth, FirebaseDatabase fData){
+        this.fAuth=fAuth;
+        this.fData=fData;
+    }
+
+    public static SearchFragment newInstance( FirebaseAuth fAuth, FirebaseDatabase fData) {
+        return new SearchFragment(fAuth, fData);
     }
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
 
-        View view = inflater.inflate(R.layout.fragment_search, container, false);
-        mRecyclerView = view.findViewById(R.id.recycler_view);
-        final FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
 
-       // mUsers.add(new User("45","full", "email" ));
-        //final FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
-        DatabaseReference reference = FirebaseDatabase.getInstance().getReference("Users");
+
+
+        View view = inflater.inflate(R.layout.fragment_search, container, false);
+
+        //Button postButton = view.findViewById(R.id.postButton);
+        //postButton.setVisibility(View.GONE);
+
+        mRecyclerView = view.findViewById(R.id.recycler_view);
+
+        search_bar = view.findViewById(R.id.search_bar);
+
+
+        final FirebaseUser firebaseUser = fAuth.getInstance().getCurrentUser();
+
+        mRecyclerView.setAdapter(userAdapter);
+        mRecyclerView.setLayoutManager(new LinearLayoutManager(this.getContext()));
+
+/*
+        DatabaseReference reference = fData.getReference("Users");
         reference.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -74,6 +103,61 @@ public class SearchFragment extends Fragment {
             }
         });
 
+ */
+
+        search_bar.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+                //if (!charSequence.toString().isEmpty()) {
+
+                    String q = charSequence.toString().toLowerCase().replace(" ", "");
+                    Query query = FirebaseDatabase.getInstance().getReference("Users").orderByChild("fullnameSearch")
+                            .startAt(q)
+                            .endAt(q + "\uf8ff");
+
+
+
+                    //System.out.println(charSequence.toString());
+
+                    query.addValueEventListener(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                            mUsers.clear();
+                            for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                                User user = snapshot.getValue(User.class);
+
+                                if (!firebaseUser.getUid().equals(user.getId()))
+                                    mUsers.add(user);
+                            }
+
+                            userAdapter.notifyDataSetChanged();
+                        }
+
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                        }
+                    });
+               // }
+
+               /* else {
+                    mUsers.clear();
+                    userAdapter.notifyDataSetChanged();
+                }*/
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+
+            }
+        });
+
 
         userAdapter.setOnItemClickListener(new UserAdapter.ClickListener(){
 
@@ -83,7 +167,7 @@ public class SearchFragment extends Fragment {
 
                 final User user = mUsers.get(position);
 
-                DatabaseReference reference = FirebaseDatabase.getInstance().getReference()
+                DatabaseReference reference = fData.getReference()
                         .child("Follow").child(firebaseUser.getUid()).child("following");
                 reference.addValueEventListener(new ValueEventListener() {
                     @Override
@@ -107,8 +191,7 @@ public class SearchFragment extends Fragment {
 
 
 
-        mRecyclerView.setAdapter(userAdapter);
-        mRecyclerView.setLayoutManager(new LinearLayoutManager(this.getContext()));
+
         return view;
     }
 

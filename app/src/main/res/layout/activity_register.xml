@@ -23,7 +23,7 @@
         android:backgroundTint="@color/backGroundRed"
         android:ems="10"
         android:hint="E-mail"
-        android:inputType="textPersonName"
+        android:inputType="textEmailAddress"
         app:layout_constraintBottom_toTopOf="@+id/password"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

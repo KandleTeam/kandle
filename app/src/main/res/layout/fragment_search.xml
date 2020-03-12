@@ -6,11 +6,32 @@
     tools:context=".Fragment.SearchFragment"
     >
 
+    <ImageView
+        android:layout_width="43dp"
+        android:layout_height="41dp"
+        android:src="@drawable/ic_search" />
+
+    <EditText
+        android:id="@+id/search_bar"
+        android:layout_width="443dp"
+        android:maxLines="1"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="10dp"
+        android:layout_marginLeft="10dp"
+        android:background="@android:color/transparent"
+        android:hint="Search..."
+        android:paddingLeft="40dp"
+        android:paddingTop="3dp"
+        android:textSize="24sp" />
+
+
+
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recycler_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:layout_marginTop="50dp"
 
         />
 

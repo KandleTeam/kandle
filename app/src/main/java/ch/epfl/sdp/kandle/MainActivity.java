@@ -17,16 +17,19 @@ import androidx.fragment.app.Fragment;
 import com.google.android.material.appbar.AppBarLayout;
 
 import androidx.fragment.app.FragmentManager;
+import ch.epfl.sdp.kandle.Fragment.AboutFragment;
 import ch.epfl.sdp.kandle.Fragment.MapFragment;
 //import ch.epfl.sdp.kandle.Fragment.ProfileFragment;
 import ch.epfl.sdp.kandle.Fragment.SearchFragment;
-
+import ch.epfl.sdp.kandle.Fragment.SettingsFragment;
+import ch.epfl.sdp.kandle.Fragment.YourPostsFragment;
 
 
 import com.google.android.material.bottomnavigation.BottomNavigationItemView;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.FirebaseDatabase;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -34,6 +37,7 @@ public class MainActivity extends AppCompatActivity {
     private Toolbar toolbar;
     private NavigationView mNavigationView;
     private BottomNavigationView mBottomNavigationView;
+    private Button mPostButton;
    // FirebaseAuth fAuth;
 
     // Make sure to be using androidx.appcompat.app.ActionBarDrawerToggle version.
@@ -49,6 +53,8 @@ public class MainActivity extends AppCompatActivity {
         toolbar = findViewById(R.id.toolbar);
         mDrawerLayout = findViewById(R.id.drawer_layout);
         mNavigationView = findViewById(R.id.navigation_view);
+        mPostButton = findViewById(R.id.postButton);
+
 
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -57,6 +63,13 @@ public class MainActivity extends AppCompatActivity {
         setupDrawerContent(mNavigationView);
         drawerToggle.syncState();
         mDrawerLayout.addDrawerListener(drawerToggle);
+
+        mPostButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(getApplicationContext(), PostActivity.class));
+            }
+        });
 
        /* mBottomNavigationView = findViewById(R.id.bottom_navigation);
         mBottomNavigationView.setOnNavigationItemSelectedListener(
@@ -148,14 +161,29 @@ public class MainActivity extends AppCompatActivity {
                 FirebaseAuth.getInstance().signOut();
                 startActivity(new Intent(getApplicationContext(), LoginActivity.class));
                 finish();
+
+                break;
+
+
+            case R.id.your_posts:
+                fragmentClass = YourPostsFragment.class;
+                break;
+
+            case R.id.map:
+                fragmentClass = MapFragment.class;
+                break;
+            case R.id.settings:
+                fragmentClass = SettingsFragment.class;
+                break;
+            case R.id.about:
+                fragmentClass = AboutFragment.class;
                 break;
 
             case R.id.follow:
                 fragmentClass = SearchFragment.class;
                 break;
 
-
-            default: fragmentClass = SearchFragment.class;
+            default: fragmentClass = null;
 
 
         }
@@ -167,13 +195,21 @@ public class MainActivity extends AppCompatActivity {
         }
         */
         try {
-            fragment = (Fragment) fragmentClass.newInstance();
+            if (fragmentClass ==SearchFragment.class) {
+                mPostButton.setVisibility(View.GONE);
+                fragment = (Fragment) SearchFragment.newInstance( FirebaseAuth.getInstance(), FirebaseDatabase.getInstance());
+            }else {
+                fragment = (Fragment) fragmentClass.newInstance();
+            }
         } catch (Exception e) {
             e.printStackTrace();
         }
-        FragmentManager fragmentManager = getSupportFragmentManager();
-        fragmentManager.beginTransaction().replace(R.id.flContent, fragment).commit();
 
+
+        if (fragment!=null) {
+            FragmentManager fragmentManager = getSupportFragmentManager();
+            fragmentManager.beginTransaction().replace(R.id.flContent, fragment).commit();
+        }
 
         // Insert the fragment by replacing any existing fragment
         //FragmentManager fragmentManager = getSupportFragmentManager();
