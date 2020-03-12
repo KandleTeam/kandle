@@ -24,13 +24,13 @@ public class LoginActivity extends AppCompatActivity {
     EditText mEmail, mPassword;
     Button mSignUpBtn;
     FirebaseAuth fAuth;
-    ProgressDialog pd;
+    //ProgressDialog pd;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
-        fAuth = FirebaseAuth.getInstance();
+        fAuth = (FirebaseAuth) FirebaseAuthFactory.getDependency();
         if (fAuth.getCurrentUser() != null) {
             startActivity(new Intent(getApplicationContext(), MainActivity.class));
             finish();
@@ -93,19 +93,19 @@ public class LoginActivity extends AppCompatActivity {
             @Override
             public void onComplete(@NonNull Task<AuthResult> task) {
 
-                pd = new ProgressDialog(LoginActivity.this);
-                pd.setMessage("Connection...");
-                pd.show();
+                //pd = new ProgressDialog(LoginActivity.this);
+                //pd.setMessage("Connection...");
+                //pd.show();
 
                 if (task.isSuccessful()) {
 
-                    pd.dismiss();
+                    //pd.dismiss();
                     Toast.makeText(LoginActivity.this, getString(R.string.login_success), Toast.LENGTH_LONG).show();
                     startActivity(new Intent(getApplicationContext(), MainActivity.class));
                     finish();
 
                 } else {
-                    pd.dismiss();
+                    //pd.dismiss();
                     Toast.makeText(LoginActivity.this, "An error has occurred : " + task.getException().getMessage(), Toast.LENGTH_SHORT).show();
                 }
 
