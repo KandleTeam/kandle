@@ -25,6 +25,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class PostActivity extends AppCompatActivity {
+
     EditText mPostText;
     Button mPostButton;
     ImageButton mGaleryButton, mCameraButton;

@@ -6,6 +6,7 @@ import android.view.Gravity;
 import androidx.test.espresso.Espresso;
 import androidx.test.espresso.contrib.DrawerActions;
 import androidx.test.espresso.contrib.NavigationViewActions;
+import androidx.test.espresso.contrib.RecyclerViewActions;
 import androidx.test.espresso.intent.Intents;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 import androidx.test.rule.ActivityTestRule;
@@ -75,14 +76,15 @@ public class MainActivityTest {
     }
 
     @Test
-    public void postButtonNavigateToPostActivity() throws InterruptedException {
-        Intents.init();
+    public void openMenuNavigateToYourPosts() {
 
-        onView(withId(R.id.postButton)).perform(click());
-        Thread.sleep(1000);
-        intended(hasComponent(PostActivity.class.getName()));
-        Intents.release();
+        onView(withId(R.id.drawer_layout)).check(matches(isClosed(Gravity.LEFT))).perform(DrawerActions.open());
+        onView(withId(R.id.navigation_view)).perform(NavigationViewActions.navigateTo(R.id.your_posts));
+        onView(withId(R.id.toolbar)).check(matches(hasDescendant(withText("Your Posts"))));
+
+
     }
+
 
     @Test
     public void openMenuNavigateToFollow(){
@@ -91,5 +93,6 @@ public class MainActivityTest {
         onView(withId(R.id.toolbar)).check(matches(hasDescendant(withText("Follow"))));
 
     }
+
 
 }

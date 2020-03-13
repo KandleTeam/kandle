@@ -2,11 +2,8 @@ package ch.epfl.sdp.kandle;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
 import android.widget.Button;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBarDrawerToggle;
@@ -14,6 +11,9 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
+
+import androidx.fragment.app.FragmentManager;
+
 import com.google.android.material.appbar.AppBarLayout;
 
 import androidx.fragment.app.FragmentManager;
@@ -64,12 +64,7 @@ public class MainActivity extends AppCompatActivity {
         drawerToggle.syncState();
         mDrawerLayout.addDrawerListener(drawerToggle);
 
-        mPostButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                startActivity(new Intent(getApplicationContext(), PostActivity.class));
-            }
-        });
+
 
        /* mBottomNavigationView = findViewById(R.id.bottom_navigation);
         mBottomNavigationView.setOnNavigationItemSelectedListener(
@@ -128,26 +123,18 @@ public class MainActivity extends AppCompatActivity {
 
     public void selectDrawerItem(MenuItem menuItem) {
         // Create a new fragment and specify the fragment to show based on nav item clicked
+
         Fragment fragment = null;
         Class fragmentClass = null;
         Intent intent = null;
         int size = mNavigationView.getMenu().size();
 
         switch(menuItem.getItemId()) {
-            /*
-            //For fragments
-            case R.id.nav_first_fragment:
-                fragmentClass = FirstFragment.class;
-                break;
-            case R.id.nav_second_fragment:
-                fragmentClass = SecondFragment.class;
-                break;
-            case R.id.nav_third_fragment:
-                fragmentClass = ThirdFragment.class;
-                break;
-            default:
-                fragmentClass = FirstFragment.class;
-             */
+
+
+
+
+
 
             //For activities
 
@@ -166,7 +153,7 @@ public class MainActivity extends AppCompatActivity {
 
 
             case R.id.your_posts:
-                fragmentClass = YourPostsFragment.class;
+                fragmentClass = PostFragment.class;
                 break;
 
             case R.id.map:
@@ -185,15 +172,15 @@ public class MainActivity extends AppCompatActivity {
 
             default: fragmentClass = null;
 
+            default:
+                fragmentClass = null;
+                break;
+
+
 
         }
-        /*
-        try {
-            fragment = (Fragment) fragmentClass.newInstance();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        */
+
+
         try {
             if (fragmentClass ==SearchFragment.class) {
                 mPostButton.setVisibility(View.GONE);
@@ -206,14 +193,15 @@ public class MainActivity extends AppCompatActivity {
         }
 
 
+
         if (fragment!=null) {
             FragmentManager fragmentManager = getSupportFragmentManager();
             fragmentManager.beginTransaction().replace(R.id.flContent, fragment).commit();
         }
 
         // Insert the fragment by replacing any existing fragment
-        //FragmentManager fragmentManager = getSupportFragmentManager();
-        //fragmentManager.beginTransaction().replace(R.id.flContent, fragment).commit();
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        fragmentManager.beginTransaction().replace(R.id.flContent, fragment).commit();
 
         // Highlight the selected item has been done by NavigationView
 
