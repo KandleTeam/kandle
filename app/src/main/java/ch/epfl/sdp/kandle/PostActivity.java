@@ -3,7 +3,6 @@ package ch.epfl.sdp.kandle;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
-import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -33,7 +32,6 @@ public class PostActivity extends AppCompatActivity {
     FirebaseAuth fAuth;
     FirebaseFirestore fStore;
     String userID;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
