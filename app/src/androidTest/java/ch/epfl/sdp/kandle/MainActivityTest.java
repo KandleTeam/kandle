@@ -11,6 +11,7 @@ import androidx.test.espresso.intent.Intents;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 import androidx.test.rule.ActivityTestRule;
 
+import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -39,11 +40,13 @@ public class MainActivityTest {
             new ActivityTestRule<>(MainActivity.class);
 
 
-
-
+    @Before
+    public void checkClosedDrawer(){
+        onView(withId(R.id.drawer_layout)).check(matches(isClosed(Gravity.LEFT))).perform(DrawerActions.open());
+    }
     @Test
     public void openMenuAndNavigateToAboutUsAndFinallyLogout() throws InterruptedException {
-        onView(withId(R.id.drawer_layout)).check(matches(isClosed(Gravity.LEFT))).perform(DrawerActions.open());
+
         onView(withId(R.id.navigation_view)).perform(NavigationViewActions.navigateTo(R.id.about));
         onView(withId(R.id.toolbar)).check(matches(hasDescendant(withText("About us"))));
 
@@ -57,8 +60,6 @@ public class MainActivityTest {
     @Test
     public void openMenuNavigateToSettings() {
 
-
-        onView(withId(R.id.drawer_layout)).check(matches(isClosed(Gravity.LEFT))).perform(DrawerActions.open());
         onView(withId(R.id.navigation_view)).perform(NavigationViewActions.navigateTo(R.id.settings));
         onView(withId(R.id.toolbar)).check(matches(hasDescendant(withText("Settings"))));
 
@@ -68,7 +69,7 @@ public class MainActivityTest {
     @Test
     public void openMenuNavigateToMap() {
 
-        onView(withId(R.id.drawer_layout)).check(matches(isClosed(Gravity.LEFT))).perform(DrawerActions.open());
+
         onView(withId(R.id.navigation_view)).perform(NavigationViewActions.navigateTo(R.id.map));
         //onView(withId(R.id.toolbar)).check(matches(hasDescendant(withText("Map"))));
 
@@ -78,7 +79,7 @@ public class MainActivityTest {
     @Test
     public void openMenuNavigateToYourPosts() {
 
-        onView(withId(R.id.drawer_layout)).check(matches(isClosed(Gravity.LEFT))).perform(DrawerActions.open());
+
         onView(withId(R.id.navigation_view)).perform(NavigationViewActions.navigateTo(R.id.your_posts));
         onView(withId(R.id.toolbar)).check(matches(hasDescendant(withText("Your Posts"))));
 
