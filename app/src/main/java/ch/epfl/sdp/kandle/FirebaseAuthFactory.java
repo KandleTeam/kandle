@@ -6,11 +6,10 @@ import com.google.firestore.v1.FirestoreGrpc;
 
 public class FirebaseAuthFactory {
     private static FirebaseAuth dependency = FirebaseAuth.getInstance();
-    public boolean isMock = false;
 
     public static void setDependency(FirebaseAuth fAuth){
         dependency = fAuth;
-                //dependency = FirebaseAuth.getInstance();
+        //dependency = FirebaseAuth.getInstance();
     }
 
     public static FirebaseAuth getDependency(){

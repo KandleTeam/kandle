@@ -294,14 +294,6 @@ public class FakeFirebaseAuth extends FirebaseAuth {
     }
 
     public Task<AuthResult> createUserWithEmailAndPassword(@NonNull String s,@NonNull String s1){
-
-        isConnected = true;
-
-        System.out.println("done");
-        TaskCompletionSource source = new TaskCompletionSource<AuthResult>();
-        source.setResult(null);
-        return source.getTask();
-        /*
         return new Task<AuthResult>() {
             @Override
             public boolean isComplete() {
@@ -372,7 +364,7 @@ public class FakeFirebaseAuth extends FirebaseAuth {
                 return null;
             }
         };
-        */
+
     }
 
 

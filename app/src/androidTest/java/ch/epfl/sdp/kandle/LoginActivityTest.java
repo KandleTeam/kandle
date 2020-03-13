@@ -54,7 +54,6 @@ public class LoginActivityTest {
         onView(withId(R.id.loginBtn)).perform(click());
         onView(withId(R.id.email)).check(matches(hasErrorText(res.getString(R.string.login_email_required))));
 
-
     }
 
 
