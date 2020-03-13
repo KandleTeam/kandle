@@ -55,23 +55,23 @@ public class PostActivityTest {
 
     @Test
     public void clickCameraButtonLeavesToPostActivity() throws InterruptedException {
-        Intents.init();
+        //Intents.init();
 
         onView(withId(R.id.cameraButton)).perform(click());
         //Thread.sleep(1000);
         //intended(hasComponent(PostActivity.class.getName()));
 
-        Intents.release();
+       // Intents.release();
     }
 
 
     @Test
     public void clickGaleryButtonLeavesToPostActivity() throws InterruptedException {
-        Intents.init();
+        //Intents.init();
 
         onView(withId(R.id.galeryButton)).perform(click());
         //Thread.sleep(1000);
         //intended(hasComponent(PostActivity.class.getName()));
-        Intents.release();
+       // Intents.release();
     }
 }

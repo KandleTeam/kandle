@@ -93,6 +93,9 @@ public class RegisterActivity extends AppCompatActivity {
 
                     userID = fAuth.getCurrentUser().getUid();
 
+
+                    {
+
                     //store user in the firestore
                     DocumentReference documentReference = fStore.collection("users").document(userID);
                     Map<String,Object> user = new HashMap<>();
@@ -112,7 +115,7 @@ public class RegisterActivity extends AppCompatActivity {
                     map.put("email",email);
                     map.put("fullnameSearch", fullName.toLowerCase().trim().replace(" ", ""));
 
-                    databaseReference.setValue(map);
+                    databaseReference.setValue(map);}
 
                    // pd.dismiss();
 

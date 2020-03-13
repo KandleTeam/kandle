@@ -3,6 +3,7 @@ package ch.epfl.sdp.kandle;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.Button;
 
 import androidx.annotation.NonNull;
@@ -170,7 +171,6 @@ public class MainActivity extends AppCompatActivity {
                 fragmentClass = SearchFragment.class;
                 break;
 
-            default: fragmentClass = null;
 
             default:
                 fragmentClass = null;
@@ -197,11 +197,11 @@ public class MainActivity extends AppCompatActivity {
         if (fragment!=null) {
             FragmentManager fragmentManager = getSupportFragmentManager();
             fragmentManager.beginTransaction().replace(R.id.flContent, fragment).commit();
-        }
 
-        // Insert the fragment by replacing any existing fragment
-        FragmentManager fragmentManager = getSupportFragmentManager();
-        fragmentManager.beginTransaction().replace(R.id.flContent, fragment).commit();
+
+            // Insert the fragment by replacing any existing fragment
+
+        }
 
         // Highlight the selected item has been done by NavigationView
 
