@@ -54,7 +54,6 @@ public class PostViewerTest {
 
     @Test
     public void putNewPostIntoTheRecyclerAndDeleteIt(){
-        
         PostFragment frag = PostFragment.newInstance();
         frag.putInPostList(new Post("Text",34,"this is my post",new Date() ));
         frag.removePostAtIndex(0);
