@@ -35,22 +35,19 @@ public class PostViewerTest {
     public final ActivityTestRule<MainActivity> mainActivityRule =
             new ActivityTestRule<>(MainActivity.class);
 
-    @Before
-    public void loadFragment(){
-        onView(withId(R.id.drawer_layout)).check(matches(isClosed(Gravity.LEFT))).perform(DrawerActions.open());
-        onView(withId(R.id.navigation_view)).perform(NavigationViewActions.navigateTo(R.id.your_posts));
-
-
-    }
+   
 
     @Test
     public void canClickOnPostAndRemoveIt() throws InterruptedException {
+        onView(withId(R.id.drawer_layout)).check(matches(isClosed(Gravity.LEFT))).perform(DrawerActions.open());
+        onView(withId(R.id.navigation_view)).perform(NavigationViewActions.navigateTo(R.id.your_posts));
         PostFragment frag = PostFragment.newInstance();
         ArrayList<Post> myposts = frag.getPostList();
-        onView(withId(R.id.rvPosts)).perform(RecyclerViewActions.actionOnItemAtPosition(0,click()));
-        onView(withId(R.id.post_description)).perform(click());
         Post p = new Post("Text",34,"this is my post",new Date() );
         frag.putInPostList(p);
+        onView(withId(R.id.rvPosts)).perform(RecyclerViewActions.actionOnItemAtPosition(0,click()));
+        onView(withId(R.id.post_description)).perform(click());
+
         frag.removePost(p);
         //onView(withId(R.id.post_content)).perform(click());
     }

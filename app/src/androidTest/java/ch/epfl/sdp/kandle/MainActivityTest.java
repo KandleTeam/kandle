@@ -57,7 +57,6 @@ public class MainActivityTest {
     @Test
     public void openMenuNavigateToSettings() {
 
-
         onView(withId(R.id.drawer_layout)).check(matches(isClosed(Gravity.LEFT))).perform(DrawerActions.open());
         onView(withId(R.id.navigation_view)).perform(NavigationViewActions.navigateTo(R.id.settings));
         onView(withId(R.id.toolbar)).check(matches(hasDescendant(withText("Settings"))));
@@ -75,15 +74,7 @@ public class MainActivityTest {
 
     }
 
-    @Test
-    public void openMenuNavigateToYourPosts() {
 
-        onView(withId(R.id.drawer_layout)).check(matches(isClosed(Gravity.LEFT))).perform(DrawerActions.open());
-        onView(withId(R.id.navigation_view)).perform(NavigationViewActions.navigateTo(R.id.your_posts));
-        onView(withId(R.id.toolbar)).check(matches(hasDescendant(withText("Your Posts"))));
-
-
-    }
 
 
 }
