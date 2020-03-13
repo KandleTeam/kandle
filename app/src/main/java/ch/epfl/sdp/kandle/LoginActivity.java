@@ -59,7 +59,6 @@ public class LoginActivity extends AppCompatActivity {
                 if (!checkFields(email, password))  {
                     return;
                 }
-
                 performLoginViaFirebase(email, password);
             }
         });
