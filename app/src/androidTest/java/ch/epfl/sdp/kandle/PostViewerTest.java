@@ -35,17 +35,7 @@ public class PostViewerTest {
     public final ActivityTestRule<MainActivity> mainActivityRule =
             new ActivityTestRule<>(MainActivity.class);
 
-<<<<<<< HEAD
-   
-=======
-    @Before
-    public void loadFragment(){
-        onView(withId(R.id.drawer_layout)).perform(DrawerActions.open());
-        onView(withId(R.id.navigation_view)).perform(NavigationViewActions.navigateTo(R.id.your_posts));
 
-
-    }
->>>>>>> e14c810a03e4239a2266f6d6ab0c818183ce2ebb
 
     @Test
     public void canClickOnPostAndRemoveIt() throws InterruptedException {
