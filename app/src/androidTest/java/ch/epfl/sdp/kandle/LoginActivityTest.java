@@ -3,22 +3,19 @@ package ch.epfl.sdp.kandle;
 
 import android.content.res.Resources;
 
-import org.junit.After;
-import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
 
 import androidx.test.core.app.ApplicationProvider;
-import androidx.test.espresso.IdlingResource;
 import androidx.test.espresso.contrib.DrawerActions;
 import androidx.test.espresso.contrib.NavigationViewActions;
-import androidx.test.espresso.intent.rule.IntentsTestRule;
+import androidx.test.espresso.intent.Intents;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 import androidx.test.rule.ActivityTestRule;
 
-import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.FirebaseApp;
 
 import static androidx.test.espresso.Espresso.onView;
 import static androidx.test.espresso.action.ViewActions.click;
@@ -40,8 +37,13 @@ public class LoginActivityTest {
 
     @Rule
     public ActivityTestRule<LoginActivity> intentsRule =
-            new ActivityTestRule<>(LoginActivity.class,true,true
-            );
+            new ActivityTestRule<LoginActivity>(LoginActivity.class,true,true
+            ){
+            @Override
+                protected  void beforeActivityLaunched() {
+                  FirebaseAuthFactory.setDependency(new FakeFirebaseAuth(FirebaseApp.getInstance()));
+            }
+            };
 
 
 
@@ -84,18 +86,26 @@ public class LoginActivityTest {
     @Test
     public void authenticationTest() throws InterruptedException {
 
-        onView(withId(R.id.email)).perform(typeText("anas.ibrahim@epfl.ch"));
+        Intents.init();
+
+        onView(withId(R.id.email)).perform(typeText("yanisepfl@gmail.com"));
         onView(withId(R.id.email)).perform(closeSoftKeyboard());
 
-        onView(withId(R.id.password)).perform(typeText("12345678"));
+        onView(withId(R.id.password)).perform(typeText("123456789"));
         onView(withId(R.id.password)).perform(closeSoftKeyboard());
 
-        //onView(withId(R.id.loginBtn)).perform(click());
+        onView(withId(R.id.loginBtn)).perform(click());
 
 
-        //intended(hasComponent(MainActivity.class.getName()));
-        //onView(withId(R.id.drawer_layout)).perform(DrawerActions.open());
-        //onView(withId(R.id.navigation_view)).perform(NavigationViewActions.navigateTo(R.id.logout));
+
+
+        intended(hasComponent(MainActivity.class.getName()));
+
+
+        onView(withId(R.id.drawer_layout)).perform(DrawerActions.open());
+        onView(withId(R.id.navigation_view)).perform(NavigationViewActions.navigateTo(R.id.logout));
+
+        Intents.release();
 
     }
     /*
