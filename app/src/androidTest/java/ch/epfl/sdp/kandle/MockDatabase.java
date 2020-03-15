@@ -3,8 +3,6 @@ package ch.epfl.sdp.kandle;
 import com.google.android.gms.tasks.Task;
 import com.google.android.gms.tasks.TaskCompletionSource;
 
-import net.bytebuddy.pool.TypePool;
-
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
