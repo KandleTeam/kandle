@@ -38,7 +38,6 @@ public class FirestoreDatabase implements Database {
                 .setPersistenceEnabled(false)
                 .build();
         firestore.setFirestoreSettings(settings);
-        users.document("")
     }
 
     public static FirestoreDatabase getInstance() {
@@ -52,6 +51,8 @@ public class FirestoreDatabase implements Database {
 
         // TODO
         // also: make Firestore also maintain an index by username
+
+        return null;
     }
 
     @Override
