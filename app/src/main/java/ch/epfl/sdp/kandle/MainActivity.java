@@ -76,6 +76,9 @@ public class MainActivity extends AppCompatActivity {
 
         switch(menuItem.getItemId()) {
 
+            case R.id.map :
+                fragmentClass = MapFragment.class;
+                break;
 
 
 
