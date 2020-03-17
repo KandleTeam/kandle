@@ -33,6 +33,7 @@ public class FirestoreDatabase implements Database {
     private static final FirestoreDatabase instance = new FirestoreDatabase();
 
     private static final CollectionReference users = firestore.collection("users");
+    private static final CollectionReference usernames = firestore.collection("usernames");
     private static final CollectionReference posts = firestore.collection("posts");
 
 
@@ -52,8 +53,7 @@ public class FirestoreDatabase implements Database {
     @Override
     public Task<User> getUserByName(final String username) {
 
-        return firestore
-                .collection("users")
+        return users
                 .whereEqualTo("username", username)
                 .get()
                 .continueWith(new Continuation<QuerySnapshot, User>() {
@@ -77,8 +77,7 @@ public class FirestoreDatabase implements Database {
     @Override
     public Task<User> getUserById(final String userId) {
 
-        return firestore
-                .collection("users")
+        return users
                 .document(userId)
                 .get()
                 .continueWith(new Continuation<DocumentSnapshot, User>() {
@@ -98,8 +97,8 @@ public class FirestoreDatabase implements Database {
     @Override
     public Task<Void> createUser(final User user) {
 
-        final DocumentReference usernameDoc = firestore.collection("usernames").document(user.getUsername());
-        final DocumentReference userDoc = firestore.collection("users").document(user.getId());
+        final DocumentReference usernameDoc = usernames.document(user.getUsername());
+        final DocumentReference userDoc = users.document(user.getId());
 
 
         return firestore
