@@ -3,6 +3,7 @@ package ch.epfl.sdp.kandle;
 import android.annotation.SuppressLint;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 import com.google.android.gms.tasks.Continuation;
 import com.google.android.gms.tasks.Task;
@@ -10,7 +11,11 @@ import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.FirebaseFirestoreSettings;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
+import com.google.firebase.firestore.Transaction;
 
 import java.util.Objects;
 import java.util.concurrent.ExecutionException;
@@ -45,20 +50,35 @@ public class FirestoreDatabase implements Database {
     }
 
     @Override
-    public Task<User> getUserByName(String username) {
+    public Task<User> getUserByName(final String username) {
 
-        DocumentReference docUser = firestore.collection("users").document();
+        return firestore
+                .collection("users")
+                .whereEqualTo("username", username)
+                .get()
+                .continueWith(new Continuation<QuerySnapshot, User>() {
 
-        // TODO
-        // also: make Firestore also maintain an index by username
+                    @Override
+                    public User then(@NonNull Task<QuerySnapshot> task) {
 
-        return null;
+                        QuerySnapshot results = task.getResult();
+
+                        if(results.size() > 1)  {
+                            throw new AssertionError("We done goofed somewhere! Duplicate usernames");
+                        }
+                        else if(results.size() == 0) {
+                            throw new IllegalArgumentException(("No such user with username: " + username));
+                        }
+                        else return results.iterator().next().toObject(User.class);
+                    }
+                });
     }
 
     @Override
     public Task<User> getUserById(final String userId) {
 
-        return firestore.collection("users")
+        return firestore
+                .collection("users")
                 .document(userId)
                 .get()
                 .continueWith(new Continuation<DocumentSnapshot, User>() {
@@ -67,8 +87,7 @@ public class FirestoreDatabase implements Database {
                     public User then(@NonNull Task<DocumentSnapshot> task) {
 
                         User user = Objects.requireNonNull(task.getResult()).toObject(User.class);
-                        assert user != null;
-                        assert (user.getId()).equals(userId);
+                        if (!user.getId().equals(userId)) throw new AssertionError("We done goofed somewhere! Unexpected uid");
 
                         return user;
                     }
@@ -77,10 +96,38 @@ public class FirestoreDatabase implements Database {
     }
 
     @Override
-    public Task<Void> createUser(User user) {
-        // TODO
-        // use a transaction to ensure username uniqueness
-        return null;
+    public Task<Void> createUser(final User user) {
+
+        final DocumentReference usernameDoc = firestore.collection("usernames").document(user.getUsername());
+        final DocumentReference userDoc = firestore.collection("users").document(user.getId());
+
+
+        return firestore
+                .runTransaction(new Transaction.Function<Void>() {
+                    @Override
+                    public Void apply(@NonNull Transaction transaction) throws FirebaseFirestoreException {
+
+                        DocumentSnapshot usernameSnapshot = transaction.get(usernameDoc);
+                        DocumentSnapshot userSnapshot = transaction.get(userDoc);
+
+                        if(userSnapshot.exists()) {
+                            throw new FirebaseFirestoreException("User already exists!", FirebaseFirestoreException.Code.ALREADY_EXISTS);
+                        }
+                        else if(usernameSnapshot.exists()) {
+                            throw new FirebaseFirestoreException("Username already taken!", FirebaseFirestoreException.Code.ALREADY_EXISTS);
+                        } else {
+                            transaction.update(usernameDoc, "userId", user.getId());
+                            transaction.set(userDoc, user);
+                        }
+
+                        return null;
+                    }
+                });
+
+
+
+
+
     }
 
 
