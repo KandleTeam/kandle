@@ -6,6 +6,7 @@ import android.content.res.Resources;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.listeners.MockitoListener;
 
 
 import androidx.test.core.app.ApplicationProvider;
@@ -14,6 +15,9 @@ import androidx.test.espresso.contrib.NavigationViewActions;
 import androidx.test.espresso.intent.Intents;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 import androidx.test.rule.ActivityTestRule;
+import ch.epfl.sdp.kandle.MockInstances.Authentication;
+import ch.epfl.sdp.kandle.MockInstances.AuthenticationUser;
+import ch.epfl.sdp.kandle.MockInstances.MockAuthentication;
 
 import com.google.firebase.FirebaseApp;
 
@@ -41,7 +45,7 @@ public class LoginActivityTest {
             ){
             @Override
                 protected  void beforeActivityLaunched() {
-                  FirebaseAuthFactory.setDependency(new FakeFirebaseAuth(FirebaseApp.getInstance()));
+                Authentication.setAuthenticationSystem(new MockAuthentication());
             }
             };
 
@@ -81,11 +85,11 @@ public class LoginActivityTest {
 
         onView(withId(R.id.loginBtn)).perform(click());
 
-        //TODO
+        //TODO check toast
     }
 
     @Test
-    public void authenticationTest() throws InterruptedException {
+    public void authenticationTest() {
 
         Intents.init();
 
@@ -109,14 +113,19 @@ public class LoginActivityTest {
         Intents.release();
 
     }
-    /*
+
+
     @Test
-    public void alreadyHaveAnAccount() throws InterruptedException {
+    public void alreadyHaveAnAccount()  {
+
+        Intents.init();
 
         onView(withId(R.id.signUpLink)).perform(click());
         intended(hasComponent(RegisterActivity.class.getName()));
 
+        Intents.release();
+
     }
-     */
+
 
 }

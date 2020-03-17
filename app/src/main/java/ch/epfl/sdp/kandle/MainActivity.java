@@ -24,6 +24,7 @@ import ch.epfl.sdp.kandle.Fragment.MapFragment;
 import ch.epfl.sdp.kandle.Fragment.SearchFragment;
 import ch.epfl.sdp.kandle.Fragment.SettingsFragment;
 import ch.epfl.sdp.kandle.Fragment.YourPostsFragment;
+import ch.epfl.sdp.kandle.MockInstances.Authentication;
 
 
 import com.google.android.material.bottomnavigation.BottomNavigationItemView;
@@ -39,7 +40,7 @@ public class MainActivity extends AppCompatActivity {
     private NavigationView mNavigationView;
     private BottomNavigationView mBottomNavigationView;
     private Button mPostButton;
-   // FirebaseAuth fAuth;
+    private Authentication auth;
 
     // Make sure to be using androidx.appcompat.app.ActionBarDrawerToggle version.
     private ActionBarDrawerToggle drawerToggle;
@@ -50,6 +51,8 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        auth = Authentication.getAuthenticationSystem();
         // Set a Toolbar to replace the ActionBar.
         toolbar = findViewById(R.id.toolbar);
         mDrawerLayout = findViewById(R.id.drawer_layout);
@@ -146,7 +149,7 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(intent);
              */
             case R.id.logout :
-                FirebaseAuth.getInstance().signOut();
+                auth.signOut();
                 startActivity(new Intent(getApplicationContext(), LoginActivity.class));
                 finish();
 

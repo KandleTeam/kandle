@@ -2,6 +2,7 @@ package ch.epfl.sdp.kandle;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import ch.epfl.sdp.kandle.MockInstances.Authentication;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
@@ -23,7 +24,7 @@ public class LoginActivity extends AppCompatActivity {
     TextView mSignIn;
     EditText mEmail, mPassword;
     Button mSignUpBtn;
-    FirebaseAuth fAuth;
+    Authentication Auth;
     //ProgressDialog pd;
 
     @Override
@@ -32,8 +33,9 @@ public class LoginActivity extends AppCompatActivity {
        // FirebaseAuthFactory fAuthFactory = new FirebaseAuthFactory();
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
-        fAuth = FirebaseAuthFactory.getDependency();
-        if (fAuth.getCurrentUser() != null) {
+        Auth = Authentication.getAuthenticationSystem();
+
+        if (Auth.getCurrentUser() != null) {
             startActivity(new Intent(getApplicationContext(), MainActivity.class));
             finish();
         }
@@ -90,7 +92,43 @@ public class LoginActivity extends AppCompatActivity {
 
     private void performLoginViaFirebase(String email, String password) {
 
-        System.out.println("begin");
+
+        Auth.signInWithEmailAndPassword(email, password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+            @Override
+            public void onComplete(@NonNull Task<AuthResult> task) {
+                if (task.isSuccessful()) {
+
+                    //pd.dismiss();
+                    Toast.makeText(LoginActivity.this, getString(R.string.login_success), Toast.LENGTH_LONG).show();
+                    startActivity(new Intent(getApplicationContext(), MainActivity.class));
+                    finish();
+
+                } else {
+                    //pd.dismiss();
+                    Toast.makeText(LoginActivity.this, "An error has occurred : " + task.getException().getMessage(), Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+
+
+        /*2try
+
+        String error = Auth.signInWithEmailAndPassword(email, password);
+
+        if (error.isEmpty()){
+            Toast.makeText(LoginActivity.this, getString(R.string.login_success), Toast.LENGTH_LONG).show();
+            startActivity(new Intent(getApplicationContext(), MainActivity.class));
+            finish();
+
+        }
+
+        else {
+            Toast.makeText(LoginActivity.this, "An error has occurred : " + error , Toast.LENGTH_SHORT).show();
+        }
+
+         */
+
+        /*
         fAuth.signInWithEmailAndPassword(email, password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
             @Override
             public void onComplete(@NonNull Task<AuthResult> task) {
@@ -102,7 +140,6 @@ public class LoginActivity extends AppCompatActivity {
 
                 if (task.isSuccessful()) {
 
-                    System.out.println("done task");
                     //pd.dismiss();
                     Toast.makeText(LoginActivity.this, getString(R.string.login_success), Toast.LENGTH_LONG).show();
                     startActivity(new Intent(getApplicationContext(), MainActivity.class));
@@ -110,11 +147,16 @@ public class LoginActivity extends AppCompatActivity {
 
                 } else {
                     //pd.dismiss();
-                    System.out.println("dont task");
                     Toast.makeText(LoginActivity.this, "An error has occurred : " + task.getException().getMessage(), Toast.LENGTH_SHORT).show();
                 }
 
             }
         });
+
+         */
+
+
     }
+
+
 }

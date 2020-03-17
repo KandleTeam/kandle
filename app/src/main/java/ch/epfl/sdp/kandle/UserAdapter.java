@@ -60,7 +60,7 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.ViewHolder> {
         final User user = mUsers.get(position);
 
         TextView mFullname = holder.mFullname;
-        mFullname.setText(user.getFullName());
+        mFullname.setText(user.getUsername());
 
         final FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
 

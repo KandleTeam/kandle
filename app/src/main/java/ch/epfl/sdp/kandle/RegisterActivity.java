@@ -2,6 +2,8 @@ package ch.epfl.sdp.kandle;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import ch.epfl.sdp.kandle.MockInstances.Authentication;
+import ch.epfl.sdp.kandle.MockInstances.Database;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
@@ -29,10 +31,10 @@ public class RegisterActivity extends AppCompatActivity {
     EditText mFullName,mEmail,mPassword, mPasswordConfirm;
     Button mSignUpBtn;
     TextView mSignInLink;
-    FirebaseAuth fAuth;
+    Authentication Auth;
     //ProgressDialog pd;
 
-    FirebaseFirestore fStore;
+    Database fStore;
     String userID;
 
     @Override
@@ -45,8 +47,8 @@ public class RegisterActivity extends AppCompatActivity {
         mPasswordConfirm = findViewById(R.id.passwordConfirm);
         mSignUpBtn = findViewById(R.id.loginBtn);
         mSignInLink = findViewById(R.id.signInLink);
-        fStore = FirebaseFirestore.getInstance();
-        fAuth = FirebaseAuth.getInstance();
+        fStore = Database.getDatabaseSystem();
+        Auth = Authentication.getAuthenticationSystem();
 
         mSignInLink.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -70,7 +72,9 @@ public class RegisterActivity extends AppCompatActivity {
                     return;
                 }
 
-                performRegisterViaFirebase(fullName, email, password);
+
+                    performRegisterViaFirebase(fullName, email, password);
+
 
             }
         });
@@ -78,11 +82,118 @@ public class RegisterActivity extends AppCompatActivity {
 
     }
 
-    private void performRegisterViaFirebase (final String fullName, final String email, String password) {
+    private void performRegisterViaFirebase (final String fullName, final String email, String password)  {
 
        // pd = new ProgressDialog(RegisterActivity.this);
        // pd.setMessage("Connection...");
         //pd.show();
+
+
+
+
+        Auth.createUserWithEmailAndPassword(email, password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+            @Override
+            public void onComplete(@NonNull Task<AuthResult> task) {
+
+                if (task.isSuccessful()){
+
+                    Toast.makeText(RegisterActivity.this, "User has been created", Toast.LENGTH_LONG ).show();
+
+
+                    userID = Auth.getCurrentUser().getUid();
+
+                    /*
+
+                    //store user in the firestore
+                    DocumentReference documentReference = fStore.collection("users").document(userID);
+                    Map<String,Object> user = new HashMap<>();
+                    user.put("fullName",fullName);
+                    user.put("email",email);
+                    documentReference.set(user);*/
+                    fStore.createUser( new User(userID, email, email)).addOnCompleteListener(new OnCompleteListener<Void>() {
+                        @Override
+                        public void onComplete(@NonNull Task<Void> task) {
+                            if (task.isSuccessful()){
+                                System.out.println("success");
+                            }
+                            else {
+                                System.out.println(task.getException().getMessage());
+                            }
+                        }
+                    });
+
+
+
+
+                    //store user in realtimedatabase
+                    DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference().child("Users").child(userID);
+                    HashMap<String, Object> map = new HashMap<>();
+                    map.put("id", userID);
+                    map.put("fullname", fullName);
+                    // map.put ("fullnameWithoutSpace", fullName.replace(" ", ""));
+                    map.put("email",email);
+                    map.put("fullnameSearch", fullName.toLowerCase().trim().replace(" ", ""));
+
+                    databaseReference.setValue(map);
+
+                    startActivity(new Intent(getApplicationContext(), MainActivity.class));
+                    finish();
+
+                }
+
+                else {
+                    Toast.makeText(RegisterActivity.this, "An error has occurred : " + task.getException().getMessage(), Toast.LENGTH_SHORT).show();
+                }
+
+            }
+        });
+
+
+
+                /* 2try
+        System.out.println(" activity" + error);
+
+        if (error.isEmpty()){
+            Toast.makeText(RegisterActivity.this, "User has been created", Toast.LENGTH_LONG ).show();
+
+
+            userID = Auth.getCurrentUser().getUid();
+
+            //store user in the firestore
+            DocumentReference documentReference = fStore.collection("users").document(userID);
+            Map<String,Object> user = new HashMap<>();
+            user.put("fullName",fullName);
+            user.put("email",email);
+            documentReference.set(user);
+
+
+
+
+            //store user in realtimedatabase
+            DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference().child("Users").child(userID);
+            HashMap<String, Object> map = new HashMap<>();
+            map.put("id", userID);
+            map.put("fullname", fullName);
+            // map.put ("fullnameWithoutSpace", fullName.replace(" ", ""));
+            map.put("email",email);
+            map.put("fullnameSearch", fullName.toLowerCase().trim().replace(" ", ""));
+
+            databaseReference.setValue(map);
+
+            startActivity(new Intent(getApplicationContext(), MainActivity.class));
+            finish();
+
+        }
+
+        else {
+            Toast.makeText(RegisterActivity.this, "An error has occurred : " + error, Toast.LENGTH_SHORT).show();
+        }
+
+                 */
+
+
+
+        /*
 
         fAuth.createUserWithEmailAndPassword(email, password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
             @Override
@@ -131,6 +242,8 @@ public class RegisterActivity extends AppCompatActivity {
                 }
             }
         });
+
+         */
 
 
     }
