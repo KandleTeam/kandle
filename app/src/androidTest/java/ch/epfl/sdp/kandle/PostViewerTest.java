@@ -81,25 +81,21 @@ public class PostViewerTest {
     @Test
     public void putTwoNewPostsIntoTheRecyclerAndDeleteThem() throws Throwable {
         this.mainActivityRule.runOnUiThread(new Runnable() {
-
             @Override
             public void run() {
                 PostFragment frag = (PostFragment) mainActivityRule.getActivity().getSupportFragmentManager().findFragmentById(R.id.flContent);
-                Post p =  new Post("Text", "( : this is my post : )", new Date());
-                Post p1 =  new Post("Text", "( : this is my post : )", new Date());
+                Post p =  new Post("Text", "( : this is my post 1 : )", new Date());
+                Post p1 =  new Post("Text", "( : this is my post 2 : )", new Date());
                 frag.putInPostList(p);
                 frag.putInPostList(p1);
                 frag.removePostAtIndex(0);
                 frag.removePost(p1);
             }
         });
-
-
-
     }
 
     @Test
-    public void addTwoPostAndLikeThemBoth() throws Throwable {
+    public void addTwoPostAndLikeThenDislikeThemBoth() throws Throwable {
         this.mainActivityRule.runOnUiThread(new Runnable() {
 
             @Override
@@ -115,10 +111,11 @@ public class PostViewerTest {
         });
         onView(withId(R.id.rvPosts)).perform(RecyclerViewActions.actionOnItemAtPosition(1,clickChildViewWithId(R.id.likeButton)));
         onView(withId(R.id.rvPosts)).perform(RecyclerViewActions.actionOnItemAtPosition(0,clickChildViewWithId(R.id.likeButton)));
-
+        onView(withId(R.id.rvPosts)).perform(RecyclerViewActions.actionOnItemAtPosition(1,clickChildViewWithId(R.id.likeButton)));
+        onView(withId(R.id.rvPosts)).perform(RecyclerViewActions.actionOnItemAtPosition(0,clickChildViewWithId(R.id.likeButton)));
     }
 
-
+    
     public static ViewAction clickChildViewWithId(final int id) {
         return new ViewAction() {
             @Override
