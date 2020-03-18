@@ -2,7 +2,7 @@ package ch.epfl.sdp.kandle;
 
 public class User {
 
-    private String id, username, email;
+    private String id, username, email, normalizedUsername;
 
     public User() {
         // Keep fields null
@@ -24,6 +24,11 @@ public class User {
 
     public void setUsername(String username) {
         this.username = username;
+        this.normalizedUsername = username.toLowerCase().replaceAll("[^a-z0-9]", "");
+    }
+
+    public String getNormalizedUsername() {
+        return normalizedUsername;
     }
 
     public String getEmail() {
@@ -33,5 +38,7 @@ public class User {
     public void setEmail(String email) {
         this.email = email;
     }
+
+
 
 }

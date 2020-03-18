@@ -17,6 +17,7 @@ import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.firestore.Transaction;
 
+import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
@@ -123,10 +124,25 @@ public class FirestoreDatabase implements Database {
                     }
                 });
 
+    }
 
+    public Task<List<User>> searchUsers(final String prefix, int maxNumber) {
 
+        char last = prefix.charAt(prefix.length()-1);
+        String upperBound = prefix.substring(0, prefix.length()-1) + (last+1);
 
-
+        return users
+                .whereGreaterThanOrEqualTo("normalizedUsername", prefix)
+                .whereLessThan("normalizedUsername", upperBound)
+                .limit(maxNumber)
+                .orderBy("username")
+                .get()
+                .continueWith(new Continuation<QuerySnapshot, List<User>>() {
+                    @Override
+                    public List<User> then(@NonNull Task<QuerySnapshot> task) {
+                        return task.getResult().toObjects(User.class);
+                    }
+                });
     }
 
 

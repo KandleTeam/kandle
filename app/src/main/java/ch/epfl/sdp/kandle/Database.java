@@ -2,6 +2,8 @@ package ch.epfl.sdp.kandle;
 
 import com.google.android.gms.tasks.Task;
 
+import java.util.List;
+
 public interface Database {
 
     /**
@@ -30,6 +32,8 @@ public interface Database {
      * @return an empty Task, signifying the outcome
      */
     public Task<Void> createUser(User user);
+
+    public Task<List<User>> searchUsers(final String prefix, int maxNumber);
 
 
 }
