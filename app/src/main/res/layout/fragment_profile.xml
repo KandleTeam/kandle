@@ -40,6 +40,7 @@
         android:layout_marginStart="84dp"
         android:layout_marginTop="104dp"
         android:text="Followers"
+        android:textSize="18sp"
         android:textStyle="bold"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/profileUsername" />
@@ -51,6 +52,7 @@
         android:layout_marginTop="104dp"
         android:layout_marginEnd="84dp"
         android:text="Following"
+        android:textSize="18sp"
         android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/profileUsername" />
@@ -59,22 +61,24 @@
         android:id="@+id/profileNumberOfFollowers"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="100dp"
+        android:layout_marginStart="112dp"
         android:layout_marginTop="24dp"
-        android:text="1M+"
+        android:text="0"
+        android:textSize="18sp"
         android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/profileFollowers"
-        app:layout_constraintVertical_bias="0.007" />
+        app:layout_constraintVertical_bias="0.008" />
 
     <TextView
         android:id="@+id/profileNumberOfFollowing"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="24dp"
-        android:layout_marginEnd="112dp"
+        android:layout_marginEnd="120dp"
         android:text="0"
+        android:textSize="18sp"
         android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"

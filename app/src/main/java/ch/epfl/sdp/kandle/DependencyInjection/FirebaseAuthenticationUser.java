@@ -1,4 +1,4 @@
-package ch.epfl.sdp.kandle.MockInstances;
+package ch.epfl.sdp.kandle.DependencyInjection;
 
 import com.google.firebase.auth.FirebaseAuth;
 

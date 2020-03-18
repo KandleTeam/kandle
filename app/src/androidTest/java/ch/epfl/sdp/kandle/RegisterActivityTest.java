@@ -1,18 +1,15 @@
 package ch.epfl.sdp.kandle;
 
-import com.google.firebase.FirebaseApp;
-
 import org.junit.Rule;
 import org.junit.Test;
 
 import androidx.test.espresso.contrib.DrawerActions;
 import androidx.test.espresso.contrib.NavigationViewActions;
 import androidx.test.espresso.intent.Intents;
-import androidx.test.espresso.intent.rule.IntentsTestRule;
 import androidx.test.rule.ActivityTestRule;
-import ch.epfl.sdp.kandle.MockInstances.Authentication;
-import ch.epfl.sdp.kandle.MockInstances.Database;
-import ch.epfl.sdp.kandle.MockInstances.MockAuthentication;
+import ch.epfl.sdp.kandle.DependencyInjection.Authentication;
+import ch.epfl.sdp.kandle.DependencyInjection.Database;
+import ch.epfl.sdp.kandle.DependencyInjection.MockAuthentication;
 
 import static androidx.test.espresso.Espresso.onView;
 import static androidx.test.espresso.action.ViewActions.click;
@@ -32,8 +29,8 @@ public class RegisterActivityTest {
             ){
                 @Override
                 protected  void beforeActivityLaunched() {
-                    //Authentication.setAuthenticationSystem(new MockAuthentication());
-                    //Database.setDatabaseSystem(new MockDatabase());
+                    Authentication.setAuthenticationSystem(new MockAuthentication());
+                    Database.setDatabaseSystem(new MockDatabase());
                 }
             };
 

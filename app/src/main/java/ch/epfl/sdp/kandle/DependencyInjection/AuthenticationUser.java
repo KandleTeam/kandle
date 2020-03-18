@@ -1,4 +1,4 @@
-package ch.epfl.sdp.kandle.MockInstances;
+package ch.epfl.sdp.kandle.DependencyInjection;
 
 public abstract class AuthenticationUser {
 

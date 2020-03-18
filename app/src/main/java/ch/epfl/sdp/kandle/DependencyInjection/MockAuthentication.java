@@ -1,4 +1,4 @@
-package ch.epfl.sdp.kandle.MockInstances;
+package ch.epfl.sdp.kandle.DependencyInjection;
 
 import com.google.android.gms.tasks.Task;
 import com.google.android.gms.tasks.TaskCompletionSource;

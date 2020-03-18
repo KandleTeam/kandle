@@ -6,24 +6,17 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 
 import java.util.List;
 
 import androidx.annotation.NonNull;
-import androidx.fragment.app.FragmentManager;
 import androidx.recyclerview.widget.RecyclerView;
-import ch.epfl.sdp.kandle.MockInstances.Authentication;
-import ch.epfl.sdp.kandle.MockInstances.AuthenticationUser;
-import ch.epfl.sdp.kandle.MockInstances.Database;
+import ch.epfl.sdp.kandle.DependencyInjection.Authentication;
+import ch.epfl.sdp.kandle.DependencyInjection.AuthenticationUser;
+import ch.epfl.sdp.kandle.DependencyInjection.Database;
 import de.hdodenhof.circleimageview.CircleImageView;
 
 public class UserAdapter extends RecyclerView.Adapter<UserAdapter.ViewHolder> {
@@ -69,10 +62,32 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.ViewHolder> {
         Authentication authentication = Authentication.getAuthenticationSystem();
         final AuthenticationUser authenticationUser = authentication.getCurrentUser();
 
-        Database database = Database.getDatabaseSystem();
+        final Database database = Database.getDatabaseSystem();
 
 
+        database.followingList(authenticationUser.getUid()).addOnCompleteListener(new OnCompleteListener<List<String>>() {
+            @Override
+            public void onComplete(@NonNull Task<List<String>> task) {
 
+                if (task.isSuccessful()){
+
+                    if (   (task.getResult() == null) || (!task.getResult().contains(user.getId()))   ){
+                        holder.mFollowBtn.setText("follow");
+                    }
+
+                    else {
+                        holder.mFollowBtn.setText("following");
+                    }
+
+                }
+                else {
+                    System.out.println(task.getException().getMessage());
+                }
+
+            }
+        });
+
+        /*
         DatabaseReference reference = FirebaseDatabase.getInstance().getReference()
                 .child("Follow").child(authenticationUser.getUid()).child("following");
         reference.addValueEventListener(new ValueEventListener() {
@@ -91,6 +106,8 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.ViewHolder> {
             }
         });
 
+ */
+
 
 
 
@@ -99,16 +116,55 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.ViewHolder> {
             public void onClick(View v) {
                 System.out.println("clickButton");
                 if (holder.mFollowBtn.getText().toString().equals("follow")) {
+
+                    database.follow(authenticationUser.getUid(), user.getId()).addOnCompleteListener(new OnCompleteListener<Void>() {
+                        @Override
+                        public void onComplete(@NonNull Task<Void> task) {
+                            if (task.isSuccessful()){
+                                holder.mFollowBtn.setText("following");
+                            }
+
+                            else {
+                                System.out.println(task.getException().getMessage());
+                            }
+
+                        }
+                    });
+
+
+
+                    /*
                     FirebaseDatabase.getInstance().getReference().child("Follow").child(authenticationUser.getUid())
                             .child("following").child(user.getId()).setValue(true);
                     FirebaseDatabase.getInstance().getReference().child("Follow").child(user.getId())
                             .child("followers").child(authenticationUser.getUid()).setValue(true);
 
+                     */
+
                 } else {
+
+                    database.unFollow(authenticationUser.getUid(), user.getId()).addOnCompleteListener(new OnCompleteListener<Void>() {
+                        @Override
+                        public void onComplete(@NonNull Task<Void> task) {
+                            if (task.isSuccessful()){
+
+                                holder.mFollowBtn.setText("follow");
+                            }
+
+                            else {
+                                System.out.println(task.getException().getMessage());
+                            }
+                        }
+                    });
+
+
+                    /*
                     FirebaseDatabase.getInstance().getReference().child("Follow").child(authenticationUser.getUid())
                             .child("following").child(user.getId()).removeValue();
                     FirebaseDatabase.getInstance().getReference().child("Follow").child(user.getId())
                             .child("followers").child(authenticationUser.getUid()).removeValue();
+
+                     */
                 }
             }
         });

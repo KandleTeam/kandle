@@ -10,7 +10,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
-import ch.epfl.sdp.kandle.MockInstances.Database;
+import ch.epfl.sdp.kandle.DependencyInjection.Database;
 
 /**
  *  A mocked database. Upon creation, it contains:
@@ -20,6 +20,7 @@ import ch.epfl.sdp.kandle.MockInstances.Database;
 public class MockDatabase extends Database {
 
     private static Map<String, User> users;
+
 
     public MockDatabase() {
         users = new HashMap<>();
@@ -104,17 +105,24 @@ public class MockDatabase extends Database {
     }
 
     @Override
-    public Task<Void> follow(User userFollowing, User userFollowed) {
+    public Task<Void> follow(String userFollowing, String userFollowed) {
         return null;
     }
 
     @Override
-    public Task<Void> unfollow(User userUnFollowing, User userUnFollowed) {
+    public Task<Void> unFollow(String userUnFollowing, String userUnFollowed) {
         return null;
     }
 
     @Override
-    public Task<Boolean> isFollwing(User userFollowing, User userFollowed) {
+    public Task<List<String>> followingList(String userId) {
         return null;
     }
+
+    @Override
+    public Task<List<String>> followersList(String userId) {
+        return null;
+    }
+
+
 }

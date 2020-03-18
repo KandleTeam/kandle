@@ -6,7 +6,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
@@ -15,24 +14,16 @@ import androidx.fragment.app.Fragment;
 
 import androidx.fragment.app.FragmentManager;
 
-import com.google.android.material.appbar.AppBarLayout;
-
-import androidx.fragment.app.FragmentManager;
 import ch.epfl.sdp.kandle.Fragment.AboutFragment;
 import ch.epfl.sdp.kandle.Fragment.MapFragment;
 //import ch.epfl.sdp.kandle.Fragment.ProfileFragment;
 import ch.epfl.sdp.kandle.Fragment.SearchFragment;
 import ch.epfl.sdp.kandle.Fragment.SettingsFragment;
-import ch.epfl.sdp.kandle.Fragment.YourPostsFragment;
-import ch.epfl.sdp.kandle.MockInstances.Authentication;
+import ch.epfl.sdp.kandle.DependencyInjection.Authentication;
 
 
-import com.google.android.material.bottomappbar.BottomAppBar;
-import com.google.android.material.bottomnavigation.BottomNavigationItemView;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationView;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.database.FirebaseDatabase;
 
 public class MainActivity extends AppCompatActivity {
 

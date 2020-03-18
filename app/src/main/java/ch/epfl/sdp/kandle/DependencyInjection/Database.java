@@ -1,4 +1,4 @@
-package ch.epfl.sdp.kandle.MockInstances;
+package ch.epfl.sdp.kandle.DependencyInjection;
 
 import com.google.android.gms.tasks.Task;
 
@@ -33,8 +33,8 @@ public abstract class Database {
     /**
      * Asynchronously retrieves a User from the Database from its unique userId. If such a user does
      * not exist, the task fails.
-     * @param userId the user's userId
-     * @return
+     *      * @param userId the user's userId
+     *      * @return
      */
     public abstract Task<User> getUserById(String userId);
 
@@ -52,12 +52,13 @@ public abstract class Database {
     public abstract Task<List<User>> searchUsers(final String prefix, int maxNumber);
 
 
-    public abstract Task<Void> follow(final User userFollowing, final User userFollowed);
+    public abstract Task<Void> follow(final String userFollowing, final String userFollowed);
 
-    public abstract Task<Void> unfollow(final User userUnFollowing, final User userUnFollowed);
+    public abstract Task<Void> unFollow(final String userUnFollowing, final String userUnFollowed);
 
-    public abstract Task<Boolean> isFollwing(final User userFollowing, final User userFollowed);
+    public abstract Task<List<String>> followingList(String userId);
 
+    public abstract Task<List<String>> followersList(String userId);
 
 
 
