@@ -4,7 +4,6 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -35,7 +34,7 @@ public class RegisterActivity extends AppCompatActivity {
         mEmail      = findViewById(R.id.email);
         mPassword   = findViewById(R.id.password);
         mPasswordConfirm = findViewById(R.id.passwordConfirm);
-        mSignUpBtn = findViewById(R.id.loginBtn);
+        mSignUpBtn = findViewById(R.id.signUpBtn);
         mSignInLink = findViewById(R.id.signInLink);
         db = DatabaseManager.getDatabaseSystem();
         fAuth = FirebaseAuth.getInstance();
@@ -57,21 +56,23 @@ public class RegisterActivity extends AppCompatActivity {
                 return;
             }
 
-            performRegisterViaFirebase(fullName, email, password);
+            registerUser(fullName, email, password);
 
         });
 
 
     }
 
-    private void performRegisterViaFirebase (final String fullName, final String email, String password) {
+    private void registerUser(final String fullName, final String email, String password) {
         fAuth.createUserWithEmailAndPassword(email, password).addOnCompleteListener(authTask -> {
             if (authTask.isSuccessful()){
                 Toast.makeText(RegisterActivity.this, "User has been created", Toast.LENGTH_LONG ).show();
 
                 //store user in the database
                 userID = fAuth.getCurrentUser().getUid();
-                db.createUser(new User(userID, email, email)).addOnCompleteListener(dbTask -> {
+
+                User newUser = new User(userID, email, email);
+                db.createUser(newUser).addOnCompleteListener(dbTask -> {
                     if (dbTask.isSuccessful()){
                         startActivity(new Intent(getApplicationContext(), MainActivity.class));
                         finish();

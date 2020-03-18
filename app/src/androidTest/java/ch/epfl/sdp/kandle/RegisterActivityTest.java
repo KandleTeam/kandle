@@ -3,6 +3,7 @@ package ch.epfl.sdp.kandle;
 import org.junit.Rule;
 import org.junit.Test;
 
+import androidx.test.espresso.intent.rule.IntentsTestRule;
 import androidx.test.rule.ActivityTestRule;
 
 import ch.epfl.sdp.kandle.db.DatabaseManager;
@@ -21,11 +22,12 @@ import static androidx.test.espresso.matcher.ViewMatchers.withId;
 public class RegisterActivityTest {
 
     @Rule
-    public ActivityTestRule<RegisterActivity> intentsRule =
-            new ActivityTestRule<RegisterActivity>(RegisterActivity.class,true,true
+    public IntentsTestRule intentsRule =
+            new IntentsTestRule<RegisterActivity>(RegisterActivity.class,true,true
             ){
                 @Override
                 protected  void beforeActivityLaunched() {
+                    super.beforeActivityLaunched();
                     //Authentication.setAuthenticationSystem(new MockAuthentication());
                     DatabaseManager.setDatabaseSystem(new MockDatabase());
                 }
@@ -37,13 +39,13 @@ public class RegisterActivityTest {
     public void errorsInForm (){
 
 
-        onView(withId (R.id.loginBtn)).perform(click());
+        onView(withId (R.id.signUpBtn)).perform(click());
         onView(withId(R.id.fullName)).check(matches( hasErrorText("Your full name is required !")));
 
         onView(withId (R.id.fullName)).perform(typeText ("test"));
         onView(withId (R.id.fullName)).perform(closeSoftKeyboard());
 
-        onView(withId (R.id.loginBtn)).perform(click());
+        onView(withId (R.id.signUpBtn)).perform(click());
         onView(withId(R.id.email)).check(matches( hasErrorText("Your email is required !")));
 
         onView(withId (R.id.email)).perform(typeText ("test@test.com" ));
@@ -52,7 +54,7 @@ public class RegisterActivityTest {
         onView(withId (R.id.password)).perform(typeText ("123" ));
         onView(withId (R.id.password)).perform(closeSoftKeyboard());
 
-        onView(withId (R.id.loginBtn)).perform(click());
+        onView(withId (R.id.signUpBtn)).perform(click());
         onView(withId(R.id.password)).check(matches( hasErrorText("Please choose a password of more than 8 characters !")));
 
         onView(withId (R.id.password)).perform(typeText ("12345678" ));
@@ -60,7 +62,7 @@ public class RegisterActivityTest {
         onView(withId (R.id.passwordConfirm)).perform(typeText ("123" ));
         onView(withId (R.id.passwordConfirm)).perform(closeSoftKeyboard());
 
-        onView(withId (R.id.loginBtn)).perform(click());
+        onView(withId (R.id.signUpBtn)).perform(click());
         onView(withId(R.id.passwordConfirm)).check(matches( hasErrorText("Your passwords do not match !")));
 
     }
@@ -71,31 +73,23 @@ public class RegisterActivityTest {
     @Test
     public void accountCreation() throws InterruptedException {
 
-        onView(withId (R.id.fullName)).perform(typeText ("Test Register"));
+        onView(withId (R.id.fullName)).perform(typeText ("Register Test"));
         onView(withId (R.id.fullName)).perform(closeSoftKeyboard());
 
-        onView(withId (R.id.email)).perform(typeText ("new"));
+        onView(withId (R.id.email)).perform(typeText ("registerTestEmail845@test.ch"));
         onView(withId (R.id.email)).perform(closeSoftKeyboard());
 
-        onView(withId (R.id.password)).perform(typeText ("12345678"));
+        onView(withId (R.id.password)).perform(typeText ("testPassword"));
         onView(withId (R.id.password)).perform(closeSoftKeyboard());
 
-        onView(withId (R.id.passwordConfirm)).perform(typeText ("12345678"));
+        onView(withId (R.id.passwordConfirm)).perform(typeText ("testPassword"));
         onView(withId (R.id.passwordConfirm)).perform(closeSoftKeyboard());
 
-        /*
-        onView(withId(R.id.signInBtn)).perform(click());
-        Thread.sleep(500);
+        onView(withId(R.id.signUpBtn)).perform(click());
+
+        //intended(hasComponent(MainActivity.class.getName()));
 
 
-        onView(withId (R.id.email)).perform(typeText ("TestRegister" + LocalDateTime.now().toString().replace( " ", "")
-                .replace("." , "").replace(":", "") + "@test.ch"));
-        onView(withId (R.id.email)).perform(closeSoftKeyboard());
-        onView(withId(R.id.signInBtn)).perform(click());
-
-        Thread.sleep(1000);
-        intended(hasComponent(MainActivity.class.getName()));
-        */
     }
 
 
