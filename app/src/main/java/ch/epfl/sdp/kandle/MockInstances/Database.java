@@ -2,6 +2,8 @@ package ch.epfl.sdp.kandle.MockInstances;
 
 import com.google.android.gms.tasks.Task;
 
+import java.util.List;
+
 import ch.epfl.sdp.kandle.User;
 
 public abstract class Database {
@@ -46,5 +48,7 @@ public abstract class Database {
      * @return an empty Task, signifying the outcome
      */
     public abstract Task<Void> createUser(User user);
+
+    public abstract Task<List<User>> searchUsers(final String prefix, int maxNumber);
 
 }

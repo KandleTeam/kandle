@@ -1,11 +1,13 @@
 package ch.epfl.sdp.kandle.Fragment;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
@@ -24,6 +26,7 @@ import java.util.ArrayList;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import ch.epfl.sdp.kandle.R;
@@ -131,7 +134,7 @@ public class SearchFragment extends Fragment {
                             mUsers.clear();
                             for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
                                 User user = snapshot.getValue(User.class);
-
+                                user.setUsername(user.getFullname());
                                 if (!firebaseUser.getUid().equals(user.getId()))
                                     mUsers.add(user);
                             }
@@ -158,15 +161,25 @@ public class SearchFragment extends Fragment {
             }
         });
 
+        final FragmentManager fragmentManager = this.getActivity().getSupportFragmentManager();
 
         userAdapter.setOnItemClickListener(new UserAdapter.ClickListener(){
+
 
             @Override
             public void onItemClick(int position, View v) {
 
 
+                //closeKeyBoard
+                InputMethodManager imm = (InputMethodManager)getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+                imm.hideSoftInputFromWindow(getActivity().getCurrentFocus().getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
+
+
                 final User user = mUsers.get(position);
 
+                fragmentManager.beginTransaction().replace(R.id.flContent, ProfileFragment.newInstance(user) ).commit();
+
+                /*
                 DatabaseReference reference = fData.getReference()
                         .child("Follow").child(firebaseUser.getUid()).child("following");
                 reference.addValueEventListener(new ValueEventListener() {
@@ -184,10 +197,12 @@ public class SearchFragment extends Fragment {
 
                     }
                 });
-
+                */
 
             }
         });
+
+
 
 
 

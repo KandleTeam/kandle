@@ -8,6 +8,8 @@
     android:layout_height="match_parent">
 
     <!-- This LinearLayout represents the contents of the screen  -->
+
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -30,15 +32,16 @@
                 android:id="@+id/postButton"
                 android:layout_width="77dp"
                 android:layout_height="61dp"
+                android:layout_marginEnd="44dp"
+                android:layout_marginBottom="80dp"
                 android:background="@drawable/button_background"
                 android:text="Post"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.91"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintVertical_bias="0.891" />
+                app:layout_constraintEnd_toEndOf="parent" />
+
         </androidx.constraintlayout.widget.ConstraintLayout>
+
+
     </LinearLayout>
 
     <!-- The navigation drawer that comes from the left -->
@@ -50,6 +53,12 @@
         android:layout_gravity="start"
         android:background="@android:color/white"
         app:menu="@menu/menu_item"
-        app:headerLayout="@layout/header"/>
+        app:headerLayout="@layout/header">
+
+
+
+    </com.google.android.material.navigation.NavigationView>
+
+
 
 </androidx.drawerlayout.widget.DrawerLayout>

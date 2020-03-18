@@ -19,6 +19,7 @@ import com.google.firebase.database.ValueEventListener;
 import java.util.List;
 
 import androidx.annotation.NonNull;
+import androidx.fragment.app.FragmentManager;
 import androidx.recyclerview.widget.RecyclerView;
 import de.hdodenhof.circleimageview.CircleImageView;
 
@@ -59,7 +60,7 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.ViewHolder> {
 
         final User user = mUsers.get(position);
 
-        TextView mFullname = holder.mFullname;
+        TextView mFullname = holder.mUsername;
         mFullname.setText(user.getUsername());
 
         final FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
@@ -82,6 +83,7 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.ViewHolder> {
 
             }
         });
+
 
 
 
@@ -116,7 +118,7 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.ViewHolder> {
 
     public static class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
 
-        public TextView mFullname;
+        public TextView mUsername;
         public CircleImageView image_profile;
         public Button mFollowBtn;
 
@@ -126,7 +128,7 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.ViewHolder> {
             super(itemView);
             itemView.setOnClickListener(this);
 
-            mFullname = itemView.findViewById(R.id.search_fullName);
+            mUsername = itemView.findViewById(R.id.search_fullName);
             image_profile = itemView.findViewById(R.id.search_image_user);
             mFollowBtn = itemView.findViewById(R.id.btn_follow);
         }

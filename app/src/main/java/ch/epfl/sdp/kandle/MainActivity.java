@@ -27,6 +27,7 @@ import ch.epfl.sdp.kandle.Fragment.YourPostsFragment;
 import ch.epfl.sdp.kandle.MockInstances.Authentication;
 
 
+import com.google.android.material.bottomappbar.BottomAppBar;
 import com.google.android.material.bottomnavigation.BottomNavigationItemView;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationView;
@@ -46,6 +47,10 @@ public class MainActivity extends AppCompatActivity {
     private ActionBarDrawerToggle drawerToggle;
 
     private Fragment bottomFragment = null;
+
+    //
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -67,6 +72,11 @@ public class MainActivity extends AppCompatActivity {
         setupDrawerContent(mNavigationView);
         drawerToggle.syncState();
         mDrawerLayout.addDrawerListener(drawerToggle);
+
+
+        //
+
+
 
 
 

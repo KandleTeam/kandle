@@ -3,7 +3,10 @@ package ch.epfl.sdp.kandle;
 import com.google.android.gms.tasks.Task;
 import com.google.android.gms.tasks.TaskCompletionSource;
 
+import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
@@ -75,5 +78,28 @@ public class MockDatabase extends Database {
             task.setResult(null);
         }
         return task.getTask();
+    }
+
+    @Override
+    public Task<List<User>> searchUsers(String prefix, int maxNumber) {
+        List<User> results = new ArrayList<>();
+
+        for(User u : users.values()) {
+            if(u.getNormalizedUsername().startsWith(prefix)) {
+                results.add(u);
+            }
+        }
+
+        results.sort(new Comparator<User>() {
+            @Override
+            public int compare(User u1, User u2) {
+                return u1.getUsername().compareTo(u2.getUsername());
+            }
+        });
+
+        TaskCompletionSource<List<User>> source = new TaskCompletionSource<>();
+        source.setResult(new ArrayList<User>(results.subList(0, maxNumber)));
+        return source.getTask();
+
     }
 }
