@@ -13,6 +13,8 @@
     <permission android:name="android.permission.ACCESS_FINE_LOCATION" android:protectionLevel="dangerous"/>
     <permission android:name="android.permission.ACCESS_COARSE_LOCATION" android:protectionLevel="dangerous"/>
 
+
+
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="com.example.mapdemo.permission.MAPS_RECEIVE" />
     <uses-permission android:name="android.permission.INTERNET" />
