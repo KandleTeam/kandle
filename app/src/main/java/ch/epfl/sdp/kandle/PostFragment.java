@@ -83,10 +83,6 @@ public class PostFragment extends Fragment {
         return posts;
     }
 
-    public void randomlyadd() {
-
-    }
-
     public void putInPostList(Post p) {
         posts.add(p);
         adapter.notifyDataSetChanged();
