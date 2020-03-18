@@ -21,6 +21,9 @@ import java.util.List;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.FragmentManager;
 import androidx.recyclerview.widget.RecyclerView;
+import ch.epfl.sdp.kandle.MockInstances.Authentication;
+import ch.epfl.sdp.kandle.MockInstances.AuthenticationUser;
+import ch.epfl.sdp.kandle.MockInstances.Database;
 import de.hdodenhof.circleimageview.CircleImageView;
 
 public class UserAdapter extends RecyclerView.Adapter<UserAdapter.ViewHolder> {
@@ -63,11 +66,15 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.ViewHolder> {
         TextView mFullname = holder.mUsername;
         mFullname.setText(user.getUsername());
 
-        final FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
+        Authentication authentication = Authentication.getAuthenticationSystem();
+        final AuthenticationUser authenticationUser = authentication.getCurrentUser();
+
+        Database database = Database.getDatabaseSystem();
+
 
 
         DatabaseReference reference = FirebaseDatabase.getInstance().getReference()
-                .child("Follow").child(firebaseUser.getUid()).child("following");
+                .child("Follow").child(authenticationUser.getUid()).child("following");
         reference.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
@@ -92,16 +99,16 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.ViewHolder> {
             public void onClick(View v) {
                 System.out.println("clickButton");
                 if (holder.mFollowBtn.getText().toString().equals("follow")) {
-                    FirebaseDatabase.getInstance().getReference().child("Follow").child(firebaseUser.getUid())
+                    FirebaseDatabase.getInstance().getReference().child("Follow").child(authenticationUser.getUid())
                             .child("following").child(user.getId()).setValue(true);
                     FirebaseDatabase.getInstance().getReference().child("Follow").child(user.getId())
-                            .child("followers").child(firebaseUser.getUid()).setValue(true);
+                            .child("followers").child(authenticationUser.getUid()).setValue(true);
 
                 } else {
-                    FirebaseDatabase.getInstance().getReference().child("Follow").child(firebaseUser.getUid())
+                    FirebaseDatabase.getInstance().getReference().child("Follow").child(authenticationUser.getUid())
                             .child("following").child(user.getId()).removeValue();
                     FirebaseDatabase.getInstance().getReference().child("Follow").child(user.getId())
-                            .child("followers").child(firebaseUser.getUid()).removeValue();
+                            .child("followers").child(authenticationUser.getUid()).removeValue();
                 }
             }
         });

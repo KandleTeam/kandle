@@ -51,4 +51,14 @@ public abstract class Database {
 
     public abstract Task<List<User>> searchUsers(final String prefix, int maxNumber);
 
+
+    public abstract Task<Void> follow(final User userFollowing, final User userFollowed);
+
+    public abstract Task<Void> unfollow(final User userUnFollowing, final User userUnFollowed);
+
+    public abstract Task<Boolean> isFollwing(final User userFollowing, final User userFollowed);
+
+
+
+
 }

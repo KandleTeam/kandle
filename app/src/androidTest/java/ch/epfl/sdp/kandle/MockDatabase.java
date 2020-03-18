@@ -102,4 +102,19 @@ public class MockDatabase extends Database {
         return source.getTask();
 
     }
+
+    @Override
+    public Task<Void> follow(User userFollowing, User userFollowed) {
+        return null;
+    }
+
+    @Override
+    public Task<Void> unfollow(User userUnFollowing, User userUnFollowed) {
+        return null;
+    }
+
+    @Override
+    public Task<Boolean> isFollwing(User userFollowing, User userFollowed) {
+        return null;
+    }
 }

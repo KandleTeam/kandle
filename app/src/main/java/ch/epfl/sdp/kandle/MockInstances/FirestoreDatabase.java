@@ -123,21 +123,40 @@ public class FirestoreDatabase extends Database {
     @Override
     public Task<List<User>> searchUsers(String prefix, int maxNumber) {
         char last = prefix.charAt(prefix.length()-1);
-        String upperBound = prefix.substring(0, prefix.length()-1) + (last+1);
+        //String upperBound = prefix.substring(0, prefix.length()-1) + (last+1);
+        String upperBound = prefix.substring(0, prefix.length()-1) + (char)(last+1);
 
 
         return users
                 .whereGreaterThanOrEqualTo("normalizedUsername", prefix)
+                //.whereLessThan("normalizedUsername", prefix + "\uf8ff")
                 .whereLessThan("normalizedUsername", upperBound)
                 .limit(maxNumber)
-                .orderBy("username")
+                .orderBy("normalizedUsername")
                 .get()
                 .continueWith(new Continuation<QuerySnapshot, List<User>>() {
                     @Override
                     public List<User> then(@NonNull Task<QuerySnapshot> task) {
+                        System.out.println("check");
                         return task.getResult().toObjects(User.class);
-                    }
+
+                     }
                 });
+    }
+
+    @Override
+    public Task<Void> follow(User userFollowing, User userFollowed) {
+        return null;
+    }
+
+    @Override
+    public Task<Void> unfollow(User userUnFollowing, User userUnFollowed) {
+        return null;
+    }
+
+    @Override
+    public Task<Boolean> isFollwing(User userFollowing, User userFollowed) {
+        return null;
     }
 
 

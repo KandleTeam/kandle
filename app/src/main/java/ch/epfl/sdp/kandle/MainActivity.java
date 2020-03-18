@@ -171,6 +171,7 @@ public class MainActivity extends AppCompatActivity {
                 break;
 
             case R.id.map:
+                mPostButton.setVisibility(View.VISIBLE);
                 fragmentClass = MapFragment.class;
                 break;
             case R.id.settings:
@@ -181,6 +182,7 @@ public class MainActivity extends AppCompatActivity {
                 break;
 
             case R.id.follow:
+                mPostButton.setVisibility(View.GONE);
                 fragmentClass = SearchFragment.class;
                 break;
 
@@ -195,12 +197,9 @@ public class MainActivity extends AppCompatActivity {
 
 
         try {
-            if (fragmentClass ==SearchFragment.class) {
-                mPostButton.setVisibility(View.GONE);
-                fragment = (Fragment) SearchFragment.newInstance( FirebaseAuth.getInstance(), FirebaseDatabase.getInstance());
-            }else {
+
                 fragment = (Fragment) fragmentClass.newInstance();
-            }
+
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -208,6 +207,8 @@ public class MainActivity extends AppCompatActivity {
 
 
         if (fragment!=null) {
+
+
             FragmentManager fragmentManager = getSupportFragmentManager();
             fragmentManager.beginTransaction().replace(R.id.flContent, fragment).commit();
 

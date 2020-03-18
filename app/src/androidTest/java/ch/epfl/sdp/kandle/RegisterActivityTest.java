@@ -32,8 +32,8 @@ public class RegisterActivityTest {
             ){
                 @Override
                 protected  void beforeActivityLaunched() {
-                    Authentication.setAuthenticationSystem(new MockAuthentication());
-                    Database.setDatabaseSystem(new MockDatabase());
+                    //Authentication.setAuthenticationSystem(new MockAuthentication());
+                    //Database.setDatabaseSystem(new MockDatabase());
                 }
             };
 
@@ -74,14 +74,14 @@ public class RegisterActivityTest {
 
 
     @Test
-    public void accountCreation() {
+    public void accountCreation() throws InterruptedException {
 
         Intents.init();
 
-        onView(withId (R.id.fullName)).perform(typeText ("Test"));
+        onView(withId (R.id.fullName)).perform(typeText ("Adrian Freeman"));
         onView(withId (R.id.fullName)).perform(closeSoftKeyboard());
 
-        onView(withId (R.id.email)).perform(typeText ("new1630@new.com"));
+        onView(withId (R.id.email)).perform(typeText ("Adrian@test.com"));
         onView(withId (R.id.email)).perform(closeSoftKeyboard());
 
         onView(withId (R.id.password)).perform(typeText ("12345678"));
@@ -97,7 +97,7 @@ public class RegisterActivityTest {
        // onView(withId (R.id.email)).perform(closeSoftKeyboard());
         //onView(withId(R.id.loginBtn)).perform(click());
 
-       // Thread.sleep(1000);
+        Thread.sleep(2000);
         intended(hasComponent(MainActivity.class.getName()));
         onView(withId(R.id.drawer_layout)).perform(DrawerActions.open());
         onView(withId(R.id.navigation_view)).perform(NavigationViewActions.navigateTo(R.id.logout));

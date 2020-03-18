@@ -12,6 +12,8 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -22,6 +24,7 @@ import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -29,15 +32,21 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import ch.epfl.sdp.kandle.MockInstances.Authentication;
+import ch.epfl.sdp.kandle.MockInstances.AuthenticationUser;
+import ch.epfl.sdp.kandle.MockInstances.Database;
 import ch.epfl.sdp.kandle.R;
 import ch.epfl.sdp.kandle.User;
 import ch.epfl.sdp.kandle.UserAdapter;
 
 public class SearchFragment extends Fragment {
 
-    private FirebaseAuth fAuth;
+   // private FirebaseAuth fAuth;
 
-    private FirebaseDatabase fData;
+    //private FirebaseDatabase fData;
+
+    private Authentication auth;
+    private Database database;
 
     private RecyclerView mRecyclerView;
 
@@ -48,13 +57,12 @@ public class SearchFragment extends Fragment {
 
     // private EditText mSearchText;
 
-    public SearchFragment( FirebaseAuth fAuth, FirebaseDatabase fData){
-        this.fAuth=fAuth;
-        this.fData=fData;
+    public SearchFragment( ){
+
     }
 
-    public static SearchFragment newInstance( FirebaseAuth fAuth, FirebaseDatabase fData) {
-        return new SearchFragment(fAuth, fData);
+    public static SearchFragment newInstance() {
+        return new SearchFragment();
     }
 
     @Override
@@ -62,7 +70,8 @@ public class SearchFragment extends Fragment {
                              @Nullable Bundle savedInstanceState) {
 
 
-
+        auth=Authentication.getAuthenticationSystem();
+        database = Database.getDatabaseSystem();
 
         View view = inflater.inflate(R.layout.fragment_search, container, false);
 
@@ -74,7 +83,7 @@ public class SearchFragment extends Fragment {
         search_bar = view.findViewById(R.id.search_bar);
 
 
-        final FirebaseUser firebaseUser = fAuth.getInstance().getCurrentUser();
+        final AuthenticationUser authenticationUser = auth.getCurrentUser();
 
         mRecyclerView.setAdapter(userAdapter);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(this.getContext()));
@@ -117,7 +126,45 @@ public class SearchFragment extends Fragment {
             @Override
             public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
 
-                //if (!charSequence.toString().isEmpty()) {
+
+                if (!charSequence.toString().isEmpty()) {
+
+                    database.searchUsers(charSequence.toString().toLowerCase().replace(" ", ""), 20).addOnCompleteListener(new OnCompleteListener<List<User>>() {
+                        @Override
+                        public void onComplete(@NonNull Task<List<User>> task) {
+
+                            if (task.isSuccessful()){
+
+                                mUsers.clear();
+
+                                System.out.println("success");
+                                System.out.println(task.getResult().size());
+
+                                for (User user : task.getResult()){
+                                    if (!user.getId().equals(authenticationUser.getUid())){
+                                        mUsers.add(user);
+                                    }
+                                }
+
+                                userAdapter.notifyDataSetChanged();
+                            }
+
+                            else {
+                                System.out.println(task.getException().getMessage());
+                            }
+                        }
+                    });
+
+                }
+                else {
+                    mUsers.clear();
+                    userAdapter.notifyDataSetChanged();
+                }
+
+
+                /*
+
+                if (!charSequence.toString().isEmpty()) {
 
                     String q = charSequence.toString().toLowerCase().replace(" ", "");
                     Query query = FirebaseDatabase.getInstance().getReference("Users").orderByChild("fullnameSearch")
@@ -147,12 +194,16 @@ public class SearchFragment extends Fragment {
 
                         }
                     });
-               // }
+                }
 
-               /* else {
+                else {
                     mUsers.clear();
                     userAdapter.notifyDataSetChanged();
-                }*/
+                }
+
+                 */
+
+
             }
 
             @Override
