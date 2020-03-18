@@ -33,6 +33,8 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
+import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 
@@ -43,7 +45,7 @@ import permissions.dispatcher.RuntimePermissions;
 import static com.google.android.gms.location.LocationServices.getFusedLocationProviderClient;
 
 @RuntimePermissions
-public class MapFragment extends Fragment {
+public class MapFragment extends Fragment implements GoogleMap.OnMarkerClickListener {
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private GoogleMap mMap;
@@ -77,6 +79,8 @@ public class MapFragment extends Fragment {
                 @Override
                 public void onMapReady(GoogleMap map) {
                     loadMap(map);
+
+
                 }
             });
         } else {
@@ -93,7 +97,10 @@ public class MapFragment extends Fragment {
             Toast.makeText(this.getContext(), "Map Fragment was loaded properly!", Toast.LENGTH_SHORT).show();
             getMyLocation();
             startLocationUpdates();
-
+            mMap.addMarker(new MarkerOptions()
+                    .position(new LatLng(10, 10))
+                    .title("Hello world")).setTag(0);
+            mMap.setOnMarkerClickListener(this);
         } else {
             Toast.makeText(this.getContext(), "Error - Map was null!!", Toast.LENGTH_SHORT).show();
         }
@@ -110,6 +117,7 @@ public class MapFragment extends Fragment {
                 .addOnSuccessListener(new OnSuccessListener<Location>() {
                     @Override
                     public void onSuccess(Location location) {
+                        mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(location.getLatitude(), location.getLongitude()), 16));
                         if (location != null) {
                             onLocationChanged(location);
                         }
@@ -194,6 +202,7 @@ public class MapFragment extends Fragment {
                 Looper.myLooper());
     }
 
+    //Cette fonction ne sert a rien elle affiche juste un toast que ne sert à rien dans le cadre de notre application
     public void onLocationChanged(Location location) {
         // GPS may be turned off
         if (location == null) {
@@ -206,7 +215,7 @@ public class MapFragment extends Fragment {
         String msg = "Updated Location: " +
                 Double.toString(location.getLatitude()) + "," +
                 Double.toString(location.getLongitude());
-        Toast.makeText(this.getContext(), msg, Toast.LENGTH_SHORT).show();
+        //Toast.makeText(this.getContext(), msg, Toast.LENGTH_SHORT).show();
     }
 
     public void onSaveInstanceState(Bundle savedInstanceState) {
@@ -237,4 +246,27 @@ public class MapFragment extends Fragment {
             return mDialog;
         }
     }
+
+    @Override
+    public boolean onMarkerClick(final Marker marker) {
+
+        // Retrieve the data from the marker.
+        Integer clickCount = (Integer) marker.getTag();
+
+        // Check if a click count was set, then display the click count.
+        if (clickCount != null) {
+            clickCount = clickCount + 1;
+            marker.setTag(clickCount);
+            Toast.makeText(this.getContext(),
+                    marker.getTitle() +
+                            " has been clicked " + clickCount + " times.",
+                    Toast.LENGTH_SHORT).show();
+        }
+
+        // Return false to indicate that we have not consumed the event and that we wish
+        // for the default behavior to occur (which is for the camera to move such that the
+        // marker is centered and for the marker's info window to open, if it has one).
+        return false;
+    }
+
 }
