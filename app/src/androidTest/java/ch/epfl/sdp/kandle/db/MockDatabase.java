@@ -1,14 +1,15 @@
-package ch.epfl.sdp.kandle;
+package ch.epfl.sdp.kandle.db;
 
 import com.google.android.gms.tasks.Task;
 import com.google.android.gms.tasks.TaskCompletionSource;
 
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+
+import ch.epfl.sdp.kandle.User;
 
 /**
  *  A mocked database. Upon creation, it contains:

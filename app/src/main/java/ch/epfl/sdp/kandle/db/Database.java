@@ -1,10 +1,13 @@
-package ch.epfl.sdp.kandle;
+package ch.epfl.sdp.kandle.db;
 
 import com.google.android.gms.tasks.Task;
 
 import java.util.List;
 
+import ch.epfl.sdp.kandle.User;
+
 public interface Database {
+
 
     /**
      * Asynchronously retrieves a User from the Database from its unique username. If such a user does
@@ -18,7 +21,7 @@ public interface Database {
      * Asynchronously retrieves a User from the Database from its unique userId. If such a user does
      * not exist, the task fails.
      * @param userId the user's userId
-     * @return
+     * @return a Task for the resulting User
      */
     public Task<User> getUserById(String userId);
 
@@ -33,6 +36,13 @@ public interface Database {
      */
     public Task<Void> createUser(User user);
 
+    /**
+     * Asynchronously attempts to retrieve at most maxNumber users whose normalized username starts
+     * with the given prefix.
+     * @param prefix start of the searched username
+     * @param maxNumber maximum number of Users to be retrieved
+     * @return a Task for the resulting list of users
+     */
     public Task<List<User>> searchUsers(final String prefix, int maxNumber);
 
 

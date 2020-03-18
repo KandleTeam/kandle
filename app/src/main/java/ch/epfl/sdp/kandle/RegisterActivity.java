@@ -1,6 +1,5 @@
 package ch.epfl.sdp.kandle;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
@@ -11,15 +10,11 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
-import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 
-import java.util.HashMap;
-import java.util.Map;
+import ch.epfl.sdp.kandle.db.Database;
+import ch.epfl.sdp.kandle.db.DatabaseManager;
 
 public class RegisterActivity extends AppCompatActivity {
 
@@ -27,6 +22,7 @@ public class RegisterActivity extends AppCompatActivity {
     Button mSignUpBtn;
     TextView mSignInLink;
     FirebaseAuth fAuth;
+    Database db;
 
     FirebaseFirestore fStore;
     String userID;
@@ -41,63 +37,55 @@ public class RegisterActivity extends AppCompatActivity {
         mPasswordConfirm = findViewById(R.id.passwordConfirm);
         mSignUpBtn = findViewById(R.id.loginBtn);
         mSignInLink = findViewById(R.id.signInLink);
-        fStore = FirebaseFirestore.getInstance();
+        db = DatabaseManager.getDatabaseSystem();
         fAuth = FirebaseAuth.getInstance();
 
-        mSignInLink.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                startActivity(new Intent(getApplicationContext(),LoginActivity.class));
-                finish();
-            }
+        mSignInLink.setOnClickListener(v -> {
+            startActivity(new Intent(getApplicationContext(),LoginActivity.class));
+            finish();
         });
 
 
 
-        mSignUpBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                final String fullName = mFullName.getText().toString();
-                final String email = mEmail.getText().toString().trim();
-                String password = mPassword.getText().toString().trim();
-                String passwordConfirm = mPasswordConfirm.getText().toString().trim();
+        mSignUpBtn.setOnClickListener(v -> {
+            final String fullName = mFullName.getText().toString();
+            final String email = mEmail.getText().toString().trim();
+            String password = mPassword.getText().toString().trim();
+            String passwordConfirm = mPasswordConfirm.getText().toString().trim();
 
-                if (!checkFields(fullName,email, password, passwordConfirm)){
-                    return;
-                }
-
-                performRegisterViaFirebase(fullName, email, password);
-
+            if (!checkFields(fullName,email, password, passwordConfirm)){
+                return;
             }
+
+            performRegisterViaFirebase(fullName, email, password);
+
         });
 
 
     }
 
     private void performRegisterViaFirebase (final String fullName, final String email, String password) {
-        fAuth.createUserWithEmailAndPassword(email, password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
-            @Override
-            public void onComplete(@NonNull Task<AuthResult> task) {
-                if (task.isSuccessful()){
-                    Toast.makeText(RegisterActivity.this, "User has been created", Toast.LENGTH_LONG ).show();
+        fAuth.createUserWithEmailAndPassword(email, password).addOnCompleteListener(authTask -> {
+            if (authTask.isSuccessful()){
+                Toast.makeText(RegisterActivity.this, "User has been created", Toast.LENGTH_LONG ).show();
 
-                    //store user in the database
-                    userID = fAuth.getCurrentUser().getUid();
-                    DocumentReference documentReference = fStore.collection("users").document(userID);
-                    Map<String,Object> user = new HashMap<>();
-                    user.put("fullName",fullName);
-                    user.put("email",email);
-                    documentReference.set(user);
+                //store user in the database
+                userID = fAuth.getCurrentUser().getUid();
+                db.createUser(new User(userID, email, email)).addOnCompleteListener(dbTask -> {
+                    if (dbTask.isSuccessful()){
+                        startActivity(new Intent(getApplicationContext(), MainActivity.class));
+                        finish();
+                    }
+                    else {
+                        Toast.makeText(RegisterActivity.this, "An error has occurred : " + dbTask.getException().getMessage(), Toast.LENGTH_SHORT).show();
+                    }
+                });
 
-                    startActivity(new Intent(getApplicationContext(), MainActivity.class));
-                    finish();
+            }
 
-                }
+            else {
+                Toast.makeText(RegisterActivity.this, "An error has occurred : " + authTask.getException().getMessage(), Toast.LENGTH_SHORT).show();
 
-                else {
-                    Toast.makeText(RegisterActivity.this, "An error has occurred : " + task.getException().getMessage(), Toast.LENGTH_SHORT).show();
-
-                }
             }
         });
 

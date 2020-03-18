@@ -34,12 +34,9 @@ public class LoginActivity extends AppCompatActivity {
             finish();
         }
         mSignIn = findViewById(R.id.signUpLink);
-        mSignIn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                startActivity(new Intent(getApplicationContext(), RegisterActivity.class));
-                finish();
-            }
+        mSignIn.setOnClickListener(v -> {
+            startActivity(new Intent(getApplicationContext(), RegisterActivity.class));
+            finish();
         });
 
 
@@ -50,17 +47,14 @@ public class LoginActivity extends AppCompatActivity {
 
 
 
-        mSignUpBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                String email = mEmail.getText().toString().trim();
-                String password = mPassword.getText().toString().trim();
+        mSignUpBtn.setOnClickListener(v -> {
+            String email = mEmail.getText().toString().trim();
+            String password = mPassword.getText().toString().trim();
 
-                if (!checkFields(email, password))  {
-                    return;
-                }
-                performLoginViaFirebase(email, password);
+            if (!checkFields(email, password))  {
+                return;
             }
+            performLoginViaFirebase(email, password);
         });
 
     }
@@ -84,21 +78,18 @@ public class LoginActivity extends AppCompatActivity {
 
 
     private void performLoginViaFirebase(String email, String password) {
-        fAuth.signInWithEmailAndPassword(email, password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
-            @Override
-            public void onComplete(@NonNull Task<AuthResult> task) {
+        fAuth.signInWithEmailAndPassword(email, password).addOnCompleteListener(task -> {
 
-                if (task.isSuccessful()) {
+            if (task.isSuccessful()) {
 
-                    Toast.makeText(LoginActivity.this, getString(R.string.login_success), Toast.LENGTH_LONG).show();
-                    startActivity(new Intent(getApplicationContext(), MainActivity.class));
-                    finish();
+                Toast.makeText(LoginActivity.this, getString(R.string.login_success), Toast.LENGTH_LONG).show();
+                startActivity(new Intent(getApplicationContext(), MainActivity.class));
+                finish();
 
-                } else {
-                    Toast.makeText(LoginActivity.this, "An error has occurred : " + task.getException().getMessage(), Toast.LENGTH_SHORT).show();
-                }
-
+            } else {
+                Toast.makeText(LoginActivity.this, "An error has occurred : " + task.getException().getMessage(), Toast.LENGTH_SHORT).show();
             }
+
         });
     }
 }

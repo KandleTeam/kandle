@@ -3,8 +3,10 @@ package ch.epfl.sdp.kandle;
 import org.junit.Rule;
 import org.junit.Test;
 
-import androidx.test.espresso.intent.rule.IntentsTestRule;
 import androidx.test.rule.ActivityTestRule;
+
+import ch.epfl.sdp.kandle.db.DatabaseManager;
+import ch.epfl.sdp.kandle.db.MockDatabase;
 
 import static androidx.test.espresso.Espresso.onView;
 import static androidx.test.espresso.action.ViewActions.click;
@@ -19,8 +21,15 @@ import static androidx.test.espresso.matcher.ViewMatchers.withId;
 public class RegisterActivityTest {
 
     @Rule
-    public final ActivityTestRule<RegisterActivity> mActivityRule =
-            new ActivityTestRule<>(RegisterActivity.class);
+    public ActivityTestRule<RegisterActivity> intentsRule =
+            new ActivityTestRule<RegisterActivity>(RegisterActivity.class,true,true
+            ){
+                @Override
+                protected  void beforeActivityLaunched() {
+                    //Authentication.setAuthenticationSystem(new MockAuthentication());
+                    DatabaseManager.setDatabaseSystem(new MockDatabase());
+                }
+            };
 
 
 
