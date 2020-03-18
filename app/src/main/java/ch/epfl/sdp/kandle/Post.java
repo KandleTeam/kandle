@@ -34,10 +34,10 @@ public class Post {
 
     }
 
-    public Post(String type,int likes,String description,Date date){
+    public Post(String type,String description,Date date){
         this.type = type;
         this.location = null;
-        this.likes = likes;
+        this.likes = 0;
         this.description = description;
         this.comments = null;
         this.date = date;
@@ -75,5 +75,9 @@ public class Post {
 
     public int likePost(){
         return likes++;
+    }
+
+    public int dislikePost(){
+        return likes--;
     }
 }

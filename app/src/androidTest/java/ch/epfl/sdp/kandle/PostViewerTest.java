@@ -43,7 +43,7 @@ public class PostViewerTest {
         onView(withId(R.id.navigation_view)).perform(NavigationViewActions.navigateTo(R.id.your_posts));
         PostFragment frag = PostFragment.newInstance();
         ArrayList<Post> myposts = frag.getPostList();
-        Post p = new Post("Text",34,"this is my post",new Date() );
+        Post p = new Post("Text","this is my post",new Date());
         frag.putInPostList(p);
         onView(withId(R.id.rvPosts)).perform(RecyclerViewActions.actionOnItemAtPosition(0,click()));
         onView(withId(R.id.post_description)).perform(click());
@@ -55,9 +55,21 @@ public class PostViewerTest {
     @Test
     public void putNewPostIntoTheRecyclerAndDeleteIt(){
         PostFragment frag = PostFragment.newInstance();
-        frag.putInPostList(new Post("Text",34,"this is my post",new Date() ));
+        frag.putInPostList(new Post("Text","this is my post",new Date() ));
         frag.removePostAtIndex(0);
     }
 
+    @Test
+    public void likePost(){
+        onView(withId(R.id.drawer_layout)).check(matches(isClosed(Gravity.LEFT))).perform(DrawerActions.open());
+        onView(withId(R.id.navigation_view)).perform(NavigationViewActions.navigateTo(R.id.your_posts));
+        PostFragment frag = PostFragment.newInstance();
+        ArrayList<Post> myposts = frag.getPostList();
+        Post p = new Post("Text","new post test",new Date());
+        frag.putInPostList(p);
+        onView(withId(R.id.likeButton)).perform(click());
+        frag.removePost(p);
+
+    }
 
 }
