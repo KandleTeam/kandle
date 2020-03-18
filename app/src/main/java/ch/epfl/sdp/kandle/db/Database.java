@@ -39,7 +39,7 @@ public interface Database {
     /**
      * Asynchronously attempts to retrieve at most maxNumber users whose normalized username starts
      * with the given prefix.
-     * @param prefix start of the searched username
+     * @param prefix start of the searched username. Must be non-empty
      * @param maxNumber maximum number of Users to be retrieved
      * @return a Task for the resulting list of users
      */
