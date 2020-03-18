@@ -50,7 +50,7 @@ public class AbstractLocation {
     }
 
     @NeedsPermission({android.Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION})
-    protected void startLocationUpdates() {
+    protected void startLocationUpdates(Context context) {
         mLocationRequest = new LocationRequest();
         mLocationRequest.setPriority(LocationRequest.PRIORITY_BALANCED_POWER_ACCURACY);
         mLocationRequest.setInterval(UPDATE_INTERVAL);
@@ -89,14 +89,14 @@ public class AbstractLocation {
         //Toast.makeText(this.getContext(), msg, Toast.LENGTH_SHORT).show();
         return location;
     }
-
-    protected void loadMap(GoogleMap googleMap) {
+    @NeedsPermission({Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION})
+    protected void loadMap(GoogleMap googleMap, Context context) {
         mMap = googleMap;
         if (mMap != null) {
             // Map is ready
             Toast.makeText(context, "Map Fragment was loaded properly!", Toast.LENGTH_SHORT).show();
-            getMyLocation();
-            startLocationUpdates();
+            getMyLocation(context);
+            startLocationUpdates(context);
 
         } else {
             Toast.makeText(context, "Error - Map was null!!", Toast.LENGTH_SHORT).show();
@@ -105,7 +105,7 @@ public class AbstractLocation {
 
     @SuppressWarnings({"MissingPermission"})
     @NeedsPermission({Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION})
-    void getMyLocation() {
+    void getMyLocation(Context context) {
         mMap.setMyLocationEnabled(true);
 
         FusedLocationProviderClient locationClient = getFusedLocationProviderClient(context);

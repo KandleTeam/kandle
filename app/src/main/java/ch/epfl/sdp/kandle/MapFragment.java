@@ -1,6 +1,7 @@
 package ch.epfl.sdp.kandle;
 
 
+import android.Manifest;
 import android.app.Dialog;
 import android.os.Bundle;
 import android.util.Log;
@@ -23,6 +24,7 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
+import permissions.dispatcher.NeedsPermission;
 import permissions.dispatcher.RuntimePermissions;
 
 @RuntimePermissions
@@ -59,7 +61,7 @@ public class MapFragment extends Fragment implements GoogleMap.OnMarkerClickList
             mapFragment.getMapAsync(new OnMapReadyCallback() {
                 @Override
                 public void onMapReady(GoogleMap map) {
-                    abstractLocation.loadMap(map);
+                    abstractLocation.loadMap(map,getContext());
                     map.addMarker(new MarkerOptions()
                             .position(new LatLng(10, 10))
                             .title("Hello world")).setTag(0);
@@ -105,6 +107,7 @@ public class MapFragment extends Fragment implements GoogleMap.OnMarkerClickList
     }
 
     @Override
+    @NeedsPermission({android.Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION})
     public void onResume() {
         super.onResume();
 
@@ -118,7 +121,7 @@ public class MapFragment extends Fragment implements GoogleMap.OnMarkerClickList
         } else {
             Toast.makeText(this.getContext(), "Current location was null, enable GPS on emulator!", Toast.LENGTH_SHORT).show();
         }
-        abstractLocation.startLocationUpdates();
+        abstractLocation.startLocationUpdates(this.getContext());
     }
 
 
