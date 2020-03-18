@@ -46,7 +46,7 @@ public class PostFragment extends Fragment {
         View rootView = inflater.inflate(R.layout.post_fragment, container, false);
         rvPosts = rootView.findViewById(R.id.rvPosts);
 
-        posts.add(new Post("Text", "( : this is my post : )", new Date()));
+
 
         adapter.setOnItemClickListener(new ClickListener() {
             @Override
@@ -83,6 +83,10 @@ public class PostFragment extends Fragment {
         return posts;
     }
 
+    public void randomlyadd() {
+
+    }
+
     public void putInPostList(Post p) {
         posts.add(p);
         adapter.notifyDataSetChanged();
@@ -97,6 +101,10 @@ public class PostFragment extends Fragment {
         posts.remove(p);
         adapter.notifyDataSetChanged();
     }
+
+
+
+
 
 
 }

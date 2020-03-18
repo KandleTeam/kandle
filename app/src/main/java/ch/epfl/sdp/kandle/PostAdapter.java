@@ -12,11 +12,13 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.List;
 
 public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder>{
     private static ClickListener clickListener;
     private List<Post> mPosts;
+    private  ViewHolder viewHolder;
 
     public PostAdapter(List<Post> posts) {
         mPosts = posts;
@@ -37,7 +39,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder>{
         View postsView = inflater.inflate(R.layout.post_item, parent, false);
 
         // Return a new holder instance
-        ViewHolder viewHolder = new ViewHolder(postsView);
+        viewHolder = new ViewHolder(postsView);
         return viewHolder;
     }
 
@@ -76,6 +78,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder>{
         return mPosts.size();
     }
 
+
     public static class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
         public TextView mtitleText;
@@ -92,7 +95,6 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder>{
             mlikes = (TextView) itemView.findViewById(R.id.flames);
             mdate = (TextView) itemView.findViewById(R.id.date_and_time);
             mlikeButton = itemView.findViewById(R.id.likeButton);
-
 
         }
         @Override
