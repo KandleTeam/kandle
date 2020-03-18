@@ -57,7 +57,6 @@ public class PostActivity extends AppCompatActivity {
                     return;
                 }
                 Toast.makeText(PostActivity.this, "You have successfully posted : " + postText, Toast.LENGTH_LONG ).show();
-                startActivity(new Intent(getApplicationContext(), MainActivity.class));
                 finish();
 
             }

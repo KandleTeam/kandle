@@ -2,12 +2,17 @@ package ch.epfl.sdp.kandle;
 
 
 import android.Manifest;
+import android.annotation.SuppressLint;
 import android.app.Dialog;
+import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.Toast;
 
 import androidx.fragment.app.DialogFragment;
@@ -34,6 +39,7 @@ public class MapFragment extends Fragment implements GoogleMap.OnMarkerClickList
     private GoogleMap mMap;
     private SupportMapFragment mapFragment;
     //Location mCurrentLocation;
+    ImageButton mCreatePost;
 
     AbstractLocation abstractLocation = new AbstractLocation(this.getContext(), null);
 
@@ -48,8 +54,10 @@ public class MapFragment extends Fragment implements GoogleMap.OnMarkerClickList
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
     }
 
+    @SuppressLint("ResourceType")
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -57,6 +65,15 @@ public class MapFragment extends Fragment implements GoogleMap.OnMarkerClickList
         // Inflate the layout for this fragment
         View v = inflater.inflate(R.layout.fragment_map, container, false);
         mapFragment = (SupportMapFragment) this.getChildFragmentManager().findFragmentById(R.id.map);
+        mCreatePost = v.findViewById(R.id.createPost);
+        mCreatePost.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(getActivity().getApplicationContext(), PostActivity.class));
+            }
+        });
+
+
         if (mapFragment != null) {
             mapFragment.getMapAsync(new OnMapReadyCallback() {
                 @Override
@@ -73,6 +90,7 @@ public class MapFragment extends Fragment implements GoogleMap.OnMarkerClickList
         } else {
             Toast.makeText(this.getContext(), "Error - Map Fragment was null!!", Toast.LENGTH_SHORT).show();
         }
+
         return v;
     }
 
@@ -162,7 +180,7 @@ public class MapFragment extends Fragment implements GoogleMap.OnMarkerClickList
 
         // Retrieve the data from the marker.
         Integer clickCount = (Integer) marker.getTag();
-
+        System.out.println("Hey");
         // Check if a click count was set, then display the click count.
         if (clickCount != null) {
             clickCount = clickCount + 1;
@@ -178,5 +196,7 @@ public class MapFragment extends Fragment implements GoogleMap.OnMarkerClickList
         // marker is centered and for the marker's info window to open, if it has one).
         return false;
     }
+
+
 
 }
