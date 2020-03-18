@@ -251,18 +251,6 @@ public class SearchFragment extends Fragment {
         return view;
     }
 
-    public ArrayList<User> getUserList() {
-        return mUsers;
-    }
 
-    public void putInUserList(User u) {
-        mUsers.add(u);
-        userAdapter.notifyDataSetChanged();
-    }
-
-    public void removeUser(User u){
-        mUsers.remove(u);
-        userAdapter.notifyDataSetChanged();
-    }
 
 }

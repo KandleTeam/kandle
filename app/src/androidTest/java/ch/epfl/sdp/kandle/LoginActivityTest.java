@@ -41,7 +41,7 @@ public class LoginActivityTest {
             ){
             @Override
                 protected  void beforeActivityLaunched() {
-                Authentication.setAuthenticationSystem(new MockAuthentication());
+                Authentication.setAuthenticationSystem(new MockAuthentication(false));
             }
             };
 

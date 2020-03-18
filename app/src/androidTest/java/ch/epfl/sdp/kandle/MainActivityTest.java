@@ -10,6 +10,9 @@ import androidx.test.espresso.contrib.RecyclerViewActions;
 import androidx.test.espresso.intent.Intents;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 import androidx.test.rule.ActivityTestRule;
+import ch.epfl.sdp.kandle.DependencyInjection.Authentication;
+import ch.epfl.sdp.kandle.DependencyInjection.Database;
+import ch.epfl.sdp.kandle.DependencyInjection.MockAuthentication;
 
 import org.junit.Rule;
 import org.junit.Test;
@@ -34,20 +37,28 @@ import static org.junit.Assert.assertTrue;
 
 @RunWith(AndroidJUnit4.class)
 public class MainActivityTest {
-    @Rule
-    public final ActivityTestRule<MainActivity> mainActivityRule =
-            new ActivityTestRule<>(MainActivity.class);
 
+
+    @Rule
+    public ActivityTestRule<MainActivity> intentsRule =
+            new ActivityTestRule<MainActivity>(MainActivity.class,true,true
+            ){
+                @Override
+                protected  void beforeActivityLaunched() {
+                    Authentication.setAuthenticationSystem(new MockAuthentication(true));
+                    Database.setDatabaseSystem(new MockDatabase());
+                }
+            };
 
 
 
     @Test
-    public void openMenuAndNavigateToAboutUsAndFinallyLogout() throws InterruptedException {
+    public void openMenuAndNavigateToAboutUsAndFinallyLogout()  {
         onView(withId(R.id.drawer_layout)).check(matches(isClosed(Gravity.LEFT))).perform(DrawerActions.open());
         onView(withId(R.id.navigation_view)).perform(NavigationViewActions.navigateTo(R.id.about));
         onView(withId(R.id.toolbar)).check(matches(hasDescendant(withText("About us"))));
 
-        Thread.sleep(500);
+
         onView(withId(R.id.drawer_layout)).check(matches(isClosed(Gravity.LEFT))).perform(DrawerActions.open());
         onView(withId(R.id.navigation_view)).perform(NavigationViewActions.navigateTo(R.id.logout));
 

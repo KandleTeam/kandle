@@ -4,8 +4,10 @@ import com.google.android.gms.tasks.Task;
 import com.google.android.gms.tasks.TaskCompletionSource;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Comparator;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -19,13 +21,52 @@ import ch.epfl.sdp.kandle.DependencyInjection.Database;
  */
 public class MockDatabase extends Database {
 
-    private static Map<String, User> users;
 
+    private class Follow {
+        public List<String> following;
+
+        public List<String> followers;
+
+        public Follow(List<String> following, List<String> followers) {
+            this.following = following;
+            this.followers = followers;
+        }
+
+        public void addFollowing ( String s){
+            following.add(s);
+        }
+
+        public void addFollower ( String s){
+            followers.add(s);
+        }
+
+        public void removeFollowing ( String s){
+            following.remove(s);
+        }
+
+        public void removeFollower ( String s){
+            followers.remove(s);
+        }
+    }
+
+
+    private static Map<String, User> users;
+    private static Map<String, Follow> followMap;
 
     public MockDatabase() {
         users = new HashMap<>();
-        String adminId = "0000000000000000000000000000"; // 28 zeros
-        users.put("adminId", new User(adminId, "admin", "admin@kandle.ch"));
+        //String adminId = "user1Id"; // 28 zeros
+        users.put("user1Id", new User("user1Id", "user1", "user1@kandle.ch"));
+        users.put("user2Id", new User("user2Id", "user2", "user2@kandle.ch"));
+        users.put("user3Id", new User("user3Id", "user3", "user3@kandle.ch"));
+        
+        
+        followMap = new HashMap<>();
+        
+        followMap.put("user1Id", new Follow( new LinkedList<>(Arrays.asList("user2Id")) , new LinkedList<>(Arrays.asList("user3Id"))));
+        followMap.put("user2Id", new Follow(new LinkedList<>(Arrays.asList("user3Id")) , new LinkedList<>(Arrays.asList("user1Id"))));
+        followMap.put("user3Id", new Follow(new LinkedList<>(Arrays.asList("user1Id")) , new LinkedList<>(Arrays.asList("user2Id"))));
+
     }
 
 
@@ -99,29 +140,62 @@ public class MockDatabase extends Database {
         });
 
         TaskCompletionSource<List<User>> source = new TaskCompletionSource<>();
-        source.setResult(new ArrayList<User>(results.subList(0, maxNumber)));
+        source.setResult(new ArrayList<User>(results.subList(0, Math.min(maxNumber, results.size()))));
         return source.getTask();
 
     }
 
     @Override
     public Task<Void> follow(String userFollowing, String userFollowed) {
-        return null;
+
+        Follow follow = followMap.get(userFollowing);
+        Follow follow2 = followMap.get(userFollowed);
+
+        if ( !follow.following.contains(userFollowed)) {
+            follow.addFollowing(userFollowed);
+            follow2.addFollower(userFollowing);
+            followMap.put(userFollowing, follow);
+            followMap.put(userFollowed, follow2);
+
+        }
+
+        TaskCompletionSource<Void> source = new TaskCompletionSource<>();
+        source.setResult(null);
+        return source.getTask();
     }
 
     @Override
     public Task<Void> unFollow(String userUnFollowing, String userUnFollowed) {
-        return null;
+
+        Follow follow = followMap.get(userUnFollowing);
+        Follow follow2 = followMap.get(userUnFollowed);
+
+        if ( follow.following.contains(userUnFollowed)) {
+            follow.removeFollowing(userUnFollowed);
+            follow2.removeFollower(userUnFollowing);
+            followMap.put(userUnFollowing, follow);
+            followMap.put(userUnFollowed, follow2);
+
+        }
+
+        TaskCompletionSource<Void> source = new TaskCompletionSource<>();
+        source.setResult(null);
+        return source.getTask();
     }
 
     @Override
     public Task<List<String>> followingList(String userId) {
-        return null;
+        TaskCompletionSource<List<String>> source = new TaskCompletionSource<>();
+        source.setResult(new ArrayList<String>(followMap.get(userId).following));
+        return source.getTask();
+
     }
 
     @Override
     public Task<List<String>> followersList(String userId) {
-        return null;
+        TaskCompletionSource<List<String>> source = new TaskCompletionSource<>();
+        source.setResult(new ArrayList<String>(followMap.get(userId).followers));
+        return source.getTask();
     }
 
 

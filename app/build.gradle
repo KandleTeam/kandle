@@ -12,7 +12,7 @@ android {
     buildToolsVersion "29.0.3"
     defaultConfig {
         applicationId "ch.epfl.sdp.kandle"
-        minSdkVersion 21
+        minSdkVersion 24
         targetSdkVersion 29
         versionCode 1
         versionName "1.0"
@@ -26,6 +26,11 @@ android {
         debug {
             testCoverageEnabled true
         }
+    }
+
+    compileOptions{
+        sourceCompatibility = 1.8
+        targetCompatibility = 1.8
     }
 }
 

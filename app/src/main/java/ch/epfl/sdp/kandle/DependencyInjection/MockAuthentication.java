@@ -7,7 +7,11 @@ import com.google.firebase.auth.AuthResult;
 public class MockAuthentication extends Authentication {
 
 
-    private boolean isConnected = false;
+    private boolean isConnected;
+
+    public MockAuthentication(boolean isConnected) {
+        this.isConnected = isConnected;
+    }
 
     @Override
     public Task<AuthResult> createUserWithEmailAndPassword(String email, String password) {
