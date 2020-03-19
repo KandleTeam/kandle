@@ -52,7 +52,7 @@ public class FirestoreDatabase extends Database {
         return instance;
     }
 
-
+/*
     @Override
     public Task<User> getUserByName(final String username) {
         return users
@@ -76,6 +76,9 @@ public class FirestoreDatabase extends Database {
                 });
     }
 
+ */
+
+/*
     @Override
     public Task<User> getUserById(final String userId) {
         return users
@@ -93,6 +96,8 @@ public class FirestoreDatabase extends Database {
                     }
                 });
     }
+
+ */
 
 
 
@@ -114,12 +119,17 @@ public class FirestoreDatabase extends Database {
                             DocumentSnapshot usernameSnapshot = transaction.get(usernameDoc);
                             DocumentSnapshot userSnapshot = transaction.get(userDoc);
 
+                            /*
+
                             if(userSnapshot.exists()) {
                                 throw new FirebaseFirestoreException("User already exists!", FirebaseFirestoreException.Code.ALREADY_EXISTS);
                             }
                             else if(usernameSnapshot.exists()) {
                                 throw new FirebaseFirestoreException("Username already taken!", FirebaseFirestoreException.Code.ALREADY_EXISTS);
-                            } else {
+                            }
+
+                             else {
+                             */
                                 System.out.println("store");
 
                                 Map<String,Object> map = new HashMap<>();
@@ -128,7 +138,7 @@ public class FirestoreDatabase extends Database {
 
                                 transaction.set(usernameDoc, map);
                                 transaction.set(userDoc, user);
-                        }
+                            // }
 
                         return null;
                     }

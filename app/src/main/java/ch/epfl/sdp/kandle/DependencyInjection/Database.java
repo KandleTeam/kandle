@@ -28,7 +28,7 @@ public abstract class Database {
      * @param username the user's username
      * @return a Task for the resulting User.
      */
-    public abstract Task<User> getUserByName(String username);
+   // public abstract Task<User> getUserByName(String username);
 
     /**
      * Asynchronously retrieves a User from the Database from its unique userId. If such a user does
@@ -36,7 +36,7 @@ public abstract class Database {
      *      * @param userId the user's userId
      *      * @return
      */
-    public abstract Task<User> getUserById(String userId);
+    //public abstract Task<User> getUserById(String userId);
 
 
     /**

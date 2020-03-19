@@ -20,6 +20,7 @@ import ch.epfl.sdp.kandle.DependencyInjection.Database;
 import ch.epfl.sdp.kandle.DependencyInjection.MockAuthentication;
 import ch.epfl.sdp.kandle.DependencyInjection.MockDatabase;
 
+import static androidx.test.espresso.action.ViewActions.clearText;
 import static androidx.test.espresso.action.ViewActions.closeSoftKeyboard;
 import static androidx.test.espresso.action.ViewActions.typeText;
 import static androidx.test.espresso.matcher.ViewMatchers.withText;
@@ -64,6 +65,14 @@ public class SearchFragmentTest {
         onView(withId(R.id.search_bar)).perform(typeText("us"));
         onView(withId (R.id.search_bar)).perform(closeSoftKeyboard());
 
+        onView(withId(R.id.search_bar)).perform(clearText());
+        onView(withId (R.id.search_bar)).perform(closeSoftKeyboard());
+
+        onView(withId(R.id.search_bar)).perform(typeText("us"));
+        onView(withId (R.id.search_bar)).perform(closeSoftKeyboard());
+
+        onView(withId(R.id.recycler_view)).perform(RecyclerViewActions.actionOnItemAtPosition(0, clickChildViewWithId(R.id.btn_follow)));
+        onView(withId(R.id.recycler_view)).perform(RecyclerViewActions.actionOnItemAtPosition(0, clickChildViewWithId(R.id.btn_follow)));
         onView(withId(R.id.recycler_view)).perform(RecyclerViewActions.actionOnItemAtPosition(0, clickChildViewWithId(R.id.btn_follow)));
         onView(withId(R.id.recycler_view)).perform(RecyclerViewActions.actionOnItemAtPosition(0, click()));
 
@@ -72,6 +81,8 @@ public class SearchFragmentTest {
 
         onView(withId(R.id.profileFollowButton)).perform(click());
         onView(withId(R.id.profileNumberOfFollowers)).check(matches( withText("1")));
+        onView(withId(R.id.profileFollowButton)).perform(click());
+        onView(withId(R.id.profileNumberOfFollowers)).check(matches( withText("0")));
     }
 
 

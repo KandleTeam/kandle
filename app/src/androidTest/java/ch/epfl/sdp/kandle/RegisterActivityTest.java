@@ -19,8 +19,14 @@ import static androidx.test.espresso.action.ViewActions.typeText;
 import static androidx.test.espresso.assertion.ViewAssertions.matches;
 import static androidx.test.espresso.intent.Intents.intended;
 import static androidx.test.espresso.intent.matcher.IntentMatchers.hasComponent;
+import static androidx.test.espresso.matcher.RootMatchers.withDecorView;
 import static androidx.test.espresso.matcher.ViewMatchers.hasErrorText;
+import static androidx.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static androidx.test.espresso.matcher.ViewMatchers.withId;
+import static androidx.test.espresso.matcher.ViewMatchers.withText;
+
+import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.not;
 
 public class RegisterActivityTest {
 
@@ -69,6 +75,24 @@ public class RegisterActivityTest {
     }
 
 
+    @Test
+    public void accountCreationShouldFail(){
+
+        onView(withId (R.id.fullName)).perform(typeText ("Mock User"));
+        onView(withId (R.id.fullName)).perform(closeSoftKeyboard());
+
+        onView(withId (R.id.email)).perform(typeText ("user1@test.com"));
+        onView(withId (R.id.email)).perform(closeSoftKeyboard());
+
+        onView(withId (R.id.password)).perform(typeText ("12345678"));
+        onView(withId (R.id.password)).perform(closeSoftKeyboard());
+
+        onView(withId (R.id.passwordConfirm)).perform(typeText ("12345678"));
+        onView(withId (R.id.passwordConfirm)).perform(closeSoftKeyboard());
+
+        onView(withId(R.id.loginBtn)).perform(click());
+        onView(withText("An error has occurred : You already have an account")).inRoot(withDecorView(not(is( intentsRule.getActivity().getWindow().getDecorView())))).check(matches(isDisplayed()));
+    }
 
 
     @Test
@@ -87,7 +111,6 @@ public class RegisterActivityTest {
 
         onView(withId (R.id.passwordConfirm)).perform(typeText ("12345678"));
         onView(withId (R.id.passwordConfirm)).perform(closeSoftKeyboard());
-
 
         onView(withId(R.id.loginBtn)).perform(click());
 

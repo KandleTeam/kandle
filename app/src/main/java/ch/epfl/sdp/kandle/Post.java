@@ -25,7 +25,7 @@ public class Post {
     private Date date;
 
 
-    public Post(String type, LatLng location, int likes, String description, ArrayList<String> comments, Date date){
+   /* public Post(String type, LatLng location, int likes, String description, ArrayList<String> comments, Date date){
         this.type = type;
         this.location = location;
         this.likes = likes;
@@ -34,7 +34,7 @@ public class Post {
         this.comments = comments;
         this.date = date;
 
-    }
+    }*/
 
     public Post(String type,int likes,String description,Date date){
         this.type = type;

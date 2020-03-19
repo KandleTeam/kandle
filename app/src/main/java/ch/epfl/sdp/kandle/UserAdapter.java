@@ -80,9 +80,9 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.ViewHolder> {
                     }
 
                 }
-                else {
+                /*else {
                     System.out.println(task.getException().getMessage());
-                }
+                }*/
 
             }
         });
@@ -124,9 +124,9 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.ViewHolder> {
                                 holder.mFollowBtn.setText("following");
                             }
 
-                            else {
+                           /* else {
                                 System.out.println(task.getException().getMessage());
-                            }
+                            }*/
 
                         }
                     });
@@ -151,9 +151,9 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.ViewHolder> {
                                 holder.mFollowBtn.setText("follow");
                             }
 
-                            else {
+                            /*else {
                                 System.out.println(task.getException().getMessage());
-                            }
+                            }*/
                         }
                     });
 

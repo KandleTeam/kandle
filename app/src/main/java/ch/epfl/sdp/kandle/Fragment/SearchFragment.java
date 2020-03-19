@@ -139,9 +139,9 @@ public class SearchFragment extends Fragment {
                                 userAdapter.notifyDataSetChanged();
                             }
 
-                            else {
+                           /* else {
                                 System.out.println(task.getException().getMessage());
-                            }
+                            }*/
                         }
                     });
 

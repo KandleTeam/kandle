@@ -90,9 +90,9 @@ public class ProfileFragment extends Fragment {
                     }
 
                 }
-                else {
+              /*  else {
                     System.out.println(task.getException().getMessage());
-                }
+                }*/
 
             }
         });
@@ -132,9 +132,9 @@ public class ProfileFragment extends Fragment {
                                 setNumberOfFollowers();
                             }
 
-                            else {
+                          /*  else {
                                 System.out.println(task.getException().getMessage());
-                            }
+                            }*/
 
                         }
                     });
@@ -163,9 +163,9 @@ public class ProfileFragment extends Fragment {
                                 mFollowButton.setText("follow");
                             }
 
-                            else {
+                            /*else {
                                 System.out.println(task.getException().getMessage());
-                            }
+                            }*/
                         }
                     });
                     /*
@@ -194,9 +194,9 @@ public class ProfileFragment extends Fragment {
                         mNumberOfFollowing.setText(  Integer.toString(task.getResult().size()));
                     }
                 }
-                else {
+               /* else {
                     System.out.println(task.getException().getMessage());
-                }
+                }*/
             }
         });
     }
@@ -210,9 +210,9 @@ public class ProfileFragment extends Fragment {
                         mNumberOfFollowers.setText(  Integer.toString(task.getResult().size()));
                     }
                 }
-                else {
+                /*else {
                     System.out.println(task.getException().getMessage());
-                }
+                }*/
             }
         });
     }

@@ -105,17 +105,7 @@ public class RegisterActivity extends AppCompatActivity {
                     user.put("fullName",fullName);
                     user.put("email",email);
                     documentReference.set(user);*/
-                    fStore.createUser( new User(userID, email, email)).addOnCompleteListener(new OnCompleteListener<Void>() {
-                        @Override
-                        public void onComplete(@NonNull Task<Void> task) {
-                            if (task.isSuccessful()){
-                                System.out.println("success");
-                            }
-                            else {
-                                System.out.println(task.getException().getMessage());
-                            }
-                        }
-                    });
+                    fStore.createUser( new User(userID, email, email));
 
 
 

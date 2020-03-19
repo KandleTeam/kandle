@@ -71,6 +71,7 @@ public class MockDatabase extends Database {
     }
 
 
+    /*
     private Optional<User> findUserByName(String username) {
         for(User user : users.values()) {
             if(user.getUsername().equals(username)) {
@@ -94,6 +95,10 @@ public class MockDatabase extends Database {
 
     }
 
+     */
+
+
+    /*
     @Override
     public Task<User> getUserById(String userId) {
 
@@ -107,19 +112,24 @@ public class MockDatabase extends Database {
         return task.getTask();
     }
 
+     */
+
     @Override
     public Task<Void> createUser(User user) {
 
         TaskCompletionSource<Void> task = new TaskCompletionSource<>();
 
-        if(users.containsKey(user.getId())) {
+       /* if(users.containsKey(user.getId())) {
             task.setException(new IllegalArgumentException("User with this id already exists"));
         } else if(findUserByName(user.getUsername()).isPresent()) {
             task.setException(new IllegalArgumentException("User with this username already exists"));
         } else {
+
+
+        */
             users.put(user.getId(), user);
             task.setResult(null);
-        }
+        //}
         return task.getTask();
     }
 

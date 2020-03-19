@@ -24,8 +24,13 @@ import static androidx.test.espresso.action.ViewActions.typeText;
 import static androidx.test.espresso.assertion.ViewAssertions.matches;
 import static androidx.test.espresso.intent.Intents.intended;
 import static androidx.test.espresso.intent.matcher.IntentMatchers.hasComponent;
+import static androidx.test.espresso.matcher.RootMatchers.withDecorView;
 import static androidx.test.espresso.matcher.ViewMatchers.hasErrorText;
+import static androidx.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static androidx.test.espresso.matcher.ViewMatchers.withId;
+import static androidx.test.espresso.matcher.ViewMatchers.withText;
+import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.not;
 
 
 @RunWith(AndroidJUnit4.class)
@@ -61,7 +66,7 @@ public class LoginActivityTest {
 
 
     @Test
-    public void emptyPasswordTest() throws InterruptedException {
+    public void emptyPasswordTest()  {
 
         onView(withId(R.id.email)).perform(typeText("test@test.com"));
         onView(withId(R.id.email)).perform(closeSoftKeyboard());
@@ -71,7 +76,7 @@ public class LoginActivityTest {
     }
 
     @Test
-    public void wrongCredentialsTest() throws InterruptedException {
+    public void wrongCredentialsTest()  {
 
         onView(withId(R.id.email)).perform(typeText("zzzz@test.com"));
         onView(withId(R.id.email)).perform(closeSoftKeyboard());
@@ -85,11 +90,9 @@ public class LoginActivityTest {
     }
 
     @Test
-    public void authenticationTest() {
+    public void authenticationShouldFail(){
 
-        Intents.init();
-
-        onView(withId(R.id.email)).perform(typeText("yanisepfl@gmail.com"));
+        onView(withId(R.id.email)).perform(typeText("user2@test.com"));
         onView(withId(R.id.email)).perform(closeSoftKeyboard());
 
         onView(withId(R.id.password)).perform(typeText("123456789"));
@@ -97,7 +100,24 @@ public class LoginActivityTest {
 
         onView(withId(R.id.loginBtn)).perform(click());
 
+        onView(withText("An error has occurred : You do not have an account yet")).inRoot(withDecorView(not(is( intentsRule.getActivity().getWindow().getDecorView())))).check(matches(isDisplayed()));
 
+
+    }
+
+
+    @Test
+    public void authenticationTest() {
+
+        Intents.init();
+
+        onView(withId(R.id.email)).perform(typeText("user1@test.com"));
+        onView(withId(R.id.email)).perform(closeSoftKeyboard());
+
+        onView(withId(R.id.password)).perform(typeText("123456789"));
+        onView(withId(R.id.password)).perform(closeSoftKeyboard());
+
+        onView(withId(R.id.loginBtn)).perform(click());
 
 
         intended(hasComponent(MainActivity.class.getName()));
