@@ -1,55 +1,28 @@
 package ch.epfl.sdp.kandle;
 
-import android.net.Uri;
-import android.os.Parcel;
 import android.view.Gravity;
 import android.view.View;
-
-import com.google.android.gms.internal.firebase_auth.zzff;
-import com.google.firebase.FirebaseApp;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.auth.FirebaseUserMetadata;
-import com.google.firebase.auth.UserInfo;
-import com.google.firebase.auth.zzy;
-import com.google.firebase.auth.zzz;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
 
 import org.hamcrest.Matcher;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
-import org.mockito.Mockito;
-import org.mockito.invocation.InvocationOnMock;
-import org.mockito.stubbing.Answer;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.fragment.app.FragmentManager;
 import androidx.test.espresso.UiController;
 import androidx.test.espresso.ViewAction;
 import androidx.test.espresso.contrib.DrawerActions;
 import androidx.test.espresso.contrib.NavigationViewActions;
 import androidx.test.espresso.contrib.RecyclerViewActions;
 
-import androidx.test.espresso.intent.Intents;
 import androidx.test.rule.ActivityTestRule;
 import ch.epfl.sdp.kandle.DependencyInjection.Authentication;
 import ch.epfl.sdp.kandle.DependencyInjection.Database;
 import ch.epfl.sdp.kandle.DependencyInjection.MockAuthentication;
-import ch.epfl.sdp.kandle.Fragment.SearchFragment;
+import ch.epfl.sdp.kandle.DependencyInjection.MockDatabase;
 
 import static androidx.test.espresso.action.ViewActions.closeSoftKeyboard;
 import static androidx.test.espresso.action.ViewActions.typeText;
 import static androidx.test.espresso.matcher.ViewMatchers.withText;
-import static org.mockito.Mockito.*;
 
 import static androidx.test.espresso.Espresso.onView;
 import static androidx.test.espresso.action.ViewActions.click;

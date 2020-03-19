@@ -1,4 +1,4 @@
-package ch.epfl.sdp.kandle;
+package ch.epfl.sdp.kandle.DependencyInjection;
 
 import com.google.android.gms.tasks.Task;
 import com.google.android.gms.tasks.TaskCompletionSource;
@@ -13,6 +13,7 @@ import java.util.Map;
 import java.util.Optional;
 
 import ch.epfl.sdp.kandle.DependencyInjection.Database;
+import ch.epfl.sdp.kandle.User;
 
 /**
  *  A mocked database. Upon creation, it contains:

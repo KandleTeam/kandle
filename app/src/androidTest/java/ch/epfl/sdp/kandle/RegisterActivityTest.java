@@ -10,6 +10,7 @@ import androidx.test.rule.ActivityTestRule;
 import ch.epfl.sdp.kandle.DependencyInjection.Authentication;
 import ch.epfl.sdp.kandle.DependencyInjection.Database;
 import ch.epfl.sdp.kandle.DependencyInjection.MockAuthentication;
+import ch.epfl.sdp.kandle.DependencyInjection.MockDatabase;
 
 import static androidx.test.espresso.Espresso.onView;
 import static androidx.test.espresso.action.ViewActions.click;
