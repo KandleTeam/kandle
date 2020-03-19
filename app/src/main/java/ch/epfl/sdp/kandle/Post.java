@@ -22,22 +22,24 @@ public class Post {
     private ArrayList<String> comments;
     private Date date;
 
-
-    public Post(String type, LatLng location, int likes, String description, ArrayList<String> comments, Date date){
+    /*
+    public Post(String type, LatLng location, String description, Date date){
         this.type = type;
         this.location = location;
-        this.likes = likes;
+        this.likes = 0;
         postId = count++;
         this.description = description;
-        this.comments = comments;
+        this.comments = new ArrayList<>();
         this.date = date;
 
     }
 
-    public Post(String type,int likes,String description,Date date){
+     */
+
+    public Post(String type,String description,Date date){
         this.type = type;
         this.location = null;
-        this.likes = likes;
+        this.likes = 0;
         this.description = description;
         this.comments = null;
         this.date = date;
@@ -45,13 +47,6 @@ public class Post {
     }
 
 
-    public String getString(){
-        return type;
-    }
-
-    public LatLng getLocation(){
-        return location;
-    }
 
     public int getLikes(){
         return likes;
@@ -65,15 +60,15 @@ public class Post {
         return description;
     }
 
-    public ArrayList<String> getComments(){
-        return comments;
-    }
-
     public Date getDate(){
         return date;
     }
 
     public int likePost(){
         return likes++;
+    }
+
+    public int dislikePost(){
+        return likes--;
     }
 }

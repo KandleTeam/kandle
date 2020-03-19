@@ -66,6 +66,7 @@ public class MainActivity extends AppCompatActivity {
                 });
     }
 
+
     public void selectDrawerItem(MenuItem menuItem) {
         // Create a new fragment and specify the fragment to show based on nav item clicked
 
@@ -117,7 +118,7 @@ public class MainActivity extends AppCompatActivity {
 
         // Insert the fragment by replacing any existing fragment
         FragmentManager fragmentManager = getSupportFragmentManager();
-        fragmentManager.beginTransaction().replace(R.id.flContent, fragment).commit();
+        fragmentManager.beginTransaction().replace(R.id.flContent, fragment,"hey").commit();
 
         // Highlight the selected item has been done by NavigationView
 
