@@ -137,6 +137,7 @@ public class RegisterActivity extends AppCompatActivity {
 
 
 
+
                 /* 2try
         System.out.println(" activity" + error);
 
