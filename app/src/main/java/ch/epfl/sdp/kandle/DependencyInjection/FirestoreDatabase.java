@@ -308,6 +308,8 @@ public class FirestoreDatabase extends Database {
         return documentReference.update(map);
     }
 
+    @Override
+    public Task<String> getProfilePicture() { return null; }
 
 
 }

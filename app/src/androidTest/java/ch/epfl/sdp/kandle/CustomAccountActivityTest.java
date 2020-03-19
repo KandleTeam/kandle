@@ -15,9 +15,13 @@ import static androidx.test.espresso.intent.Intents.intended;
 import static androidx.test.espresso.intent.Intents.intending;
 import static androidx.test.espresso.intent.matcher.IntentMatchers.hasAction;
 import static androidx.test.espresso.intent.matcher.IntentMatchers.hasComponent;
+import static androidx.test.espresso.matcher.ViewMatchers.assertThat;
 import static androidx.test.espresso.matcher.ViewMatchers.withId;
 import static androidx.test.espresso.matcher.ViewMatchers.withTagValue;
+import static org.hamcrest.CoreMatchers.not;
 import static org.hamcrest.Matchers.is;
+import static org.hamcrest.core.IsEqual.equalTo;
+import static org.junit.Assert.assertTrue;
 
 
 import org.junit.Rule;
@@ -57,6 +61,11 @@ public class CustomAccountActivityTest {
         onView(withId(R.id.button)).perform(click());
 
         onView(withId(R.id.profilePic)).check(matches(withTagValue(is(CustomAccountActivity.PROFILE_PICTURE_TAG))));
+
+        Database.getDatabaseSystem().getProfilePicture().addOnCompleteListener(task -> {
+            String uri = task.getResult();
+            assertThat(uri, is(not(equalTo(null))));
+        });
     }
 
     @Test

@@ -10,7 +10,8 @@ public class MockStorage extends Storage {
     @Override
     public Task<Uri> storeAndGetDownloadUrl(String fileExtension, Uri fileUri) {
         TaskCompletionSource<Uri> source = new TaskCompletionSource<>();
-        source.setResult(Uri.EMPTY);
+        Uri imageUri = Uri.parse("android.resource://ch.epfl.sdp.kandle/drawable/ic_launcher_background.xml");
+        source.setResult(imageUri);
         return source.getTask();
     }
 

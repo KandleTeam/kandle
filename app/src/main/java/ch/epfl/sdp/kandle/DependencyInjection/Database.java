@@ -62,6 +62,8 @@ public abstract class Database {
 
     public abstract Task<Void> updateProfilePicture(String uri);
 
+    public abstract Task<String> getProfilePicture();
+
 
 
 }
