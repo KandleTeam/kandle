@@ -58,8 +58,7 @@ public class PostActivityTest {
         //Intents.init();
         onView(withId(R.id.postText)).perform(typeText("   Salut Salut  "));
         onView(withId (R.id.postText)).perform(closeSoftKeyboard());
-
-
+        
         onView(withId(R.id.postButton)).perform(click());
         Thread.sleep(1000);
         intended(hasComponent(MainActivity.class.getName()));
