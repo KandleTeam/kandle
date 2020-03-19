@@ -10,40 +10,6 @@ android:
     # The system image, to run an emulator during the tests
     - sys-img-armeabi-v7a-android-22
 
-env:
-  global:
-    - BUILD_TOOLS=29.0.3
-    - COMPILE_SDK_VERSION=29
-    - ABI=x86_64
-    - ADB_INSTALL_TIMEOUT=8
-    - JDK="1.8"
-    
-  matrix:
-    # - API=15 ABI=x86 EMU_CHANNEL="--channel=4" # ERROR: failed to start emulator
-    # - API=16 ABI=x86 AUDIO=-no-audio # ERROR: fails with com.android.ddmlib.InstallException: Unknown failure: Error: Unknown option: -d
-    # API=17 ABI=x86 # Works
-    # API=18 ABI=x86 # Works
-    # API=19 ABI=x86 # Works
-    # API 20 was Android Wear only
-    # API=21 ABI=x86_64 # Works
-    - API=22 ABI=x86_64 # Works
-    # API=23 ABI=x86_64 # Works
-    # API=24 ABI=x86_64 # Works
-    # API=25 ABI=x86_64 # Works
-    # API=26 ABI=x86_64 # Works
-    # API=27 ABI=x86_64 # Works
-    # API=28 ABI=x86_64 # Works
-    # API=29 ABI=x86_64 # Works
-
-before_install:
-  # This section may run on all platforms, and may run for unit tests or for coverage finalization
-  # It should not make assumptions about os platform or desired tool installation
-
-  # Set up JDK 8 for Android SDK - Java is universally needed: codacy, unit tests, emulators
-  - curl "${GRAVIS}.install-jdk-travis.sh" --output ~/.install-jdk-travis.sh
-  - export TARGET_JDK="${JDK}"
-  - JDK="1.8"
- 
 
 before_script:
   # Emulator Management: Create, Start and Wait
