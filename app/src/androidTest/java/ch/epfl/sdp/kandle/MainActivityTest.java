@@ -1,15 +1,12 @@
 package ch.epfl.sdp.kandle;
 
-import android.content.Context;
 import android.view.Gravity;
 
-import androidx.test.espresso.Espresso;
 import androidx.test.espresso.contrib.DrawerActions;
 import androidx.test.espresso.contrib.NavigationViewActions;
-import androidx.test.espresso.contrib.RecyclerViewActions;
-import androidx.test.espresso.intent.Intents;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 import androidx.test.rule.ActivityTestRule;
+import androidx.test.rule.GrantPermissionRule;
 
 import org.junit.Before;
 import org.junit.Rule;
@@ -18,11 +15,6 @@ import org.junit.runner.RunWith;
 
 import static androidx.test.espresso.Espresso.onView;
 import static androidx.test.espresso.action.ViewActions.click;
-import static androidx.test.espresso.action.ViewActions.closeSoftKeyboard;
-import static androidx.test.espresso.action.ViewActions.swipeLeft;
-import static androidx.test.espresso.action.ViewActions.swipeRight;
-import static androidx.test.espresso.action.ViewActions.swipeUp;
-import static androidx.test.espresso.action.ViewActions.typeText;
 import static androidx.test.espresso.assertion.ViewAssertions.matches;
 import static androidx.test.espresso.contrib.DrawerMatchers.isClosed;
 import static androidx.test.espresso.intent.Intents.intended;
@@ -39,19 +31,26 @@ public class MainActivityTest {
     public final ActivityTestRule<MainActivity> mainActivityRule =
             new ActivityTestRule<>(MainActivity.class);
 
+    @Rule
+    public GrantPermissionRule permissionRule = GrantPermissionRule.grant(android.Manifest.permission.ACCESS_FINE_LOCATION);
 
     @Before
-    public void checkClosedDrawer(){
+    public void checkClosedDrawer() {
         onView(withId(R.id.drawer_layout)).check(matches(isClosed(Gravity.LEFT))).perform(DrawerActions.open());
     }
+
     @Test
-    public void openMenuAndNavigateToAboutUsAndFinallyLogout() throws InterruptedException {
+    public void openMenuAndNavigateToAboutUs() throws InterruptedException {
 
         onView(withId(R.id.navigation_view)).perform(NavigationViewActions.navigateTo(R.id.about));
         onView(withId(R.id.toolbar)).check(matches(hasDescendant(withText("About us"))));
 
-        Thread.sleep(500);
-        onView(withId(R.id.drawer_layout)).check(matches(isClosed(Gravity.LEFT))).perform(DrawerActions.open());
+
+    }
+
+    @Test
+    public void openMenuAndLogout() throws InterruptedException {
+
         onView(withId(R.id.navigation_view)).perform(NavigationViewActions.navigateTo(R.id.logout));
 
     }
@@ -71,13 +70,11 @@ public class MainActivityTest {
     public void openMenuNavigateToMap() {
 
 
-        onView(withId(R.id.navigation_view)).perform(NavigationViewActions.navigateTo(R.id.map));
+        onView(withId(R.id.navigation_view)).perform(NavigationViewActions.navigateTo(R.id.map_support));
         //onView(withId(R.id.toolbar)).check(matches(hasDescendant(withText("Map"))));
 
 
     }
-
-
 
 
 }

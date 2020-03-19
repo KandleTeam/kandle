@@ -5,16 +5,19 @@ import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.Dialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.location.LocationManager;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.Toast;
 
+import androidx.annotation.RequiresPermission;
+import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.Fragment;
 
@@ -29,19 +32,18 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
-import permissions.dispatcher.NeedsPermission;
-import permissions.dispatcher.RuntimePermissions;
 
-@RuntimePermissions
+import static androidx.core.content.ContextCompat.getSystemService;
+
 public class MapFragment extends Fragment implements GoogleMap.OnMarkerClickListener {
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private GoogleMap mMap;
-    private SupportMapFragment mapFragment;
-    //Location mCurrentLocation;
-    ImageButton mCreatePost;
 
-    AbstractLocation abstractLocation = new AbstractLocation(this.getContext(), null);
+    private GoogleMap mMap;
+    public SupportMapFragment mapFragment;
+    //Location mCurrentLocation;
+    private ImageButton mCreatePost;
+    public AbstractLocation abstractLocation = new AbstractLocation(this.getContext(), null);
+
+
 
     private final static String KEY_LOCATION = "location";
     private final static int CONNECTION_FAILURE_RESOLUTION_REQUEST = 9000;
@@ -60,15 +62,16 @@ public class MapFragment extends Fragment implements GoogleMap.OnMarkerClickList
     @SuppressLint("ResourceType")
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
+                             final Bundle savedInstanceState) {
 
         // Inflate the layout for this fragment
         View v = inflater.inflate(R.layout.fragment_map, container, false);
-        mapFragment = (SupportMapFragment) this.getChildFragmentManager().findFragmentById(R.id.map);
-        mCreatePost = v.findViewById(R.id.createPost);
+        mapFragment = (SupportMapFragment) this.getChildFragmentManager().findFragmentById(R.id.map_support);
+        mCreatePost = v.findViewById(R.id.createPostBtn);
         mCreatePost.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                MapFragment.super.onSaveInstanceState(savedInstanceState);
                 startActivity(new Intent(getActivity().getApplicationContext(), PostActivity.class));
             }
         });
@@ -110,6 +113,7 @@ public class MapFragment extends Fragment implements GoogleMap.OnMarkerClickList
         super.onStop();
     }
 
+    /*
     private boolean isGooglePlayServicesAvailable() {
         // Check that Google Play services is available
         int resultCode = GooglePlayServicesUtil.isGooglePlayServicesAvailable(this.getContext());
@@ -124,8 +128,10 @@ public class MapFragment extends Fragment implements GoogleMap.OnMarkerClickList
         }
     }
 
+     */
+
     @Override
-    @NeedsPermission({android.Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION})
+    @RequiresPermission(Manifest.permission.ACCESS_FINE_LOCATION)
     public void onResume() {
         super.onResume();
 
@@ -135,7 +141,7 @@ public class MapFragment extends Fragment implements GoogleMap.OnMarkerClickList
             Toast.makeText(this.getContext(), "GPS location was found!", Toast.LENGTH_SHORT).show();
             LatLng latLng = new LatLng(abstractLocation.getCurrentLocation().getLatitude(), abstractLocation.getCurrentLocation().getLongitude());
             CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(latLng, 17);
-            mMap.animateCamera(cameraUpdate);
+            //mMap.animateCamera(cameraUpdate);
         } else {
             Toast.makeText(this.getContext(), "Current location was null, enable GPS on emulator!", Toast.LENGTH_SHORT).show();
         }
@@ -149,30 +155,6 @@ public class MapFragment extends Fragment implements GoogleMap.OnMarkerClickList
     public void onSaveInstanceState(Bundle savedInstanceState) {
         savedInstanceState.putParcelable(KEY_LOCATION, abstractLocation.getCurrentLocation());
         super.onSaveInstanceState(savedInstanceState);
-    }
-
-    // Define a DialogFragment that displays the error dialog
-    public static class ErrorDialogFragment extends DialogFragment {
-
-        // Global field to contain the error dialog
-        private Dialog mDialog;
-
-        // Default constructor. Sets the dialog field to null
-        public ErrorDialogFragment() {
-            super();
-            mDialog = null;
-        }
-
-        // Set the dialog to display
-        public void setDialog(Dialog dialog) {
-            mDialog = dialog;
-        }
-
-        // Return a Dialog to the DialogFragment.
-        @Override
-        public Dialog onCreateDialog(Bundle savedInstanceState) {
-            return mDialog;
-        }
     }
 
     @Override
@@ -196,6 +178,11 @@ public class MapFragment extends Fragment implements GoogleMap.OnMarkerClickList
         // marker is centered and for the marker's info window to open, if it has one).
         return false;
     }
+
+
+
+
+
 
 
 

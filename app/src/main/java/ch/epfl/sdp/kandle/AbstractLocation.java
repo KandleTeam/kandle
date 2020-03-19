@@ -8,6 +8,7 @@ import android.util.Log;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.RequiresPermission;
 
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationCallback;
@@ -22,9 +23,6 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
-
-import permissions.dispatcher.NeedsPermission;
-
 import static com.google.android.gms.location.LocationServices.getFusedLocationProviderClient;
 
 public class AbstractLocation {
@@ -49,7 +47,7 @@ public class AbstractLocation {
         return mCurrentLocation;
     }
 
-    @NeedsPermission({android.Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION})
+    @RequiresPermission(Manifest.permission.ACCESS_FINE_LOCATION)
     protected void startLocationUpdates(Context context) {
         mLocationRequest = new LocationRequest();
         mLocationRequest.setPriority(LocationRequest.PRIORITY_BALANCED_POWER_ACCURACY);
@@ -89,7 +87,7 @@ public class AbstractLocation {
         //Toast.makeText(this.getContext(), msg, Toast.LENGTH_SHORT).show();
         return location;
     }
-    @NeedsPermission({Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION})
+    @RequiresPermission(Manifest.permission.ACCESS_FINE_LOCATION)
     protected void loadMap(GoogleMap googleMap, Context context) {
         mMap = googleMap;
         if (mMap != null) {
@@ -104,7 +102,7 @@ public class AbstractLocation {
     }
 
     @SuppressWarnings({"MissingPermission"})
-    @NeedsPermission({Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION})
+    @RequiresPermission(Manifest.permission.ACCESS_FINE_LOCATION)
     void getMyLocation(Context context) {
         mMap.setMyLocationEnabled(true);
 

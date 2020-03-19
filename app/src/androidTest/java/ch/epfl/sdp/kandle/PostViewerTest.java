@@ -38,21 +38,26 @@ public class PostViewerTest {
 
 
     @Test
-    public void canClickOnPostAndRemoveIt() throws InterruptedException {
+    public void canClickOnPostAndRemoveIt() throws Throwable {
         onView(withId(R.id.drawer_layout)).check(matches(isClosed(Gravity.LEFT))).perform(DrawerActions.open());
         onView(withId(R.id.navigation_view)).perform(NavigationViewActions.navigateTo(R.id.your_posts));
-        PostFragment frag = PostFragment.newInstance();
-        ArrayList<Post> myposts = frag.getPostList();
-        Post p = new Post("Text",34,"this is my post",new Date() );
-        frag.putInPostList(p);
-        onView(withId(R.id.rvPosts)).perform(RecyclerViewActions.actionOnItemAtPosition(0,click()));
-        onView(withId(R.id.post_description)).perform(click());
 
-        frag.removePost(p);
-        //onView(withId(R.id.post_content)).perform(click());
+        this.mainActivityRule.runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                PostFragment frag = (PostFragment) mainActivityRule.getActivity().getSupportFragmentManager().findFragmentById(R.id.flContent);
+                Post p = new Post("Text", 0, "( : this is my post : )", new Date());
+                frag.putInPostList(p);
+            }
+        });
+
+        onView(withId(R.id.rvPosts)).perform(RecyclerViewActions.actionOnItemAtPosition(0, click()));
+
+
+        onView(withId(R.id.post_content)).perform(click());
+
     }
-
-    @Test
+        @Test
     public void putNewPostIntoTheRecyclerAndDeleteIt(){
         PostFragment frag = PostFragment.newInstance();
         frag.putInPostList(new Post("Text",34,"this is my post",new Date() ));

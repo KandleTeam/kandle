@@ -2,6 +2,7 @@ package ch.epfl.sdp.kandle;
 
 
 import androidx.test.espresso.intent.Intents;
+import androidx.test.espresso.intent.rule.IntentsTestRule;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 import androidx.test.rule.ActivityTestRule;
 
@@ -46,8 +47,7 @@ public class PostActivityTest {
 
 
         onView(withId(R.id.postButton)).perform(click());
-        Thread.sleep(1000);
-        intended(hasComponent(MainActivity.class.getName()));
+
 
         Intents.release();
 

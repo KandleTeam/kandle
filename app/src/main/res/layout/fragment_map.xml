@@ -7,13 +7,13 @@
     android:layout_height="match_parent">
 
         <fragment
-            android:id="@+id/map"
+            android:id="@+id/map_support"
             android:name="com.google.android.gms.maps.SupportMapFragment"
             android:layout_width="match_parent"
             android:layout_height="match_parent" />
 
         <ImageButton
-            android:id="@+id/createPost"
+            android:id="@+id/createPostBtn"
             android:layout_width="59dp"
             android:layout_height="59dp"
             android:background="@drawable/add_background"
