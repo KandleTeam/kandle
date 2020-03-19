@@ -10,49 +10,40 @@ android:
     # The system image, to run an emulator during the tests
     - sys-img-armeabi-v7a-android-22
 
-sudo: required
-
-
 env:
-    global:
-    #minutes (2 minutes by default), prevents CommandShellUnresponsiveExceptions
-    - ADB_INSTALL_TIMEOUT=14
-
-    # setup of emulators this will be tested on
-    #
-    # API:         Desired API level of the emulator
-    # ANDROID_ABI: Currently either "armeabi" (only needed for API8) or "armeabi-v7a"
-    # ANDROID_TAG: Either "default" or "google_apis" if play services are used
-    #
-    # Below list was generated in June 2018. To get an up to date list of available options run "sdkmanager --list"
-    #
-    # Note: Currently (June 2018) there are no arm images for API > 25 provided by google.
-    #       This is unlikely to change in the future due to the new emulator supporting
-    #       (and requiring!) hardware acceleration for x86.
-    #       Unfortunately Travis has no solution yet for providing KVM on the worker machines
-    #       so running API25 and up emulators is not possible right now.
+  global:
+    - BUILD_TOOLS=29.0.3
+    - COMPILE_SDK_VERSION=29
+    - ABI=x86_64
+    - ADB_INSTALL_TIMEOUT=8
+    - JDK="1.8"
     
-    matrix:
-    #- API=10 ANDROID_ABI=armeabi-v7a ANDROID_TAG=default
-    #- API=10 ANDROID_ABI=armeabi-v7a ANDROID_TAG=google_apis     # currently no google apis needed
-    #- API=14 ANDROID_ABI=armeabi-v7a ANDROID_TAG=default         # emulator consistently times out
-    #- API=15 ANDROID_ABI=armeabi-v7a ANDROID_TAG=default         # https://github.com/osmdroid/osmdroid/issues/1066
-    #- API=15 ANDROID_ABI=armeabi-v7a ANDROID_TAG=google_apis     # currently no google apis needed
-    #- API=16 ANDROID_ABI=armeabi-v7a ANDROID_TAG=default
-    #- API=17 ANDROID_ABI=armeabi-v7a ANDROID_TAG=default
-    #- API=17 ANDROID_ABI=armeabi-v7a ANDROID_TAG=google_apis     # currently no google apis needed
-    #- API=18 ANDROID_ABI=armeabi-v7a ANDROID_TAG=default
-    #- API=18 ANDROID_ABI=armeabi-v7a ANDROID_TAG=google_apis     # currently no google apis needed
-    #- API=19 ANDROID_ABI=armeabi-v7a ANDROID_TAG=default
-    #- API=21 ANDROID_ABI=armeabi-v7a ANDROID_TAG=default
-    #- API=21 ANDROID_ABI=armeabi-v7a ANDROID_TAG=google_apis     # currently no google apis needed
-    #- API=22 ANDROID_ABI=armeabi-v7a ANDROID_TAG=default         # com.android.ddmlib.InstallException: Failed to finalize session : INSTALL_FAILED_DEXOPT: Package couldn't be installed in /data/app/org.osmdroid-2: scanPackageLI
-    - API=22 ANDROID_ABI=armeabi-v7a ANDROID_TAG=google_apis     # currently no google apis needed
-    #- API=23 ANDROID_ABI=armeabi-v7a ANDROID_TAG=default         # sdkmanager --list reports this to be available, but image is not found during build
-    #- API=23 ANDROID_ABI=armeabi-v7a ANDROID_TAG=google_apis     # Unable to install /home/travis/build/cbalster/osmdroid/OpenStreetMapViewer/build/outputs/apk/OpenStreetMapViewer-6.0.2-SNAPSHOT-debug.apk com.android.ddmlib.InstallException: Failed to establish session
-    #- API=24 ANDROID_ABI=armeabi-v7a ANDROID_TAG=default         # "The command "adb shell ls /" failed and exited with 1 during." see line 108
-    #- API=24 ANDROID_ABI=armeabi-v7a ANDROID_TAG=google_apis     # emulator consistently times out
-    #- API=25 ANDROID_ABI=armeabi-v7a ANDROID_TAG=google_apis     # no addons available, so can't be used
+  matrix:
+    # - API=15 ABI=x86 EMU_CHANNEL="--channel=4" # ERROR: failed to start emulator
+    # - API=16 ABI=x86 AUDIO=-no-audio # ERROR: fails with com.android.ddmlib.InstallException: Unknown failure: Error: Unknown option: -d
+    # API=17 ABI=x86 # Works
+    # API=18 ABI=x86 # Works
+    # API=19 ABI=x86 # Works
+    # API 20 was Android Wear only
+    # API=21 ABI=x86_64 # Works
+    - API=22 ABI=x86_64 # Works
+    # API=23 ABI=x86_64 # Works
+    # API=24 ABI=x86_64 # Works
+    # API=25 ABI=x86_64 # Works
+    # API=26 ABI=x86_64 # Works
+    # API=27 ABI=x86_64 # Works
+    # API=28 ABI=x86_64 # Works
+    # API=29 ABI=x86_64 # Works
+
+before_install:
+  # This section may run on all platforms, and may run for unit tests or for coverage finalization
+  # It should not make assumptions about os platform or desired tool installation
+
+  # Set up JDK 8 for Android SDK - Java is universally needed: codacy, unit tests, emulators
+  - curl "${GRAVIS}.install-jdk-travis.sh" --output ~/.install-jdk-travis.sh
+  - export TARGET_JDK="${JDK}"
+  - JDK="1.8"
+ 
 
 before_script:
   # Emulator Management: Create, Start and Wait
