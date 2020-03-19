@@ -49,6 +49,7 @@ public class PostActivityTest {
         onView(withId (R.id.postText)).perform(closeSoftKeyboard());
         onView(withId(R.id.postButton)).perform(click());
         onView(withId(R.id.postText)).check(matches(hasErrorText("Your post is empty...")));
+        onView(withId(R.id.postImage)).check(matches(not(withTagValue(is(PostActivity.POST_IMAGE_TAG)))));
 
     }
 
@@ -58,7 +59,7 @@ public class PostActivityTest {
         //Intents.init();
         onView(withId(R.id.postText)).perform(typeText("   Salut Salut  "));
         onView(withId (R.id.postText)).perform(closeSoftKeyboard());
-        
+
         onView(withId(R.id.postButton)).perform(click());
         Thread.sleep(1000);
         intended(hasComponent(MainActivity.class.getName()));
@@ -93,5 +94,7 @@ public class PostActivityTest {
         onView(withId(R.id.postImage)).check(matches(withTagValue(is(PostActivity.POST_IMAGE_TAG))));
 
     }
+
+
 
 }
