@@ -38,7 +38,7 @@ import static androidx.core.content.ContextCompat.getSystemService;
 public class MapFragment extends Fragment implements GoogleMap.OnMarkerClickListener {
 
     private GoogleMap mMap;
-    public SupportMapFragment mapFragment;
+    public SupportMapFragment mapFragment = null;
     //Location mCurrentLocation;
     private ImageButton mCreatePost;
     public AbstractLocation abstractLocation = new AbstractLocation(this.getContext(), null);
@@ -66,7 +66,12 @@ public class MapFragment extends Fragment implements GoogleMap.OnMarkerClickList
 
         // Inflate the layout for this fragment
         View v = inflater.inflate(R.layout.fragment_map, container, false);
-        mapFragment = (SupportMapFragment) this.getChildFragmentManager().findFragmentById(R.id.map_support);
+        /*
+        if(isGooglePlayServicesAvailable()) {
+            mapFragment = (SupportMapFragment) this.getChildFragmentManager().findFragmentById(R.id.map_support);
+        }
+
+         */
         mCreatePost = v.findViewById(R.id.createPostBtn);
         mCreatePost.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -113,7 +118,7 @@ public class MapFragment extends Fragment implements GoogleMap.OnMarkerClickList
         super.onStop();
     }
 
-    /*
+
     private boolean isGooglePlayServicesAvailable() {
         // Check that Google Play services is available
         int resultCode = GooglePlayServicesUtil.isGooglePlayServicesAvailable(this.getContext());
@@ -128,7 +133,7 @@ public class MapFragment extends Fragment implements GoogleMap.OnMarkerClickList
         }
     }
 
-     */
+
 
     @Override
     @RequiresPermission(Manifest.permission.ACCESS_FINE_LOCATION)
