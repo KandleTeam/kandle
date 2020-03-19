@@ -2,7 +2,7 @@ package ch.epfl.sdp.kandle;
 
 public class User {
 
-    private String id, username, email, fullname , normalizedUsername;
+    private String id, username, email, fullname , normalizedUsername, profilePicUri;
 
     public User() {
         // Keep fields null
@@ -46,5 +46,13 @@ public class User {
 
     public String getNormalizedUsername() {
         return normalizedUsername;
+    }
+
+    public void setProfilePicUri(String profilePicUri) {
+        this.profilePicUri = profilePicUri;
+    }
+
+    public String getProfilePicUri() {
+        return profilePicUri;
     }
 }
