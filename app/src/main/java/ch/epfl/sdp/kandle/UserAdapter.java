@@ -45,7 +45,7 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.ViewHolder> {
         LayoutInflater inflater = LayoutInflater.from(context);
         View userView = inflater.inflate(R.layout.search_user, parent, false);
 
-        //System.out.println("check2");
+
         ViewHolder viewHolder = new ViewHolder(userView);
         return viewHolder;
 
@@ -87,29 +87,6 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.ViewHolder> {
             }
         });
 
-        /*
-        DatabaseReference reference = FirebaseDatabase.getInstance().getReference()
-                .child("Follow").child(authenticationUser.getUid()).child("following");
-        reference.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                if (dataSnapshot.child(user.getId()).exists()){
-                    holder.mFollowBtn.setText("following");
-                } else{
-                    holder.mFollowBtn.setText("follow");
-                }
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-
-            }
-        });
-
- */
-
-
-
 
         holder.mFollowBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -131,16 +108,6 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.ViewHolder> {
                         }
                     });
 
-
-
-                    /*
-                    FirebaseDatabase.getInstance().getReference().child("Follow").child(authenticationUser.getUid())
-                            .child("following").child(user.getId()).setValue(true);
-                    FirebaseDatabase.getInstance().getReference().child("Follow").child(user.getId())
-                            .child("followers").child(authenticationUser.getUid()).setValue(true);
-
-                     */
-
                 } else {
 
                     database.unFollow(authenticationUser.getUid(), user.getId()).addOnCompleteListener(new OnCompleteListener<Void>() {
@@ -157,14 +124,6 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.ViewHolder> {
                         }
                     });
 
-
-                    /*
-                    FirebaseDatabase.getInstance().getReference().child("Follow").child(authenticationUser.getUid())
-                            .child("following").child(user.getId()).removeValue();
-                    FirebaseDatabase.getInstance().getReference().child("Follow").child(user.getId())
-                            .child("followers").child(authenticationUser.getUid()).removeValue();
-
-                     */
                 }
             }
         });

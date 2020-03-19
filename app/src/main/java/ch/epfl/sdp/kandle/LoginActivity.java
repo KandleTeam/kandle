@@ -23,12 +23,11 @@ public class LoginActivity extends AppCompatActivity {
     EditText mEmail, mPassword;
     Button mSignUpBtn;
     Authentication Auth;
-    //ProgressDialog pd;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
-       // FirebaseAuthFactory fAuthFactory = new FirebaseAuthFactory();
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
         Auth = Authentication.getAuthenticationSystem();
@@ -109,49 +108,6 @@ public class LoginActivity extends AppCompatActivity {
         });
 
 
-        /*2try
-
-        String error = Auth.signInWithEmailAndPassword(email, password);
-
-        if (error.isEmpty()){
-            Toast.makeText(LoginActivity.this, getString(R.string.login_success), Toast.LENGTH_LONG).show();
-            startActivity(new Intent(getApplicationContext(), MainActivity.class));
-            finish();
-
-        }
-
-        else {
-            Toast.makeText(LoginActivity.this, "An error has occurred : " + error , Toast.LENGTH_SHORT).show();
-        }
-
-         */
-
-        /*
-        fAuth.signInWithEmailAndPassword(email, password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
-            @Override
-            public void onComplete(@NonNull Task<AuthResult> task) {
-               // System.out.println("begin");
-
-                //pd = new ProgressDialog(LoginActivity.this);
-                //pd.setMessage("Connection...");
-                //pd.show();
-
-                if (task.isSuccessful()) {
-
-                    //pd.dismiss();
-                    Toast.makeText(LoginActivity.this, getString(R.string.login_success), Toast.LENGTH_LONG).show();
-                    startActivity(new Intent(getApplicationContext(), MainActivity.class));
-                    finish();
-
-                } else {
-                    //pd.dismiss();
-                    Toast.makeText(LoginActivity.this, "An error has occurred : " + task.getException().getMessage(), Toast.LENGTH_SHORT).show();
-                }
-
-            }
-        });
-
-         */
 
 
     }
