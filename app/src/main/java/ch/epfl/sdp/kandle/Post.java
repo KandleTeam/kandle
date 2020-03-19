@@ -22,7 +22,7 @@ public class Post {
     private ArrayList<String> comments;
     private Date date;
 
-
+    /*
     public Post(String type, LatLng location, String description, Date date){
         this.type = type;
         this.location = location;
@@ -33,6 +33,8 @@ public class Post {
         this.date = date;
 
     }
+
+     */
 
     public Post(String type,String description,Date date){
         this.type = type;
@@ -45,13 +47,6 @@ public class Post {
     }
 
 
-    public String getType(){
-        return type;
-    }
-
-    public LatLng getLocation(){
-        return location;
-    }
 
     public int getLikes(){
         return likes;
@@ -63,10 +58,6 @@ public class Post {
 
     public String getDescription(){
         return description;
-    }
-
-    public ArrayList<String> getComments(){
-        return comments;
     }
 
     public Date getDate(){

@@ -45,8 +45,8 @@ public class PostFragment extends Fragment {
                              @Nullable Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.post_fragment, container, false);
         rvPosts = rootView.findViewById(R.id.rvPosts);
-
-
+        Post p =  new Post("Text", "( : this is my post : )", new Date());
+        posts.add(p);
 
         adapter.setOnItemClickListener(new ClickListener() {
             @Override

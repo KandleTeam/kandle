@@ -65,14 +65,10 @@ public class PostViewerTest {
        });
 
         onView(withId(R.id.rvPosts)).perform(RecyclerViewActions.actionOnItemAtPosition(0,click()));
-        onView(withId(R.id.post_description)).check(matches(hasDescendant(withText("( : this is my post : )"))));
-        this.mainActivityRule.runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                PostFragment frag = (PostFragment) mainActivityRule.getActivity().getSupportFragmentManager().findFragmentById(R.id.flContent);
-                frag.removePostAtIndex(0);
-            }
-        });
+
+
+        onView(withId(R.id.post_content)).perform(click());
+
 
 
 
@@ -96,6 +92,8 @@ public class PostViewerTest {
 
     @Test
     public void addTwoPostAndLikeThenDislikeThemBoth() throws Throwable {
+        PostFragment frag = PostFragment.newInstance();
+        frag.getPostList();
         this.mainActivityRule.runOnUiThread(new Runnable() {
 
             @Override
@@ -116,6 +114,9 @@ public class PostViewerTest {
     }
 
     
+
+
+
     public static ViewAction clickChildViewWithId(final int id) {
         return new ViewAction() {
             @Override
