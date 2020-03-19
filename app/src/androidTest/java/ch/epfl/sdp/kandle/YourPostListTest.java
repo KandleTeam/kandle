@@ -1,45 +1,33 @@
-
 package ch.epfl.sdp.kandle;
-
 import android.view.Gravity;
 import android.view.View;
-import android.widget.PopupMenu;
 
-
-import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentTransaction;
-import androidx.recyclerview.widget.RecyclerView;
-import androidx.test.espresso.IdlingPolicies;
-import androidx.test.espresso.IdlingRegistry;
 import androidx.test.espresso.UiController;
 import androidx.test.espresso.ViewAction;
 import androidx.test.espresso.contrib.DrawerActions;
 import androidx.test.espresso.contrib.NavigationViewActions;
 import androidx.test.espresso.contrib.RecyclerViewActions;
-import androidx.test.espresso.matcher.ViewMatchers;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 import androidx.test.rule.ActivityTestRule;
-
 import org.hamcrest.Matcher;
-import org.junit.After;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import java.util.ArrayList;
 import java.util.Date;
+
+import ch.epfl.sdp.kandle.Fragment.YourPostListFragment;
 
 import static androidx.test.espresso.Espresso.onView;
 import static androidx.test.espresso.action.ViewActions.click;
 import static androidx.test.espresso.assertion.ViewAssertions.matches;
 import static androidx.test.espresso.contrib.DrawerMatchers.isClosed;
-import static androidx.test.espresso.matcher.ViewMatchers.hasDescendant;
 import static androidx.test.espresso.matcher.ViewMatchers.withId;
 import static androidx.test.espresso.matcher.ViewMatchers.withText;
 
 @RunWith(AndroidJUnit4.class)
-public class PostViewerTest {
+public class YourPostListTest {
 
     @Rule
     public final ActivityTestRule<MainActivity> mainActivityRule =
@@ -59,7 +47,7 @@ public class PostViewerTest {
         this.mainActivityRule.runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                PostFragment frag = (PostFragment) mainActivityRule.getActivity().getSupportFragmentManager().findFragmentById(R.id.flContent);
+                YourPostListFragment frag = (YourPostListFragment) mainActivityRule.getActivity().getSupportFragmentManager().findFragmentById(R.id.flContent);
                 Post p =  new Post("Text",0, "( : this is my post : )", new Date());
                 frag.putInPostList(p);
             }
@@ -80,7 +68,7 @@ public class PostViewerTest {
         this.mainActivityRule.runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                PostFragment frag = (PostFragment) mainActivityRule.getActivity().getSupportFragmentManager().findFragmentById(R.id.flContent);
+                YourPostListFragment frag = (YourPostListFragment) mainActivityRule.getActivity().getSupportFragmentManager().findFragmentById(R.id.flContent);
                 Post p =  new Post("Text", 0,"( : this is my post 1 : )", new Date());
                 Post p1 =  new Post("Text", 0,"( : this is my post 2 : )", new Date());
                 frag.putInPostList(p);
@@ -93,13 +81,13 @@ public class PostViewerTest {
 
     @Test
     public void addTwoPostAndLikeThenDislikeThemBoth() throws Throwable {
-        PostFragment frag = PostFragment.newInstance();
+        YourPostListFragment frag = YourPostListFragment.newInstance();
         frag.getPostList();
         this.mainActivityRule.runOnUiThread(new Runnable() {
 
             @Override
             public void run() {
-                PostFragment frag = (PostFragment) mainActivityRule.getActivity().getSupportFragmentManager().findFragmentById(R.id.flContent);
+                YourPostListFragment frag = (YourPostListFragment) mainActivityRule.getActivity().getSupportFragmentManager().findFragmentById(R.id.flContent);
                 Post p =  new Post("Text", 0,"( : this is my post : )", new Date());
                 Post p1 =  new Post("Text", 0,"( : this is my post : )", new Date());
                 frag.putInPostList(p);
