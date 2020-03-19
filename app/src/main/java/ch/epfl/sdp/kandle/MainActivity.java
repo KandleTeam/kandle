@@ -39,9 +39,6 @@ public class MainActivity extends AppCompatActivity {
 
     private Fragment bottomFragment = null;
 
-    //
-
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,7 +52,6 @@ public class MainActivity extends AppCompatActivity {
         mNavigationView = findViewById(R.id.navigation_view);
         mPostButton = findViewById(R.id.postButton);
 
-
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         drawerToggle = new ActionBarDrawerToggle(this,mDrawerLayout,toolbar,R.string.drawer_open,R.string.drawer_close);
@@ -63,53 +59,6 @@ public class MainActivity extends AppCompatActivity {
         setupDrawerContent(mNavigationView);
         drawerToggle.syncState();
         mDrawerLayout.addDrawerListener(drawerToggle);
-
-
-        //
-
-
-
-
-
-       /* mBottomNavigationView = findViewById(R.id.bottom_navigation);
-        mBottomNavigationView.setOnNavigationItemSelectedListener(
-                new BottomNavigationView.OnNavigationItemSelectedListener() {
-                    @Override
-                    public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-                        switch (item.getItemId()){
-                            case R.id.nav_map:
-                                bottomFragment = new MapFragment();
-                                break;
-                            case R.id.nav_search:
-                                try {
-                                    bottomFragment = SearchFragment.class.newInstance();
-                                } catch (IllegalAccessException e) {
-                                    e.printStackTrace();
-                                } catch (InstantiationException e) {
-                                    e.printStackTrace();
-                                }
-                                break;
-                            case R.id.nav_addPost:
-                                startActivity(new Intent(MainActivity.this, PostActivity.class));
-                                break;
-                            case R.id.nav_profile:
-                                //bottomFragment = new PostFragment();
-                                break;
-                        }
-
-                            if (bottomFragment!=null) {
-                                getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,bottomFragment).commit();
-                            }
-
-                        return true;
-                    }
-                }
-        );
-
-        getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new MapFragment()).commit();
-
-*/
-
 
     }
 
@@ -135,11 +84,6 @@ public class MainActivity extends AppCompatActivity {
         int size = mNavigationView.getMenu().size();
 
         switch(menuItem.getItemId()) {
-
-
-
-
-
 
             //For activities
 

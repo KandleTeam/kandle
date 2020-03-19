@@ -31,9 +31,6 @@ import ch.epfl.sdp.kandle.UserAdapter;
 
 public class SearchFragment extends Fragment {
 
-   // private FirebaseAuth fAuth;
-
-    //private FirebaseDatabase fData;
 
     private Authentication auth;
     private Database database;
@@ -44,8 +41,6 @@ public class SearchFragment extends Fragment {
     private UserAdapter userAdapter = new UserAdapter(mUsers);
 
     EditText search_bar;
-
-    // private EditText mSearchText;
 
     public SearchFragment( ){
 
@@ -65,8 +60,6 @@ public class SearchFragment extends Fragment {
 
         View view = inflater.inflate(R.layout.fragment_search, container, false);
 
-        //Button postButton = view.findViewById(R.id.postButton);
-        //postButton.setVisibility(View.GONE);
 
         mRecyclerView = view.findViewById(R.id.recycler_view);
 
@@ -77,35 +70,6 @@ public class SearchFragment extends Fragment {
 
         mRecyclerView.setAdapter(userAdapter);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(this.getContext()));
-
-/*
-        DatabaseReference reference = fData.getReference("Users");
-        reference.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-
-                    for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
-
-                        User user = snapshot.getValue(User.class);
-
-                        if (!firebaseUser.getUid().equals(user.getId()))
-                        mUsers.add(user);
-                        //System.out.println("check");
-
-                    }
-
-                userAdapter.notifyDataSetChanged();
-
-                }
-
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-
-            }
-        });
-
- */
 
         search_bar.addTextChangedListener(new TextWatcher() {
             @Override
@@ -150,50 +114,6 @@ public class SearchFragment extends Fragment {
                     mUsers.clear();
                     userAdapter.notifyDataSetChanged();
                 }
-
-
-                /*
-
-                if (!charSequence.toString().isEmpty()) {
-
-                    String q = charSequence.toString().toLowerCase().replace(" ", "");
-                    Query query = FirebaseDatabase.getInstance().getReference("Users").orderByChild("fullnameSearch")
-                            .startAt(q)
-                            .endAt(q + "\uf8ff");
-
-
-
-                    //System.out.println(charSequence.toString());
-
-                    query.addValueEventListener(new ValueEventListener() {
-                        @Override
-                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                            mUsers.clear();
-                            for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
-                                User user = snapshot.getValue(User.class);
-                                user.setUsername(user.getFullname());
-                                if (!firebaseUser.getUid().equals(user.getId()))
-                                    mUsers.add(user);
-                            }
-
-                            userAdapter.notifyDataSetChanged();
-                        }
-
-                        @Override
-                        public void onCancelled(@NonNull DatabaseError databaseError) {
-
-                        }
-                    });
-                }
-
-                else {
-                    mUsers.clear();
-                    userAdapter.notifyDataSetChanged();
-                }
-
-                 */
-
-
             }
 
             @Override
@@ -220,33 +140,9 @@ public class SearchFragment extends Fragment {
 
                 fragmentManager.beginTransaction().replace(R.id.flContent, ProfileFragment.newInstance(user) ).commit();
 
-                /*
-                DatabaseReference reference = fData.getReference()
-                        .child("Follow").child(firebaseUser.getUid()).child("following");
-                reference.addValueEventListener(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(DataSnapshot dataSnapshot) {
-                        if (dataSnapshot.child(user.getId()).exists()){
-                            Toast.makeText(getContext(), "Visiting profile...",  Toast.LENGTH_SHORT).show();
-                        } else{
-                            Toast.makeText(getContext(), "You must follow before you can visit the profile",  Toast.LENGTH_SHORT).show();
-                        }
-                    }
-
-                    @Override
-                    public void onCancelled(DatabaseError databaseError) {
-
-                    }
-                });
-                */
 
             }
         });
-
-
-
-
-
 
         return view;
     }

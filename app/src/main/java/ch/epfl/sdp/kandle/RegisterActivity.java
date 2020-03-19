@@ -66,11 +66,7 @@ public class RegisterActivity extends AppCompatActivity {
                 if (!checkFields(fullName,email, password, passwordConfirm)){
                     return;
                 }
-
-
-                    performRegisterViaFirebase(fullName, email, password);
-
-
+                 performRegisterViaFirebase(fullName, email, password);
             }
         });
 
@@ -79,12 +75,9 @@ public class RegisterActivity extends AppCompatActivity {
 
     private void performRegisterViaFirebase (final String fullName, final String email, String password)  {
 
-       // pd = new ProgressDialog(RegisterActivity.this);
-       // pd.setMessage("Connection...");
-        //pd.show();
-
-
-
+        // pd = new ProgressDialog(RegisterActivity.this);
+        // pd.setMessage("Connection...");
+        // pd.show();
 
         Auth.createUserWithEmailAndPassword(email, password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
             @Override
@@ -94,35 +87,10 @@ public class RegisterActivity extends AppCompatActivity {
 
                     Toast.makeText(RegisterActivity.this, "User has been created", Toast.LENGTH_LONG ).show();
 
-
                     userID = Auth.getCurrentUser().getUid();
 
-                    /*
-
-                    //store user in the firestore
-                    DocumentReference documentReference = fStore.collection("users").document(userID);
-                    Map<String,Object> user = new HashMap<>();
-                    user.put("fullName",fullName);
-                    user.put("email",email);
-                    documentReference.set(user);*/
                     fStore.createUser( new User(userID, email, email));
 
-
-
-/*
-                    //store user in realtimedatabase
-                    DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference().child("Users").child(userID);
-                    HashMap<String, Object> map = new HashMap<>();
-                    map.put("id", userID);
-                    map.put("fullname", fullName);
-                    // map.put ("fullnameWithoutSpace", fullName.replace(" ", ""));
-                    map.put("email",email);
-                    map.put("fullnameSearch", fullName.toLowerCase().trim().replace(" ", ""));
-
-                    databaseReference.setValue(map);
-
- */
-
                     startActivity(new Intent(getApplicationContext(), MainActivity.class));
                     finish();
 
@@ -134,105 +102,6 @@ public class RegisterActivity extends AppCompatActivity {
 
             }
         });
-
-
-
-
-                /* 2try
-        System.out.println(" activity" + error);
-
-        if (error.isEmpty()){
-            Toast.makeText(RegisterActivity.this, "User has been created", Toast.LENGTH_LONG ).show();
-
-
-            userID = Auth.getCurrentUser().getUid();
-
-            //store user in the firestore
-            DocumentReference documentReference = fStore.collection("users").document(userID);
-            Map<String,Object> user = new HashMap<>();
-            user.put("fullName",fullName);
-            user.put("email",email);
-            documentReference.set(user);
-
-
-
-
-            //store user in realtimedatabase
-            DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference().child("Users").child(userID);
-            HashMap<String, Object> map = new HashMap<>();
-            map.put("id", userID);
-            map.put("fullname", fullName);
-            // map.put ("fullnameWithoutSpace", fullName.replace(" ", ""));
-            map.put("email",email);
-            map.put("fullnameSearch", fullName.toLowerCase().trim().replace(" ", ""));
-
-            databaseReference.setValue(map);
-
-            startActivity(new Intent(getApplicationContext(), MainActivity.class));
-            finish();
-
-        }
-
-        else {
-            Toast.makeText(RegisterActivity.this, "An error has occurred : " + error, Toast.LENGTH_SHORT).show();
-        }
-
-                 */
-
-
-
-        /*
-
-        fAuth.createUserWithEmailAndPassword(email, password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
-            @Override
-            public void onComplete(@NonNull Task<AuthResult> task) {
-                if (task.isSuccessful()){
-                    Toast.makeText(RegisterActivity.this, "User has been created", Toast.LENGTH_LONG ).show();
-
-
-                    userID = fAuth.getCurrentUser().getUid();
-
-
-                    {
-
-                    //store user in the firestore
-                    DocumentReference documentReference = fStore.collection("users").document(userID);
-                    Map<String,Object> user = new HashMap<>();
-                    user.put("fullName",fullName);
-                    user.put("email",email);
-                    documentReference.set(user);
-
-
-
-
-                    //store user in realtimedatabase
-                    DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference().child("Users").child(userID);
-                    HashMap<String, Object> map = new HashMap<>();
-                    map.put("id", userID);
-                    map.put("fullname", fullName);
-                   // map.put ("fullnameWithoutSpace", fullName.replace(" ", ""));
-                    map.put("email",email);
-                    map.put("fullnameSearch", fullName.toLowerCase().trim().replace(" ", ""));
-
-                    databaseReference.setValue(map);}
-
-                   // pd.dismiss();
-
-                    startActivity(new Intent(getApplicationContext(), MainActivity.class));
-                    finish();
-
-                }
-
-                else {
-                    //pd.dismiss();
-                    Toast.makeText(RegisterActivity.this, "An error has occurred : " + task.getException().getMessage(), Toast.LENGTH_SHORT).show();
-
-                }
-            }
-        });
-
-         */
-
 
     }
 
