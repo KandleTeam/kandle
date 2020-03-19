@@ -66,12 +66,12 @@ public class MapFragment extends Fragment implements GoogleMap.OnMarkerClickList
 
         // Inflate the layout for this fragment
         View v = inflater.inflate(R.layout.fragment_map, container, false);
-        /*
+
         if(isGooglePlayServicesAvailable()) {
             mapFragment = (SupportMapFragment) this.getChildFragmentManager().findFragmentById(R.id.map_support);
         }
 
-         */
+
         mCreatePost = v.findViewById(R.id.createPostBtn);
         mCreatePost.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -102,21 +102,7 @@ public class MapFragment extends Fragment implements GoogleMap.OnMarkerClickList
         return v;
     }
 
-    /*
-     * Called when the Activity becomes visible.
-     */
-    @Override
-    public void onStart() {
-        super.onStart();
-    }
 
-    /*
-     * Called when the Activity is no longer visible.
-     */
-    @Override
-    public void onStop() {
-        super.onStop();
-    }
 
 
     private boolean isGooglePlayServicesAvailable() {
