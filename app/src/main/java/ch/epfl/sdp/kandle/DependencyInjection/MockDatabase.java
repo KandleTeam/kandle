@@ -5,6 +5,7 @@ import com.google.android.gms.tasks.TaskCompletionSource;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -142,11 +143,19 @@ public class MockDatabase extends Database {
                 results.add(u);
             }
         }
-
+/*
         results.sort(new Comparator<User>() {
             @Override
             public int compare(User u1, User u2) {
                 return u1.getUsername().compareTo(u2.getUsername());
+            }
+        });
+
+ */
+        Collections.sort(results, new Comparator<User>() {
+            @Override
+            public int compare(User o1, User o2) {
+                return o1.getUsername().compareTo(o2.getUsername());
             }
         });
 
