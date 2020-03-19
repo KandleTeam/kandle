@@ -10,7 +10,6 @@ import java.util.ArrayList;
 import java.util.Date;
 
 
-
 public class Post {
 
     //private User author;
@@ -36,46 +35,50 @@ public class Post {
 
     }*/
 
-    public Post(String type,int likes,String description,Date date){
+    public Post(String type, int likes, String description, Date date) {
         this.type = type;
         this.location = null;
         this.likes = likes;
         this.description = description;
         this.comments = null;
         this.date = date;
-        postId = count ++;
+        postId = count++;
     }
 
 
-    public String getString(){
+    public String getString() {
         return type;
     }
 
-    public LatLng getLocation(){
+    public LatLng getLocation() {
         return location;
     }
 
-    public int getLikes(){
+    public int getLikes() {
         return likes;
     }
 
-    public int getPost_id(){
+    public int getPost_id() {
         return postId;
     }
 
-    public String getDescription(){
+    public String getDescription() {
         return description;
     }
 
-    public ArrayList<String> getComments(){
+    public ArrayList<String> getComments() {
         return comments;
     }
 
-    public Date getDate(){
+    public Date getDate() {
         return date;
     }
 
-    public int likePost(){
+    public int likePost() {
         return likes++;
+    }
+
+    public int dislikePost() {
+        return likes--;
     }
 }

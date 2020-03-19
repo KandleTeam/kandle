@@ -17,6 +17,7 @@ import androidx.fragment.app.FragmentManager;
 import ch.epfl.sdp.kandle.Fragment.AboutFragment;
 import ch.epfl.sdp.kandle.Fragment.MapFragment;
 //import ch.epfl.sdp.kandle.Fragment.ProfileFragment;
+import ch.epfl.sdp.kandle.Fragment.YourPostListFragment;
 import ch.epfl.sdp.kandle.Fragment.SearchFragment;
 import ch.epfl.sdp.kandle.Fragment.SettingsFragment;
 import ch.epfl.sdp.kandle.DependencyInjection.Authentication;
@@ -102,7 +103,7 @@ public class MainActivity extends AppCompatActivity {
 
 
             case R.id.your_posts:
-                fragmentClass = PostFragment.class;
+                fragmentClass = YourPostListFragment.class;
                 break;
 
             case R.id.map:

@@ -1,4 +1,4 @@
-package ch.epfl.sdp.kandle;
+package ch.epfl.sdp.kandle.Fragment;
 
 import android.os.Bundle;
 
@@ -13,38 +13,44 @@ import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.PopupWindow;
 import android.widget.TextView;
 
-import java.lang.reflect.Array;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 
-public class PostFragment extends Fragment {
+import ch.epfl.sdp.kandle.ClickListener;
+import ch.epfl.sdp.kandle.Post;
+import ch.epfl.sdp.kandle.PostAdapter;
+import ch.epfl.sdp.kandle.R;
+
+public class YourPostListFragment extends Fragment {
 
 
     private RecyclerView rvPosts;
     private ArrayList<Post> posts = new ArrayList<>(0); //From user
     private PostAdapter adapter = new PostAdapter(posts);
 
+    private ImageButton mlikeButton;
+    private boolean alreadyLiked = false;
+
     private DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
 
-    public static PostFragment newInstance() {
-        return new PostFragment();
+    public static YourPostListFragment newInstance() {
+        return new YourPostListFragment();
     }
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
-        View rootView = inflater.inflate(R.layout.post_fragment, container, false);
+        View rootView = inflater.inflate(R.layout.fragment_your_post_list, container, false);
         rvPosts = rootView.findViewById(R.id.rvPosts);
-
-
-        posts.add(new Post("Text", 34, "this is my post", new Date()));
-
+        Post p =  new Post("Text", 0,"( : this is my post : )", new Date());
+        posts.add(p);
 
         adapter.setOnItemClickListener(new ClickListener() {
             @Override
@@ -95,6 +101,10 @@ public class PostFragment extends Fragment {
         posts.remove(p);
         adapter.notifyDataSetChanged();
     }
+
+
+
+
 
 
 }
