@@ -111,13 +111,17 @@ public class FirestoreDatabase implements Database {
 
     public Task<List<User>> searchUsers(final String prefix, int maxNumber) {
 
-        if(prefix.isEmpty()) throw new IllegalArgumentException("Prefix must be nonempty!");
+        String normPrefix = prefix.toLowerCase().replaceAll("[^a-z0-9]", "");
+        String upperBound = "\uf8ff";
+        if(normPrefix.isEmpty()) {
+            char last = normPrefix.charAt(prefix.length()-1);
+            upperBound = normPrefix.substring(0, normPrefix.length()-1) + (char)(last+1);
+        }
 
-        char last = prefix.charAt(prefix.length()-1);
-        String upperBound = prefix.substring(0, prefix.length()-1) + (char)(last+1);
+
 
         return users
-                .whereGreaterThanOrEqualTo("normalizedUsername", prefix)
+                .whereGreaterThanOrEqualTo("normalizedUsername", normPrefix)
                 .whereLessThan("normalizedUsername", upperBound)
                 .limit(maxNumber)
                 .orderBy("normalizedUsername")

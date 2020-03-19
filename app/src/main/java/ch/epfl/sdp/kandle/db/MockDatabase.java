@@ -82,6 +82,8 @@ public class MockDatabase implements Database {
     @Override
     public Task<List<User>> searchUsers(String prefix, int maxNumber) {
 
+        prefix = prefix.toLowerCase().replaceAll("[^a-z0-9]", "");
+
         List<User> results = new ArrayList<>();
 
         for(User u : users.values()) {
@@ -90,10 +92,10 @@ public class MockDatabase implements Database {
             }
         }
 
-        results.sort((u1, u2) -> u1.getUsername().compareTo(u2.getUsername()));
+        results.sort((u1, u2) -> u1.getNormalizedUsername().compareTo(u2.getNormalizedUsername()));
 
         TaskCompletionSource<List<User>> source = new TaskCompletionSource<>();
-        source.setResult(new ArrayList<User>(results.subList(0, maxNumber)));
+        source.setResult(new ArrayList<>(results.subList(0, maxNumber < results.size() ? maxNumber : results.size())));
         return source.getTask();
 
     }

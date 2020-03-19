@@ -20,6 +20,10 @@ import androidx.test.rule.ActivityTestRule;
 
 import com.google.firebase.auth.FirebaseAuth;
 
+import ch.epfl.sdp.kandle.db.DependencyManager;
+import ch.epfl.sdp.kandle.db.MockAuthentication;
+import ch.epfl.sdp.kandle.db.MockDatabase;
+
 import static androidx.test.espresso.Espresso.onView;
 import static androidx.test.espresso.action.ViewActions.click;
 import static androidx.test.espresso.action.ViewActions.closeSoftKeyboard;
@@ -39,9 +43,16 @@ public class LoginActivityTest {
     Resources res = ApplicationProvider.getApplicationContext().getResources();
 
     @Rule
-    public ActivityTestRule<LoginActivity> intentsRule =
-            new ActivityTestRule<>(LoginActivity.class,true,true
-            );
+    public IntentsTestRule intentsRule =
+            new IntentsTestRule<LoginActivity>(LoginActivity.class,true,true){
+
+                @Override
+                protected  void beforeActivityLaunched() {
+                    super.beforeActivityLaunched();
+                    DependencyManager.setAuthSystem(new MockAuthentication());
+                    DependencyManager.setDatabaseSystem(new MockDatabase());
+                }
+            };
 
 
 
@@ -58,9 +69,9 @@ public class LoginActivityTest {
 
 
     @Test
-    public void emptyPasswordTest() throws InterruptedException {
+    public void emptyPasswordTest() {
 
-        onView(withId(R.id.email)).perform(typeText("test@test.com"));
+        onView(withId(R.id.email)).perform(typeText("loginTest@test.com"));
         onView(withId(R.id.email)).perform(closeSoftKeyboard());
 
         onView(withId(R.id.loginBtn)).perform(click());
@@ -68,39 +79,41 @@ public class LoginActivityTest {
     }
 
     @Test
-    public void wrongCredentialsTest() throws InterruptedException {
+    public void wrongCredentialsTest() {
 
-        onView(withId(R.id.email)).perform(typeText("zzzz@test.com"));
+        onView(withId(R.id.email)).perform(typeText("loginTestUnknownEmail@test.com"));
         onView(withId(R.id.email)).perform(closeSoftKeyboard());
 
-        onView(withId(R.id.password)).perform(typeText("zzzzzzzzzz"));
+        onView(withId(R.id.password)).perform(typeText("password"));
         onView(withId(R.id.password)).perform(closeSoftKeyboard());
 
         onView(withId(R.id.loginBtn)).perform(click());
 
-        //TODO
     }
 
     @Test
-    public void authenticationTest() throws InterruptedException {
+    public void authenticationTest() {
 
-        onView(withId(R.id.email)).perform(typeText("anas.ibrahim@epfl.ch"));
+
+        onView(withId(R.id.email)).perform(typeText("loginTest@test.com"));
         onView(withId(R.id.email)).perform(closeSoftKeyboard());
 
-        onView(withId(R.id.password)).perform(typeText("12345678"));
+        onView(withId(R.id.password)).perform(typeText("password"));
         onView(withId(R.id.password)).perform(closeSoftKeyboard());
 
-        //onView(withId(R.id.loginBtn)).perform(click());
+        onView(withId(R.id.loginBtn)).perform(click());
+
+        intended(hasComponent(MainActivity.class.getName()));
 
 
-        //intended(hasComponent(MainActivity.class.getName()));
-        //onView(withId(R.id.drawer_layout)).perform(DrawerActions.open());
-        //onView(withId(R.id.navigation_view)).perform(NavigationViewActions.navigateTo(R.id.logout));
+        onView(withId(R.id.drawer_layout)).perform(DrawerActions.open());
+        onView(withId(R.id.navigation_view)).perform(NavigationViewActions.navigateTo(R.id.logout));
+
 
     }
     /*
     @Test
-    public void alreadyHaveAnAccount() throws InterruptedException {
+    public void alreadyHaveAnAccount()  {
 
         onView(withId(R.id.signUpLink)).perform(click());
         intended(hasComponent(RegisterActivity.class.getName()));

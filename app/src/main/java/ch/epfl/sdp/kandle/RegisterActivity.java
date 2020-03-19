@@ -12,18 +12,18 @@ import android.widget.Toast;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.FirebaseFirestore;
 
+import ch.epfl.sdp.kandle.db.Authentication;
 import ch.epfl.sdp.kandle.db.Database;
-import ch.epfl.sdp.kandle.db.DatabaseManager;
+import ch.epfl.sdp.kandle.db.DependencyManager;
 
 public class RegisterActivity extends AppCompatActivity {
 
     EditText mFullName,mEmail,mPassword, mPasswordConfirm;
     Button mSignUpBtn;
     TextView mSignInLink;
-    FirebaseAuth fAuth;
+    Authentication auth;
     Database db;
 
-    FirebaseFirestore fStore;
     String userID;
 
     @Override
@@ -36,8 +36,8 @@ public class RegisterActivity extends AppCompatActivity {
         mPasswordConfirm = findViewById(R.id.passwordConfirm);
         mSignUpBtn = findViewById(R.id.signUpBtn);
         mSignInLink = findViewById(R.id.signInLink);
-        db = DatabaseManager.getDatabaseSystem();
-        fAuth = FirebaseAuth.getInstance();
+        db = DependencyManager.getDatabaseSystem();
+        auth = DependencyManager.getAuthSystem();
 
         mSignInLink.setOnClickListener(v -> {
             startActivity(new Intent(getApplicationContext(),LoginActivity.class));
@@ -64,12 +64,12 @@ public class RegisterActivity extends AppCompatActivity {
     }
 
     private void registerUser(final String fullName, final String email, String password) {
-        fAuth.createUserWithEmailAndPassword(email, password).addOnCompleteListener(authTask -> {
+        auth.createUserWithEmailAndPassword(email, password).addOnCompleteListener(authTask -> {
             if (authTask.isSuccessful()){
                 Toast.makeText(RegisterActivity.this, "User has been created", Toast.LENGTH_LONG ).show();
 
-                //store user in the database
-                userID = fAuth.getCurrentUser().getUid();
+                // Store the user in the database
+                userID = auth.getCurrentUser().getUid();
 
                 User newUser = new User(userID, email, email);
                 db.createUser(newUser).addOnCompleteListener(dbTask -> {
@@ -78,14 +78,14 @@ public class RegisterActivity extends AppCompatActivity {
                         finish();
                     }
                     else {
-                        Toast.makeText(RegisterActivity.this, "An error has occurred : " + dbTask.getException().getMessage(), Toast.LENGTH_SHORT).show();
+                        Toast.makeText(RegisterActivity.this, "An error has occurred : " + dbTask.getException().getMessage(), Toast.LENGTH_LONG).show();
                     }
                 });
 
             }
 
             else {
-                Toast.makeText(RegisterActivity.this, "An error has occurred : " + authTask.getException().getMessage(), Toast.LENGTH_SHORT).show();
+                Toast.makeText(RegisterActivity.this, "An error has occurred : " + authTask.getException().getMessage(), Toast.LENGTH_LONG).show();
 
             }
         });

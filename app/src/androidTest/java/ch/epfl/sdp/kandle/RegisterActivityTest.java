@@ -1,12 +1,16 @@
 package ch.epfl.sdp.kandle;
 
+import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 
+import androidx.test.espresso.contrib.DrawerActions;
+import androidx.test.espresso.contrib.NavigationViewActions;
+import androidx.test.espresso.intent.Intents;
 import androidx.test.espresso.intent.rule.IntentsTestRule;
-import androidx.test.rule.ActivityTestRule;
 
-import ch.epfl.sdp.kandle.db.DatabaseManager;
+import ch.epfl.sdp.kandle.db.DependencyManager;
+import ch.epfl.sdp.kandle.db.MockAuthentication;
 import ch.epfl.sdp.kandle.db.MockDatabase;
 
 import static androidx.test.espresso.Espresso.onView;
@@ -28,12 +32,10 @@ public class RegisterActivityTest {
                 @Override
                 protected  void beforeActivityLaunched() {
                     super.beforeActivityLaunched();
-                    //Authentication.setAuthenticationSystem(new MockAuthentication());
-                    DatabaseManager.setDatabaseSystem(new MockDatabase());
+                    DependencyManager.setAuthSystem(new MockAuthentication());
+                    DependencyManager.setDatabaseSystem(new MockDatabase());
                 }
             };
-
-
 
     @Test
     public void errorsInForm (){
@@ -71,33 +73,39 @@ public class RegisterActivityTest {
 
 
     @Test
-    public void accountCreation() throws InterruptedException {
+    public void accountCreation() {
 
-        onView(withId (R.id.fullName)).perform(typeText ("Register Test"));
+        onView(withId (R.id.fullName)).perform(typeText ("Test"));
         onView(withId (R.id.fullName)).perform(closeSoftKeyboard());
 
-        onView(withId (R.id.email)).perform(typeText ("registerTestEmail845@test.ch"));
+        onView(withId (R.id.email)).perform(typeText ("new1630@new.com"));
         onView(withId (R.id.email)).perform(closeSoftKeyboard());
 
-        onView(withId (R.id.password)).perform(typeText ("testPassword"));
+        onView(withId (R.id.password)).perform(typeText ("12345678"));
         onView(withId (R.id.password)).perform(closeSoftKeyboard());
 
-        onView(withId (R.id.passwordConfirm)).perform(typeText ("testPassword"));
+        onView(withId (R.id.passwordConfirm)).perform(typeText ("12345678"));
         onView(withId (R.id.passwordConfirm)).perform(closeSoftKeyboard());
+
 
         onView(withId(R.id.signUpBtn)).perform(click());
 
-        //intended(hasComponent(MainActivity.class.getName()));
+        intended(hasComponent(MainActivity.class.getName()));
+
+        onView(withId(R.id.drawer_layout)).perform(DrawerActions.open());
+        onView(withId(R.id.navigation_view)).perform(NavigationViewActions.navigateTo(R.id.logout));
+
+        intended(hasComponent(LoginActivity.class.getName()));
 
 
     }
 
 
     @Test
-    public void alreadyHaveAnAccount() throws InterruptedException {
+    public void alreadyHaveAnAccount() {
 
         onView(withId(R.id.signInLink)).perform(click());
-        //intended(hasComponent(LoginActivity.class.getName()));
+        intended(hasComponent(LoginActivity.class.getName()));
     }
 
 

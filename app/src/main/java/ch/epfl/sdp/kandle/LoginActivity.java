@@ -1,20 +1,16 @@
 package ch.epfl.sdp.kandle;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
-import com.google.firebase.auth.AuthResult;
-import com.google.firebase.auth.FirebaseAuth;
+import ch.epfl.sdp.kandle.db.Authentication;
+import ch.epfl.sdp.kandle.db.DependencyManager;
 
 public class LoginActivity extends AppCompatActivity {
 
@@ -22,14 +18,16 @@ public class LoginActivity extends AppCompatActivity {
     TextView mSignIn;
     EditText mEmail, mPassword;
     Button mSignUpBtn;
-    FirebaseAuth fAuth;
+    Authentication auth;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
-        fAuth = FirebaseAuth.getInstance();
-        if (fAuth.getCurrentUser() != null) {
+
+        auth = DependencyManager.getAuthSystem();
+
+        if (auth.getCurrentUser() != null) {
             startActivity(new Intent(getApplicationContext(), MainActivity.class));
             finish();
         }
@@ -54,7 +52,7 @@ public class LoginActivity extends AppCompatActivity {
             if (!checkFields(email, password))  {
                 return;
             }
-            performLoginViaFirebase(email, password);
+            loginWithEmailAndPassword(email, password);
         });
 
     }
@@ -77,8 +75,8 @@ public class LoginActivity extends AppCompatActivity {
 
 
 
-    private void performLoginViaFirebase(String email, String password) {
-        fAuth.signInWithEmailAndPassword(email, password).addOnCompleteListener(task -> {
+    private void loginWithEmailAndPassword(String email, String password) {
+        auth.signInWithEmailAndPassword(email, password).addOnCompleteListener(task -> {
 
             if (task.isSuccessful()) {
 
@@ -87,7 +85,7 @@ public class LoginActivity extends AppCompatActivity {
                 finish();
 
             } else {
-                Toast.makeText(LoginActivity.this, "An error has occurred : " + task.getException().getMessage(), Toast.LENGTH_SHORT).show();
+                Toast.makeText(LoginActivity.this, "An error has occurred : " + task.getException().getMessage(), Toast.LENGTH_LONG).show();
             }
 
         });
