@@ -65,50 +65,7 @@ public class MainActivity extends AppCompatActivity {
         mDrawerLayout.addDrawerListener(drawerToggle);
 
 
-        //
 
-
-
-
-
-       /* mBottomNavigationView = findViewById(R.id.bottom_navigation);
-        mBottomNavigationView.setOnNavigationItemSelectedListener(
-                new BottomNavigationView.OnNavigationItemSelectedListener() {
-                    @Override
-                    public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-                        switch (item.getItemId()){
-                            case R.id.nav_map:
-                                bottomFragment = new MapFragment();
-                                break;
-                            case R.id.nav_search:
-                                try {
-                                    bottomFragment = SearchFragment.class.newInstance();
-                                } catch (IllegalAccessException e) {
-                                    e.printStackTrace();
-                                } catch (InstantiationException e) {
-                                    e.printStackTrace();
-                                }
-                                break;
-                            case R.id.nav_addPost:
-                                startActivity(new Intent(MainActivity.this, PostActivity.class));
-                                break;
-                            case R.id.nav_profile:
-                                //bottomFragment = new PostFragment();
-                                break;
-                        }
-
-                            if (bottomFragment!=null) {
-                                getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,bottomFragment).commit();
-                            }
-
-                        return true;
-                    }
-                }
-        );
-
-        getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new MapFragment()).commit();
-
-*/
 
 
     }
