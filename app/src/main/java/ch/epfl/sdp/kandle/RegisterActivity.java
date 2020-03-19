@@ -119,7 +119,7 @@ public class RegisterActivity extends AppCompatActivity {
 
 
 
-
+/*
                     //store user in realtimedatabase
                     DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference().child("Users").child(userID);
                     HashMap<String, Object> map = new HashMap<>();
@@ -130,6 +130,8 @@ public class RegisterActivity extends AppCompatActivity {
                     map.put("fullnameSearch", fullName.toLowerCase().trim().replace(" ", ""));
 
                     databaseReference.setValue(map);
+
+ */
 
                     startActivity(new Intent(getApplicationContext(), MainActivity.class));
                     finish();
