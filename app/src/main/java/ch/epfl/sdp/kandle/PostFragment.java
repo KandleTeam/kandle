@@ -13,7 +13,6 @@ import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.PopupWindow;
 import android.widget.TextView;
@@ -31,9 +30,6 @@ public class PostFragment extends Fragment {
     private ArrayList<Post> posts = new ArrayList<>(0); //From user
     private PostAdapter adapter = new PostAdapter(posts);
 
-    private ImageButton mlikeButton;
-    private boolean alreadyLiked = false;
-
     private DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
 
     public static PostFragment newInstance() {
@@ -45,8 +41,10 @@ public class PostFragment extends Fragment {
                              @Nullable Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.post_fragment, container, false);
         rvPosts = rootView.findViewById(R.id.rvPosts);
-        Post p =  new Post("Text", "( : this is my post : )", new Date());
-        posts.add(p);
+
+
+        posts.add(new Post("Text", 34, "this is my post", new Date()));
+
 
         adapter.setOnItemClickListener(new ClickListener() {
             @Override
@@ -97,10 +95,6 @@ public class PostFragment extends Fragment {
         posts.remove(p);
         adapter.notifyDataSetChanged();
     }
-
-
-
-
 
 
 }

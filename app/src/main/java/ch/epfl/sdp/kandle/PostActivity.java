@@ -3,6 +3,7 @@ package ch.epfl.sdp.kandle;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -33,6 +34,7 @@ public class PostActivity extends AppCompatActivity {
     FirebaseFirestore fStore;
     String userID;
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -56,6 +58,8 @@ public class PostActivity extends AppCompatActivity {
                     mPostText.setError("Your post is empty...");
                     return;
                 }
+
+
                 Toast.makeText(PostActivity.this, "You have successfully posted : " + postText, Toast.LENGTH_LONG ).show();
                 startActivity(new Intent(getApplicationContext(), MainActivity.class));
                 finish();
@@ -66,7 +70,9 @@ public class PostActivity extends AppCompatActivity {
         mCameraButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(PostActivity.this, "Doesn't work for now... ", Toast.LENGTH_LONG ).show();
+
+                Toast.makeText(PostActivity.this, "Doesn't work for now... " , Toast.LENGTH_LONG ).show();
+
             }
         });
 

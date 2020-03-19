@@ -3,8 +3,14 @@ package ch.epfl.sdp.kandle;
 import org.junit.Rule;
 import org.junit.Test;
 
-import androidx.test.espresso.intent.rule.IntentsTestRule;
+import androidx.test.espresso.contrib.DrawerActions;
+import androidx.test.espresso.contrib.NavigationViewActions;
+import androidx.test.espresso.intent.Intents;
 import androidx.test.rule.ActivityTestRule;
+import ch.epfl.sdp.kandle.DependencyInjection.Authentication;
+import ch.epfl.sdp.kandle.DependencyInjection.Database;
+import ch.epfl.sdp.kandle.DependencyInjection.MockAuthentication;
+import ch.epfl.sdp.kandle.DependencyInjection.MockDatabase;
 
 import static androidx.test.espresso.Espresso.onView;
 import static androidx.test.espresso.action.ViewActions.click;
@@ -13,15 +19,27 @@ import static androidx.test.espresso.action.ViewActions.typeText;
 import static androidx.test.espresso.assertion.ViewAssertions.matches;
 import static androidx.test.espresso.intent.Intents.intended;
 import static androidx.test.espresso.intent.matcher.IntentMatchers.hasComponent;
+import static androidx.test.espresso.matcher.RootMatchers.withDecorView;
 import static androidx.test.espresso.matcher.ViewMatchers.hasErrorText;
+import static androidx.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static androidx.test.espresso.matcher.ViewMatchers.withId;
+import static androidx.test.espresso.matcher.ViewMatchers.withText;
+
+import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.not;
 
 public class RegisterActivityTest {
 
     @Rule
-    public final ActivityTestRule<RegisterActivity> mActivityRule =
-            new ActivityTestRule<>(RegisterActivity.class);
-
+    public ActivityTestRule<RegisterActivity> intentsRule =
+            new ActivityTestRule<RegisterActivity>(RegisterActivity.class,true,true
+            ){
+                @Override
+                protected  void beforeActivityLaunched() {
+                    Authentication.setAuthenticationSystem(new MockAuthentication(false));
+                    Database.setDatabaseSystem(new MockDatabase());
+                }
+            };
 
 
     @Test
@@ -57,15 +75,13 @@ public class RegisterActivityTest {
     }
 
 
-
-
     @Test
-    public void accountCreation() throws InterruptedException {
+    public void accountCreationShouldFail(){
 
-        onView(withId (R.id.fullName)).perform(typeText ("Test Register"));
+        onView(withId (R.id.fullName)).perform(typeText ("Mock User"));
         onView(withId (R.id.fullName)).perform(closeSoftKeyboard());
 
-        onView(withId (R.id.email)).perform(typeText ("new"));
+        onView(withId (R.id.email)).perform(typeText ("user1@test.com"));
         onView(withId (R.id.email)).perform(closeSoftKeyboard());
 
         onView(withId (R.id.password)).perform(typeText ("12345678"));
@@ -74,19 +90,42 @@ public class RegisterActivityTest {
         onView(withId (R.id.passwordConfirm)).perform(typeText ("12345678"));
         onView(withId (R.id.passwordConfirm)).perform(closeSoftKeyboard());
 
-        /*
-        onView(withId(R.id.signInBtn)).perform(click());
-        Thread.sleep(500);
+        onView(withId(R.id.loginBtn)).perform(click());
+        onView(withText("An error has occurred : You already have an account")).inRoot(withDecorView(not(is( intentsRule.getActivity().getWindow().getDecorView())))).check(matches(isDisplayed()));
+    }
 
 
-        onView(withId (R.id.email)).perform(typeText ("TestRegister" + LocalDateTime.now().toString().replace( " ", "")
-                .replace("." , "").replace(":", "") + "@test.ch"));
+    @Test
+    public void accountCreation() {
+
+        Intents.init();
+
+        onView(withId (R.id.fullName)).perform(typeText ("zzdrian Freeman"));
+        onView(withId (R.id.fullName)).perform(closeSoftKeyboard());
+
+        onView(withId (R.id.email)).perform(typeText ("zzrian@test.com"));
         onView(withId (R.id.email)).perform(closeSoftKeyboard());
-        onView(withId(R.id.signInBtn)).perform(click());
 
-        Thread.sleep(1000);
+        onView(withId (R.id.password)).perform(typeText ("12345678"));
+        onView(withId (R.id.password)).perform(closeSoftKeyboard());
+
+        onView(withId (R.id.passwordConfirm)).perform(typeText ("12345678"));
+        onView(withId (R.id.passwordConfirm)).perform(closeSoftKeyboard());
+
+        onView(withId(R.id.loginBtn)).perform(click());
+
+
+       // onView(withId (R.id.email)).perform(closeSoftKeyboard());
+        //onView(withId(R.id.loginBtn)).perform(click());
+
+
         intended(hasComponent(MainActivity.class.getName()));
-        */
+        onView(withId(R.id.drawer_layout)).perform(DrawerActions.open());
+        onView(withId(R.id.navigation_view)).perform(NavigationViewActions.navigateTo(R.id.logout));
+
+
+        Intents.release();
+
     }
 
 
