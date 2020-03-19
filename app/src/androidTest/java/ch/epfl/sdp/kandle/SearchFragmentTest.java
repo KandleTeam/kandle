@@ -60,7 +60,7 @@ public class SearchFragmentTest {
 
 
     @Test
-    public void followThenUnfollow(){
+    public void followThenUnfollow() throws InterruptedException {
 
         onView(withId(R.id.search_bar)).perform(typeText("us"));
         onView(withId (R.id.search_bar)).perform(closeSoftKeyboard());
@@ -74,10 +74,15 @@ public class SearchFragmentTest {
         onView(withId(R.id.recycler_view)).perform(RecyclerViewActions.actionOnItemAtPosition(0, clickChildViewWithId(R.id.btn_follow)));
         onView(withId(R.id.recycler_view)).perform(RecyclerViewActions.actionOnItemAtPosition(0, clickChildViewWithId(R.id.btn_follow)));
         onView(withId(R.id.recycler_view)).perform(RecyclerViewActions.actionOnItemAtPosition(0, clickChildViewWithId(R.id.btn_follow)));
+
+        Thread.sleep(5000);
         onView(withId(R.id.recycler_view)).perform(RecyclerViewActions.actionOnItemAtPosition(0, click()));
 
         onView(withId(R.id.profileNumberOfFollowing)).check(matches( withText("1")));
         onView(withId(R.id.profileNumberOfFollowers)).check(matches( withText("0")));
+
+
+        Thread.sleep(5000);
 
         onView(withId(R.id.profileFollowButton)).perform(click());
         onView(withId(R.id.profileNumberOfFollowers)).check(matches( withText("1")));
