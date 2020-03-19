@@ -4,6 +4,7 @@ import android.view.Gravity;
 
 import androidx.test.espresso.contrib.DrawerActions;
 import androidx.test.espresso.contrib.NavigationViewActions;
+import androidx.test.espresso.intent.Intents;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 import androidx.test.rule.ActivityTestRule;
 import ch.epfl.sdp.kandle.DependencyInjection.Authentication;
@@ -105,5 +106,12 @@ public class MainActivityTest {
 
     }
 
+    @Test
+    public void navigateToPost(){
+        Intents.init();
+        onView(withId(R.id.postButton)).perform(click());
+        intended(hasComponent(PostActivity.class.getName()));
+        Intents.release();
+    }
 
 }
