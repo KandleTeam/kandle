@@ -39,9 +39,6 @@ public class MainActivity extends AppCompatActivity {
 
     private Fragment bottomFragment = null;
 
-    //
-
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,7 +52,6 @@ public class MainActivity extends AppCompatActivity {
         mNavigationView = findViewById(R.id.navigation_view);
         mPostButton = findViewById(R.id.postButton);
 
-
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         drawerToggle = new ActionBarDrawerToggle(this,mDrawerLayout,toolbar,R.string.drawer_open,R.string.drawer_close);
@@ -63,10 +59,6 @@ public class MainActivity extends AppCompatActivity {
         setupDrawerContent(mNavigationView);
         drawerToggle.syncState();
         mDrawerLayout.addDrawerListener(drawerToggle);
-
-
-
-
 
     }
 
@@ -92,11 +84,6 @@ public class MainActivity extends AppCompatActivity {
         int size = mNavigationView.getMenu().size();
 
         switch(menuItem.getItemId()) {
-
-
-
-
-
 
             //For activities
 
