@@ -60,6 +60,8 @@ public abstract class Database {
 
     public abstract Task<List<String>> followersList(String userId);
 
+    public abstract Task<Void> updateProfilePicture(String uri);
+
 
 
 }

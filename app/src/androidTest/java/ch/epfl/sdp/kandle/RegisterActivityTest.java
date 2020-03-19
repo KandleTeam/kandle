@@ -119,7 +119,8 @@ public class RegisterActivityTest {
         //onView(withId(R.id.loginBtn)).perform(click());
 
 
-        intended(hasComponent(MainActivity.class.getName()));
+        intended(hasComponent(CustomAccountActivity.class.getName()));
+        onView(withId(R.id.startButton)).perform(click());
         onView(withId(R.id.drawer_layout)).perform(DrawerActions.open());
         onView(withId(R.id.navigation_view)).perform(NavigationViewActions.navigateTo(R.id.logout));
 

@@ -2,6 +2,8 @@ package ch.epfl.sdp.kandle.DependencyInjection;
 
 import com.google.android.gms.tasks.Continuation;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
@@ -295,6 +297,15 @@ public class FirestoreDatabase extends Database {
                     }
                 });
 
+    }
+
+    @Override
+    public Task<Void> updateProfilePicture(String uri) {
+        FirebaseUser fuser = FirebaseAuth.getInstance().getCurrentUser();
+        DocumentReference documentReference = users.document(fuser.getUid());
+        HashMap<String, Object> map = new HashMap<>();
+        map.put("imageURL", uri);
+        return documentReference.update(map);
     }
 
 

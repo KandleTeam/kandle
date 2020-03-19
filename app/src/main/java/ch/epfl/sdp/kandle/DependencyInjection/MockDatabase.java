@@ -218,5 +218,11 @@ public class MockDatabase extends Database {
         return source.getTask();
     }
 
+    @Override
+    public Task<Void> updateProfilePicture(String uri) {
+        TaskCompletionSource<Void> source = new TaskCompletionSource<>();
+        return source.getTask();
+    }
+
 
 }
