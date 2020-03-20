@@ -60,8 +60,8 @@ public class MockDatabase extends Database {
     public MockDatabase() {
         users = new HashMap<>();
         //String adminId = "user1Id"; // 28 zeros
-        users.put("user1Id", new User("user1Id", "user1", "user1@kandle.ch", null));
-        users.put("user2Id", new User("user2Id", "user2", "user2@kandle.ch", null));
+        users.put("user1Id", new User("user1Id", "user1", "user1@kandle.ch", "image"));
+        users.put("user2Id", new User("user2Id", "user2", "user2@kandle.ch", "image"));
         users.put("user3Id", new User("user3Id", "user3", "user3@kandle.ch", null));
         
         

@@ -23,6 +23,8 @@ import de.hdodenhof.circleimageview.CircleImageView;
 
 public class UserAdapter extends RecyclerView.Adapter<UserAdapter.ViewHolder> {
 
+    public final static int PROFILE_PICTURE_TAG = 9;
+
 
     public interface ClickListener {
         void onItemClick(int position, View v);
@@ -63,6 +65,7 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.ViewHolder> {
 
         ImageView mImageProfile = holder.image_profile;
         if (user.getImageURL() != null) {
+            mImageProfile.setTag(PROFILE_PICTURE_TAG);
             Picasso.get().load(user.getImageURL()).into(mImageProfile);
         }
 

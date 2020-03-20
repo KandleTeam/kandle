@@ -16,9 +16,9 @@ public class User {
         this.imageURL = imageURL;
     }
 
-    public String getFullname() {
+    /*public String getFullname() {
         return fullname;
-    }
+    }*/
 
     public void setFullname(String fullname) {
         this.fullname = fullname;
