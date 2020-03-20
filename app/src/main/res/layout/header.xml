@@ -17,10 +17,13 @@
         <ImageView
             android:layout_width="85dp"
             android:layout_height="85dp"
+            android:id="@+id/profilePicInMenu"
+            android:paddingLeft="10dp"
             android:src="@drawable/ic_profil_24dp" />
 
         <TextView
-            android:layout_width="match_parent"
+            android:id="@+id/username"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:paddingLeft="10dp"
             android:text="Username"

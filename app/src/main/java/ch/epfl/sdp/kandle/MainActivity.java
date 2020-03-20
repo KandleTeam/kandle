@@ -5,6 +5,8 @@ import android.os.Bundle;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
+import android.widget.TextView;
 
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
@@ -14,6 +16,7 @@ import androidx.fragment.app.Fragment;
 
 import androidx.fragment.app.FragmentManager;
 
+import ch.epfl.sdp.kandle.DependencyInjection.Database;
 import ch.epfl.sdp.kandle.Fragment.AboutFragment;
 import ch.epfl.sdp.kandle.Fragment.MapFragment;
 //import ch.epfl.sdp.kandle.Fragment.ProfileFragment;
@@ -25,8 +28,11 @@ import ch.epfl.sdp.kandle.DependencyInjection.Authentication;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationView;
+import com.squareup.picasso.Picasso;
 
 public class MainActivity extends AppCompatActivity {
+
+    public final static int PROFILE_PICTURE_TAG = 5;
 
     private DrawerLayout mDrawerLayout;
     private Toolbar toolbar;
@@ -34,6 +40,9 @@ public class MainActivity extends AppCompatActivity {
     private BottomNavigationView mBottomNavigationView;
     private Button mPostButton;
     private Authentication auth;
+
+    private ImageView mProfilePic;
+    private TextView mUsername;
 
     // Make sure to be using androidx.appcompat.app.ActionBarDrawerToggle version.
     private ActionBarDrawerToggle drawerToggle;
@@ -52,6 +61,8 @@ public class MainActivity extends AppCompatActivity {
         mDrawerLayout = findViewById(R.id.drawer_layout);
         mNavigationView = findViewById(R.id.navigation_view);
         mPostButton = findViewById(R.id.postButton);
+        mProfilePic = mNavigationView.getHeaderView(0).findViewById(R.id.profilePicInMenu);
+        mUsername = mNavigationView.getHeaderView(0).findViewById(R.id.username);
 
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -65,6 +76,24 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 startActivity(new Intent(getApplicationContext(),PostActivity.class));
+            }
+        });
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        Database.getDatabaseSystem().getProfilePicture().addOnCompleteListener(task -> {
+            String imageUrl = task.getResult();
+            if (imageUrl != null) {
+                mProfilePic.setTag(PROFILE_PICTURE_TAG);
+                Picasso.get().load(imageUrl).into(mProfilePic);
+            }
+        });
+        Database.getDatabaseSystem().getUsername().addOnCompleteListener(task -> {
+            String username = task.getResult();
+            if (username != null) {
+                mUsername.setText(username);
             }
         });
     }

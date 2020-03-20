@@ -36,6 +36,8 @@ public class FirestoreDatabase extends Database {
     private static final CollectionReference posts = firestore.collection("posts");
     private static final CollectionReference follow = firestore.collection("follow");
 
+    private DocumentReference loggedInUser() { return users.document(FirebaseAuth.getInstance().getCurrentUser().getUid());}
+
 
     private  Map<String, Object> mapDeleteFollowing = (Map<String, Object>) new HashMap<>().put("following", FieldValue.delete());
 
@@ -301,15 +303,26 @@ public class FirestoreDatabase extends Database {
 
     @Override
     public Task<Void> updateProfilePicture(String uri) {
-        FirebaseUser fuser = FirebaseAuth.getInstance().getCurrentUser();
-        DocumentReference documentReference = users.document(fuser.getUid());
         HashMap<String, Object> map = new HashMap<>();
         map.put("imageURL", uri);
-        return documentReference.update(map);
+        return loggedInUser().update(map);
     }
 
     @Override
-    public Task<String> getProfilePicture() { return null; }
+    public Task<String> getProfilePicture() {
+        return loggedInUser().get().continueWith(task -> {
+            DocumentSnapshot doc = task.getResult();
+            return doc != null? (String) doc.get("imageURL") : null;
+        });
+    }
+
+    @Override
+    public Task<String> getUsername() {
+        return loggedInUser().get().continueWith(task -> {
+            DocumentSnapshot doc = task.getResult();
+            return doc != null? (String) doc.get("fullname") : null;
+        });
+    }
 
 
 }

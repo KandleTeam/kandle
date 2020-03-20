@@ -23,6 +23,7 @@ import ch.epfl.sdp.kandle.DependencyInjection.MockDatabase;
 import static androidx.test.espresso.action.ViewActions.clearText;
 import static androidx.test.espresso.action.ViewActions.closeSoftKeyboard;
 import static androidx.test.espresso.action.ViewActions.typeText;
+import static androidx.test.espresso.matcher.ViewMatchers.withTagValue;
 import static androidx.test.espresso.matcher.ViewMatchers.withText;
 
 import static androidx.test.espresso.Espresso.onView;
@@ -30,6 +31,8 @@ import static androidx.test.espresso.action.ViewActions.click;
 import static androidx.test.espresso.assertion.ViewAssertions.matches;
 import static androidx.test.espresso.contrib.DrawerMatchers.isClosed;
 import static androidx.test.espresso.matcher.ViewMatchers.withId;
+import static org.hamcrest.CoreMatchers.not;
+import static org.hamcrest.Matchers.is;
 
 public class SearchFragmentTest {
 
@@ -86,6 +89,13 @@ public class SearchFragmentTest {
         onView(withId(R.id.profileNumberOfFollowers)).check(matches( withText("1")));
         onView(withId(R.id.profileFollowButton)).perform(click());
         onView(withId(R.id.profileNumberOfFollowers)).check(matches( withText("0")));
+    }
+
+    @Test
+    public void userWithNoProfilePic() throws InterruptedException {
+        onView(withId(R.id.search_bar)).perform(typeText("user3"));
+        onView(withId (R.id.search_bar)).perform(closeSoftKeyboard());
+
     }
 
 

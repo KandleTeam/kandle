@@ -1,5 +1,7 @@
 package ch.epfl.sdp.kandle.DependencyInjection;
 
+import android.util.Log;
+
 import com.google.android.gms.tasks.Task;
 import com.google.android.gms.tasks.TaskCompletionSource;
 
@@ -58,9 +60,9 @@ public class MockDatabase extends Database {
     public MockDatabase() {
         users = new HashMap<>();
         //String adminId = "user1Id"; // 28 zeros
-        users.put("user1Id", new User("user1Id", "user1", "user1@kandle.ch"));
-        users.put("user2Id", new User("user2Id", "user2", "user2@kandle.ch"));
-        users.put("user3Id", new User("user3Id", "user3", "user3@kandle.ch"));
+        users.put("user1Id", new User("user1Id", "user1", "user1@kandle.ch", "image"));
+        users.put("user2Id", new User("user2Id", "user2", "user2@kandle.ch", "image"));
+        users.put("user3Id", new User("user3Id", "user3", "user3@kandle.ch", null));
         
         
         followMap = new HashMap<>();
@@ -222,15 +224,24 @@ public class MockDatabase extends Database {
     public Task<Void> updateProfilePicture(String uri) {
         TaskCompletionSource<Void> source = new TaskCompletionSource<>();
         User user = users.get("user1Id");
-        user.setProfilePicUri(uri);
+        user.setImageURL(uri);
+
         return source.getTask();
     }
 
     @Override
     public Task<String> getProfilePicture() {
+
         TaskCompletionSource<String> source = new TaskCompletionSource<>();
         User user = users.get("user1Id");
-        source.setResult(user.getProfilePicUri());
+        source.setResult(user.getImageURL());
+        return source.getTask();
+    }
+
+    @Override
+    public Task<String> getUsername() {
+        TaskCompletionSource<String> source = new TaskCompletionSource<>();
+        source.setResult("userFullName");
         return source.getTask();
     }
 

@@ -89,7 +89,9 @@ public class RegisterActivity extends AppCompatActivity {
 
                     userID = Auth.getCurrentUser().getUid();
 
-                    fStore.createUser( new User(userID, email, email));
+                    User user = new User(userID, email, email, null);
+                    user.setFullname(fullName);
+                    fStore.createUser(user);
 
                     startActivity(new Intent(getApplicationContext(), CustomAccountActivity.class));
                     finish();

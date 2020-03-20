@@ -2,22 +2,23 @@ package ch.epfl.sdp.kandle;
 
 public class User {
 
-    private String id, username, email, fullname , normalizedUsername, profilePicUri;
+    private String id, username, email, fullname , normalizedUsername, imageURL;
 
     public User() {
         // Keep fields null
     }
 
-    public User(String id, String username, String email) {
+    public User(String id, String username, String email, String imageURL) {
         this.id = id;
         this.username = username;
         this.email = email;
         this.normalizedUsername = username.toLowerCase().replaceAll("[^a-z0-9]", "");
+        this.imageURL = imageURL;
     }
 
-    public String getFullname() {
+    /*public String getFullname() {
         return fullname;
-    }
+    }*/
 
     public void setFullname(String fullname) {
         this.fullname = fullname;
@@ -48,11 +49,11 @@ public class User {
         return normalizedUsername;
     }
 
-    public void setProfilePicUri(String profilePicUri) {
-        this.profilePicUri = profilePicUri;
+    public void setImageURL(String imageURL) {
+        this.imageURL = imageURL;
     }
 
-    public String getProfilePicUri() {
-        return profilePicUri;
+    public String getImageURL() {
+        return imageURL;
     }
 }

@@ -64,6 +64,6 @@ public abstract class Database {
 
     public abstract Task<String> getProfilePicture();
 
-
+    public abstract Task<String> getUsername();
 
 }

@@ -5,10 +5,12 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.squareup.picasso.Picasso;
 
 import java.util.List;
 
@@ -20,6 +22,8 @@ import ch.epfl.sdp.kandle.DependencyInjection.Database;
 import de.hdodenhof.circleimageview.CircleImageView;
 
 public class UserAdapter extends RecyclerView.Adapter<UserAdapter.ViewHolder> {
+
+    public final static int PROFILE_PICTURE_TAG = 9;
 
 
     public interface ClickListener {
@@ -58,6 +62,12 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.ViewHolder> {
 
         TextView mFullname = holder.mUsername;
         mFullname.setText(user.getUsername());
+
+        ImageView mImageProfile = holder.image_profile;
+        if (user.getImageURL() != null) {
+            mImageProfile.setTag(PROFILE_PICTURE_TAG);
+            Picasso.get().load(user.getImageURL()).into(mImageProfile);
+        }
 
         Authentication authentication = Authentication.getAuthenticationSystem();
         final AuthenticationUser authenticationUser = authentication.getCurrentUser();
