@@ -76,7 +76,7 @@ public class PostActivityTest {
 
 
     @Test
-    public void clickGaleryButtonDisplaysImage() {
+    public void clickGalleryButtonDisplaysImage() {
 
         Intent resultData = new Intent();
         resultData.setAction(Intent.ACTION_GET_CONTENT);
