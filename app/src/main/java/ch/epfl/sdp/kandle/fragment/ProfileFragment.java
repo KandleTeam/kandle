@@ -1,4 +1,4 @@
-package ch.epfl.sdp.kandle.Fragment;
+package ch.epfl.sdp.kandle.fragment;
 
 import android.os.Bundle;
 
@@ -18,9 +18,10 @@ import com.squareup.picasso.Picasso;
 
 import java.util.List;
 
-import ch.epfl.sdp.kandle.DependencyInjection.Authentication;
-import ch.epfl.sdp.kandle.DependencyInjection.AuthenticationUser;
-import ch.epfl.sdp.kandle.DependencyInjection.Database;
+import ch.epfl.sdp.kandle.dependencies.Authentication;
+import ch.epfl.sdp.kandle.dependencies.AuthenticationUser;
+import ch.epfl.sdp.kandle.dependencies.Database;
+import ch.epfl.sdp.kandle.dependencies.DependencyManager;
 import ch.epfl.sdp.kandle.R;
 import ch.epfl.sdp.kandle.User;
 
@@ -53,8 +54,8 @@ public class ProfileFragment extends Fragment {
 
         View view = inflater.inflate(R.layout.fragment_profile, container, false);
 
-        auth=Authentication.getAuthenticationSystem();
-        database=Database.getDatabaseSystem();
+        auth = DependencyManager.getAuthSystem();
+        database = DependencyManager.getDatabaseSystem();
 
 
         final AuthenticationUser authenticationUser = auth.getCurrentUser();

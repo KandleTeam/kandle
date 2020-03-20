@@ -1,14 +1,6 @@
-package ch.epfl.sdp.kandle.Fragment;
-
-import android.os.Bundle;
+package ch.epfl.sdp.kandle.fragment;
 
 import androidx.fragment.app.Fragment;
-
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-
-import ch.epfl.sdp.kandle.R;
 
 
 public class AddPostFragment extends Fragment {

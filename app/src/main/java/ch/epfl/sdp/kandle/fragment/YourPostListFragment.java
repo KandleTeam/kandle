@@ -1,4 +1,4 @@
-package ch.epfl.sdp.kandle.Fragment;
+package ch.epfl.sdp.kandle.fragment;
 
 import android.os.Bundle;
 
@@ -52,28 +52,21 @@ public class YourPostListFragment extends Fragment {
         Post p =  new Post("Text", 0,"( : this is my post : )", new Date());
         posts.add(p);
 
-        adapter.setOnItemClickListener(new ClickListener() {
-            @Override
-            public void onItemClick(int position, View view) {
-                LayoutInflater inflater = getLayoutInflater();
-                View popupView = inflater.inflate(R.layout.post_content, null);
-                int width = LinearLayout.LayoutParams.WRAP_CONTENT;
-                int height = LinearLayout.LayoutParams.WRAP_CONTENT;
-                boolean focusable = true; // lets taps outside the popup also dismiss it
-                final PopupWindow popupWindow = new PopupWindow(popupView, width, height, focusable);
-                popupWindow.showAtLocation(view, Gravity.CENTER, 0, 0);
-                TextView content = popupView.findViewById(R.id.post_content);
-                content.setText(posts.get(position).getDescription());
+        adapter.setOnItemClickListener((position, view) -> {
+            LayoutInflater inflater1 = getLayoutInflater();
+            View popupView = inflater1.inflate(R.layout.post_content, null);
+            int width = LinearLayout.LayoutParams.WRAP_CONTENT;
+            int height = LinearLayout.LayoutParams.WRAP_CONTENT;
+            boolean focusable = true; // lets taps outside the popup also dismiss it
+            final PopupWindow popupWindow = new PopupWindow(popupView, width, height, focusable);
+            popupWindow.showAtLocation(view, Gravity.CENTER, 0, 0);
+            TextView content = popupView.findViewById(R.id.post_content);
+            content.setText(posts.get(position).getDescription());
 
-                popupView.setOnTouchListener(new View.OnTouchListener() {
-                    @Override
-                    public boolean onTouch(View v, MotionEvent event) {
-                        popupWindow.dismiss();
-                        return true;
-                    }
-                });
+            popupView.setOnClickListener((popup) -> {
+                popupWindow.dismiss();
+            });
 
-            }
         });
         // Attach the adapter to the recyclerview to populate items
         rvPosts.setAdapter(adapter);
