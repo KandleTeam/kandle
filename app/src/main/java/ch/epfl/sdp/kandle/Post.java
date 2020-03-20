@@ -2,6 +2,7 @@ package ch.epfl.sdp.kandle;
 
 
 import android.content.Context;
+import android.net.Uri;
 
 import com.google.android.gms.maps.model.LatLng;
 
@@ -18,7 +19,7 @@ public class Post {
     private int likes;
     private static int count = 0;
     private int postId = 0;
-    // private String content;
+    private Uri image;
     private String description;
     private ArrayList<String> comments;
     private Date date;
@@ -80,5 +81,13 @@ public class Post {
 
     public int dislikePost() {
         return likes--;
+    }
+
+    public Uri getImage(){
+        return image;
+    }
+
+    public void setImage(Uri image){
+        this.image = image;
     }
 }
