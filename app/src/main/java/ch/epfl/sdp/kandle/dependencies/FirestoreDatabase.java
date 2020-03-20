@@ -39,7 +39,6 @@ public class FirestoreDatabase implements Database {
 
     private  Map<String, Object> mapDeleteFollowing = (Map<String, Object>) new HashMap<>().put("following", FieldValue.delete());
 
-
     private  Map<String, Object> mapDeleteFollowers = (Map<String, Object>) new HashMap<>().put("followers", FieldValue.delete());
 
     private FirestoreDatabase() {
@@ -153,11 +152,7 @@ public class FirestoreDatabase implements Database {
                 .limit(maxNumber)
                 .orderBy("normalizedUsername")
                 .get()
-                .continueWith(task -> {
-                    System.out.println("check");
-                    return task.getResult().toObjects(User.class);
-
-                 });
+                .continueWith(task -> task.getResult().toObjects(User.class));
     }
 
 
@@ -262,7 +257,6 @@ public class FirestoreDatabase implements Database {
                 .document(userId)
                 .get()
                 .continueWith(task -> (List<String>)  task.getResult().get("followers"));
-
     }
 
     @Override

@@ -1,6 +1,6 @@
 package ch.epfl.sdp.kandle.dependencies;
 
-public class DependencyManager {
+public final class DependencyManager {
 
     private static Authentication auth = FirebaseAuthentication.getInstance();
     private static Database db = FirestoreDatabase.getInstance();
@@ -36,6 +36,8 @@ public class DependencyManager {
     public static void setStorageSystem(Storage storage) {
         DependencyManager.storage = storage;
     }
+
+    private DependencyManager() {}
 
 
 }
