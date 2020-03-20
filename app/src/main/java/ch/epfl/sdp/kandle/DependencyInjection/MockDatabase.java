@@ -1,5 +1,7 @@
 package ch.epfl.sdp.kandle.DependencyInjection;
 
+import android.util.Log;
+
 import com.google.android.gms.tasks.Task;
 import com.google.android.gms.tasks.TaskCompletionSource;
 
@@ -223,14 +225,23 @@ public class MockDatabase extends Database {
         TaskCompletionSource<Void> source = new TaskCompletionSource<>();
         User user = users.get("user1Id");
         user.setProfilePicUri(uri);
+
         return source.getTask();
     }
 
     @Override
     public Task<String> getProfilePicture() {
+
         TaskCompletionSource<String> source = new TaskCompletionSource<>();
         User user = users.get("user1Id");
         source.setResult(user.getProfilePicUri());
+        return source.getTask();
+    }
+
+    @Override
+    public Task<String> getUsername() {
+        TaskCompletionSource<String> source = new TaskCompletionSource<>();
+        source.setResult("userFullName");
         return source.getTask();
     }
 

@@ -1,5 +1,7 @@
 package ch.epfl.sdp.kandle;
 
+import android.content.Intent;
+import android.util.Log;
 import android.view.Gravity;
 
 import androidx.test.espresso.contrib.DrawerActions;
@@ -23,12 +25,15 @@ import static androidx.test.espresso.intent.Intents.intended;
 import static androidx.test.espresso.intent.matcher.IntentMatchers.hasComponent;
 import static androidx.test.espresso.matcher.ViewMatchers.hasDescendant;
 import static androidx.test.espresso.matcher.ViewMatchers.withId;
+import static androidx.test.espresso.matcher.ViewMatchers.withTagValue;
 import static androidx.test.espresso.matcher.ViewMatchers.withText;
+import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertTrue;
 
 
 @RunWith(AndroidJUnit4.class)
 public class MainActivityTest {
+
 
 
     @Rule
@@ -39,6 +44,7 @@ public class MainActivityTest {
                 protected  void beforeActivityLaunched() {
                     Authentication.setAuthenticationSystem(new MockAuthentication(true));
                     Database.setDatabaseSystem(new MockDatabase());
+                    Database.getDatabaseSystem().updateProfilePicture("test");
                 }
             };
 
@@ -105,5 +111,16 @@ public class MainActivityTest {
 
     }
 
+    @Test
+    public void profilePictureIsDisplayed(){
+        onView(withId(R.id.drawer_layout)).check(matches(isClosed(Gravity.LEFT))).perform(DrawerActions.open());
+        onView(withId(R.id.profilePicInMenu)).check(matches(withTagValue(is(MainActivity.PROFILE_PICTURE_TAG))));
+    }
+
+    @Test
+    public void usernameIsDisplayed() {
+        onView(withId(R.id.drawer_layout)).check(matches(isClosed(Gravity.LEFT))).perform(DrawerActions.open());
+        onView(withId(R.id.username)).check(matches(withText("userFullName")));
+    }
 
 }

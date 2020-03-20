@@ -69,6 +69,21 @@ public class CustomAccountActivityTest {
     }
 
     @Test
+    public void badResultDoesNotChangePicture() {
+        Intent resultData = new Intent();
+        resultData.setAction(Intent.ACTION_GET_CONTENT);
+        Uri imageUri = Uri.parse("android.resource://ch.epfl.sdp.kandle/drawable/ic_launcher_background.xml");
+        resultData.setData(imageUri);
+        ActivityResult result = new ActivityResult(Activity.RESULT_CANCELED, resultData);
+
+        intending(hasAction(Intent.ACTION_GET_CONTENT)).respondWith(result);
+
+        onView(withId(R.id.button)).perform(click());
+
+        onView(withId(R.id.profilePic)).check(matches(not((withTagValue(is(CustomAccountActivity.PROFILE_PICTURE_TAG))))));
+    }
+
+    @Test
     public void leaveActivity() {
         onView(withId(R.id.startButton)).perform(click());
         intended(hasComponent(MainActivity.class.getName()));
