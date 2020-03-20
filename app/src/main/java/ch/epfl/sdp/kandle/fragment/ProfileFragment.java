@@ -47,6 +47,14 @@ public class ProfileFragment extends Fragment {
         return new ProfileFragment(user);
     }
 
+    private void getViews(View parent) {
+        mProfilePicture = parent.findViewById(R.id.profilePicture);
+        mNumberOfFollowers = parent.findViewById(R.id.profileNumberOfFollowers);
+        mNumberOfFollowing = parent.findViewById(R.id.profileNumberOfFollowing);
+        mUsername = parent.findViewById(R.id.profileUsername);
+        mFollowButton = parent.findViewById(R.id.profileFollowButton);
+    }
+
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -57,15 +65,9 @@ public class ProfileFragment extends Fragment {
         auth = DependencyManager.getAuthSystem();
         database = DependencyManager.getDatabaseSystem();
 
+        getViews(view);
 
         final AuthenticationUser authenticationUser = auth.getCurrentUser();
-
-        mProfilePicture = view.findViewById(R.id.profilePicture);
-        mNumberOfFollowers = view.findViewById(R.id.profileNumberOfFollowers);
-        mNumberOfFollowing = view.findViewById(R.id.profileNumberOfFollowing);
-        mUsername = view.findViewById(R.id.profileUsername);
-        mFollowButton = view.findViewById(R.id.profileFollowButton);
-
 
         mUsername.setText(user.getUsername());
         if(user.getImageURL() != null) {
@@ -76,150 +78,68 @@ public class ProfileFragment extends Fragment {
         setNumberOfFollowers();
         setNumberOfFollowing();
 
+        database.followingList(authenticationUser.getUid()).addOnCompleteListener(task -> {
+            if (task.isSuccessful()){
 
-
-
-
-
-
-        database.followingList(authenticationUser.getUid()).addOnCompleteListener(new OnCompleteListener<List<String>>() {
-            @Override
-            public void onComplete(@NonNull Task<List<String>> task) {
-
-                if (task.isSuccessful()){
-
-                    if (   (task.getResult() == null) || (!task.getResult().contains(user.getId()))   ){
-                        mFollowButton.setText("follow");
-                    }
-
-                    else {
-                        mFollowButton.setText("following");
-                    }
-
+                if ((task.getResult() == null) || (!task.getResult().contains(user.getId()))){
+                    mFollowButton.setText(R.string.followBtnNotFollowing);
                 }
-              /*  else {
-                    System.out.println(task.getException().getMessage());
-                }*/
 
-            }
-        });
-
-
-        /*
-        DatabaseReference reference = FirebaseDatabase.getInstance().getReference()
-                .child("Follow").child(authenticationUser.getUid()).child("following");
-        reference.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                if (dataSnapshot.child(user.getId()).exists()){
-                    mFollowButton.setText("following");
-                } else{
-                    mFollowButton.setText("follow");
-                }
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-
-            }
-        });
-         */
-
-        mFollowButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (mFollowButton.getText().toString().equals("follow")){
-
-                    database.follow(authenticationUser.getUid(), user.getId()).addOnCompleteListener(new OnCompleteListener<Void>() {
-                        @Override
-                        public void onComplete(@NonNull Task<Void> task) {
-                            if (task.isSuccessful()){
-                                mFollowButton.setText("following");
-                                mFollowButton.setText("following");
-                                setNumberOfFollowers();
-                            }
-
-                          /*  else {
-                                System.out.println(task.getException().getMessage());
-                            }*/
-
-                        }
-                    });
-
-
-                    /*FirebaseDatabase.getInstance().getReference().child("Follow").child(authenticationUser.getUid())
-                            .child("following").child(user.getId()).setValue(true);
-                    FirebaseDatabase.getInstance().getReference().child("Follow").child(user.getId())
-                            .child("followers").child(authenticationUser.getUid()).setValue(true);
-
-                     */
-
-
-
-                }
                 else {
-
-
-                    database.unFollow(authenticationUser.getUid(), user.getId()).addOnCompleteListener(new OnCompleteListener<Void>() {
-                        @Override
-                        public void onComplete(@NonNull Task<Void> task) {
-                            if (task.isSuccessful()){
-
-                                setNumberOfFollowers();
-                                mFollowButton.setText("follow");
-                                mFollowButton.setText("follow");
-                            }
-
-                            /*else {
-                                System.out.println(task.getException().getMessage());
-                            }*/
-                        }
-                    });
-                    /*
-                    FirebaseDatabase.getInstance().getReference().child("Follow").child(authenticationUser.getUid())
-                            .child("following").child(user.getId()).removeValue();
-                    FirebaseDatabase.getInstance().getReference().child("Follow").child(user.getId())
-                            .child("followers").child(authenticationUser.getUid()).removeValue();
-
-                     */
-
+                    mFollowButton.setText(R.string.followBtnAlreadyFollowing);
                 }
             }
         });
+
+        mFollowButton.setOnClickListener(followButtonListener(authenticationUser));
 
 
         return view;
     }
 
+    private View.OnClickListener followButtonListener(AuthenticationUser currUser) {
+        return v -> {
+            if (mFollowButton.getText().toString().equals(R.string.followBtnNotFollowing)){
+
+                database.follow(currUser.getUid(), user.getId()).addOnCompleteListener(task -> {
+                    if (task.isSuccessful()){
+
+                        mFollowButton.setText(R.string.followBtnAlreadyFollowing);
+                        mFollowButton.setText(R.string.followBtnAlreadyFollowing);
+                        setNumberOfFollowers();
+                    }
+                });
+            }
+            else {
+                database.unFollow(currUser.getUid(), user.getId()).addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
+
+                        mFollowButton.setText(R.string.followBtnNotFollowing);
+                        mFollowButton.setText(R.string.followBtnNotFollowing);
+                        setNumberOfFollowers();
+                    }
+                });
+            }
+        };
+    }
+
 
     private void setNumberOfFollowing() {
-        database.followingList(user.getId()).addOnCompleteListener(new OnCompleteListener<List<String>>() {
-            @Override
-            public void onComplete(@NonNull Task<List<String>> task) {
-                if (task.isSuccessful()) {
-                    if (task.getResult() != null) {
-                        mNumberOfFollowing.setText(  Integer.toString(task.getResult().size()));
-                    }
+        database.followingList(user.getId()).addOnCompleteListener(task -> {
+            if (task.isSuccessful()) {
+                if (task.getResult() != null) {
+                    mNumberOfFollowing.setText(Integer.toString(task.getResult().size()));
                 }
-               /* else {
-                    System.out.println(task.getException().getMessage());
-                }*/
             }
         });
     }
 
     private void setNumberOfFollowers(){
-        database.followersList(user.getId()).addOnCompleteListener(new OnCompleteListener<List<String>>() {
-            @Override
-            public void onComplete(@NonNull Task<List<String>> task) {
-                if (task.isSuccessful()) {
-                    if (task.getResult() != null) {
-                        mNumberOfFollowers.setText(  Integer.toString(task.getResult().size()));
-                    }
+        database.followersList(user.getId()).addOnCompleteListener(task -> {
+            if (task.isSuccessful()) {
+                if (task.getResult() != null) {
+                    mNumberOfFollowers.setText(Integer.toString(task.getResult().size()));
                 }
-                /*else {
-                    System.out.println(task.getException().getMessage());
-                }*/
             }
         });
     }
