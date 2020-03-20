@@ -5,10 +5,12 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.squareup.picasso.Picasso;
 
 import java.util.List;
 
@@ -58,6 +60,11 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.ViewHolder> {
 
         TextView mFullname = holder.mUsername;
         mFullname.setText(user.getUsername());
+
+        ImageView mImageProfile = holder.image_profile;
+        if (user.getImageURL() != null) {
+            Picasso.get().load(user.getImageURL()).into(mImageProfile);
+        }
 
         Authentication authentication = Authentication.getAuthenticationSystem();
         final AuthenticationUser authenticationUser = authentication.getCurrentUser();
