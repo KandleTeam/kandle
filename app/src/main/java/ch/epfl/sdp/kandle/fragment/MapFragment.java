@@ -1,4 +1,4 @@
-package ch.epfl.sdp.kandle.fragment;
+package ch.epfl.sdp.kandle.Fragment;
 
 import android.os.Bundle;
 

@@ -1,4 +1,4 @@
-package ch.epfl.sdp.kandle.fragment;
+package ch.epfl.sdp.kandle.Fragment;
 
 import android.content.Context;
 import android.os.Bundle;
@@ -22,10 +22,9 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-import ch.epfl.sdp.kandle.dependencies.Authentication;
-import ch.epfl.sdp.kandle.dependencies.AuthenticationUser;
-import ch.epfl.sdp.kandle.dependencies.Database;
-import ch.epfl.sdp.kandle.dependencies.DependencyManager;
+import ch.epfl.sdp.kandle.DependencyInjection.Authentication;
+import ch.epfl.sdp.kandle.DependencyInjection.AuthenticationUser;
+import ch.epfl.sdp.kandle.DependencyInjection.Database;
 import ch.epfl.sdp.kandle.R;
 import ch.epfl.sdp.kandle.User;
 import ch.epfl.sdp.kandle.UserAdapter;
@@ -56,8 +55,8 @@ public class SearchFragment extends Fragment {
                              @Nullable Bundle savedInstanceState) {
 
 
-        auth = DependencyManager.getAuthSystem();
-        database = DependencyManager.getDatabaseSystem();
+        auth=Authentication.getAuthenticationSystem();
+        database = Database.getDatabaseSystem();
 
         View view = inflater.inflate(R.layout.fragment_search, container, false);
 
