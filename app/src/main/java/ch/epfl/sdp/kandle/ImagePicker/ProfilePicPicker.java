@@ -22,18 +22,18 @@ public class ProfilePicPicker extends ImagePicker {
 
         Storage storage = Storage.getStorageSystem();
         storage.storeAndGetDownloadUrl(getFileExtension(imageUri), imageUri).addOnCompleteListener(task -> {
-            if (task.isSuccessful() && task.getResult()!=null) {
+            //if (task.isSuccessful() && task.getResult()!=null) {
                 Uri downloadUri = task.getResult();
                 String sUri = downloadUri.toString();
 
                 Database.getDatabaseSystem().updateProfilePicture(sUri);
 
-            } else {
+            /*} else {
                 Toast.makeText(activity, "Failed!", Toast.LENGTH_SHORT).show();
             }
             pd.dismiss();
         }).addOnFailureListener(e -> {
-            Toast.makeText(activity, e.getMessage(), Toast.LENGTH_SHORT).show();
+            Toast.makeText(activity, e.getMessage(), Toast.LENGTH_SHORT).show();*/
             pd.dismiss();
         });
 
