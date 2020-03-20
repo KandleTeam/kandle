@@ -2,8 +2,9 @@ package ch.epfl.sdp.kandle;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import ch.epfl.sdp.kandle.DependencyInjection.Authentication;
-import ch.epfl.sdp.kandle.DependencyInjection.Database;
+import ch.epfl.sdp.kandle.dependencies.Authentication;
+import ch.epfl.sdp.kandle.dependencies.Database;
+import ch.epfl.sdp.kandle.dependencies.DependencyManager;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -16,10 +17,6 @@ import android.widget.Toast;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-
-import java.util.HashMap;
 
 public class RegisterActivity extends AppCompatActivity {
 
@@ -42,32 +39,26 @@ public class RegisterActivity extends AppCompatActivity {
         mPasswordConfirm = findViewById(R.id.passwordConfirm);
         mSignUpBtn = findViewById(R.id.loginBtn);
         mSignInLink = findViewById(R.id.signInLink);
-        fStore = Database.getDatabaseSystem();
-        Auth = Authentication.getAuthenticationSystem();
+        fStore = DependencyManager.getDatabaseSystem();
+        Auth = DependencyManager.getAuthSystem();
 
-        mSignInLink.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                startActivity(new Intent(getApplicationContext(),LoginActivity.class));
-                finish();
-            }
+        mSignInLink.setOnClickListener(v -> {
+            startActivity(new Intent(getApplicationContext(),LoginActivity.class));
+            finish();
         });
 
 
 
-        mSignUpBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                final String fullName = mFullName.getText().toString();
-                final String email = mEmail.getText().toString().trim();
-                String password = mPassword.getText().toString().trim();
-                String passwordConfirm = mPasswordConfirm.getText().toString().trim();
+        mSignUpBtn.setOnClickListener(v -> {
+            final String fullName = mFullName.getText().toString();
+            final String email = mEmail.getText().toString().trim();
+            String password = mPassword.getText().toString().trim();
+            String passwordConfirm = mPasswordConfirm.getText().toString().trim();
 
-                if (!checkFields(fullName,email, password, passwordConfirm)){
-                    return;
-                }
-                 performRegisterViaFirebase(fullName, email, password);
+            if (!checkFields(fullName,email, password, passwordConfirm)){
+                return;
             }
+             performRegisterViaFirebase(fullName, email, password);
         });
 
 
@@ -79,30 +70,27 @@ public class RegisterActivity extends AppCompatActivity {
         // pd.setMessage("Connection...");
         // pd.show();
 
-        Auth.createUserWithEmailAndPassword(email, password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
-            @Override
-            public void onComplete(@NonNull Task<AuthResult> task) {
+        Auth.createUserWithEmailAndPassword(email, password).addOnCompleteListener(task -> {
 
-                if (task.isSuccessful()){
+            if (task.isSuccessful()){
 
-                    Toast.makeText(RegisterActivity.this, "User has been created", Toast.LENGTH_LONG ).show();
+                Toast.makeText(RegisterActivity.this, "User has been created", Toast.LENGTH_LONG ).show();
 
-                    userID = Auth.getCurrentUser().getUid();
+                userID = Auth.getCurrentUser().getUid();
 
-                    User user = new User(userID, email, email, null);
-                    user.setFullname(fullName);
-                    fStore.createUser(user);
+                User user = new User(userID, email, email, null);
+                user.setFullname(fullName);
+                fStore.createUser(user);
 
-                    startActivity(new Intent(getApplicationContext(), CustomAccountActivity.class));
-                    finish();
-
-                }
-
-                else {
-                    Toast.makeText(RegisterActivity.this, "An error has occurred : " + task.getException().getMessage(), Toast.LENGTH_SHORT).show();
-                }
+                startActivity(new Intent(getApplicationContext(), CustomAccountActivity.class));
+                finish();
 
             }
+
+            else {
+                Toast.makeText(RegisterActivity.this, "An error has occurred : " + task.getException().getMessage(), Toast.LENGTH_SHORT).show();
+            }
+
         });
 
     }

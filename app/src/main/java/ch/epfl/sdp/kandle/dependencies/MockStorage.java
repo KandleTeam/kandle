@@ -1,11 +1,11 @@
-package ch.epfl.sdp.kandle.DependencyInjection;
+package ch.epfl.sdp.kandle.dependencies;
 
 import android.net.Uri;
 
 import com.google.android.gms.tasks.Task;
 import com.google.android.gms.tasks.TaskCompletionSource;
 
-public class MockStorage extends Storage {
+public class MockStorage implements Storage {
 
     @Override
     public Task<Uri> storeAndGetDownloadUrl(String fileExtension, Uri fileUri) {

@@ -1,9 +1,8 @@
-package ch.epfl.sdp.kandle.DependencyInjection;
+package ch.epfl.sdp.kandle.dependencies;
 
 import com.google.android.gms.tasks.Continuation;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
@@ -19,13 +18,12 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import ch.epfl.sdp.kandle.User;
 
-public class FirestoreDatabase extends Database {
+public class FirestoreDatabase implements Database {
 
     private static final FirebaseFirestore firestore = FirebaseFirestore.getInstance();
 
@@ -259,7 +257,7 @@ public class FirestoreDatabase extends Database {
                             }
                         }
 
-                        if (followers !=null) {
+                        if (followers != null) {
 
                             if (followers.contains(userUnFollowing)) {
 

@@ -1,21 +1,21 @@
-package ch.epfl.sdp.kandle.DependencyInjection;
+package ch.epfl.sdp.kandle.dependencies;
 
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 
-public class FirebaseAuthentication extends Authentication {
+public class FirebaseAuthentication implements Authentication {
 
-    private FirebaseAuth fAuth;
+    private static FirebaseAuth fAuth = FirebaseAuth.getInstance();
+    private static FirebaseAuthentication auth = new FirebaseAuthentication();
 
-    public FirebaseAuthentication(FirebaseAuth fAuth) {
-        this.fAuth = fAuth;
-
+    private FirebaseAuthentication() {
     }
 
-   /* public FirebaseAuth getfAuth() {
-        return fAuth;
-    }*/
+    public static FirebaseAuthentication getInstance() {
+        return auth;
+    }
+
 
     @Override
     public Task<AuthResult> createUserWithEmailAndPassword(final  String email, final String password)  {

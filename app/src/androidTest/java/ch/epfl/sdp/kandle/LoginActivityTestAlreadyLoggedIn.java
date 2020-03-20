@@ -6,8 +6,9 @@ import org.junit.Rule;
 import org.junit.Test;
 
 import androidx.test.rule.ActivityTestRule;
-import ch.epfl.sdp.kandle.DependencyInjection.Authentication;
-import ch.epfl.sdp.kandle.DependencyInjection.MockAuthentication;
+
+import ch.epfl.sdp.kandle.dependencies.DependencyManager;
+import ch.epfl.sdp.kandle.dependencies.MockAuthentication;
 
 import static androidx.test.espresso.Espresso.onView;
 import static androidx.test.espresso.assertion.ViewAssertions.matches;
@@ -22,7 +23,7 @@ public class LoginActivityTestAlreadyLoggedIn {
             ){
                 @Override
                 protected  void beforeActivityLaunched() {
-                    Authentication.setAuthenticationSystem(new MockAuthentication(true));
+                    DependencyManager.setAuthSystem(new MockAuthentication(true));
                 }
             };
 

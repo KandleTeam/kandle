@@ -16,14 +16,14 @@ import androidx.fragment.app.Fragment;
 
 import androidx.fragment.app.FragmentManager;
 
-import ch.epfl.sdp.kandle.DependencyInjection.Database;
-import ch.epfl.sdp.kandle.Fragment.AboutFragment;
-import ch.epfl.sdp.kandle.Fragment.MapFragment;
+import ch.epfl.sdp.kandle.dependencies.DependencyManager;
+import ch.epfl.sdp.kandle.fragment.AboutFragment;
+import ch.epfl.sdp.kandle.fragment.MapFragment;
 //import ch.epfl.sdp.kandle.Fragment.ProfileFragment;
-import ch.epfl.sdp.kandle.Fragment.YourPostListFragment;
-import ch.epfl.sdp.kandle.Fragment.SearchFragment;
-import ch.epfl.sdp.kandle.Fragment.SettingsFragment;
-import ch.epfl.sdp.kandle.DependencyInjection.Authentication;
+import ch.epfl.sdp.kandle.fragment.YourPostListFragment;
+import ch.epfl.sdp.kandle.fragment.SearchFragment;
+import ch.epfl.sdp.kandle.fragment.SettingsFragment;
+import ch.epfl.sdp.kandle.dependencies.Authentication;
 
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
@@ -55,7 +55,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        auth = Authentication.getAuthenticationSystem();
+        auth = DependencyManager.getAuthSystem();
         // Set a Toolbar to replace the ActionBar.
         toolbar = findViewById(R.id.toolbar);
         mDrawerLayout = findViewById(R.id.drawer_layout);
@@ -83,14 +83,14 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        Database.getDatabaseSystem().getProfilePicture().addOnCompleteListener(task -> {
+        DependencyManager.getDatabaseSystem().getProfilePicture().addOnCompleteListener(task -> {
             String imageUrl = task.getResult();
             if (imageUrl != null) {
                 mProfilePic.setTag(PROFILE_PICTURE_TAG);
                 Picasso.get().load(imageUrl).into(mProfilePic);
             }
         });
-        Database.getDatabaseSystem().getUsername().addOnCompleteListener(task -> {
+        DependencyManager.getDatabaseSystem().getUsername().addOnCompleteListener(task -> {
             String username = task.getResult();
             if (username != null) {
                 mUsername.setText(username);

@@ -6,7 +6,6 @@ import android.app.Instrumentation;
 import android.content.Intent;
 import android.net.Uri;
 
-import androidx.test.espresso.intent.Intents;
 import androidx.test.espresso.intent.rule.IntentsTestRule;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 
@@ -14,8 +13,6 @@ import androidx.test.ext.junit.runners.AndroidJUnit4;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-
-import ch.epfl.sdp.kandle.DependencyInjection.Database;
 
 import static androidx.test.espresso.Espresso.onView;
 import static androidx.test.espresso.action.ViewActions.click;
@@ -32,7 +29,7 @@ import static androidx.test.espresso.matcher.ViewMatchers.withId;
 import static androidx.test.espresso.matcher.ViewMatchers.withTagValue;
 import static org.hamcrest.CoreMatchers.not;
 import static org.hamcrest.Matchers.is;
-import static org.hamcrest.core.IsEqual.equalTo;
+import static org.junit.Assert.*;
 
 
 @RunWith(AndroidJUnit4.class)
@@ -41,6 +38,7 @@ public class PostActivityTest {
     @Rule
     public final IntentsTestRule<PostActivity> postActivityRule =
             new IntentsTestRule<>(PostActivity.class);
+
 
 
     @Test
@@ -55,33 +53,30 @@ public class PostActivityTest {
 
 
     @Test
-    public void postButtonLeadsToMainActivityWhenCorrectPost() throws InterruptedException {
-        //Intents.init();
+    public void postButtonLeadsToMainActivityWhenCorrectPost() {
+
         onView(withId(R.id.postText)).perform(typeText("   Salut Salut  "));
         onView(withId (R.id.postText)).perform(closeSoftKeyboard());
 
         onView(withId(R.id.postButton)).perform(click());
-        Thread.sleep(1000);
-        intended(hasComponent(MainActivity.class.getName()));
 
-        //Intents.release();
+        assertTrue(postActivityRule.getActivity().isFinishing());
+
 
     }
 
     @Test
-    public void clickCameraButtonLeavesToPostActivity() throws InterruptedException {
-        //Intents.init();
+    public void clickCameraButtonLeavesToPostActivity() {
 
         onView(withId(R.id.cameraButton)).perform(click());
         //Thread.sleep(1000);
         //intended(hasComponent(PostActivity.class.getName()));
 
-       // Intents.release();
     }
 
 
     @Test
-    public void clickGaleryButtonDisplaysImage(){
+    public void clickGaleryButtonDisplaysImage() {
 
         Intent resultData = new Intent();
         resultData.setAction(Intent.ACTION_GET_CONTENT);
@@ -90,7 +85,7 @@ public class PostActivityTest {
         Instrumentation.ActivityResult result = new Instrumentation.ActivityResult(Activity.RESULT_OK, resultData);
         intending(hasAction(Intent.ACTION_GET_CONTENT)).respondWith(result);
 
-        onView(withId(R.id.galeryButton)).perform(click());
+        onView(withId(R.id.galleryButton)).perform(click());
         onView(withId(R.id.postImage)).check(matches(withTagValue(is(PostActivity.POST_IMAGE_TAG))));
 
     }

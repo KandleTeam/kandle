@@ -7,10 +7,8 @@ import androidx.test.espresso.contrib.DrawerActions;
 import androidx.test.espresso.contrib.NavigationViewActions;
 import androidx.test.espresso.intent.Intents;
 import androidx.test.rule.ActivityTestRule;
-import ch.epfl.sdp.kandle.DependencyInjection.Authentication;
-import ch.epfl.sdp.kandle.DependencyInjection.Database;
-import ch.epfl.sdp.kandle.DependencyInjection.MockAuthentication;
-import ch.epfl.sdp.kandle.DependencyInjection.MockDatabase;
+
+import ch.epfl.sdp.kandle.dependencies.DependencyManager;
 
 import static androidx.test.espresso.Espresso.onView;
 import static androidx.test.espresso.action.ViewActions.click;
@@ -36,8 +34,7 @@ public class RegisterActivityTest {
             ){
                 @Override
                 protected  void beforeActivityLaunched() {
-                    Authentication.setAuthenticationSystem(new MockAuthentication(false));
-                    Database.setDatabaseSystem(new MockDatabase());
+                    DependencyManager.setFreshTestDependencies(false);
                 }
             };
 
@@ -76,7 +73,7 @@ public class RegisterActivityTest {
 
 
     @Test
-    public void accountCreationShouldFail(){
+    public void accountCreationShouldFail() {
 
         onView(withId (R.id.fullName)).perform(typeText ("Mock User"));
         onView(withId (R.id.fullName)).perform(closeSoftKeyboard());
@@ -131,7 +128,7 @@ public class RegisterActivityTest {
 
 
     @Test
-    public void alreadyHaveAnAccount() throws InterruptedException {
+    public void alreadyHaveAnAccount() {
 
         onView(withId(R.id.signInLink)).perform(click());
         //intended(hasComponent(LoginActivity.class.getName()));

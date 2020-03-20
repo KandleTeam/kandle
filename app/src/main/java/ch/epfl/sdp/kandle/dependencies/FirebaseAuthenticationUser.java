@@ -1,4 +1,4 @@
-package ch.epfl.sdp.kandle.DependencyInjection;
+package ch.epfl.sdp.kandle.dependencies;
 
 import com.google.firebase.auth.FirebaseAuth;
 

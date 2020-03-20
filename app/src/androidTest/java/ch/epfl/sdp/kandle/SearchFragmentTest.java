@@ -15,15 +15,12 @@ import androidx.test.espresso.contrib.NavigationViewActions;
 import androidx.test.espresso.contrib.RecyclerViewActions;
 
 import androidx.test.rule.ActivityTestRule;
-import ch.epfl.sdp.kandle.DependencyInjection.Authentication;
-import ch.epfl.sdp.kandle.DependencyInjection.Database;
-import ch.epfl.sdp.kandle.DependencyInjection.MockAuthentication;
-import ch.epfl.sdp.kandle.DependencyInjection.MockDatabase;
+
+import ch.epfl.sdp.kandle.dependencies.DependencyManager;
 
 import static androidx.test.espresso.action.ViewActions.clearText;
 import static androidx.test.espresso.action.ViewActions.closeSoftKeyboard;
 import static androidx.test.espresso.action.ViewActions.typeText;
-import static androidx.test.espresso.matcher.ViewMatchers.withTagValue;
 import static androidx.test.espresso.matcher.ViewMatchers.withText;
 
 import static androidx.test.espresso.Espresso.onView;
@@ -49,8 +46,7 @@ public class SearchFragmentTest {
             ){
                 @Override
                 protected  void beforeActivityLaunched() {
-                    Authentication.setAuthenticationSystem(new MockAuthentication(true));
-                    Database.setDatabaseSystem(new MockDatabase());
+                    DependencyManager.setFreshTestDependencies(true);
                 }
             };
 
@@ -63,7 +59,7 @@ public class SearchFragmentTest {
 
 
     @Test
-    public void followThenUnfollow() throws InterruptedException {
+    public void followThenUnfollow() {
 
         onView(withId(R.id.search_bar)).perform(typeText("us"));
         onView(withId (R.id.search_bar)).perform(closeSoftKeyboard());
@@ -92,7 +88,7 @@ public class SearchFragmentTest {
     }
 
     @Test
-    public void userWithNoProfilePic() throws InterruptedException {
+    public void userWithNoProfilePic() {
         onView(withId(R.id.search_bar)).perform(typeText("user3"));
         onView(withId (R.id.search_bar)).perform(closeSoftKeyboard());
 
