@@ -14,6 +14,7 @@ import android.widget.TextView;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.squareup.picasso.Picasso;
 
 import java.util.List;
 
@@ -34,6 +35,7 @@ public class ProfileFragment extends Fragment {
     Authentication auth;
     Database database;
 
+    public final static int PROFILE_PICTURE_TAG = 6;
 
     public ProfileFragment (User user){
         this.user = user;
@@ -65,6 +67,10 @@ public class ProfileFragment extends Fragment {
 
 
         mUsername.setText(user.getUsername());
+        if(user.getImageURL() != null) {
+            mProfilePicture.setTag(PROFILE_PICTURE_TAG);
+            Picasso.get().load(user.getImageURL()).into(mProfilePicture);
+        }
 
         setNumberOfFollowers();
         setNumberOfFollowing();
