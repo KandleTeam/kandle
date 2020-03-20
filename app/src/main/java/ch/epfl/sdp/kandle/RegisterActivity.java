@@ -1,6 +1,5 @@
 package ch.epfl.sdp.kandle;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import ch.epfl.sdp.kandle.dependencies.Authentication;
 import ch.epfl.sdp.kandle.dependencies.Database;
@@ -8,25 +7,20 @@ import ch.epfl.sdp.kandle.dependencies.DependencyManager;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
-
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
-import com.google.firebase.auth.AuthResult;
 
 public class RegisterActivity extends AppCompatActivity {
 
     EditText mFullName,mEmail,mPassword, mPasswordConfirm;
     Button mSignUpBtn;
     TextView mSignInLink;
-    Authentication Auth;
+    Authentication auth;
     //ProgressDialog pd;
 
-    Database fStore;
+    Database database;
     String userID;
 
     @Override
@@ -39,8 +33,8 @@ public class RegisterActivity extends AppCompatActivity {
         mPasswordConfirm = findViewById(R.id.passwordConfirm);
         mSignUpBtn = findViewById(R.id.loginBtn);
         mSignInLink = findViewById(R.id.signInLink);
-        fStore = DependencyManager.getDatabaseSystem();
-        Auth = DependencyManager.getAuthSystem();
+        database = DependencyManager.getDatabaseSystem();
+        auth = DependencyManager.getAuthSystem();
 
         mSignInLink.setOnClickListener(v -> {
             startActivity(new Intent(getApplicationContext(),LoginActivity.class));
@@ -70,17 +64,17 @@ public class RegisterActivity extends AppCompatActivity {
         // pd.setMessage("Connection...");
         // pd.show();
 
-        Auth.createUserWithEmailAndPassword(email, password).addOnCompleteListener(task -> {
+        auth.createUserWithEmailAndPassword(email, password).addOnCompleteListener(task -> {
 
             if (task.isSuccessful()){
 
                 Toast.makeText(RegisterActivity.this, "User has been created", Toast.LENGTH_LONG ).show();
 
-                userID = Auth.getCurrentUser().getUid();
+                userID = auth.getCurrentUser().getUid();
 
                 User user = new User(userID, email, email, null);
                 user.setFullname(fullName);
-                fStore.createUser(user);
+                database.createUser(user);
 
                 startActivity(new Intent(getApplicationContext(), CustomAccountActivity.class));
                 finish();

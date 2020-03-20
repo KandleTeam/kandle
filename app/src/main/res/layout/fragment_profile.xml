@@ -89,7 +89,7 @@
         android:layout_width="88dp"
         android:layout_height="48dp"
         android:background="@drawable/button_background"
-        android:text="Button"
+        android:text="@string/followBtnNotFollowing"
         android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="@+id/profileUsername"
         app:layout_constraintEnd_toEndOf="parent"

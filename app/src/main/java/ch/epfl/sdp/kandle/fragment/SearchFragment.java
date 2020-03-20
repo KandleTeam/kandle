@@ -87,9 +87,6 @@ public class SearchFragment extends Fragment {
 
                             mUsers.clear();
 
-                            System.out.println("success");
-                            System.out.println(task.getResult().size());
-
                             for (User user : task.getResult()) {
                                 if (!user.getId().equals(authenticationUser.getUid())) {
                                     mUsers.add(user);
@@ -117,7 +114,7 @@ public class SearchFragment extends Fragment {
 
         userAdapter.setOnItemClickListener((position, v) -> {
 
-            
+
             //closeKeyBoard
             InputMethodManager imm = (InputMethodManager)getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
             imm.hideSoftInputFromWindow(getActivity().getCurrentFocus().getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);

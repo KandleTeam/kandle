@@ -80,7 +80,6 @@ public class ProfileFragment extends Fragment {
 
         database.followingList(authenticationUser.getUid()).addOnCompleteListener(task -> {
             if (task.isSuccessful()){
-
                 if ((task.getResult() == null) || (!task.getResult().contains(user.getId()))){
                     mFollowButton.setText(R.string.followBtnNotFollowing);
                 }
@@ -99,12 +98,12 @@ public class ProfileFragment extends Fragment {
 
     private View.OnClickListener followButtonListener(AuthenticationUser currUser) {
         return v -> {
-            if (mFollowButton.getText().toString().equals(R.string.followBtnNotFollowing)){
-
+            System.out.println(mFollowButton.getText().toString());
+            if (mFollowButton.getText().toString().equals(getString(R.string.followBtnNotFollowing))) {
                 database.follow(currUser.getUid(), user.getId()).addOnCompleteListener(task -> {
                     if (task.isSuccessful()){
+                        System.out.println("not following -> following");
 
-                        mFollowButton.setText(R.string.followBtnAlreadyFollowing);
                         mFollowButton.setText(R.string.followBtnAlreadyFollowing);
                         setNumberOfFollowers();
                     }
@@ -113,8 +112,8 @@ public class ProfileFragment extends Fragment {
             else {
                 database.unFollow(currUser.getUid(), user.getId()).addOnCompleteListener(task -> {
                     if (task.isSuccessful()) {
+                        System.out.println("following -> not following");
 
-                        mFollowButton.setText(R.string.followBtnNotFollowing);
                         mFollowButton.setText(R.string.followBtnNotFollowing);
                         setNumberOfFollowers();
                     }

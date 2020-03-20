@@ -114,36 +114,29 @@ public class FirestoreDatabase implements Database {
 
 
         return firestore
-                .runTransaction(new Transaction.Function<Void>() {
-                    @Override
-                    public Void apply(@NonNull Transaction transaction) throws FirebaseFirestoreException {
+                .runTransaction(transaction -> {
 
-                            DocumentSnapshot usernameSnapshot = transaction.get(usernameDoc);
-                            DocumentSnapshot userSnapshot = transaction.get(userDoc);
+                        DocumentSnapshot usernameSnapshot = transaction.get(usernameDoc);
+                        DocumentSnapshot userSnapshot = transaction.get(userDoc);
 
-                            /*
+                        if(userSnapshot.exists()) {
+                            throw new FirebaseFirestoreException("User already exists!", FirebaseFirestoreException.Code.ALREADY_EXISTS);
+                        }
+                        else if(usernameSnapshot.exists()) {
+                            throw new FirebaseFirestoreException("Username already taken!", FirebaseFirestoreException.Code.ALREADY_EXISTS);
+                        }
 
-                            if(userSnapshot.exists()) {
-                                throw new FirebaseFirestoreException("User already exists!", FirebaseFirestoreException.Code.ALREADY_EXISTS);
-                            }
-                            else if(usernameSnapshot.exists()) {
-                                throw new FirebaseFirestoreException("Username already taken!", FirebaseFirestoreException.Code.ALREADY_EXISTS);
-                            }
+                         else {
 
-                             else {
-                             */
-                                System.out.println("store");
-
-                                Map<String,Object> map = new HashMap<>();
-                                map.put("username", user.getUsername());
+                            Map<String,Object> map = new HashMap<>();
+                            map.put("username", user.getUsername());
 
 
-                                transaction.set(usernameDoc, map);
-                                transaction.set(userDoc, user);
-                            // }
+                            transaction.set(usernameDoc, map);
+                            transaction.set(userDoc, user);
+                        }
 
-                        return null;
-                    }
+                    return null;
                 });
 
     }
@@ -151,25 +144,20 @@ public class FirestoreDatabase implements Database {
     @Override
     public Task<List<User>> searchUsers(String prefix, int maxNumber) {
         char last = prefix.charAt(prefix.length()-1);
-        //String upperBound = prefix.substring(0, prefix.length()-1) + (last+1);
         String upperBound = prefix.substring(0, prefix.length()-1) + (char)(last+1);
 
 
         return users
                 .whereGreaterThanOrEqualTo("normalizedUsername", prefix)
-                //.whereLessThan("normalizedUsername", prefix + "\uf8ff")
                 .whereLessThan("normalizedUsername", upperBound)
                 .limit(maxNumber)
                 .orderBy("normalizedUsername")
                 .get()
-                .continueWith(new Continuation<QuerySnapshot, List<User>>() {
-                    @Override
-                    public List<User> then(@NonNull Task<QuerySnapshot> task) {
-                        System.out.println("check");
-                        return task.getResult().toObjects(User.class);
+                .continueWith(task -> {
+                    System.out.println("check");
+                    return task.getResult().toObjects(User.class);
 
-                     }
-                });
+                 });
     }
 
 
@@ -179,55 +167,47 @@ public class FirestoreDatabase implements Database {
         final DocumentReference userFollowedDoc = follow.document(userFollowed);
 
         return firestore
-                .runTransaction(new Transaction.Function<Void>() {
-                    @Nullable
-                    @Override
-                    public Void apply(@NonNull Transaction transaction) throws FirebaseFirestoreException {
+                .runTransaction(transaction -> {
 
-                        DocumentSnapshot userFollowingSnapshot = transaction.get(userFollowingDoc);
-                        DocumentSnapshot userFollowedSnapshot = transaction.get(userFollowedDoc);
+                    DocumentSnapshot userFollowingSnapshot = transaction.get(userFollowingDoc);
+                    DocumentSnapshot userFollowedSnapshot = transaction.get(userFollowedDoc);
 
-                        List<String> following = (List<String>) userFollowingSnapshot.get("following");
-                        List<String> followers = (List<String>) userFollowedSnapshot.get("followers");
+                    List<String> following = (List<String>) userFollowingSnapshot.get("following");
+                    List<String> followers = (List<String>) userFollowedSnapshot.get("followers");
 
-                        if (following != null) {
-                            if (!following.contains(userFollowed)) {
-                                Map<String, Object> mapFollowing = new HashMap<>();
-                                following.add(userFollowed);
-                                mapFollowing.put("following",following);
-                               // transaction.set(userFollowingDoc, mapDeleteFollowing,SetOptions.merge() );
-                                transaction.set(userFollowingDoc, mapFollowing, SetOptions.merge());
-                            }
-                        }
-                         else {
+                    if (following != null) {
+                        if (!following.contains(userFollowed)) {
                             Map<String, Object> mapFollowing = new HashMap<>();
-                            mapFollowing.put("following", Arrays.asList(userFollowed));
+                            following.add(userFollowed);
+                            mapFollowing.put("following",following);
                             transaction.set(userFollowingDoc, mapFollowing, SetOptions.merge());
-                         }
-
-
-                        if (followers !=null) {
-
-                            if (!followers.contains(userFollowing)) {
-
-                                Map<String, Object> mapFollowed = new HashMap<>();
-                                followers.add(userFollowing);
-                                mapFollowed.put("followers",followers);
-                               // transaction.set(userFollowedDoc, mapDeleteFollowers, SetOptions.merge());
-                                transaction.set(userFollowedDoc, mapFollowed, SetOptions.merge());
-                            }
                         }
-                        else {
-                            Map<String, Object> mapFollowed = new HashMap<>();
-                            mapFollowed.put("followers", Arrays.asList(userFollowing));
+                    }
+                     else {
+                        Map<String, Object> mapFollowing = new HashMap<>();
+                        mapFollowing.put("following", Arrays.asList(userFollowed));
+                        transaction.set(userFollowingDoc, mapFollowing, SetOptions.merge());
+                     }
 
+
+                    if (followers !=null) {
+
+                        if (!followers.contains(userFollowing)) {
+
+                            Map<String, Object> mapFollowed = new HashMap<>();
+                            followers.add(userFollowing);
+                            mapFollowed.put("followers",followers);
                             transaction.set(userFollowedDoc, mapFollowed, SetOptions.merge());
                         }
+                    }
+                    else {
+                        Map<String, Object> mapFollowed = new HashMap<>();
+                        mapFollowed.put("followers", Arrays.asList(userFollowing));
 
-                        return null;
+                        transaction.set(userFollowedDoc, mapFollowed, SetOptions.merge());
                     }
 
-
+                    return null;
                 });
     }
 
@@ -237,38 +217,34 @@ public class FirestoreDatabase implements Database {
         final DocumentReference userUnFollowedDoc = follow.document(userUnFollowed);
 
         return firestore
-                .runTransaction(new Transaction.Function<Void>() {
-                    @Nullable
-                    @Override
-                    public Void apply(@NonNull Transaction transaction) throws FirebaseFirestoreException {
+                .runTransaction(transaction -> {
 
-                        DocumentSnapshot userUnFollowingSnapshot = transaction.get(userUnFollowingDoc);
-                        DocumentSnapshot userUnFollowedSnapshot = transaction.get(userUnFollowedDoc);
+                    DocumentSnapshot userUnFollowingSnapshot = transaction.get(userUnFollowingDoc);
+                    DocumentSnapshot userUnFollowedSnapshot = transaction.get(userUnFollowedDoc);
 
-                        List<String> following = (List<String>) userUnFollowingSnapshot.get("following");
-                        List<String> followers = (List<String>) userUnFollowedSnapshot.get("followers");
+                    List<String> following = (List<String>) userUnFollowingSnapshot.get("following");
+                    List<String> followers = (List<String>) userUnFollowedSnapshot.get("followers");
 
-                        if (following != null) {
-                            if (following.contains(userUnFollowed)) {
-                                Map<String, Object> mapFollowing = new HashMap<>();
-                                following.remove(userUnFollowed);
-                                mapFollowing.put("following", following);
-                                transaction.set(userUnFollowingDoc, mapFollowing, SetOptions.merge());
-                            }
+                    if (following != null) {
+                        if (following.contains(userUnFollowed)) {
+                            Map<String, Object> mapFollowing = new HashMap<>();
+                            following.remove(userUnFollowed);
+                            mapFollowing.put("following", following);
+                            transaction.set(userUnFollowingDoc, mapFollowing, SetOptions.merge());
                         }
-
-                        if (followers != null) {
-
-                            if (followers.contains(userUnFollowing)) {
-
-                                Map<String, Object> mapFollowed = new HashMap<>();
-                                followers.remove(userUnFollowing);
-                                mapFollowed.put("followers", followers);
-                                transaction.set(userUnFollowedDoc, mapFollowed, SetOptions.merge());
-                            }
-                        }
-                        return null;
                     }
+
+                    if (followers != null) {
+
+                        if (followers.contains(userUnFollowing)) {
+
+                            Map<String, Object> mapFollowed = new HashMap<>();
+                            followers.remove(userUnFollowing);
+                            mapFollowed.put("followers", followers);
+                            transaction.set(userUnFollowedDoc, mapFollowed, SetOptions.merge());
+                        }
+                    }
+                    return null;
                 });
     }
 
@@ -277,12 +253,7 @@ public class FirestoreDatabase implements Database {
         return follow
                 .document(userId)
                 .get()
-                .continueWith(new Continuation<DocumentSnapshot, List<String>>() {
-                    @Override
-                    public List<String> then(@NonNull Task<DocumentSnapshot> task) throws Exception {
-                        return  (List<String>)  task.getResult().get("following");
-                    }
-                });
+                .continueWith(task -> (List<String>)  task.getResult().get("following"));
     }
 
     @Override
@@ -290,12 +261,7 @@ public class FirestoreDatabase implements Database {
         return follow
                 .document(userId)
                 .get()
-                .continueWith(new Continuation<DocumentSnapshot, List<String>>() {
-                    @Override
-                    public List<String> then(@NonNull Task<DocumentSnapshot> task) throws Exception {
-                        return  (List<String>)  task.getResult().get("followers");
-                    }
-                });
+                .continueWith(task -> (List<String>)  task.getResult().get("followers"));
 
     }
 
