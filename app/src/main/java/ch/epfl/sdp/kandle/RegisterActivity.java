@@ -5,6 +5,7 @@ import ch.epfl.sdp.kandle.dependencies.Authentication;
 import ch.epfl.sdp.kandle.dependencies.Database;
 import ch.epfl.sdp.kandle.dependencies.DependencyManager;
 
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.widget.Button;
@@ -18,7 +19,6 @@ public class RegisterActivity extends AppCompatActivity {
     Button mSignUpBtn;
     TextView mSignInLink;
     Authentication auth;
-    //ProgressDialog pd;
 
     Database database;
     String userID;
@@ -60,15 +60,15 @@ public class RegisterActivity extends AppCompatActivity {
 
     private void performRegisterViaFirebase (final String fullName, final String email, String password)  {
 
-        // pd = new ProgressDialog(RegisterActivity.this);
-        // pd.setMessage("Connection...");
-        // pd.show();
+        ProgressDialog pd = new ProgressDialog(RegisterActivity.this);
+        pd.setMessage("Your account is being created");
+        pd.show();
 
         auth.createUserWithEmailAndPassword(email, password).addOnCompleteListener(task -> {
 
             if (task.isSuccessful()){
 
-                Toast.makeText(RegisterActivity.this, "User has been created", Toast.LENGTH_LONG ).show();
+
 
                 userID = auth.getCurrentUser().getUid();
 
@@ -76,12 +76,16 @@ public class RegisterActivity extends AppCompatActivity {
                 user.setFullname(fullName);
                 database.createUser(user);
 
+                pd.dismiss();
+                Toast.makeText(RegisterActivity.this, "User has been created", Toast.LENGTH_LONG ).show();
+
                 startActivity(new Intent(getApplicationContext(), CustomAccountActivity.class));
-                finish();
+                finishAffinity();
 
             }
 
             else {
+                pd.dismiss();
                 Toast.makeText(RegisterActivity.this, "An error has occurred : " + task.getException().getMessage(), Toast.LENGTH_SHORT).show();
             }
 
