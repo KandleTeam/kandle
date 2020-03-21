@@ -1,4 +1,4 @@
-package ch.epfl.sdp.kandle.DependencyInjection;
+package ch.epfl.sdp.kandle.dependencies;
 
 import com.google.android.gms.tasks.Task;
 import com.google.android.gms.tasks.TaskCompletionSource;
@@ -7,7 +7,7 @@ import com.google.firebase.auth.AuthResult;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MockAuthentication extends Authentication {
+public class MockAuthentication implements Authentication {
 
 
     private List<String> emails = new ArrayList<>();

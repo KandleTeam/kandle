@@ -1,7 +1,5 @@
 package ch.epfl.sdp.kandle;
 
-import android.content.Intent;
-import android.util.Log;
 import android.view.Gravity;
 
 import androidx.test.espresso.contrib.DrawerActions;
@@ -9,10 +7,8 @@ import androidx.test.espresso.contrib.NavigationViewActions;
 import androidx.test.espresso.intent.Intents;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 import androidx.test.rule.ActivityTestRule;
-import ch.epfl.sdp.kandle.DependencyInjection.Authentication;
-import ch.epfl.sdp.kandle.DependencyInjection.Database;
-import ch.epfl.sdp.kandle.DependencyInjection.MockAuthentication;
-import ch.epfl.sdp.kandle.DependencyInjection.MockDatabase;
+
+import ch.epfl.sdp.kandle.dependencies.DependencyManager;
 
 import org.junit.Rule;
 import org.junit.Test;
@@ -43,9 +39,7 @@ public class MainActivityTest {
             ){
                 @Override
                 protected  void beforeActivityLaunched() {
-                    Authentication.setAuthenticationSystem(new MockAuthentication(true));
-                    Database.setDatabaseSystem(new MockDatabase());
-                    Database.getDatabaseSystem().updateProfilePicture("test");
+                    DependencyManager.setFreshTestDependencies(true);
                 }
             };
 

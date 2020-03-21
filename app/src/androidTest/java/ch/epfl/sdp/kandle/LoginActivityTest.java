@@ -14,8 +14,8 @@ import androidx.test.espresso.contrib.NavigationViewActions;
 import androidx.test.espresso.intent.Intents;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 import androidx.test.rule.ActivityTestRule;
-import ch.epfl.sdp.kandle.DependencyInjection.Authentication;
-import ch.epfl.sdp.kandle.DependencyInjection.MockAuthentication;
+
+import ch.epfl.sdp.kandle.dependencies.DependencyManager;
 
 import static androidx.test.espresso.Espresso.onView;
 import static androidx.test.espresso.action.ViewActions.click;
@@ -42,15 +42,12 @@ public class LoginActivityTest {
 
     @Rule
     public ActivityTestRule<LoginActivity> intentsRule =
-            new ActivityTestRule<LoginActivity>(LoginActivity.class,true,true
-            ){
-            @Override
-                protected  void beforeActivityLaunched() {
-                Authentication.setAuthenticationSystem(new MockAuthentication(false));
-            }
+            new ActivityTestRule<LoginActivity>(LoginActivity.class, true, true) {
+                @Override
+                protected void beforeActivityLaunched() {
+                    DependencyManager.setFreshTestDependencies(false);
+                }
             };
-
-
 
 
     @Test
@@ -63,10 +60,8 @@ public class LoginActivityTest {
     }
 
 
-
-
     @Test
-    public void emptyPasswordTest()  {
+    public void emptyPasswordTest() {
 
         onView(withId(R.id.email)).perform(typeText("test@test.com"));
         onView(withId(R.id.email)).perform(closeSoftKeyboard());
@@ -76,7 +71,7 @@ public class LoginActivityTest {
     }
 
     @Test
-    public void wrongCredentialsTest()  {
+    public void wrongCredentialsTest() {
 
         onView(withId(R.id.email)).perform(typeText("zzzz@test.com"));
         onView(withId(R.id.email)).perform(closeSoftKeyboard());
@@ -90,7 +85,7 @@ public class LoginActivityTest {
     }
 
     @Test
-    public void authenticationShouldFail(){
+    public void authenticationShouldFail() {
 
         onView(withId(R.id.email)).perform(typeText("user2@test.com"));
         onView(withId(R.id.email)).perform(closeSoftKeyboard());
@@ -100,7 +95,7 @@ public class LoginActivityTest {
 
         onView(withId(R.id.loginBtn)).perform(click());
 
-        onView(withText("An error has occurred : You do not have an account yet")).inRoot(withDecorView(not(is( intentsRule.getActivity().getWindow().getDecorView())))).check(matches(isDisplayed()));
+        onView(withText("An error has occurred : You do not have an account yet")).inRoot(withDecorView(not(is(intentsRule.getActivity().getWindow().getDecorView())))).check(matches(isDisplayed()));
 
 
     }
@@ -132,7 +127,7 @@ public class LoginActivityTest {
 
 
     @Test
-    public void alreadyHaveAnAccount()  {
+    public void alreadyHaveAnAccount() {
 
         Intents.init();
 

@@ -3,10 +3,9 @@ package ch.epfl.sdp.kandle.ImagePicker;
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.net.Uri;
-import android.widget.Toast;
 
-import ch.epfl.sdp.kandle.DependencyInjection.Database;
-import ch.epfl.sdp.kandle.DependencyInjection.Storage;
+import ch.epfl.sdp.kandle.dependencies.DependencyManager;
+import ch.epfl.sdp.kandle.dependencies.Storage;
 
 public class ProfilePicPicker extends ImagePicker {
 
@@ -20,13 +19,13 @@ public class ProfilePicPicker extends ImagePicker {
         pd.setMessage("Uploading");
         pd.show();
 
-        Storage storage = Storage.getStorageSystem();
+        Storage storage = DependencyManager.getStorageSystem();
         storage.storeAndGetDownloadUrl(getFileExtension(imageUri), imageUri).addOnCompleteListener(task -> {
             //if (task.isSuccessful() && task.getResult()!=null) {
                 Uri downloadUri = task.getResult();
                 String sUri = downloadUri.toString();
 
-                Database.getDatabaseSystem().updateProfilePicture(sUri);
+                DependencyManager.getDatabaseSystem().updateProfilePicture(sUri);
 
             /*} else {
                 Toast.makeText(activity, "Failed!", Toast.LENGTH_SHORT).show();

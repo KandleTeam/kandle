@@ -16,9 +16,10 @@ import java.util.List;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
-import ch.epfl.sdp.kandle.DependencyInjection.Authentication;
-import ch.epfl.sdp.kandle.DependencyInjection.AuthenticationUser;
-import ch.epfl.sdp.kandle.DependencyInjection.Database;
+import ch.epfl.sdp.kandle.dependencies.Authentication;
+import ch.epfl.sdp.kandle.dependencies.AuthenticationUser;
+import ch.epfl.sdp.kandle.dependencies.Database;
+import ch.epfl.sdp.kandle.dependencies.DependencyManager;
 import de.hdodenhof.circleimageview.CircleImageView;
 
 public class UserAdapter extends RecyclerView.Adapter<UserAdapter.ViewHolder> {
@@ -69,10 +70,10 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.ViewHolder> {
             Picasso.get().load(user.getImageURL()).into(mImageProfile);
         }
 
-        Authentication authentication = Authentication.getAuthenticationSystem();
+        final Authentication authentication = DependencyManager.getAuthSystem();
         final AuthenticationUser authenticationUser = authentication.getCurrentUser();
 
-        final Database database = Database.getDatabaseSystem();
+        final Database database = DependencyManager.getDatabaseSystem();
 
 
         database.followingList(authenticationUser.getUid()).addOnCompleteListener(new OnCompleteListener<List<String>>() {
@@ -111,10 +112,6 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.ViewHolder> {
                                 holder.mFollowBtn.setText("following");
                             }
 
-                           /* else {
-                                System.out.println(task.getException().getMessage());
-                            }*/
-
                         }
                     });
 
@@ -128,9 +125,6 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.ViewHolder> {
                                 holder.mFollowBtn.setText("follow");
                             }
 
-                            /*else {
-                                System.out.println(task.getException().getMessage());
-                            }*/
                         }
                     });
 

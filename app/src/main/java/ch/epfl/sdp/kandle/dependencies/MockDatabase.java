@@ -1,6 +1,4 @@
-package ch.epfl.sdp.kandle.DependencyInjection;
-
-import android.util.Log;
+package ch.epfl.sdp.kandle.dependencies;
 
 import com.google.android.gms.tasks.Task;
 import com.google.android.gms.tasks.TaskCompletionSource;
@@ -13,9 +11,7 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 
-import ch.epfl.sdp.kandle.DependencyInjection.Database;
 import ch.epfl.sdp.kandle.User;
 
 /**
@@ -23,7 +19,7 @@ import ch.epfl.sdp.kandle.User;
  *  - a single user `admin`, with all-zero userID.
  *  - to be extended for posts, etc...
  */
-public class MockDatabase extends Database {
+public class MockDatabase implements Database {
 
 
     private class Follow {

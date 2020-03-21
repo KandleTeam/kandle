@@ -4,99 +4,96 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".Fragment.ProfileFragment">
+    tools:context=".fragment.ProfileFragment">
 
     <!-- TODO: Update blank fragment layout -->
 
 
     <ImageView
         android:id="@+id/profilePicture"
-        android:layout_width="182dp"
-        android:layout_height="186dp"
+        android:layout_width="180dp"
+        android:layout_height="180dp"
         android:src="@mipmap/ic_launcher"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintBottom_toTopOf="@+id/profileFollowers"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.497"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.341" />
+        app:layout_constraintTop_toBottomOf="@+id/profileUsername" />
 
     <TextView
         android:id="@+id/profileUsername"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="32dp"
         android:text="TextView"
+        android:textAlignment="center"
         android:textSize="24sp"
         android:textStyle="bold"
+        app:layout_constraintBottom_toTopOf="@+id/profilePicture"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/profilePicture" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.19999999" />
 
     <TextView
         android:id="@+id/profileFollowers"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="84dp"
-        android:layout_marginTop="104dp"
         android:text="Followers"
+        android:textAlignment="center"
         android:textSize="18sp"
         android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/profileFollowing"
+        app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/profileUsername" />
+        app:layout_constraintTop_toBottomOf="@+id/profilePicture" />
 
     <TextView
         android:id="@+id/profileFollowing"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="104dp"
-        android:layout_marginEnd="84dp"
         android:text="Following"
+        android:textAlignment="center"
         android:textSize="18sp"
         android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/profileUsername" />
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toEndOf="@+id/profileFollowers"
+        app:layout_constraintTop_toTopOf="@+id/profileFollowers" />
 
     <TextView
         android:id="@+id/profileNumberOfFollowers"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="112dp"
-        android:layout_marginTop="24dp"
+        android:layout_height="24dp"
         android:text="0"
+        android:textAlignment="center"
         android:textSize="18sp"
         android:textStyle="bold"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/profileFollowers"
-        app:layout_constraintVertical_bias="0.008" />
+        app:layout_constraintEnd_toEndOf="@+id/profileFollowers"
+        app:layout_constraintStart_toStartOf="@+id/profileFollowers"
+        app:layout_constraintTop_toBottomOf="@+id/profileFollowers" />
 
     <TextView
         android:id="@+id/profileNumberOfFollowing"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="24dp"
-        android:layout_marginEnd="120dp"
+        android:layout_height="24dp"
         android:text="0"
+        android:textAlignment="center"
         android:textSize="18sp"
         android:textStyle="bold"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/profileFollowing"
-        app:layout_constraintVertical_bias="0.007" />
+        app:layout_constraintEnd_toEndOf="@+id/profileFollowing"
+        app:layout_constraintStart_toStartOf="@+id/profileFollowing"
+        app:layout_constraintTop_toBottomOf="@+id/profileFollowing" />
 
     <Button
         android:id="@+id/profileFollowButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="88dp"
+        android:layout_height="48dp"
         android:background="@drawable/button_background"
-        android:text="Button"
+        android:text="@string/followBtnNotFollowing"
         android:textStyle="bold"
-        app:layout_constraintBottom_toTopOf="@+id/profilePicture"
+        app:layout_constraintBottom_toBottomOf="@+id/profileUsername"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.916"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.673" />
+        app:layout_constraintStart_toEndOf="@+id/profileUsername"
+        app:layout_constraintTop_toTopOf="@+id/profileUsername" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

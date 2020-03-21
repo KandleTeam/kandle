@@ -17,7 +17,7 @@ import org.junit.runner.RunWith;
 
 import java.util.Date;
 
-import ch.epfl.sdp.kandle.Fragment.YourPostListFragment;
+import ch.epfl.sdp.kandle.fragment.YourPostListFragment;
 
 import static androidx.test.espresso.Espresso.onView;
 import static androidx.test.espresso.action.ViewActions.click;
@@ -27,11 +27,11 @@ import static androidx.test.espresso.matcher.ViewMatchers.withId;
 import static androidx.test.espresso.matcher.ViewMatchers.withText;
 
 @RunWith(AndroidJUnit4.class)
-public class YourPostListTest {
+public class YourPostsListTest {
 
     @Rule
-    public final ActivityTestRule<MainActivity> mainActivityRule =
-            new ActivityTestRule<>(MainActivity.class);
+    public ActivityTestRule<MainActivity> mainActivityRule =
+            new ActivityTestRule<>(MainActivity.class, true, true);
 
 
     @Before
@@ -44,13 +44,10 @@ public class YourPostListTest {
     public void canClickOnPostAndRemoveIt() throws Throwable {
 
 
-        this.mainActivityRule.runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                YourPostListFragment frag = (YourPostListFragment) mainActivityRule.getActivity().getSupportFragmentManager().findFragmentById(R.id.flContent);
-                Post p =  new Post("Text",0, "( : this is my post : )", new Date());
-                frag.putInPostList(p);
-            }
+        this.mainActivityRule.runOnUiThread(() -> {
+            YourPostListFragment frag = (YourPostListFragment) mainActivityRule.getActivity().getSupportFragmentManager().findFragmentById(R.id.flContent);
+            Post p =  new Post("Text",0, "( : this is my post : )", new Date());
+            frag.putInPostList(p);
         });
 
         onView(withId(R.id.rvPosts)).perform(RecyclerViewActions.actionOnItemAtPosition(0,click()));
@@ -65,17 +62,14 @@ public class YourPostListTest {
 
     @Test
     public void putTwoNewPostsIntoTheRecyclerAndDeleteThem() throws Throwable {
-        this.mainActivityRule.runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                YourPostListFragment frag = (YourPostListFragment) mainActivityRule.getActivity().getSupportFragmentManager().findFragmentById(R.id.flContent);
-                Post p =  new Post("Text", 0,"( : this is my post 1 : )", new Date());
-                Post p1 =  new Post("Text", 0,"( : this is my post 2 : )", new Date());
-                frag.putInPostList(p);
-                frag.putInPostList(p1);
-                frag.removePostAtIndex(0);
-                frag.removePost(p1);
-            }
+        this.mainActivityRule.runOnUiThread(() -> {
+            YourPostListFragment frag = (YourPostListFragment) mainActivityRule.getActivity().getSupportFragmentManager().findFragmentById(R.id.flContent);
+            Post p =  new Post("Text", 0,"( : this is my post 1 : )", new Date());
+            Post p1 =  new Post("Text", 0,"( : this is my post 2 : )", new Date());
+            frag.putInPostList(p);
+            frag.putInPostList(p1);
+            frag.removePostAtIndex(0);
+            frag.removePost(p1);
         });
     }
 
@@ -83,18 +77,14 @@ public class YourPostListTest {
     public void addTwoPostAndLikeThenDislikeThemBoth() throws Throwable {
         YourPostListFragment frag = YourPostListFragment.newInstance();
         frag.getPostList();
-        this.mainActivityRule.runOnUiThread(new Runnable() {
-
-            @Override
-            public void run() {
-                YourPostListFragment frag = (YourPostListFragment) mainActivityRule.getActivity().getSupportFragmentManager().findFragmentById(R.id.flContent);
-                Post p =  new Post("Text", 0,"( : this is my post : )", new Date());
-                Post p1 =  new Post("Text", 0,"( : this is my post : )", new Date());
-                frag.putInPostList(p);
-                frag.putInPostList(p1);
+        this.mainActivityRule.runOnUiThread(() -> {
+            YourPostListFragment frag1 = (YourPostListFragment) mainActivityRule.getActivity().getSupportFragmentManager().findFragmentById(R.id.flContent);
+            Post p =  new Post("Text", 0,"( : this is my post : )", new Date());
+            Post p1 =  new Post("Text", 0,"( : this is my post : )", new Date());
+            frag1.putInPostList(p);
+            frag1.putInPostList(p1);
 
 
-            }
         });
         onView(withId(R.id.rvPosts)).perform(RecyclerViewActions.actionOnItemAtPosition(1,clickChildViewWithId(R.id.likeButton)));
         onView(withId(R.id.rvPosts)).perform(RecyclerViewActions.actionOnItemAtPosition(0,clickChildViewWithId(R.id.likeButton)));

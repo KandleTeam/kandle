@@ -28,10 +28,7 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import ch.epfl.sdp.kandle.DependencyInjection.Database;
-import ch.epfl.sdp.kandle.DependencyInjection.MockDatabase;
-import ch.epfl.sdp.kandle.DependencyInjection.MockStorage;
-import ch.epfl.sdp.kandle.DependencyInjection.Storage;
+import ch.epfl.sdp.kandle.dependencies.DependencyManager;
 
 @RunWith(AndroidJUnit4.class)
 public class CustomAccountActivityTest {
@@ -42,8 +39,7 @@ public class CustomAccountActivityTest {
             ){
                 @Override
                 protected  void beforeActivityLaunched() {
-                    Storage.setStorageSystem(new MockStorage());
-                    Database.setDatabaseSystem(new MockDatabase());
+                    DependencyManager.setFreshTestDependencies(true);
                 }
 
             };
@@ -62,7 +58,7 @@ public class CustomAccountActivityTest {
 
         onView(withId(R.id.profilePic)).check(matches(withTagValue(is(CustomAccountActivity.PROFILE_PICTURE_TAG))));
 
-        Database.getDatabaseSystem().getProfilePicture().addOnCompleteListener(task -> {
+        DependencyManager.getDatabaseSystem().getProfilePicture().addOnCompleteListener(task -> {
             String uri = task.getResult();
             assertThat(uri, is(not(equalTo(null))));
         });

@@ -1,4 +1,4 @@
-package ch.epfl.sdp.kandle.Fragment;
+package ch.epfl.sdp.kandle.fragment;
 
 import android.content.Context;
 import android.os.Bundle;
@@ -22,9 +22,10 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-import ch.epfl.sdp.kandle.DependencyInjection.Authentication;
-import ch.epfl.sdp.kandle.DependencyInjection.AuthenticationUser;
-import ch.epfl.sdp.kandle.DependencyInjection.Database;
+import ch.epfl.sdp.kandle.dependencies.Authentication;
+import ch.epfl.sdp.kandle.dependencies.AuthenticationUser;
+import ch.epfl.sdp.kandle.dependencies.Database;
+import ch.epfl.sdp.kandle.dependencies.DependencyManager;
 import ch.epfl.sdp.kandle.R;
 import ch.epfl.sdp.kandle.User;
 import ch.epfl.sdp.kandle.UserAdapter;
@@ -55,16 +56,13 @@ public class SearchFragment extends Fragment {
                              @Nullable Bundle savedInstanceState) {
 
 
-        auth=Authentication.getAuthenticationSystem();
-        database = Database.getDatabaseSystem();
+        auth = DependencyManager.getAuthSystem();
+        database = DependencyManager.getDatabaseSystem();
 
         View view = inflater.inflate(R.layout.fragment_search, container, false);
 
-
         mRecyclerView = view.findViewById(R.id.recycler_view);
-
         search_bar = view.findViewById(R.id.search_bar);
-
 
         final AuthenticationUser authenticationUser = auth.getCurrentUser();
 
@@ -83,29 +81,19 @@ public class SearchFragment extends Fragment {
 
                 if (!charSequence.toString().replace(" ", "").isEmpty()) {
 
-                    database.searchUsers(charSequence.toString().toLowerCase().replace(" ", ""), 20).addOnCompleteListener(new OnCompleteListener<List<User>>() {
-                        @Override
-                        public void onComplete(@NonNull Task<List<User>> task) {
+                    database.searchUsers(charSequence.toString().toLowerCase().replace(" ", ""), 20).addOnCompleteListener(task -> {
 
-                            if (task.isSuccessful()){
+                        if (task.isSuccessful()) {
 
-                                mUsers.clear();
+                            mUsers.clear();
 
-                                System.out.println("success");
-                                System.out.println(task.getResult().size());
-
-                                for (User user : task.getResult()){
-                                    if (!user.getId().equals(authenticationUser.getUid())){
-                                        mUsers.add(user);
-                                    }
+                            for (User user : task.getResult()) {
+                                if (!user.getId().equals(authenticationUser.getUid())) {
+                                    mUsers.add(user);
                                 }
-
-                                userAdapter.notifyDataSetChanged();
                             }
 
-                           /* else {
-                                System.out.println(task.getException().getMessage());
-                            }*/
+                            userAdapter.notifyDataSetChanged();
                         }
                     });
 
@@ -124,24 +112,19 @@ public class SearchFragment extends Fragment {
 
         final FragmentManager fragmentManager = this.getActivity().getSupportFragmentManager();
 
-        userAdapter.setOnItemClickListener(new UserAdapter.ClickListener(){
+        userAdapter.setOnItemClickListener((position, v) -> {
 
 
-            @Override
-            public void onItemClick(int position, View v) {
+            //closeKeyBoard
+            InputMethodManager imm = (InputMethodManager)getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+            imm.hideSoftInputFromWindow(getActivity().getCurrentFocus().getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
 
 
-                //closeKeyBoard
-                InputMethodManager imm = (InputMethodManager)getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
-                imm.hideSoftInputFromWindow(getActivity().getCurrentFocus().getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
+            final User user = mUsers.get(position);
+
+            fragmentManager.beginTransaction().replace(R.id.flContent, ProfileFragment.newInstance(user) ).commit();
 
 
-                final User user = mUsers.get(position);
-
-                fragmentManager.beginTransaction().replace(R.id.flContent, ProfileFragment.newInstance(user) ).commit();
-
-
-            }
         });
 
         return view;
