@@ -66,7 +66,7 @@ public class MainActivity extends AppCompatActivity {
 
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        drawerToggle = new ActionBarDrawerToggle(this,mDrawerLayout,toolbar,R.string.drawer_open,R.string.drawer_close);
+        drawerToggle = new ActionBarDrawerToggle(this, mDrawerLayout, toolbar, R.string.drawer_open, R.string.drawer_close);
         drawerToggle.setDrawerIndicatorEnabled(true);
         setupDrawerContent(mNavigationView);
         drawerToggle.syncState();
@@ -75,7 +75,7 @@ public class MainActivity extends AppCompatActivity {
         mPostButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(new Intent(getApplicationContext(),PostActivity.class));
+                startActivity(new Intent(getApplicationContext(), PostActivity.class));
             }
         });
     }
@@ -84,16 +84,25 @@ public class MainActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         DependencyManager.getDatabaseSystem().getProfilePicture().addOnCompleteListener(task -> {
-            String imageUrl = task.getResult();
-            if (imageUrl != null) {
-                mProfilePic.setTag(PROFILE_PICTURE_TAG);
-                Picasso.get().load(imageUrl).into(mProfilePic);
+            if (task.isSuccessful()) {
+                String imageUrl = task.getResult();
+                if (imageUrl != null) {
+                    mProfilePic.setTag(PROFILE_PICTURE_TAG);
+                    Picasso.get().load(imageUrl).into(mProfilePic);
+                }
+            } else {
+                //TODO handle case when user is offline (get picture from cache)
             }
         });
+
         DependencyManager.getDatabaseSystem().getUsername().addOnCompleteListener(task -> {
-            String username = task.getResult();
-            if (username != null) {
-                mUsername.setText(username);
+            if (task.isSuccessful()) {
+                String username = task.getResult();
+                if (username != null) {
+                    mUsername.setText(username);
+                }
+            } else {
+                //TODO handle case when user is offline (get username from cache)
             }
         });
     }
@@ -119,7 +128,7 @@ public class MainActivity extends AppCompatActivity {
         Intent intent = null;
         int size = mNavigationView.getMenu().size();
 
-        switch(menuItem.getItemId()) {
+        switch (menuItem.getItemId()) {
 
             //For activities
 
@@ -129,7 +138,7 @@ public class MainActivity extends AppCompatActivity {
                 intent = new Intent(this, SettingsActivity.class);
                 startActivity(intent);
              */
-            case R.id.logout :
+            case R.id.logout:
                 auth.signOut();
                 startActivity(new Intent(getApplicationContext(), LoginActivity.class));
                 finish();
@@ -163,21 +172,19 @@ public class MainActivity extends AppCompatActivity {
                 break;
 
 
-
         }
 
 
         try {
 
-                fragment = (Fragment) fragmentClass.newInstance();
+            fragment = (Fragment) fragmentClass.newInstance();
 
         } catch (Exception e) {
             e.printStackTrace();
         }
 
 
-
-        if (fragment!=null) {
+        if (fragment != null) {
 
 
             FragmentManager fragmentManager = getSupportFragmentManager();
@@ -198,11 +205,6 @@ public class MainActivity extends AppCompatActivity {
 
 
     }
-
-
-
-
-
 
 
 }
