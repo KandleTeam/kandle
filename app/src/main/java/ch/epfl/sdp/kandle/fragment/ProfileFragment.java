@@ -16,8 +16,11 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.squareup.picasso.Picasso;
 
+import java.util.ArrayList;
 import java.util.List;
 
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 import ch.epfl.sdp.kandle.dependencies.Authentication;
 import ch.epfl.sdp.kandle.dependencies.AuthenticationUser;
 import ch.epfl.sdp.kandle.dependencies.Database;
@@ -78,7 +81,7 @@ public class ProfileFragment extends Fragment {
         setNumberOfFollowers();
         setNumberOfFollowing();
 
-        database.followingList(authenticationUser.getUid()).addOnCompleteListener(task -> {
+        database.userIdFollowingList(authenticationUser.getUid()).addOnCompleteListener(task -> {
             if (task.isSuccessful()){
                 if ((task.getResult() == null) || (!task.getResult().contains(user.getId()))){
                     mFollowButton.setText(R.string.followBtnNotFollowing);
@@ -90,7 +93,104 @@ public class ProfileFragment extends Fragment {
             }
         });
 
-        mFollowButton.setOnClickListener(followButtonListener(authenticationUser));
+
+        if (user.getId().equals(authenticationUser.getUid())){
+            mFollowButton.setVisibility(View.GONE);
+        }
+        else {
+            mFollowButton.setOnClickListener(followButtonListener(authenticationUser));
+        }
+
+        final FragmentManager fragmentManager = this.getActivity().getSupportFragmentManager();
+
+
+        mNumberOfFollowers.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                database.userFollowersList(user.getId()).addOnCompleteListener(new OnCompleteListener<List<User>>() {
+                    @Override
+                    public void onComplete(@NonNull Task<List<User>> task) {
+                        if (task.isSuccessful()){
+
+                            if (task.getResult() != null) {
+                                fragmentManager.beginTransaction().replace(R.id.flContent, ListUsersFragment.newInstance(
+                                        task.getResult()
+                                        , "Followers"
+                                        , Integer.toString(task.getResult().size())
+                                ))
+                                        .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
+                                        .addToBackStack(null)
+                                        .commit();
+                            }
+
+                            else {
+                                fragmentManager.beginTransaction().replace(R.id.flContent, ListUsersFragment.newInstance(
+                                        new ArrayList<>()
+                                        , "Followers"
+                                        , "0"
+                                ))
+                                        .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
+                                        .addToBackStack(null)
+                                        .commit();
+                            }
+                        }
+
+                        else {
+                            System.out.println(task.getException().getMessage());
+                        }
+
+                    }
+                });
+
+            }
+        });
+
+        mNumberOfFollowing.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                database.userFollowingList(user.getId()).addOnCompleteListener(new OnCompleteListener<List<User>>() {
+                    @Override
+                    public void onComplete(@NonNull Task<List<User>> task) {
+
+
+                        if (task.isSuccessful()){
+
+                            if (task.getResult()!=null) {
+
+                                fragmentManager.beginTransaction().replace(R.id.flContent, ListUsersFragment.newInstance(
+                                        task.getResult()
+                                        , "Following"
+                                        , Integer.toString(task.getResult().size())
+                                ))
+                                        .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
+                                        .addToBackStack(null)
+
+                                        .commit();
+                            }
+
+                            else {
+                                fragmentManager.beginTransaction().replace(R.id.flContent, ListUsersFragment.newInstance(
+                                        new ArrayList<>()
+                                        , "Following"
+                                        , "0"
+                                ))
+                                        .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
+                                        .addToBackStack(null)
+                                        .commit();
+                            }
+
+
+                        }
+
+                        else {
+                            System.out.println(task.getException().getMessage());
+                        }
+                    }
+                });
+            }
+        });
 
 
         return view;
@@ -124,7 +224,7 @@ public class ProfileFragment extends Fragment {
 
 
     private void setNumberOfFollowing() {
-        database.followingList(user.getId()).addOnCompleteListener(task -> {
+        database.userIdFollowingList(user.getId()).addOnCompleteListener(task -> {
             if (task.isSuccessful()) {
                 if (task.getResult() != null) {
                     mNumberOfFollowing.setText(Integer.toString(task.getResult().size()));
@@ -134,7 +234,7 @@ public class ProfileFragment extends Fragment {
     }
 
     private void setNumberOfFollowers(){
-        database.followersList(user.getId()).addOnCompleteListener(task -> {
+        database.userIdFollowersList(user.getId()).addOnCompleteListener(task -> {
             if (task.isSuccessful()) {
                 if (task.getResult() != null) {
                     mNumberOfFollowers.setText(Integer.toString(task.getResult().size()));

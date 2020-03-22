@@ -97,7 +97,7 @@ public class MockDatabase implements Database {
      */
 
 
-    /*
+
     @Override
     public Task<User> getUserById(String userId) {
 
@@ -111,7 +111,7 @@ public class MockDatabase implements Database {
         return task.getTask();
     }
 
-     */
+
 
     @Override
     public Task<Void> createUser(User user) {
@@ -202,7 +202,7 @@ public class MockDatabase implements Database {
     }
 
     @Override
-    public Task<List<String>> followingList(String userId) {
+    public Task<List<String>> userIdFollowingList(String userId) {
         TaskCompletionSource<List<String>> source = new TaskCompletionSource<>();
         source.setResult(new ArrayList<String>(followMap.get(userId).following));
         return source.getTask();
@@ -210,10 +210,20 @@ public class MockDatabase implements Database {
     }
 
     @Override
-    public Task<List<String>> followersList(String userId) {
+    public Task<List<String>> userIdFollowersList(String userId) {
         TaskCompletionSource<List<String>> source = new TaskCompletionSource<>();
         source.setResult(new ArrayList<String>(followMap.get(userId).followers));
         return source.getTask();
+    }
+
+    @Override
+    public Task<List<User>> userFollowingList(String userId) {
+        return null;
+    }
+
+    @Override
+    public Task<List<User>> userFollowersList(String userId) {
+        return null;
     }
 
     @Override

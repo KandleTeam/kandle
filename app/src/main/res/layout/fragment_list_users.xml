@@ -4,22 +4,35 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="#F6F4F4"
     tools:context=".fragment.ListUsersFragment">
 
 
-
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/recycler_view"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_marginTop="40dp"
-
-        />
-
     <TextView
-        android:id="@+id/textView4"
+        android:id="@+id/list_user_title"
         android:layout_width="96dp"
         android:layout_height="40dp"
-        android:text="TextView" />
+        android:layout_marginLeft="50dp"
+        android:layout_marginTop="10dp"
+        android:text="Title"
+        android:textSize="20sp"
+        android:textStyle="bold" />
+
+    <TextView
+        android:id="@+id/list_user_number"
+        android:layout_width="96dp"
+        android:layout_height="40dp"
+        android:layout_marginLeft="300dp"
+        android:layout_marginTop="10dp"
+        android:text="Number"
+        android:textSize="20sp"
+        android:textStyle="bold" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/list_user_recycler_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="60dp"
+        android:background="#FFFFFF" />
 
 </FrameLayout>
