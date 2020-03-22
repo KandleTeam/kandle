@@ -1,5 +1,6 @@
 package ch.epfl.sdp.kandle.fragment;
 
+import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -21,6 +22,7 @@ import java.util.List;
 
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
+import ch.epfl.sdp.kandle.CustomAccountActivity;
 import ch.epfl.sdp.kandle.dependencies.Authentication;
 import ch.epfl.sdp.kandle.dependencies.AuthenticationUser;
 import ch.epfl.sdp.kandle.dependencies.Database;
@@ -33,7 +35,7 @@ public class ProfileFragment extends Fragment {
 
     User user;
 
-    ImageView mProfilePicture;
+    ImageView mProfilePicture, mEdit;
     TextView mNumberOfFollowers, mNumberOfFollowing, mUsername;
     Button mFollowButton;
     Authentication auth;
@@ -56,6 +58,7 @@ public class ProfileFragment extends Fragment {
         mNumberOfFollowing = parent.findViewById(R.id.profileNumberOfFollowing);
         mUsername = parent.findViewById(R.id.profileUsername);
         mFollowButton = parent.findViewById(R.id.profileFollowButton);
+        mEdit = parent.findViewById(R.id.profileEditButton);
     }
 
 
@@ -71,6 +74,18 @@ public class ProfileFragment extends Fragment {
         getViews(view);
 
         final AuthenticationUser authenticationUser = auth.getCurrentUser();
+
+        if(!user.getId().equals(authenticationUser.getUid())){
+            mEdit.setVisibility(View.GONE);
+        }
+        else {
+            mEdit.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    startActivity(new Intent(getActivity().getApplicationContext(), CustomAccountActivity.class));
+                }
+            });
+        }
 
         mUsername.setText(user.getUsername());
         if(user.getImageURL() != null) {

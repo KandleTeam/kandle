@@ -96,6 +96,7 @@ public class MainActivity extends AppCompatActivity {
                     @Override
                     public void onComplete(@NonNull Task<User> task) {
                         if (task.isSuccessful()){
+                            mPostButton.setVisibility(View.GONE);
                             fragmentManager.beginTransaction().replace(R.id.flContent, ProfileFragment.newInstance(task.getResult()))
                                     .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
                                     .addToBackStack(null)
