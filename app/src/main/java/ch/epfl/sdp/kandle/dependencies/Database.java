@@ -38,7 +38,6 @@ public interface Database {
 
     Task<List<User>> searchUsers(final String prefix, int maxNumber);
 
-
     Task<Void> follow(final String userFollowing, final String userFollowed);
 
     Task<Void> unFollow(final String userUnFollowing, final String userUnFollowed);

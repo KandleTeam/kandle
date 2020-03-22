@@ -102,6 +102,7 @@ public class SearchFragment extends Fragment {
                     mUsers.clear();
                     userAdapter.notifyDataSetChanged();
                 }
+
             }
 
             @Override

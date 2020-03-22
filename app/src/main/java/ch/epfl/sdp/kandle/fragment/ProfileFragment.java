@@ -38,7 +38,7 @@ public class ProfileFragment extends Fragment {
 
     public final static int PROFILE_PICTURE_TAG = 6;
 
-    public ProfileFragment (User user){
+    private ProfileFragment (User user){
         this.user = user;
     }
 
