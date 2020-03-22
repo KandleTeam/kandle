@@ -14,10 +14,20 @@ import android.widget.Toast;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.FirebaseFirestore;
 
+import java.util.Date;
+
 import ch.epfl.sdp.kandle.ImagePicker.PostImagePicker;
+import ch.epfl.sdp.kandle.dependencies.Authentication;
+import ch.epfl.sdp.kandle.dependencies.Database;
+import ch.epfl.sdp.kandle.dependencies.DependencyManager;
 
 public class PostActivity extends AppCompatActivity {
 
+    User u;
+    Post p;
+
+    Authentication auth;
+    Database database;
 
     EditText mPostText;
     Button mPostButton;
@@ -27,7 +37,7 @@ public class PostActivity extends AppCompatActivity {
     public final static int POST_IMAGE_TAG = 42;
     FirebaseAuth fAuth;
     FirebaseFirestore fStore;
-    String userID;
+
 
 
     @Override
@@ -42,17 +52,26 @@ public class PostActivity extends AppCompatActivity {
         mPostImage =findViewById(R.id.postImage);
         postImagePicker = new PostImagePicker(this);
 
-        fStore = FirebaseFirestore.getInstance();
-
-        fAuth = FirebaseAuth.getInstance();
+        auth = DependencyManager.getAuthSystem();
+        database = DependencyManager.getDatabaseSystem();
 
         mPostButton.setOnClickListener(v -> {
+
             String postText  = mPostText.getText().toString().trim();
 
             if(postText.isEmpty()){
                 mPostText.setError("Your post is empty...");
                 return;
             }
+
+            p = new Post("text", postText, new Date());
+            database.addPost(auth.getCurrentUser().getUid(), p).addOnCompleteListener(task -> {
+                if (task.isSuccessful()) {
+
+                }else{
+                    System.out.println(task.getException().getMessage());
+                }
+            });
 
             Toast.makeText(PostActivity.this, "You have successfully posted : " + postText, Toast.LENGTH_LONG ).show();
             finish();

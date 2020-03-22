@@ -46,7 +46,7 @@ public class YourPostsListTest {
 
         this.mainActivityRule.runOnUiThread(() -> {
             YourPostListFragment frag = (YourPostListFragment) mainActivityRule.getActivity().getSupportFragmentManager().findFragmentById(R.id.flContent);
-            Post p =  new Post("Text",0, "( : this is my post : )", new Date());
+            Post p =  new Post("Text","( : this is my post : )", new Date());
             frag.putInPostList(p);
         });
 
@@ -64,8 +64,8 @@ public class YourPostsListTest {
     public void putTwoNewPostsIntoTheRecyclerAndDeleteThem() throws Throwable {
         this.mainActivityRule.runOnUiThread(() -> {
             YourPostListFragment frag = (YourPostListFragment) mainActivityRule.getActivity().getSupportFragmentManager().findFragmentById(R.id.flContent);
-            Post p =  new Post("Text", 0,"( : this is my post 1 : )", new Date());
-            Post p1 =  new Post("Text", 0,"( : this is my post 2 : )", new Date());
+            Post p =  new Post("Text","( : this is my post 1 : )", new Date());
+            Post p1 =  new Post("Text","( : this is my post 2 : )", new Date());
             frag.putInPostList(p);
             frag.putInPostList(p1);
             frag.removePostAtIndex(0);
@@ -79,8 +79,8 @@ public class YourPostsListTest {
         frag.getPostList();
         this.mainActivityRule.runOnUiThread(() -> {
             YourPostListFragment frag1 = (YourPostListFragment) mainActivityRule.getActivity().getSupportFragmentManager().findFragmentById(R.id.flContent);
-            Post p =  new Post("Text", 0,"( : this is my post : )", new Date());
-            Post p1 =  new Post("Text", 0,"( : this is my post : )", new Date());
+            Post p =  new Post("Text","( : this is my post : )", new Date());
+            Post p1 =  new Post("Text","( : this is my post : )", new Date());
             frag1.putInPostList(p);
             frag1.putInPostList(p1);
 

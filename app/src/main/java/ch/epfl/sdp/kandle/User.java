@@ -1,8 +1,11 @@
 package ch.epfl.sdp.kandle;
 
+import java.util.ArrayList;
+
 public class User {
 
     private String id, username, email, fullname , normalizedUsername, imageURL;
+    private ArrayList<String> posts;
 
     public User() {
         // Keep fields null
@@ -14,6 +17,7 @@ public class User {
         this.email = email;
         this.normalizedUsername = username.toLowerCase().replaceAll("[^a-z0-9]", "");
         this.imageURL = imageURL;
+        this.posts = new ArrayList<>();
     }
 
     /*public String getFullname() {

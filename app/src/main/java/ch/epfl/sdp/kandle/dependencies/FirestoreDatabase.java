@@ -21,6 +21,8 @@ import java.util.Map;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+
+import ch.epfl.sdp.kandle.Post;
 import ch.epfl.sdp.kandle.User;
 
 public class FirestoreDatabase implements Database {
@@ -280,6 +282,121 @@ public class FirestoreDatabase implements Database {
             DocumentSnapshot doc = task.getResult();
             return doc != null? (String) doc.get("fullname") : null;
         });
+    }
+
+    @Override
+    public Task<Void> addPost(String userId, Post p) {
+        final DocumentReference addedPostDoc = posts.document(p.getPostId());
+        final DocumentReference userAddingPostDoc = users.document(userId);
+
+        return firestore
+                .runTransaction(transaction -> {
+
+                    DocumentSnapshot userAddingPostSnapshot = transaction.get(userAddingPostDoc);
+                    List<String> posts = (List<String>) userAddingPostSnapshot.get("posts");
+
+                    if (posts != null) {
+                        if (!posts.contains(p.getPostId())) {
+                            Map<String, Object> mapPosts = new HashMap<>();
+                            posts.add(p.getPostId());
+                            mapPosts.put("posts",posts);
+                            transaction.set(addedPostDoc, mapPosts, SetOptions.merge());
+                        }
+                    }
+                    else {
+                        Map<String, Object> mapPosts = new HashMap<>();
+                        mapPosts.put("posts", Arrays.asList(p.getPostId()));
+                        transaction.set(addedPostDoc, mapPosts, SetOptions.merge());
+                    }
+
+
+                    transaction.set(addedPostDoc, p);
+                    return null;
+                });
+    }
+
+    @Override
+    public Task<Void> deletePost(String userId, Post p) {
+        final DocumentReference deletedPostDoc = posts.document(p.getPostId());
+        final DocumentReference userDeletingPostDoc = users.document(userId);
+
+        return firestore
+                .runTransaction(transaction -> {
+
+                    deletedPostDoc.delete();
+
+                    DocumentSnapshot userDeletingPostSnapshot = transaction.get(userDeletingPostDoc);
+
+                    List<String> posts = (List<String>) userDeletingPostSnapshot.get("posts");
+
+                    if (posts != null) {
+                        if (!posts.contains(p.getPostId())) {
+                            Map<String, Object> mapPosts = new HashMap<>();
+                            posts.remove(p.getPostId());
+                            mapPosts.put("posts",posts);
+                            transaction.set(deletedPostDoc, mapPosts, SetOptions.merge());
+                        }
+                    }
+
+                    return null;
+                });
+    }
+
+    @Override
+    public Task<Void> likePost(String userId, String postId) {
+        final DocumentReference likedPostDoc = posts.document(postId);
+
+        return firestore
+                .runTransaction(transaction -> {
+
+                    DocumentSnapshot likedPostSnapchot = transaction.get(likedPostDoc);
+
+                    List<String> likers = (List<String>) likedPostSnapchot.get("likers");
+
+                    if (likers != null) {
+                        if (!likers.contains(userId)) {
+                            Map<String, Object> mapLikers = new HashMap<>();
+                            likers.add(userId);
+                            mapLikers.put("likers",likers);
+                            transaction.set(likedPostDoc, mapLikers, SetOptions.merge());
+                        }
+                    }
+
+                    return null;
+                });
+
+    }
+
+    @Override
+    public Task<Void> unlikePost(String userId, String postId) {
+        final DocumentReference unlikedPostDoc = posts.document(postId);
+
+        return firestore
+                .runTransaction(transaction -> {
+
+                    DocumentSnapshot unlikedPostSnapchot = transaction.get(unlikedPostDoc);
+
+                    List<String> likers = (List<String>) unlikedPostSnapchot.get("likers");
+
+                    if (likers != null) {
+                        if (!likers.contains(userId)) {
+                            Map<String, Object> mapLikers = new HashMap<>();
+                            likers.remove(userId);
+                            mapLikers.put("likers",likers);
+                            transaction.set(unlikedPostDoc, mapLikers, SetOptions.merge());
+                        }
+                    }
+
+                    return null;
+                });
+    }
+
+    @Override
+    public Task<List<Post>> getPostsIdByUserId(String userId) {
+        return users
+                .document(userId)
+                .get()
+                .continueWith(task -> (List<Post>) task.getResult().get("posts"));
     }
 
 

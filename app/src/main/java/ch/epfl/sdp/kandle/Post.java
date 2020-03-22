@@ -9,6 +9,7 @@ import com.google.android.gms.maps.model.LatLng;
 import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.UUID;
 
 
 public class Post {
@@ -16,9 +17,10 @@ public class Post {
     //private User author;
     private String type;    //photo, texte, video
     private LatLng location;
+    private ArrayList<String> likers;
     private int likes;
     private static int count = 0;
-    private int postId = 0;
+    private String postId;
     private Uri image;
     private String description;
     private ArrayList<String> comments;
@@ -36,14 +38,15 @@ public class Post {
 
     }*/
 
-    public Post(String type, int likes, String description, Date date) {
+    public Post(String type, String description, Date date) {
         this.type = type;
         this.location = null;
-        this.likes = likes;
+        this.likes = 0;
         this.description = description;
         this.comments = null;
         this.date = date;
-        postId = count++;
+        this.likers = new ArrayList<>();
+        this.postId = UUID.randomUUID().toString();
     }
 
 
@@ -55,11 +58,15 @@ public class Post {
         return location;
     }
 
+    public ArrayList<String> getLikers(){
+        return likers;
+    }
+
     public int getLikes() {
         return likes;
     }
 
-    public int getPost_id() {
+    public String getPostId() {
         return postId;
     }
 
@@ -75,9 +82,7 @@ public class Post {
         return date;
     }
 
-    public int likePost() {
-        return likes++;
-    }
+    public int likePost() { return likes++; }
 
     public int dislikePost() {
         return likes--;

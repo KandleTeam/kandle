@@ -12,6 +12,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
+import ch.epfl.sdp.kandle.Post;
 import ch.epfl.sdp.kandle.User;
 
 /**
@@ -239,6 +240,31 @@ public class MockDatabase implements Database {
         TaskCompletionSource<String> source = new TaskCompletionSource<>();
         source.setResult("userFullName");
         return source.getTask();
+    }
+
+    @Override
+    public Task<Void> addPost(String userId, Post p) {
+        return null;
+    }
+
+    @Override
+    public Task<Void> deletePost(String userId, Post p) {
+        return null;
+    }
+
+    @Override
+    public Task<Void> likePost(String userId, String postId) {
+        return null;
+    }
+
+    @Override
+    public Task<Void> unlikePost(String userId, String postId) {
+        return null;
+    }
+
+    @Override
+    public Task<List<Post>> getPostsIdByUserId(String userId) {
+        return null;
     }
 
 
