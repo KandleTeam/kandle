@@ -16,6 +16,7 @@ public class Post {
 
     private String type;    //photo, texte, video
     private LatLng location;
+    private  int likes;
     private ArrayList<String> likers;
     private String userId;
     private String postId;
@@ -47,6 +48,7 @@ public class Post {
         this.comments = null;
         this.date = date;
         this.likers = new ArrayList<>();
+        this.likes=0;
         this.postId = UUID.randomUUID().toString();
         this.userId = userId;
     }
@@ -62,6 +64,10 @@ public class Post {
 
     public ArrayList<String> getLikers(){
         return likers;
+    }
+
+    public void setLikes(int likes) {
+        this.likes = likes;
     }
 
     public int getLikes() {

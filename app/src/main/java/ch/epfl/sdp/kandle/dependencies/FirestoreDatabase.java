@@ -453,7 +453,6 @@ public class FirestoreDatabase implements Database {
                                            posts.add(documentSnapshot.toObject(Post.class));
                                        }
                                    }
-                                   System.out.println(posts.size());
                                }
 
                                source.setResult(posts);
