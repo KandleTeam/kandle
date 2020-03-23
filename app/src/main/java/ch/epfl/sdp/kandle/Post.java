@@ -36,6 +36,10 @@ public class Post {
 
     }*/
 
+   public Post(){
+
+   }
+
     public Post(String type, String description, Date date, String userId) {
         this.type = type;
         this.location = null;

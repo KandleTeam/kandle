@@ -18,6 +18,9 @@ import android.widget.LinearLayout;
 import android.widget.PopupWindow;
 import android.widget.TextView;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+
 import java.lang.reflect.Array;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -63,13 +66,39 @@ public class YourPostListFragment extends Fragment {
 
         userId = auth.getCurrentUser().getUid();
 
-        posts = database.getPostsIdByUserId(userId).getResult();
+        database.getPostsIdByUserId(userId).addOnCompleteListener(new OnCompleteListener<List<Post>>() {
+            @Override
+            public void onComplete(@NonNull Task<List<Post>> task) {
+
+                if (task.isSuccessful()){
+
+                    if (task.getResult()!=null){
+                        System.out.println(task.getResult().size());
+                        posts= new ArrayList<>(task.getResult());
+                    }
+
+                    else {
+                        posts = new ArrayList<Post>();
+                    }
+
+                }
+
+                else {
+                    System.out.println(task.getException().getMessage());
+                }
+
+            }
+        });
+
+       /*
         if(posts == null){
             posts = new ArrayList<Post>();
         }else{
             //reverse to have the newer posts first
             Collections.reverse(posts);
         }
+
+        */
         
         /*
         posts = new ArrayList<Post>();
