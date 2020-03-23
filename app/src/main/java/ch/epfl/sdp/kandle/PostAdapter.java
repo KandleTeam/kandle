@@ -12,13 +12,21 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.List;
+
+import ch.epfl.sdp.kandle.dependencies.Authentication;
+import ch.epfl.sdp.kandle.dependencies.Database;
+import ch.epfl.sdp.kandle.dependencies.DependencyManager;
 
 public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder>{
     private static ClickListener clickListener;
     private List<Post> mPosts;
     private  ViewHolder viewHolder;
+
+    private String userId;
+
+    private Authentication auth;
+    private Database database;
 
     public PostAdapter(List<Post> posts) {
         mPosts = posts;
@@ -46,6 +54,11 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder>{
     @Override
     public void onBindViewHolder(@NonNull final ViewHolder holder, int position) {
         final Post post = mPosts.get(position);
+
+        auth = DependencyManager.getAuthSystem();
+        database = DependencyManager.getDatabaseSystem();
+
+        userId = auth.getCurrentUser().getUid();
         DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
 
         // Set item views based on your views and data model
@@ -59,18 +72,23 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder>{
         holder.mlikeButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(holder.alreadyLiked){
-                    holder.alreadyLiked = false;
-                    int likes = post.dislikePost();
+                if(post.getLikers().contains(userId)){
+                    post.unlikePost();
                 }else{
-                    holder.alreadyLiked = true;
-                    int likes = post.likePost();
+                    post.likePost();
                 }
                 likeView.setText(String.valueOf(post.getLikes()));
             }
             ;
         });
 
+        holder.mDeleteButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                database.deletePost(userId, post);
+            }
+            ;
+        });
     }
 
     @Override
@@ -85,16 +103,16 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder>{
         public TextView mlikes;
         public TextView mdate;
         public ImageButton mlikeButton;
-        public boolean alreadyLiked;
+        public ImageButton mDeleteButton;
 
         public ViewHolder(View itemView) {
             super(itemView);
             itemView.setOnClickListener(this);
-            alreadyLiked = false;
             mtitleText = (TextView) itemView.findViewById(R.id.title);
             mlikes = (TextView) itemView.findViewById(R.id.flames);
             mdate = (TextView) itemView.findViewById(R.id.date_and_time);
             mlikeButton = itemView.findViewById(R.id.likeButton);
+            mDeleteButton = itemView.findViewById(R.id.deleteButton);
 
         }
         @Override

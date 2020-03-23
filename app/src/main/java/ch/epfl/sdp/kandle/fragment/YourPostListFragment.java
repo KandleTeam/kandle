@@ -18,25 +18,35 @@ import android.widget.LinearLayout;
 import android.widget.PopupWindow;
 import android.widget.TextView;
 
+import java.lang.reflect.Array;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
+import java.util.List;
 
 import ch.epfl.sdp.kandle.ClickListener;
 import ch.epfl.sdp.kandle.Post;
 import ch.epfl.sdp.kandle.PostAdapter;
 import ch.epfl.sdp.kandle.R;
+import ch.epfl.sdp.kandle.User;
+import ch.epfl.sdp.kandle.dependencies.Authentication;
+import ch.epfl.sdp.kandle.dependencies.Database;
+import ch.epfl.sdp.kandle.dependencies.DependencyManager;
 
 public class YourPostListFragment extends Fragment {
 
 
-    private RecyclerView rvPosts;
-    private ArrayList<Post> posts = new ArrayList<>(0); //From user
-    private PostAdapter adapter = new PostAdapter(posts);
+    private String userId;
+    private List<Post> posts;
 
-    private ImageButton mlikeButton;
-    private boolean alreadyLiked = false;
+    private Authentication auth;
+    private Database database;
+
+    private RecyclerView rvPosts;
+
+    private PostAdapter adapter;
 
     private DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
 
@@ -47,10 +57,29 @@ public class YourPostListFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
+
+        auth = DependencyManager.getAuthSystem();
+        database = DependencyManager.getDatabaseSystem();
+
+        userId = auth.getCurrentUser().getUid();
+
+        posts = database.getPostsIdByUserId(userId).getResult();
+        if(posts == null){
+            posts = new ArrayList<Post>();
+        }else{
+            //reverse to have the newer posts first
+            Collections.reverse(posts);
+        }
+        
+        /*
+        posts = new ArrayList<Post>();
+        posts.add(new Post("text","heyheyhey", new Date(), userId));
+        */
+
         View rootView = inflater.inflate(R.layout.fragment_your_post_list, container, false);
         rvPosts = rootView.findViewById(R.id.rvPosts);
-        Post p =  new Post("Text","( : this is my post : )", new Date());
-        posts.add(p);
+
+        adapter = new PostAdapter(posts);
 
         adapter.setOnItemClickListener((position, view) -> {
             LayoutInflater inflater1 = getLayoutInflater();
@@ -76,7 +105,7 @@ public class YourPostListFragment extends Fragment {
     }
 
 
-    public ArrayList<Post> getPostList() {
+    public List<Post> getPostList() {
         return posts;
     }
 

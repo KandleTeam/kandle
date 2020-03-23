@@ -23,21 +23,18 @@ import ch.epfl.sdp.kandle.dependencies.DependencyManager;
 
 public class PostActivity extends AppCompatActivity {
 
-    User u;
-    Post p;
 
-    Authentication auth;
-    Database database;
+    private Post p;
 
-    EditText mPostText;
-    Button mPostButton;
-    ImageButton mGalleryButton, mCameraButton;
-    ImageView mPostImage;
+    private Authentication auth;
+    private Database database;
+
+    private EditText mPostText;
+    private Button mPostButton;
+    private ImageButton mGalleryButton, mCameraButton;
+    private ImageView mPostImage;
     private PostImagePicker postImagePicker;
     public final static int POST_IMAGE_TAG = 42;
-    FirebaseAuth fAuth;
-    FirebaseFirestore fStore;
-
 
 
     @Override
@@ -64,7 +61,7 @@ public class PostActivity extends AppCompatActivity {
                 return;
             }
 
-            p = new Post("text", postText, new Date());
+            p = new Post("text", postText, new Date(), auth.getCurrentUser().getUid());
             database.addPost(auth.getCurrentUser().getUid(), p).addOnCompleteListener(task -> {
                 if (task.isSuccessful()) {
 

@@ -1,7 +1,9 @@
 package ch.epfl.sdp.kandle.dependencies;
 
 import com.google.android.gms.tasks.Continuation;
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.android.gms.tasks.TaskCompletionSource;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
@@ -300,13 +302,13 @@ public class FirestoreDatabase implements Database {
                             Map<String, Object> mapPosts = new HashMap<>();
                             posts.add(p.getPostId());
                             mapPosts.put("posts",posts);
-                            transaction.set(addedPostDoc, mapPosts, SetOptions.merge());
+                            transaction.set(userAddingPostDoc, mapPosts, SetOptions.merge());
                         }
                     }
                     else {
                         Map<String, Object> mapPosts = new HashMap<>();
                         mapPosts.put("posts", Arrays.asList(p.getPostId()));
-                        transaction.set(addedPostDoc, mapPosts, SetOptions.merge());
+                        transaction.set(userAddingPostDoc, mapPosts, SetOptions.merge());
                     }
 
 
@@ -323,8 +325,6 @@ public class FirestoreDatabase implements Database {
         return firestore
                 .runTransaction(transaction -> {
 
-                    deletedPostDoc.delete();
-
                     DocumentSnapshot userDeletingPostSnapshot = transaction.get(userDeletingPostDoc);
 
                     List<String> posts = (List<String>) userDeletingPostSnapshot.get("posts");
@@ -334,9 +334,11 @@ public class FirestoreDatabase implements Database {
                             Map<String, Object> mapPosts = new HashMap<>();
                             posts.remove(p.getPostId());
                             mapPosts.put("posts",posts);
-                            transaction.set(deletedPostDoc, mapPosts, SetOptions.merge());
+                            transaction.set(userDeletingPostDoc, mapPosts, SetOptions.merge());
                         }
                     }
+
+                    deletedPostDoc.delete();
 
                     return null;
                 });
@@ -392,12 +394,51 @@ public class FirestoreDatabase implements Database {
     }
 
     @Override
-    public Task<List<Post>> getPostsIdByUserId(String userId) {
-        return users
-                .document(userId)
+    public Task<List<String>> likers(String postId) {
+        return posts
+                .document(postId)
                 .get()
-                .continueWith(task -> (List<Post>) task.getResult().get("posts"));
+                .continueWith(task -> (List<String>)  task.getResult().get("likers"));
     }
 
+    @Override
+    public Task<List<Post>> getPostsIdByUserId(String userId) {
+        Task <List<String>> taskListPostId =  users
+                .document(userId)
+                .get()
+                .continueWith(task -> (List<String>) task.getResult().get("posts"));
+        TaskCompletionSource<List<Post>> source = new TaskCompletionSource<>();
+        taskListPostId.addOnCompleteListener(new OnCompleteListener<List<String>>() {
+            @Override
+            public void onComplete(@NonNull Task<List<String>> task) {
+
+                if (task.isSuccessful()){
+
+                    Task <List<Post>> taskListPost = posts.whereIn("postId", task.getResult())
+                            .get()
+                            .continueWith(task1 -> task1.getResult().toObjects(Post.class));
+
+                    taskListPost.addOnCompleteListener(new OnCompleteListener<List<Post>>() {
+                        @Override
+                        public void onComplete(@NonNull Task<List<Post>> task) {
+                            if (task.isSuccessful()){
+                                source.setResult(taskListPost.getResult());
+                            }
+                            else {
+                                source.setException( new Exception(task.getException().getMessage()));
+                            }
+
+                        }
+                    });
+
+                }
+                else {
+                    source.setException( new Exception(task.getException().getMessage()));
+                }
+            }
+        });
+
+        return source.getTask();
+    }
 
 }

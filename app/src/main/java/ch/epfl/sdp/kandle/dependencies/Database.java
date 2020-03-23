@@ -62,6 +62,8 @@ public interface Database {
 
     Task<Void> unlikePost(String userId, String postId);
 
+    Task<List<String>> likers(String postId);
+
     //Task<Void> editPost(Post p);
 
     Task<List<Post>> getPostsIdByUserId(String userId);
