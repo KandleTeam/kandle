@@ -268,7 +268,7 @@ public class MockDatabase implements Database {
     }
 
     @Override
-    public Task<List<Post>> getPostsIdByUserId(String userId) {
+    public Task<List<Post>> getPostsByUserId(String userId) {
         return null;
     }
 

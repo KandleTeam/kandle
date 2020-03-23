@@ -74,8 +74,10 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder>{
             public void onClick(View v) {
                 if(post.getLikers().contains(userId)){
                     post.unlikePost();
+                    database.unlikePost(userId, post.getPostId());
                 }else{
                     post.likePost();
+                    database.likePost(userId, post.getPostId());
                 }
                 likeView.setText(String.valueOf(post.getLikes()));
             }
@@ -86,6 +88,8 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder>{
             @Override
             public void onClick(View v) {
                 database.deletePost(userId, post);
+                mPosts.remove(post);
+                notifyDataSetChanged();
             }
             ;
         });
@@ -116,6 +120,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder>{
             mDeleteButton = itemView.findViewById(R.id.deleteButton);
 
         }
+
         @Override
         public void onClick(View v) {
             clickListener.onItemClick(getAdapterPosition(),v);

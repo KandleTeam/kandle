@@ -47,9 +47,9 @@ public class YourPostListFragment extends Fragment {
     private Authentication auth;
     private Database database;
 
-    private RecyclerView rvPosts;
+    private ImageButton mDeleteButton;
 
-    //private PostAdapter adapter;
+    private RecyclerView rvPosts;
 
     private DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
 
@@ -67,19 +67,16 @@ public class YourPostListFragment extends Fragment {
 
         userId = auth.getCurrentUser().getUid();
 
-        database.getPostsIdByUserId(userId).addOnCompleteListener(new OnCompleteListener<List<Post>>() {
+        database.getPostsByUserId(userId).addOnCompleteListener(new OnCompleteListener<List<Post>>() {
             @Override
             public void onComplete(@NonNull Task<List<Post>> task) {
 
                 if (task.isSuccessful()){
 
                     if (task.getResult()!=null){
-                        //System.out.println(task.getResult().size());
                         posts= new ArrayList<>(task.getResult());
-                        System.out.println(posts.size());
-
-
-
+                        //reverse to have the newer posts first
+                        Collections.reverse(posts);
                     }
 
                     else {
@@ -109,7 +106,6 @@ public class YourPostListFragment extends Fragment {
                     rvPosts.setAdapter(adapter);
                     // Set layout manager to position the items
 
-
                 }
 
                 else {
@@ -119,20 +115,6 @@ public class YourPostListFragment extends Fragment {
             }
         });
 
-       /*
-        if(posts == null){
-            posts = new ArrayList<Post>();
-        }else{
-            //reverse to have the newer posts first
-            Collections.reverse(posts);
-        }
-
-        */
-        
-        /*
-        posts = new ArrayList<Post>();
-        posts.add(new Post("text","heyheyhey", new Date(), userId));
-        */
 
         View rootView = inflater.inflate(R.layout.fragment_your_post_list, container, false);
         rvPosts = rootView.findViewById(R.id.rvPosts);

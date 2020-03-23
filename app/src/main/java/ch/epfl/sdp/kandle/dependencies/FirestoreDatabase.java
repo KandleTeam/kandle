@@ -381,16 +381,14 @@ public class FirestoreDatabase implements Database {
                     DocumentSnapshot unlikedPostSnapchot = transaction.get(unlikedPostDoc);
 
                     List<String> likers = (List<String>) unlikedPostSnapchot.get("likers");
-
                     if (likers != null) {
-                        if (!likers.contains(userId)) {
+                        if (likers.contains(userId)) {
                             Map<String, Object> mapLikers = new HashMap<>();
                             likers.remove(userId);
                             mapLikers.put("likers",likers);
                             transaction.set(unlikedPostDoc, mapLikers, SetOptions.merge());
                         }
                     }
-
                     return null;
                 });
     }
@@ -404,7 +402,7 @@ public class FirestoreDatabase implements Database {
     }
 
     @Override
-    public Task<List<Post>> getPostsIdByUserId(String userId) {
+    public Task<List<Post>> getPostsByUserId(String userId) {
         Task <List<String>> taskListPostId =  users
                 .document(userId)
                 .get()
@@ -416,8 +414,6 @@ public class FirestoreDatabase implements Database {
             public void onComplete(@NonNull Task<List<String>> task) {
 
                 if (task.isSuccessful()){
-                    System.out.println( " post : " +task.getResult());
-
                    /* Task <List<Post>> taskListPost = posts.whereIn("postId", task.getResult())
                             .get()
                             .continueWith(task1 -> task1.getResult().toObjects(Post.class));
@@ -449,7 +445,6 @@ public class FirestoreDatabase implements Database {
                                    for (QueryDocumentSnapshot documentSnapshot : task2.getResult()) {
                                        String postId = (String) documentSnapshot.get("postId");
                                        if (task.getResult().contains(postId)) {
-                                           System.out.println("check");
                                            posts.add(documentSnapshot.toObject(Post.class));
                                        }
                                    }

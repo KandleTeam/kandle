@@ -66,6 +66,6 @@ public interface Database {
 
     //Task<Void> editPost(Post p);
 
-    Task<List<Post>> getPostsIdByUserId(String userId);
+    Task<List<Post>> getPostsByUserId(String userId);
 
 }
