@@ -64,15 +64,14 @@ public class PostActivity extends AppCompatActivity {
             p = new Post("text", postText, new Date(), auth.getCurrentUser().getUid());
             database.addPost(auth.getCurrentUser().getUid(), p).addOnCompleteListener(task -> {
                 if (task.isSuccessful()) {
-
+                    Toast.makeText(PostActivity.this, "You have successfully posted : " + postText, Toast.LENGTH_LONG ).show();
+                    finish();
+                    finish();
+                    startActivity(new Intent(getApplicationContext(), MainActivity.class));
                 }else{
                     System.out.println(task.getException().getMessage());
                 }
             });
-
-            Toast.makeText(PostActivity.this, "You have successfully posted : " + postText, Toast.LENGTH_LONG ).show();
-            finish();
-
         });
 
         mCameraButton.setOnClickListener(v -> Toast.makeText(PostActivity.this, "Doesn't work for now... " , Toast.LENGTH_LONG ).show());
