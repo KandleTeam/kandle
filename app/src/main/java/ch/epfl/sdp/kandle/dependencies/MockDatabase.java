@@ -61,6 +61,13 @@ public class MockDatabase implements Database {
         users.put("user1Id", new User("user1Id", "user1", "user1@kandle.ch", "image"));
         users.remove("user1Id");
         users.put("user1Id", new User("user1Id", "user1", "user1@kandle.ch", "image"));
+        users.remove("user1Id");
+        users.put("user1Id", new User("user1Id", "user1", "user1@kandle.ch", "image"));
+        users.remove("user1Id");
+        users.put("user1Id", new User("user1Id", "user1", "user1@kandle.ch", "image"));
+        users.remove("user1Id");
+
+        users.put("user1Id", new User("user1Id", "user1", "user1@kandle.ch", "image"));
         users.put("user2Id", new User("user2Id", "user2", "user2@kandle.ch", "image"));
         users.put("user3Id", new User("user3Id", "user3", "user3@kandle.ch", null));
         

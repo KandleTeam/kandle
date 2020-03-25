@@ -124,70 +124,32 @@ public class ProfileFragment extends Fragment {
         final FragmentManager fragmentManager = this.getActivity().getSupportFragmentManager();
 
 
-        mNumberOfFollowers.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
+        mNumberOfFollowers.setOnClickListener(v -> database.userFollowersList(user.getId()).addOnCompleteListener(numberListener("Followers", fragmentManager)));
 
-                database.userFollowersList(user.getId()).addOnCompleteListener(new OnCompleteListener<List<User>>() {
-                    @Override
-                    public void onComplete(@NonNull Task<List<User>> task) {
-                        if (task.isSuccessful()){
-
-                                fragmentManager.beginTransaction().replace(R.id.flContent, ListUsersFragment.newInstance(
-                                        task.getResult()
-                                        , "Followers"
-                                        , Integer.toString(task.getResult().size())
-                                ))
-                                        .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
-                                        .addToBackStack(null)
-                                        .commit();
-
-                        }
-
-                        /*else {
-                            System.out.println(task.getException().getMessage());
-                        }
-                        */
-
-                    }
-                });
-
-            }
-        });
-
-        mNumberOfFollowing.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-                database.userFollowingList(user.getId()).addOnCompleteListener(new OnCompleteListener<List<User>>() {
-                    @Override
-                    public void onComplete(@NonNull Task<List<User>> task) {
-
-                        if (task.isSuccessful()){
-
-                                        fragmentManager.beginTransaction().replace(R.id.flContent, ListUsersFragment.newInstance(
-                                        task.getResult()
-                                        , "Following"
-                                        , Integer.toString(task.getResult().size())
-                                ))
-                                        .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
-                                        .addToBackStack(null)
-                                        .commit();
-
-                        }
-
-                        /*else {
-                            System.out.println(task.getException().getMessage());
-                        }
-
-                         */
-                    }
-                });
-            }
-        });
+        mNumberOfFollowing.setOnClickListener(v -> database.userFollowingList(user.getId()).addOnCompleteListener(numberListener("Following", fragmentManager)));
 
 
         return view;
+    }
+
+    private OnCompleteListener<List<User>> numberListener (String title, final FragmentManager fragmentManager ){
+        return new OnCompleteListener<List<User>>() {
+            @Override
+            public void onComplete(@NonNull Task<List<User>> task) {
+                if (task.isSuccessful()){
+
+                    fragmentManager.beginTransaction().replace(R.id.flContent, ListUsersFragment.newInstance(
+                            task.getResult()
+                            , title
+                            , Integer.toString(task.getResult().size())
+                    ))
+                            .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
+                            .addToBackStack(null)
+                            .commit();
+
+                }
+            }
+        };
     }
 
     private View.OnClickListener followButtonListener(AuthenticationUser currUser) {
