@@ -23,7 +23,7 @@ public interface Database {
      *      * @param userId the user's userId
      *      * @return
      */
-    // Task<User> getUserById(String userId);
+     Task<User> getUserById(String userId);
 
 
     /**
@@ -38,14 +38,17 @@ public interface Database {
 
     Task<List<User>> searchUsers(final String prefix, int maxNumber);
 
-
     Task<Void> follow(final String userFollowing, final String userFollowed);
 
     Task<Void> unFollow(final String userUnFollowing, final String userUnFollowed);
 
-    Task<List<String>> followingList(String userId);
+    Task<List<String>> userIdFollowingList(String userId);
 
-    Task<List<String>> followersList(String userId);
+    Task<List<String>> userIdFollowersList(String userId);
+
+    Task<List<User>> userFollowingList(String userId);
+
+    Task<List<User>> userFollowersList(String userId);
 
     Task<Void> updateProfilePicture(String uri);
 

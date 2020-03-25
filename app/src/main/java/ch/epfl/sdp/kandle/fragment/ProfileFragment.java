@@ -1,5 +1,6 @@
 package ch.epfl.sdp.kandle.fragment;
 
+import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -16,8 +17,12 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.squareup.picasso.Picasso;
 
+import java.util.ArrayList;
 import java.util.List;
 
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
+import ch.epfl.sdp.kandle.CustomAccountActivity;
 import ch.epfl.sdp.kandle.dependencies.Authentication;
 import ch.epfl.sdp.kandle.dependencies.AuthenticationUser;
 import ch.epfl.sdp.kandle.dependencies.Database;
@@ -30,7 +35,7 @@ public class ProfileFragment extends Fragment {
 
     User user;
 
-    ImageView mProfilePicture;
+    ImageView mProfilePicture, mEdit;
     TextView mNumberOfFollowers, mNumberOfFollowing, mUsername;
     Button mFollowButton;
     Authentication auth;
@@ -38,7 +43,7 @@ public class ProfileFragment extends Fragment {
 
     public final static int PROFILE_PICTURE_TAG = 6;
 
-    public ProfileFragment (User user){
+    private ProfileFragment (User user){
         this.user = user;
     }
 
@@ -53,6 +58,7 @@ public class ProfileFragment extends Fragment {
         mNumberOfFollowing = parent.findViewById(R.id.profileNumberOfFollowing);
         mUsername = parent.findViewById(R.id.profileUsername);
         mFollowButton = parent.findViewById(R.id.profileFollowButton);
+        mEdit = parent.findViewById(R.id.profileEditButton);
     }
 
 
@@ -69,6 +75,23 @@ public class ProfileFragment extends Fragment {
 
         final AuthenticationUser authenticationUser = auth.getCurrentUser();
 
+        if(!user.getId().equals(authenticationUser.getUid())){
+            mEdit.setVisibility(View.GONE);
+        }
+        else {
+            /*
+            mEdit.setOnClickListener(new View.OnClickListener() {
+
+                @Override
+                public void onClick(View v) {
+                    startActivity(new Intent(getActivity().getApplicationContext(), CustomAccountActivity.class));
+                }
+
+            });
+
+             */
+        }
+
         mUsername.setText(user.getUsername());
         if(user.getImageURL() != null) {
             mProfilePicture.setTag(PROFILE_PICTURE_TAG);
@@ -78,7 +101,7 @@ public class ProfileFragment extends Fragment {
         setNumberOfFollowers();
         setNumberOfFollowing();
 
-        database.followingList(authenticationUser.getUid()).addOnCompleteListener(task -> {
+        database.userIdFollowingList(authenticationUser.getUid()).addOnCompleteListener(task -> {
             if (task.isSuccessful()){
                 if ((task.getResult() == null) || (!task.getResult().contains(user.getId()))){
                     mFollowButton.setText(R.string.followBtnNotFollowing);
@@ -90,10 +113,43 @@ public class ProfileFragment extends Fragment {
             }
         });
 
-        mFollowButton.setOnClickListener(followButtonListener(authenticationUser));
+
+        if (user.getId().equals(authenticationUser.getUid())){
+            mFollowButton.setVisibility(View.GONE);
+        }
+        else {
+            mFollowButton.setOnClickListener(followButtonListener(authenticationUser));
+        }
+
+        final FragmentManager fragmentManager = this.getActivity().getSupportFragmentManager();
+
+
+        mNumberOfFollowers.setOnClickListener(v -> database.userFollowersList(user.getId()).addOnCompleteListener(numberListener("Followers", fragmentManager)));
+
+        mNumberOfFollowing.setOnClickListener(v -> database.userFollowingList(user.getId()).addOnCompleteListener(numberListener("Following", fragmentManager)));
 
 
         return view;
+    }
+
+    private OnCompleteListener<List<User>> numberListener (String title, final FragmentManager fragmentManager ){
+        return new OnCompleteListener<List<User>>() {
+            @Override
+            public void onComplete(@NonNull Task<List<User>> task) {
+                if (task.isSuccessful()){
+
+                    fragmentManager.beginTransaction().replace(R.id.flContent, ListUsersFragment.newInstance(
+                            task.getResult()
+                            , title
+                            , Integer.toString(task.getResult().size())
+                    ))
+                            .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
+                            .addToBackStack(null)
+                            .commit();
+
+                }
+            }
+        };
     }
 
     private View.OnClickListener followButtonListener(AuthenticationUser currUser) {
@@ -124,7 +180,7 @@ public class ProfileFragment extends Fragment {
 
 
     private void setNumberOfFollowing() {
-        database.followingList(user.getId()).addOnCompleteListener(task -> {
+        database.userIdFollowingList(user.getId()).addOnCompleteListener(task -> {
             if (task.isSuccessful()) {
                 if (task.getResult() != null) {
                     mNumberOfFollowing.setText(Integer.toString(task.getResult().size()));
@@ -134,7 +190,7 @@ public class ProfileFragment extends Fragment {
     }
 
     private void setNumberOfFollowers(){
-        database.followersList(user.getId()).addOnCompleteListener(task -> {
+        database.userIdFollowersList(user.getId()).addOnCompleteListener(task -> {
             if (task.isSuccessful()) {
                 if (task.getResult() != null) {
                     mNumberOfFollowers.setText(Integer.toString(task.getResult().size()));

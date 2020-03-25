@@ -1,5 +1,6 @@
 package ch.epfl.sdp.kandle.dependencies;
 
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.gms.tasks.TaskCompletionSource;
 
@@ -12,6 +13,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
+import androidx.annotation.NonNull;
 import ch.epfl.sdp.kandle.User;
 
 /**
@@ -57,6 +59,15 @@ public class MockDatabase implements Database {
         users = new HashMap<>();
         //String adminId = "user1Id"; // 28 zeros
         users.put("user1Id", new User("user1Id", "user1", "user1@kandle.ch", "image"));
+        users.remove("user1Id");
+        users.put("user1Id", new User("user1Id", "user1", "user1@kandle.ch", "image"));
+        users.remove("user1Id");
+        users.put("user1Id", new User("user1Id", "user1", "user1@kandle.ch", "image"));
+        users.remove("user1Id");
+        users.put("user1Id", new User("user1Id", "user1", "user1@kandle.ch", "image"));
+        users.remove("user1Id");
+
+        users.put("user1Id", new User("user1Id", "user1", "user1@kandle.ch", "image"));
         users.put("user2Id", new User("user2Id", "user2", "user2@kandle.ch", "image"));
         users.put("user3Id", new User("user3Id", "user3", "user3@kandle.ch", null));
         
@@ -97,7 +108,7 @@ public class MockDatabase implements Database {
      */
 
 
-    /*
+
     @Override
     public Task<User> getUserById(String userId) {
 
@@ -105,13 +116,14 @@ public class MockDatabase implements Database {
 
         if(users.containsKey(userId)) {
             task.setResult(users.get(userId));
-        } else {
-            task.setException(new IllegalArgumentException("No such user with id: " + userId));
         }
+        //else {
+           // task.setException(new IllegalArgumentException("No such user with id: " + userId));
+        //}
         return task.getTask();
     }
 
-     */
+
 
     @Override
     public Task<Void> createUser(User user) {
@@ -202,7 +214,7 @@ public class MockDatabase implements Database {
     }
 
     @Override
-    public Task<List<String>> followingList(String userId) {
+    public Task<List<String>> userIdFollowingList(String userId) {
         TaskCompletionSource<List<String>> source = new TaskCompletionSource<>();
         source.setResult(new ArrayList<String>(followMap.get(userId).following));
         return source.getTask();
@@ -210,9 +222,33 @@ public class MockDatabase implements Database {
     }
 
     @Override
-    public Task<List<String>> followersList(String userId) {
+    public Task<List<String>> userIdFollowersList(String userId) {
         TaskCompletionSource<List<String>> source = new TaskCompletionSource<>();
         source.setResult(new ArrayList<String>(followMap.get(userId).followers));
+        return source.getTask();
+    }
+
+    @Override
+    public Task<List<User>> userFollowingList(String userId) {
+        TaskCompletionSource<List<User>> source = new TaskCompletionSource<>();
+        ArrayList<User> following = new ArrayList<>();
+
+        for (String id : followMap.get(userId).following){
+            following.add(users.get(id));
+        }
+        source.setResult(following);
+        return source.getTask();
+    }
+
+    @Override
+    public Task<List<User>> userFollowersList(String userId) {
+        TaskCompletionSource<List<User>> source = new TaskCompletionSource<>();
+        ArrayList<User> followers = new ArrayList<>();
+
+        for (String id : followMap.get(userId).followers){
+            followers.add(users.get(id));
+        }
+        source.setResult(followers);
         return source.getTask();
     }
 
