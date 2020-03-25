@@ -278,24 +278,6 @@ public class FirestoreDatabase implements Database {
 
                     if (task.getResult() != null) {
 
-                        /*
-                        Task<List<User>> taskUserFollowing = users.whereIn("id", task.getResult())
-                                .get()
-                                .continueWith(task1 -> task1.getResult().toObjects(User.class));
-                        taskUserFollowing.addOnCompleteListener(new OnCompleteListener<List<User>>() {
-                            @Override
-                            public void onComplete(@NonNull Task<List<User>> task) {
-                                if (task.isSuccessful()) {
-                                    source.setResult(taskUserFollowing.getResult());
-                                } else {
-                                    source.setException(new Exception(task.getException().getMessage()));
-                                }
-
-                            }
-                        });
-
-                         */
-
                         users.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                             @Override
                             public void onComplete(@NonNull Task<QuerySnapshot> task2) {
@@ -317,7 +299,6 @@ public class FirestoreDatabase implements Database {
 
                             }
                         });
-
 
                     }
                     else {
@@ -344,27 +325,6 @@ public class FirestoreDatabase implements Database {
 
                 if (task.isSuccessful()){
 
-                    /*
-                    if (task.getResult() !=null) {
-                        Task<List<User>> taskUserFollowers = users.whereIn("id", task.getResult())
-                                .get()
-                                .continueWith(task1 -> task1.getResult().toObjects(User.class));
-                        taskUserFollowers.addOnCompleteListener(new OnCompleteListener<List<User>>() {
-                            @Override
-                            public void onComplete(@NonNull Task<List<User>> task) {
-                                if (task.isSuccessful()) {
-                                    source.setResult(taskUserFollowers.getResult());
-                                } else {
-                                    source.setException(new Exception(task.getException().getMessage()));
-                                }
-                            }
-                        });
-                    }
-                    else {
-                        source.setResult(null);
-                    }
-
-                     */
                     users.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                         @Override
                         public void onComplete(@NonNull Task<QuerySnapshot> task2) {
@@ -386,9 +346,6 @@ public class FirestoreDatabase implements Database {
 
                         }
                     });
-
-
-
                 }
                 else {
                     source.setException( new Exception(task.getException().getMessage()));

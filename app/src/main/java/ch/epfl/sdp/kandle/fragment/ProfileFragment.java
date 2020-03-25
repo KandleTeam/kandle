@@ -79,12 +79,17 @@ public class ProfileFragment extends Fragment {
             mEdit.setVisibility(View.GONE);
         }
         else {
+            /*
             mEdit.setOnClickListener(new View.OnClickListener() {
+
                 @Override
                 public void onClick(View v) {
                     startActivity(new Intent(getActivity().getApplicationContext(), CustomAccountActivity.class));
                 }
+
             });
+
+             */
         }
 
         mUsername.setText(user.getUsername());
@@ -128,7 +133,6 @@ public class ProfileFragment extends Fragment {
                     public void onComplete(@NonNull Task<List<User>> task) {
                         if (task.isSuccessful()){
 
-                            if (task.getResult() != null) {
                                 fragmentManager.beginTransaction().replace(R.id.flContent, ListUsersFragment.newInstance(
                                         task.getResult()
                                         , "Followers"
@@ -137,23 +141,13 @@ public class ProfileFragment extends Fragment {
                                         .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
                                         .addToBackStack(null)
                                         .commit();
-                            }
 
-                            else {
-                                fragmentManager.beginTransaction().replace(R.id.flContent, ListUsersFragment.newInstance(
-                                        new ArrayList<>()
-                                        , "Followers"
-                                        , "0"
-                                ))
-                                        .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
-                                        .addToBackStack(null)
-                                        .commit();
-                            }
                         }
 
-                        else {
+                        /*else {
                             System.out.println(task.getException().getMessage());
                         }
+                        */
 
                     }
                 });
@@ -169,39 +163,24 @@ public class ProfileFragment extends Fragment {
                     @Override
                     public void onComplete(@NonNull Task<List<User>> task) {
 
-
                         if (task.isSuccessful()){
 
-                            if (task.getResult()!=null) {
-
-                                fragmentManager.beginTransaction().replace(R.id.flContent, ListUsersFragment.newInstance(
+                                        fragmentManager.beginTransaction().replace(R.id.flContent, ListUsersFragment.newInstance(
                                         task.getResult()
                                         , "Following"
                                         , Integer.toString(task.getResult().size())
                                 ))
                                         .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
                                         .addToBackStack(null)
-
                                         .commit();
-                            }
-
-                            else {
-                                fragmentManager.beginTransaction().replace(R.id.flContent, ListUsersFragment.newInstance(
-                                        new ArrayList<>()
-                                        , "Following"
-                                        , "0"
-                                ))
-                                        .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
-                                        .addToBackStack(null)
-                                        .commit();
-                            }
-
 
                         }
 
-                        else {
+                        /*else {
                             System.out.println(task.getException().getMessage());
                         }
+
+                         */
                     }
                 });
             }
