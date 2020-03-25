@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import ch.epfl.sdp.kandle.dependencies.Authentication;
 import ch.epfl.sdp.kandle.dependencies.DependencyManager;
 
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
@@ -42,7 +43,6 @@ public class LoginActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 startActivity(new Intent(getApplicationContext(), RegisterActivity.class));
-                finish();
             }
         });
 
@@ -89,20 +89,22 @@ public class LoginActivity extends AppCompatActivity {
 
 
     private void performLoginViaFirebase(String email, String password) {
-
+        final ProgressDialog pd = new ProgressDialog(LoginActivity.this);
+        pd.setMessage("Logging in");
+        pd.show();
 
         auth.signInWithEmailAndPassword(email, password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
             @Override
             public void onComplete(@NonNull Task<AuthResult> task) {
                 if (task.isSuccessful()) {
 
-                    //pd.dismiss();
+                    pd.dismiss();
                     Toast.makeText(LoginActivity.this, getString(R.string.login_success), Toast.LENGTH_LONG).show();
                     startActivity(new Intent(getApplicationContext(), MainActivity.class));
                     finish();
 
                 } else {
-                    //pd.dismiss();
+                    pd.dismiss();
                     Toast.makeText(LoginActivity.this, "An error has occurred : " + task.getException().getMessage(), Toast.LENGTH_SHORT).show();
                 }
             }
