@@ -4,6 +4,7 @@ import com.google.android.gms.tasks.Task;
 
 import java.util.List;
 
+import ch.epfl.sdp.kandle.Post;
 import ch.epfl.sdp.kandle.User;
 
 public interface Database {
@@ -62,5 +63,19 @@ public interface Database {
     Task<String> getNickname();
 
     Task<String> getUsername();
+
+    Task<Void> addPost(String userId, Post p);
+
+    Task<Void> deletePost(String userId, Post p);
+
+    Task<Void> likePost(String userId, String postId);
+
+    Task<Void> unlikePost(String userId, String postId);
+
+    //Task<List<String>> likers(String postId);
+
+    //Task<Void> editPost(Post p);
+
+    Task<List<Post>> getPostsByUserId(String userId);
 
 }

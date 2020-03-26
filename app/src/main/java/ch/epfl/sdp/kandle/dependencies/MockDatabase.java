@@ -8,12 +8,13 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-
+import ch.epfl.sdp.kandle.Post;
 import androidx.annotation.NonNull;
 import ch.epfl.sdp.kandle.User;
 
@@ -55,6 +56,7 @@ public class MockDatabase implements Database {
 
     public static Map<String, User> users;
     private static Map<String, Follow> followMap;
+    private static Map<String, Post> posts;
 
     public MockDatabase() {
         users = new HashMap<>();
@@ -78,6 +80,18 @@ public class MockDatabase implements Database {
         followMap.put("user1Id", new Follow( new LinkedList<>(Arrays.asList("user2Id")) , new LinkedList<>(Arrays.asList("user3Id"))));
         followMap.put("user2Id", new Follow(new LinkedList<>(Arrays.asList("user3Id")) , new LinkedList<>(Arrays.asList("user1Id"))));
         followMap.put("user3Id", new Follow(new LinkedList<>(Arrays.asList("user1Id")) , new LinkedList<>(Arrays.asList("user2Id"))));
+
+        posts = new HashMap<>();
+
+        posts.put("post1Id", new Post("text", "Hello world !", new Date(), "user1Id", "post1Id"));
+        posts.put("post2Id", new Post("text", "I'm user 1 !", new Date(), "user1Id", "post2Id"));
+        posts.get("post1Id").setImage("image");
+        users.get("user1Id").addPostId(posts.get("post1Id").getPostId());
+        users.get("user1Id").addPostId(posts.get("post2Id").getPostId());
+
+        posts.put("post3Id", new Post("text", "I'm user 2 :)", new Date(), "user2Id", "post3Id"));
+        users.get("user2Id").addPostId(posts.get("post3Id").getPostId());
+
 
     }
 
@@ -285,6 +299,71 @@ public class MockDatabase implements Database {
         TaskCompletionSource<String> source = new TaskCompletionSource<>();
         User user = users.get("user1Id");
         source.setResult(user.getUsername());
+        return source.getTask();
+    }
+
+    @Override
+    public Task<Void> addPost(String userId, Post p) {
+        if(!users.get(userId).getPosts().contains(p.getPostId())) {
+            posts.put(p.getPostId(), p);
+            users.get(userId).addPostId(p.getPostId());
+        }
+        TaskCompletionSource<Void> source = new TaskCompletionSource<>();
+        source.setResult(null);
+        return source.getTask();
+    }
+
+    @Override
+    public Task<Void> deletePost(String userId, Post p) {
+        if(users.get(userId).getPosts().contains(p.getPostId())) {
+            posts.remove(p.getPostId());
+            users.get(userId).removePostId(p.getPostId());
+        }
+        TaskCompletionSource<Void> source = new TaskCompletionSource<>();
+        source.setResult(null);
+        return source.getTask();
+    }
+
+    @Override
+    public Task<Void> likePost(String userId, String postId) {
+        if(!posts.get(postId).getLikers().contains(userId)) {
+            posts.get(postId).likePost(userId);
+        }
+        TaskCompletionSource<Void> source = new TaskCompletionSource<>();
+        source.setResult(null);
+        return source.getTask();
+    }
+
+    @Override
+    public Task<Void> unlikePost(String userId, String postId) {
+        if(posts.get(postId).getLikers().contains(userId)) {
+            posts.get(postId).unlikePost(userId);
+        }
+        TaskCompletionSource<Void> source = new TaskCompletionSource<>();
+        source.setResult(null);
+        return source.getTask();
+    }
+
+    /*
+    @Override
+    public Task<List<String>> likers(String postId) {
+        TaskCompletionSource<List<String>> source = new TaskCompletionSource<>();
+        source.setResult(new ArrayList<String>(posts.get(postId).getLikers()));
+        return source.getTask();
+    }
+     */
+
+    @Override
+    public Task<List<Post>> getPostsByUserId(String userId) {
+        List<String> userPostsIds = users.get(userId).getPosts();
+        List<Post> postsList = new ArrayList<Post>();
+        for (Map.Entry<String,Post> entry : posts.entrySet()){
+            if (userPostsIds.contains(entry.getValue().getPostId())){
+                postsList.add(entry.getValue());
+            }
+        }
+        TaskCompletionSource<List<Post>> source = new TaskCompletionSource<>();
+        source.setResult(postsList);
         return source.getTask();
     }
 
