@@ -11,11 +11,11 @@ public interface Database {
 
     /**
      * Asynchronously retrieves a User from the Database from its unique username. If such a user does
-     * not exist, the task fails.
+     * not exist, the task returns null.
      * @param username the user's username
      * @return a Task for the resulting User.
      */
-   // Task<User> getUserByName(String username);
+     Task<User> getUserByName(String username);
 
     /**
      * Asynchronously retrieves a User from the Database from its unique userId. If such a user does
@@ -23,7 +23,10 @@ public interface Database {
      *      * @param userId the user's userId
      *      * @return
      */
+
     Task<User> getUserById(String userId);
+
+
 
 
     /**
@@ -42,13 +45,21 @@ public interface Database {
 
     Task<Void> unFollow(final String userUnFollowing, final String userUnFollowed);
 
-    Task<List<String>> followingList(String userId);
+    Task<List<String>> userIdFollowingList(String userId);
 
-    Task<List<String>> followersList(String userId);
+    Task<List<String>> userIdFollowersList(String userId);
+
+    Task<List<User>> userFollowingList(String userId);
+
+    Task<List<User>> userFollowersList(String userId);
 
     Task<Void> updateProfilePicture(String uri);
 
     Task<String> getProfilePicture();
+
+    Task<Void> updateNickname(String nickname);
+
+    Task<String> getNickname();
 
     Task<String> getUsername();
 

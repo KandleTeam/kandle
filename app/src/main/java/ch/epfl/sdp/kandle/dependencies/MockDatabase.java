@@ -1,5 +1,6 @@
 package ch.epfl.sdp.kandle.dependencies;
 
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.gms.tasks.TaskCompletionSource;
 
@@ -11,7 +12,9 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
+import androidx.annotation.NonNull;
 import ch.epfl.sdp.kandle.User;
 
 /**
@@ -56,9 +59,18 @@ public class MockDatabase implements Database {
     public MockDatabase() {
         users = new HashMap<>();
         //String adminId = "user1Id"; // 28 zeros
-        users.put("user1Id", new User("user1Id", "user1", "user1@kandle.ch", "image"));
-        users.put("user2Id", new User("user2Id", "user2", "user2@kandle.ch", "image"));
-        users.put("user3Id", new User("user3Id", "user3", "user3@kandle.ch", null));
+        users.put("user1Id", new User("user1Id", "user1", "user1@kandle.ch", "Nickname", "image"));
+        users.remove("user1Id");
+        users.put("user1Id", new User("user1Id", "user1", "user1@kandle.ch", null,  "image"));
+        users.remove("user1Id");
+        users.put("user1Id", new User("user1Id", "user1", "user1@kandle.ch", null,  "image"));
+        users.remove("user1Id");
+        users.put("user1Id", new User("user1Id", "user1", "user1@kandle.ch", null,  "image"));
+        users.remove("user1Id");
+
+        users.put("user1Id", new User("user1Id", "user1", "user1@kandle.ch", null,  "image"));
+        users.put("user2Id", new User("user2Id", "user2", "user2@kandle.ch", null,  "image"));
+        users.put("user3Id", new User("user3Id", "user3", "user3@kandle.ch", null,  null));
         
         
         followMap = new HashMap<>();
@@ -70,31 +82,24 @@ public class MockDatabase implements Database {
     }
 
 
-    /*
-    private Optional<User> findUserByName(String username) {
-        for(User user : users.values()) {
-            if(user.getUsername().equals(username)) {
-                return Optional.of(user);
-            }
-        }
-        return Optional.empty();
-    }
-
     @Override
     public Task<User> getUserByName(String username) {
 
         TaskCompletionSource<User> task = new TaskCompletionSource<>();
+        User result = null;
 
-        Optional<User> opt = findUserByName(username);
+        for (User user : users.values()) {
+            if (user.getUsername().equals(username)) {
+                result = user;
+                break;
+            }
+        }
 
-        if(opt.isPresent()) task.setResult(opt.get());
-        else task.setException(new IllegalArgumentException("No such user with username: " + username));
-
+        task.setResult(result);
         return task.getTask();
 
     }
 
-     */
 
 
 
@@ -105,9 +110,10 @@ public class MockDatabase implements Database {
 
         if(users.containsKey(userId)) {
             task.setResult(users.get(userId));
-        } else {
-            task.setException(new IllegalArgumentException("No such user with id: " + userId));
         }
+        //else {
+           // task.setException(new IllegalArgumentException("No such user with id: " + userId));
+        //}
         return task.getTask();
     }
 
@@ -137,7 +143,7 @@ public class MockDatabase implements Database {
         List<User> results = new ArrayList<>();
 
         for(User u : users.values()) {
-            if(u.getNormalizedUsername().startsWith(prefix)) {
+            if(u.getUsername().startsWith(prefix)) {
                 results.add(u);
             }
         }
@@ -202,7 +208,7 @@ public class MockDatabase implements Database {
     }
 
     @Override
-    public Task<List<String>> followingList(String userId) {
+    public Task<List<String>> userIdFollowingList(String userId) {
         TaskCompletionSource<List<String>> source = new TaskCompletionSource<>();
         source.setResult(new ArrayList<String>(followMap.get(userId).following));
         return source.getTask();
@@ -210,9 +216,33 @@ public class MockDatabase implements Database {
     }
 
     @Override
-    public Task<List<String>> followersList(String userId) {
+    public Task<List<String>> userIdFollowersList(String userId) {
         TaskCompletionSource<List<String>> source = new TaskCompletionSource<>();
         source.setResult(new ArrayList<String>(followMap.get(userId).followers));
+        return source.getTask();
+    }
+
+    @Override
+    public Task<List<User>> userFollowingList(String userId) {
+        TaskCompletionSource<List<User>> source = new TaskCompletionSource<>();
+        ArrayList<User> following = new ArrayList<>();
+
+        for (String id : followMap.get(userId).following){
+            following.add(users.get(id));
+        }
+        source.setResult(following);
+        return source.getTask();
+    }
+
+    @Override
+    public Task<List<User>> userFollowersList(String userId) {
+        TaskCompletionSource<List<User>> source = new TaskCompletionSource<>();
+        ArrayList<User> followers = new ArrayList<>();
+
+        for (String id : followMap.get(userId).followers){
+            followers.add(users.get(id));
+        }
+        source.setResult(followers);
         return source.getTask();
     }
 
@@ -235,9 +265,26 @@ public class MockDatabase implements Database {
     }
 
     @Override
+    public Task<Void> updateNickname(String nickname) {
+        TaskCompletionSource<Void> source = new TaskCompletionSource<>();
+        User user = users.get("user1Id");
+        user.setFullname(nickname);
+        return source.getTask();
+    }
+
+    @Override
+    public Task<String> getNickname() {
+        TaskCompletionSource<String> source = new TaskCompletionSource<>();
+        User user = users.get("user1Id");
+        source.setResult(user.getFullname());
+        return source.getTask();
+    }
+
+    @Override
     public Task<String> getUsername() {
         TaskCompletionSource<String> source = new TaskCompletionSource<>();
-        source.setResult("userFullName");
+        User user = users.get("user1Id");
+        source.setResult(user.getUsername());
         return source.getTask();
     }
 

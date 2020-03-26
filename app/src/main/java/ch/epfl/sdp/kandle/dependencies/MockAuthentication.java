@@ -52,7 +52,7 @@ public class MockAuthentication implements Authentication {
             isConnected = true;
             String newId = "newUserId";
             source.setResult(getAuthResultWithUser(newId,email));
-            database.users.put(newId,new User(newId,"newUser","newUser@kandle.ch",null));
+            database.users.put(newId,new User(newId,"newUser","newUser@kandle.ch","newFullName",null));
 
         }
         return source.getTask();

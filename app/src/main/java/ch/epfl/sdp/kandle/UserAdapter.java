@@ -61,8 +61,13 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.ViewHolder> {
 
         final User user = mUsers.get(position);
 
-        TextView mFullname = holder.mUsername;
-        mFullname.setText(user.getUsername());
+
+
+        TextView mFullname = holder.mNickname;
+        mFullname.setText(user.getFullname());
+
+        TextView mUsername = holder.mUsername;
+        mUsername.setText("@" + user.getUsername());
 
         ImageView mImageProfile = holder.image_profile;
         if (user.getImageURL() != null) {
@@ -72,68 +77,70 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.ViewHolder> {
 
         final Authentication authentication = DependencyManager.getAuthSystem();
         final AuthenticationUser authenticationUser = authentication.getCurrentUser();
-
         final Database database = DependencyManager.getDatabaseSystem();
 
+        if (user.getId().equals(authenticationUser.getUid())){
+            holder.mFollowBtn.setVisibility(View.GONE);
+        }
 
-        database.followingList(authenticationUser.getUid()).addOnCompleteListener(new OnCompleteListener<List<String>>() {
-            @Override
-            public void onComplete(@NonNull Task<List<String>> task) {
+        else {
 
-                if (task.isSuccessful()){
+            database.userIdFollowingList(authenticationUser.getUid()).addOnCompleteListener(new OnCompleteListener<List<String>>() {
+                @Override
+                public void onComplete(@NonNull Task<List<String>> task) {
 
-                    if (   (task.getResult() == null) || (!task.getResult().contains(user.getId()))   ){
-                        holder.mFollowBtn.setText("follow");
+                    if (task.isSuccessful()) {
+
+                        if ((task.getResult() == null) || (!task.getResult().contains(user.getId()))) {
+                            holder.mFollowBtn.setText("follow");
+                        } else {
+                            holder.mFollowBtn.setText("following");
+                        }
+
                     }
-
-                    else {
-                        holder.mFollowBtn.setText("following");
-                    }
-
-                }
                 /*else {
                     System.out.println(task.getException().getMessage());
                 }*/
 
-            }
-        });
-
-
-        holder.mFollowBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                System.out.println("clickButton");
-                if (holder.mFollowBtn.getText().toString().equals("follow")) {
-
-                    database.follow(authenticationUser.getUid(), user.getId()).addOnCompleteListener(new OnCompleteListener<Void>() {
-                        @Override
-                        public void onComplete(@NonNull Task<Void> task) {
-                            if (task.isSuccessful()){
-                                holder.mFollowBtn.setText("following");
-                            }
-
-                        }
-                    });
-
-                } else {
-
-                    database.unFollow(authenticationUser.getUid(), user.getId()).addOnCompleteListener(new OnCompleteListener<Void>() {
-                        @Override
-                        public void onComplete(@NonNull Task<Void> task) {
-                            if (task.isSuccessful()){
-
-                                holder.mFollowBtn.setText("follow");
-                            }
-
-                        }
-                    });
-
                 }
-            }
-        });
+            });
 
 
+            holder.mFollowBtn.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    System.out.println("clickButton");
+                    if (holder.mFollowBtn.getText().toString().equals("follow")) {
 
+                        database.follow(authenticationUser.getUid(), user.getId()).addOnCompleteListener(new OnCompleteListener<Void>() {
+                            @Override
+                            public void onComplete(@NonNull Task<Void> task) {
+                                if (task.isSuccessful()) {
+                                    holder.mFollowBtn.setText("following");
+                                }
+
+                            }
+                        });
+
+                    } else {
+
+                        database.unFollow(authenticationUser.getUid(), user.getId()).addOnCompleteListener(new OnCompleteListener<Void>() {
+                            @Override
+                            public void onComplete(@NonNull Task<Void> task) {
+                                if (task.isSuccessful()) {
+
+                                    holder.mFollowBtn.setText("follow");
+                                }
+
+                            }
+                        });
+
+                    }
+                }
+            });
+
+
+        }
 
     }
 
@@ -144,6 +151,7 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.ViewHolder> {
 
     public static class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
 
+        public TextView mNickname;
         public TextView mUsername;
         public CircleImageView image_profile;
         public Button mFollowBtn;
@@ -154,7 +162,8 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.ViewHolder> {
             super(itemView);
             itemView.setOnClickListener(this);
 
-            mUsername = itemView.findViewById(R.id.search_fullName);
+            mNickname = itemView.findViewById(R.id.search_fullName);
+            mUsername = itemView.findViewById(R.id.search_username);
             image_profile = itemView.findViewById(R.id.search_image_user);
             mFollowBtn = itemView.findViewById(R.id.btn_follow);
         }
