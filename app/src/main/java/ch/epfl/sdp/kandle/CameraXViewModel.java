@@ -13,6 +13,7 @@ import java.util.concurrent.ExecutionException;
 /** View model providing access to the camera */
 public class CameraXViewModel extends AndroidViewModel {
     private MutableLiveData<ProcessCameraProvider> mProcessCameraProviderLiveData;
+
     public CameraXViewModel(@NonNull Application application) {
         super(application);
     }

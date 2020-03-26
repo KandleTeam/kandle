@@ -630,7 +630,17 @@ public class CameraXActivity extends AppCompatActivity
             Log.e(TAG, "Failed to obtain all required permissions.", exception);
             return new String[0];
         }
-        String[] permissions = info.requestedPermissions;
+        String[] finalPermissions = info.requestedPermissions;
+        String[] permissions = new String[3];
+        int j = 0;
+        for(int i = 0; i < finalPermissions.length; i++){
+            String s = finalPermissions[i];
+            if((s.equals("android.permission.CAMERA") || s.equals("android.permission.RECORD_AUDIO") || s.equals("android.permission.WRITE_EXTERNAL_STORAGE")) && j < 3){
+                permissions[j] = s;
+                System.out.println("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!" + permissions[j]);
+                j++;
+            }
+        }
         if (permissions != null && permissions.length > 0) {
             return permissions;
         } else {
