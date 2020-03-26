@@ -113,9 +113,15 @@ public class MainActivityTest {
     }
 
     @Test
+    public void nicknameIsDisplayed() {
+        onView(withId(R.id.drawer_layout)).check(matches(isClosed(Gravity.LEFT))).perform(DrawerActions.open());
+        onView(withId(R.id.nicknameInMenu)).check(matches(withText("Nickname")));
+    }
+
+    @Test
     public void usernameIsDisplayed() {
         onView(withId(R.id.drawer_layout)).check(matches(isClosed(Gravity.LEFT))).perform(DrawerActions.open());
-        onView(withId(R.id.username)).check(matches(withText("userFullName")));
+        onView(withId(R.id.usernameInMenu)).check(matches(withText("@user1")));
     }
     
     @Test

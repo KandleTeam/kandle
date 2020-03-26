@@ -63,8 +63,11 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.ViewHolder> {
 
 
 
-        TextView mFullname = holder.mUsername;
-        mFullname.setText(user.getUsername());
+        TextView mFullname = holder.mNickname;
+        mFullname.setText(user.getFullname());
+
+        TextView mUsername = holder.mUsername;
+        mUsername.setText("@" + user.getUsername());
 
         ImageView mImageProfile = holder.image_profile;
         if (user.getImageURL() != null) {
@@ -148,6 +151,7 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.ViewHolder> {
 
     public static class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
 
+        public TextView mNickname;
         public TextView mUsername;
         public CircleImageView image_profile;
         public Button mFollowBtn;
@@ -158,7 +162,8 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.ViewHolder> {
             super(itemView);
             itemView.setOnClickListener(this);
 
-            mUsername = itemView.findViewById(R.id.search_fullName);
+            mNickname = itemView.findViewById(R.id.search_fullName);
+            mUsername = itemView.findViewById(R.id.search_username);
             image_profile = itemView.findViewById(R.id.search_image_user);
             mFollowBtn = itemView.findViewById(R.id.btn_follow);
         }

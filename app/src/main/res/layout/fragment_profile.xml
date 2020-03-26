@@ -9,7 +9,7 @@
     <!-- TODO: Update blank fragment layout -->
 
 
-    <ImageView
+    <de.hdodenhof.circleimageview.CircleImageView
         android:id="@+id/profilePicture"
         android:layout_width="180dp"
         android:layout_height="180dp"
@@ -17,10 +17,10 @@
         app:layout_constraintBottom_toTopOf="@+id/profileFollowers"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/profileUsername" />
+        app:layout_constraintTop_toBottomOf="@+id/profileNickname" />
 
     <TextView
-        android:id="@+id/profileUsername"
+        android:id="@+id/profileNickname"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="TextView"
@@ -32,6 +32,19 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.19999999" />
+
+    <TextView
+        android:id="@+id/profileUsername"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="\@textview"
+        android:textAlignment="center"
+        android:textSize="20sp"
+        app:layout_constraintBottom_toTopOf="@+id/profilePicture"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/profileNickname"
+        app:layout_constraintVertical_bias="0.1" />
 
     <TextView
         android:id="@+id/profileFollowers"
@@ -93,7 +106,7 @@
         android:background="@drawable/button_background"
         android:text="@string/followBtnNotFollowing"
         android:textStyle="bold"
-        app:layout_constraintBottom_toBottomOf="@+id/profileUsername"
+        app:layout_constraintBottom_toBottomOf="@+id/profileNickname"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/profileUsername"
         app:layout_constraintTop_toTopOf="@+id/profileUsername" />

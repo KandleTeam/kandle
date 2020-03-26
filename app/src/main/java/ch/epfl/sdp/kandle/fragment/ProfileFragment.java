@@ -36,7 +36,7 @@ public class ProfileFragment extends Fragment {
     User user;
 
     ImageView mProfilePicture, mEdit;
-    TextView mNumberOfFollowers, mNumberOfFollowing, mUsername;
+    TextView mNumberOfFollowers, mNumberOfFollowing, mNickname, mUsername;
     Button mFollowButton;
     Authentication auth;
     Database database;
@@ -56,6 +56,7 @@ public class ProfileFragment extends Fragment {
         mProfilePicture = parent.findViewById(R.id.profilePicture);
         mNumberOfFollowers = parent.findViewById(R.id.profileNumberOfFollowers);
         mNumberOfFollowing = parent.findViewById(R.id.profileNumberOfFollowing);
+        mNickname = parent.findViewById(R.id.profileNickname);
         mUsername = parent.findViewById(R.id.profileUsername);
         mFollowButton = parent.findViewById(R.id.profileFollowButton);
         mEdit = parent.findViewById(R.id.profileEditButton);
@@ -92,7 +93,8 @@ public class ProfileFragment extends Fragment {
              */
         }
 
-        mUsername.setText(user.getUsername());
+        mNickname.setText(user.getFullname());
+        mUsername.setText("@" + user.getUsername());
         if(user.getImageURL() != null) {
             mProfilePicture.setTag(PROFILE_PICTURE_TAG);
             Picasso.get().load(user.getImageURL()).into(mProfilePicture);

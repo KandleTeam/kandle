@@ -57,15 +57,15 @@ public class YourProfileFragmentTest {
     @Test
     public void listOfFollowers(){
         onView(withId(R.id.profileNumberOfFollowers)).perform(click());
-        onView(withId(R.id.list_user_recycler_view)).check(matches(atPosition(0, hasDescendant(withText("user3")))));
+        onView(withId(R.id.list_user_recycler_view)).check(matches(atPosition(0, hasDescendant(withText("@user3")))));
     }
 
     @Test
     public void listOfFollowing(){
         onView(withId(R.id.profileNumberOfFollowing)).perform(click());
-        onView(withId(R.id.list_user_recycler_view)).check(matches(atPosition(0, hasDescendant(withText("user2")))));
+        onView(withId(R.id.list_user_recycler_view)).check(matches(atPosition(0, hasDescendant(withText("@user2")))));
         onView(withId(R.id.list_user_recycler_view)).perform(RecyclerViewActions.actionOnItemAtPosition(0, click()));
-        onView(withId(R.id.profileUsername)).check(matches(withText("user2")));
+        onView(withId(R.id.profileUsername)).check(matches(withText("@user2")));
         onView(withId(R.id.profileNumberOfFollowers)).perform(click());
     }
 
