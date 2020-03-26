@@ -5,7 +5,7 @@ import java.util.ArrayList;
 public class User {
 
     private String id, username, email, fullname , normalizedUsername, imageURL;
-    private ArrayList<String> posts;
+    private ArrayList<String> postsIds;
 
     public User() {
         // Keep fields null
@@ -17,7 +17,7 @@ public class User {
         this.email = email;
         this.normalizedUsername = username.toLowerCase().replaceAll("[^a-z0-9]", "");
         this.imageURL = imageURL;
-        this.posts = new ArrayList<>();
+        this.postsIds = new ArrayList<>();
     }
 
     /*public String getFullname() {
@@ -36,10 +36,12 @@ public class User {
         return username;
     }
 
+    /*
     public void setUsername(String username) {
         this.username = username;
         this.normalizedUsername = username.toLowerCase().replaceAll("[^a-z0-9]", "");
     }
+     */
 
     public String getEmail() {
         return email;
@@ -59,5 +61,17 @@ public class User {
 
     public String getImageURL() {
         return imageURL;
+    }
+
+    public ArrayList<String> getPosts(){
+        return postsIds;
+    }
+
+    public void addPostId(String postId){
+        postsIds.add(postId);
+    }
+
+    public void removePostId(String postId){
+        postsIds.remove(postId);
     }
 }

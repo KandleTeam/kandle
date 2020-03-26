@@ -332,7 +332,7 @@ public class FirestoreDatabase implements Database {
                     List<String> posts = (List<String>) userDeletingPostSnapshot.get("posts");
 
                     if (posts != null) {
-                        if (!posts.contains(p.getPostId())) {
+                        if (posts.contains(p.getPostId())) {
                             Map<String, Object> mapPosts = new HashMap<>();
                             posts.remove(p.getPostId());
                             mapPosts.put("posts",posts);
@@ -392,7 +392,8 @@ public class FirestoreDatabase implements Database {
                     return null;
                 });
     }
-
+    
+    /*
     @Override
     public Task<List<String>> likers(String postId) {
         return posts
@@ -400,6 +401,7 @@ public class FirestoreDatabase implements Database {
                 .get()
                 .continueWith(task -> (List<String>)  task.getResult().get("likers"));
     }
+    */
 
     @Override
     public Task<List<Post>> getPostsByUserId(String userId) {
@@ -414,25 +416,6 @@ public class FirestoreDatabase implements Database {
             public void onComplete(@NonNull Task<List<String>> task) {
 
                 if (task.isSuccessful()){
-                   /* Task <List<Post>> taskListPost = posts.whereIn("postId", task.getResult())
-                            .get()
-                            .continueWith(task1 -> task1.getResult().toObjects(Post.class));
-
-                    taskListPost.addOnCompleteListener(new OnCompleteListener<List<Post>>() {
-                        @Override
-                        public void onComplete(@NonNull Task<List<Post>> task) {
-                            if (task.isSuccessful()){
-                                source.setResult(taskListPost.getResult());
-                            }
-                            else {
-                                source.setException( new Exception(task.getException().getMessage()));
-                            }
-
-                        }
-                    });
-
-                    */
-
                    posts.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                        @Override
                        public void onComplete(@NonNull Task<QuerySnapshot> task2) {
