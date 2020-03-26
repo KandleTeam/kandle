@@ -10,11 +10,7 @@ import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
-
 import java.util.ArrayList;
-import java.util.List;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -22,8 +18,10 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-import ch.epfl.sdp.kandle.dependencies.Authentication;
+
 import ch.epfl.sdp.kandle.dependencies.AuthenticationUser;
+import ch.epfl.sdp.kandle.dependencies.InternalStorageHandler;
+import ch.epfl.sdp.kandle.dependencies.Authentication;
 import ch.epfl.sdp.kandle.dependencies.Database;
 import ch.epfl.sdp.kandle.dependencies.DependencyManager;
 import ch.epfl.sdp.kandle.R;
@@ -37,10 +35,10 @@ public class SearchFragment extends Fragment {
     private Database database;
 
     private RecyclerView mRecyclerView;
-
+    private InternalStorageHandler internalStorageHandler;
     private ArrayList<User> mUsers = new ArrayList<>(0);
     private UserAdapter userAdapter = new UserAdapter(mUsers);
-
+    private AuthenticationUser currentUser;
     EditText search_bar;
 
     public SearchFragment( ){
@@ -63,8 +61,8 @@ public class SearchFragment extends Fragment {
 
         mRecyclerView = view.findViewById(R.id.recycler_view);
         search_bar = view.findViewById(R.id.search_bar);
-
-        final AuthenticationUser authenticationUser = auth.getCurrentUser();
+        internalStorageHandler = new InternalStorageHandler(getActivity().getApplicationContext());
+        currentUser = auth.getCurrentUser();
 
         mRecyclerView.setAdapter(userAdapter);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(this.getContext()));
@@ -86,9 +84,8 @@ public class SearchFragment extends Fragment {
                         if (task.isSuccessful()) {
 
                             mUsers.clear();
-
                             for (User user : task.getResult()) {
-                                if (!user.getId().equals(authenticationUser.getUid())) {
+                                if (!user.getId().equals(currentUser.getUid())) {
                                     mUsers.add(user);
                                 }
                             }

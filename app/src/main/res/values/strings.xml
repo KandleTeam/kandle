@@ -15,6 +15,7 @@
     <string name="login_success">You are now logged in</string>
     <string name="login_fail_password_error">Wrong credentials</string>
     <string name="login_fail_email_error">Wrong credentials</string>
+    <string name="login_in_progress">Logging in</string>
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_map_fragment">Map</string>

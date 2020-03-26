@@ -9,16 +9,16 @@ import com.google.android.gms.maps.model.LatLng;
 import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.UUID;
 
 
 public class Post {
 
-    //private User author;
     private String type;    //photo, texte, video
     private LatLng location;
-    private int likes;
-    private static int count = 0;
-    private int postId = 0;
+    private ArrayList<String> likers;
+    private String userId;
+    private String postId;
     private Uri image;
     private String description;
     private ArrayList<String> comments;
@@ -33,21 +33,25 @@ public class Post {
         this.description = description;
         this.comments = comments;
         this.date = date;
-
     }*/
 
-    public Post(String type, int likes, String description, Date date) {
+    public Post(){
+
+    }
+
+    public Post(String type, String description, Date date, String userId) {
         this.type = type;
         this.location = null;
-        this.likes = likes;
         this.description = description;
         this.comments = null;
         this.date = date;
-        postId = count++;
+        this.likers = new ArrayList<>();
+        this.postId = UUID.randomUUID().toString();
+        this.userId = userId;
     }
 
 
-    public String getString() {
+    public String getType() {
         return type;
     }
 
@@ -55,11 +59,16 @@ public class Post {
         return location;
     }
 
-    public int getLikes() {
-        return likes;
+    public ArrayList<String> getLikers(){
+        return likers;
     }
 
-    public int getPost_id() {
+
+    public int getLikes() {
+        return likers.size();
+    }
+
+    public String getPostId() {
         return postId;
     }
 
@@ -75,12 +84,19 @@ public class Post {
         return date;
     }
 
-    public int likePost() {
-        return likes++;
+    public void likePost() {
+        likers.add(userId);
+    }
+    public void unlikePost() {
+        likers.remove(userId);
     }
 
-    public int dislikePost() {
-        return likes--;
+    public String getUserId() {
+        return userId;
+    }
+
+    public void setUserId(String userId) {
+        this.userId = userId;
     }
 
     public Uri getImage(){

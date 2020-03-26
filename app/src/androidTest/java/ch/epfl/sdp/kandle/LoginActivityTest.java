@@ -102,11 +102,11 @@ public class LoginActivityTest {
 
 
     @Test
-    public void authenticationTest() {
+    public void authenticationTestWhereUserExists() {
 
         Intents.init();
 
-        onView(withId(R.id.email)).perform(typeText("user1@test.com"));
+        onView(withId(R.id.email)).perform(typeText("user1@kandle.ch"));
         onView(withId(R.id.email)).perform(closeSoftKeyboard());
 
         onView(withId(R.id.password)).perform(typeText("123456789"));
@@ -126,14 +126,13 @@ public class LoginActivityTest {
     }
 
 
+
     @Test
-    public void alreadyHaveAnAccount() {
+    public void doNotHaveAnAccount() {
 
         Intents.init();
-
         onView(withId(R.id.signUpLink)).perform(click());
         intended(hasComponent(RegisterActivity.class.getName()));
-
         Intents.release();
 
     }

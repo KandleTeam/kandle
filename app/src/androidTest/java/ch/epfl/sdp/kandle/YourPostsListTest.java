@@ -17,6 +17,7 @@ import org.junit.runner.RunWith;
 
 import java.util.Date;
 
+import ch.epfl.sdp.kandle.dependencies.DependencyManager;
 import ch.epfl.sdp.kandle.fragment.YourPostListFragment;
 
 import static androidx.test.espresso.Espresso.onView;
@@ -31,8 +32,12 @@ public class YourPostsListTest {
 
     @Rule
     public ActivityTestRule<MainActivity> mainActivityRule =
-            new ActivityTestRule<>(MainActivity.class, true, true);
-
+            new ActivityTestRule<MainActivity>(MainActivity.class, true, true) {
+                @Override
+                protected void beforeActivityLaunched() {
+                    DependencyManager.setFreshTestDependencies(true);
+                }
+            };
 
     @Before
     public void loadPostView() {
@@ -46,7 +51,7 @@ public class YourPostsListTest {
 
         this.mainActivityRule.runOnUiThread(() -> {
             YourPostListFragment frag = (YourPostListFragment) mainActivityRule.getActivity().getSupportFragmentManager().findFragmentById(R.id.flContent);
-            Post p =  new Post("Text",0, "( : this is my post : )", new Date());
+            Post p =  new Post("Text", "( : this is my post : )", new Date(),"id");
             frag.putInPostList(p);
         });
 
@@ -64,8 +69,8 @@ public class YourPostsListTest {
     public void putTwoNewPostsIntoTheRecyclerAndDeleteThem() throws Throwable {
         this.mainActivityRule.runOnUiThread(() -> {
             YourPostListFragment frag = (YourPostListFragment) mainActivityRule.getActivity().getSupportFragmentManager().findFragmentById(R.id.flContent);
-            Post p =  new Post("Text", 0,"( : this is my post 1 : )", new Date());
-            Post p1 =  new Post("Text", 0,"( : this is my post 2 : )", new Date());
+            Post p =  new Post("Text", "( : this is my post 1 : )", new Date(),"id");
+            Post p1 =  new Post("Text", "( : this is my post 2 : )", new Date(),"id");
             frag.putInPostList(p);
             frag.putInPostList(p1);
             frag.removePostAtIndex(0);
@@ -79,8 +84,8 @@ public class YourPostsListTest {
         frag.getPostList();
         this.mainActivityRule.runOnUiThread(() -> {
             YourPostListFragment frag1 = (YourPostListFragment) mainActivityRule.getActivity().getSupportFragmentManager().findFragmentById(R.id.flContent);
-            Post p =  new Post("Text", 0,"( : this is my post : )", new Date());
-            Post p1 =  new Post("Text", 0,"( : this is my post : )", new Date());
+            Post p =  new Post("Text", "( : this is my post : )", new Date(),"id");
+            Post p1 =  new Post("Text", "( : this is my post : )", new Date(),"id");
             frag1.putInPostList(p);
             frag1.putInPostList(p1);
 

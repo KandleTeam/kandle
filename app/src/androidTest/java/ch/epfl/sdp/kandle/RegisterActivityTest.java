@@ -78,7 +78,7 @@ public class RegisterActivityTest {
         onView(withId (R.id.fullName)).perform(typeText ("Mock User"));
         onView(withId (R.id.fullName)).perform(closeSoftKeyboard());
 
-        onView(withId (R.id.email)).perform(typeText ("user1@test.com"));
+        onView(withId (R.id.email)).perform(typeText ("user1@kandle.ch"));
         onView(withId (R.id.email)).perform(closeSoftKeyboard());
 
         onView(withId (R.id.password)).perform(typeText ("12345678"));
@@ -97,10 +97,10 @@ public class RegisterActivityTest {
 
         Intents.init();
 
-        onView(withId (R.id.fullName)).perform(typeText ("zzdrian Freeman"));
+        onView(withId (R.id.fullName)).perform(typeText ("newUserId"));
         onView(withId (R.id.fullName)).perform(closeSoftKeyboard());
 
-        onView(withId (R.id.email)).perform(typeText ("zzrian@test.com"));
+        onView(withId (R.id.email)).perform(typeText ("newUser@kandle.ch"));
         onView(withId (R.id.email)).perform(closeSoftKeyboard());
 
         onView(withId (R.id.password)).perform(typeText ("12345678"));
@@ -112,7 +112,7 @@ public class RegisterActivityTest {
         onView(withId(R.id.loginBtn)).perform(click());
 
 
-       // onView(withId (R.id.email)).perform(closeSoftKeyboard());
+        // onView(withId (R.id.email)).perform(closeSoftKeyboard());
         //onView(withId(R.id.loginBtn)).perform(click());
 
 

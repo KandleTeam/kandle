@@ -7,6 +7,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
@@ -16,6 +17,7 @@ import androidx.fragment.app.Fragment;
 
 import androidx.fragment.app.FragmentManager;
 
+import ch.epfl.sdp.kandle.dependencies.Database;
 import ch.epfl.sdp.kandle.dependencies.DependencyManager;
 import ch.epfl.sdp.kandle.fragment.AboutFragment;
 import ch.epfl.sdp.kandle.fragment.MapFragment;
@@ -40,6 +42,8 @@ public class MainActivity extends AppCompatActivity {
     private BottomNavigationView mBottomNavigationView;
     private Button mPostButton;
     private Authentication auth;
+    private Database database;
+
 
     private ImageView mProfilePic;
     private TextView mUsername;
@@ -56,6 +60,8 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         auth = DependencyManager.getAuthSystem();
+        database = DependencyManager.getDatabaseSystem();
+
         // Set a Toolbar to replace the ActionBar.
         toolbar = findViewById(R.id.toolbar);
         mDrawerLayout = findViewById(R.id.drawer_layout);
@@ -71,7 +77,6 @@ public class MainActivity extends AppCompatActivity {
         setupDrawerContent(mNavigationView);
         drawerToggle.syncState();
         mDrawerLayout.addDrawerListener(drawerToggle);
-
         mPostButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -83,6 +88,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
+
         DependencyManager.getDatabaseSystem().getProfilePicture().addOnCompleteListener(task -> {
             if (task.isSuccessful()) {
                 String imageUrl = task.getResult();
@@ -107,8 +113,6 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-    /*Listens if a navigation item is selected
-     */
     private void setupDrawerContent(NavigationView navigationView) {
         navigationView.setNavigationItemSelectedListener(
                 new NavigationView.OnNavigationItemSelectedListener() {
@@ -122,29 +126,17 @@ public class MainActivity extends AppCompatActivity {
 
     public void selectDrawerItem(MenuItem menuItem) {
         // Create a new fragment and specify the fragment to show based on nav item clicked
-
         Fragment fragment = null;
         Class fragmentClass = null;
         Intent intent = null;
         int size = mNavigationView.getMenu().size();
-
         switch (menuItem.getItemId()) {
-
-            //For activities
-
-
-                /*
-            case R.id.settings :
-                intent = new Intent(this, SettingsActivity.class);
-                startActivity(intent);
-             */
             case R.id.logout:
                 auth.signOut();
+
                 startActivity(new Intent(getApplicationContext(), LoginActivity.class));
                 finish();
-
                 break;
-
 
             case R.id.your_posts:
                 fragmentClass = YourPostListFragment.class;
@@ -166,45 +158,24 @@ public class MainActivity extends AppCompatActivity {
                 fragmentClass = SearchFragment.class;
                 break;
 
-
             default:
                 fragmentClass = null;
                 break;
-
-
         }
-
-
         try {
-
             fragment = (Fragment) fragmentClass.newInstance();
-
         } catch (Exception e) {
             e.printStackTrace();
         }
-
-
         if (fragment != null) {
-
-
             FragmentManager fragmentManager = getSupportFragmentManager();
             fragmentManager.beginTransaction().replace(R.id.flContent, fragment).commit();
-
-
-            // Insert the fragment by replacing any existing fragment
-
         }
-
         // Highlight the selected item has been done by NavigationView
-
         // Set action bar title
         menuItem.setChecked(true);
         setTitle(menuItem.getTitle());
         mDrawerLayout.closeDrawers();
         // Close the navigation drawer
-
-
     }
-
-
 }
