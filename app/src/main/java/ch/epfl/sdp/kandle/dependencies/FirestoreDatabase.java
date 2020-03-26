@@ -275,7 +275,7 @@ public class FirestoreDatabase implements Database {
                             @Override
                             public void onComplete(@NonNull Task<QuerySnapshot> task2) {
                                 if (task2.isSuccessful()){
-                                    List<User> users = new ArrayList<>();<<<<<<< feature/postBackend
+                                    List<User> users = new ArrayList<>();
                                     for (QueryDocumentSnapshot document : task2.getResult()) {
                                         String id =  (String) document.get("id");
                                         if (task.getResult().contains(id)){
