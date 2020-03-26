@@ -48,7 +48,7 @@ public class MainActivity extends AppCompatActivity {
     private BottomNavigationView mBottomNavigationView;
     private Button mPostButton;
     private Authentication auth;
-    private Database database;+
+    private Database database;
     private ImageView mProfilePic;
     private TextView mUsername;
 
