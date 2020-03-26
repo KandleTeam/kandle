@@ -80,7 +80,7 @@ public class MainActivity extends AppCompatActivity {
             if (task.isSuccessful()) {
                 mUsername.setText("@" + task.getResult());
             }
-        })
+        });
 
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
