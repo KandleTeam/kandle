@@ -13,9 +13,14 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.tasks.Task;
+import com.google.android.gms.tasks.TaskCompletionSource;
+
+import java.util.List;
+
 public class RegisterActivity extends AppCompatActivity {
 
-    EditText mFullName,mEmail,mPassword, mPasswordConfirm;
+    EditText mUsername,mEmail,mPassword, mPasswordConfirm;
     Button mSignUpBtn;
     TextView mSignInLink;
     Authentication auth;
@@ -27,7 +32,7 @@ public class RegisterActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_register);
-        mFullName   = findViewById(R.id.fullName);
+        mUsername   = findViewById(R.id.username);
         mEmail      = findViewById(R.id.email);
         mPassword   = findViewById(R.id.password);
         mPasswordConfirm = findViewById(R.id.passwordConfirm);
@@ -44,21 +49,32 @@ public class RegisterActivity extends AppCompatActivity {
 
 
         mSignUpBtn.setOnClickListener(v -> {
-            final String fullName = mFullName.getText().toString();
+            final String username = mUsername.getText().toString();
             final String email = mEmail.getText().toString().trim();
             String password = mPassword.getText().toString().trim();
             String passwordConfirm = mPasswordConfirm.getText().toString().trim();
 
-            if (!checkFields(fullName,email, password, passwordConfirm)){
+            if (!checkFields(username, email, password, passwordConfirm)) {
                 return;
             }
-             performRegisterViaFirebase(fullName, email, password);
+
+            database.getUserByName(username).addOnCompleteListener(task -> {
+                if (task.isSuccessful()) {
+                    if (task.getResult() != null) {
+                        mUsername.setError(("This username is already used !"));
+                    }
+                    else {
+                        performRegisterViaFirebase(username, email, password);
+                    }
+                }
+            });
+
         });
 
 
     }
 
-    private void performRegisterViaFirebase (final String fullName, final String email, String password)  {
+    private void performRegisterViaFirebase (final String username, final String email, String password)  {
 
         ProgressDialog pd = new ProgressDialog(RegisterActivity.this);
         pd.setMessage("Your account is being created");
@@ -72,8 +88,8 @@ public class RegisterActivity extends AppCompatActivity {
 
                 userID = auth.getCurrentUser().getUid();
 
-                User user = new User(userID, email, email, null);
-                user.setFullname(fullName);
+                User user = new User(userID, username, email, null, null);
+
                 database.createUser(user);
 
                 pd.dismiss();
@@ -94,16 +110,16 @@ public class RegisterActivity extends AppCompatActivity {
     }
 
 
-    private boolean checkFields (String fullName, String email, String password, String passwordConfirm){
+    private boolean checkFields (String username, String email, String password, String passwordConfirm){
 
         boolean bool = true;
 
-        if (fullName.isEmpty() ){
-            mFullName.setError("Your full name is required !");
+        if (username.isEmpty()) {
+            mUsername.setError("Your username is required !");
             bool = false;
         }
 
-         else if (email.isEmpty() ){
+        if (email.isEmpty() ){
             mEmail.setError("Your email is required !" );
             bool =  false;
         }

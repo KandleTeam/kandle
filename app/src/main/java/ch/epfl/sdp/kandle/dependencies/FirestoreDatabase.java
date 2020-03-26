@@ -58,31 +58,19 @@ public class FirestoreDatabase implements Database {
         return instance;
     }
 
-/*
+
     @Override
     public Task<User> getUserByName(final String username) {
         return users
                 .whereEqualTo("username", username)
                 .get()
-                .continueWith(new Continuation<QuerySnapshot, User>() {
-
-                    @Override
-                    public User then(@NonNull Task<QuerySnapshot> task) {
-
-                        QuerySnapshot results = task.getResult();
-
-                        if(results.size() > 1)  {
-                            throw new AssertionError("We done goofed somewhere! Duplicate usernames");
-                        }
-                        else if(results.size() == 0) {
-                            throw new IllegalArgumentException(("No such user with username: " + username));
-                        }
-                        else return results.iterator().next().toObject(User.class);
-                    }
+                .continueWith(task -> {
+                    if (task.getResult().isEmpty()) return null;
+                    return task.getResult().iterator().next().toObject(User.class);
                 });
     }
 
- */
+
 
 
     @Override
@@ -152,10 +140,10 @@ public class FirestoreDatabase implements Database {
 
 
         return users
-                .whereGreaterThanOrEqualTo("normalizedUsername", prefix)
-                .whereLessThan("normalizedUsername", upperBound)
+                .whereGreaterThanOrEqualTo("username", prefix)
+                .whereLessThan("username", upperBound)
                 .limit(maxNumber)
-                .orderBy("normalizedUsername")
+                .orderBy("username")
                 .get()
                 .continueWith(task -> task.getResult().toObjects(User.class));
     }
@@ -375,10 +363,25 @@ public class FirestoreDatabase implements Database {
     }
 
     @Override
-    public Task<String> getUsername() {
+    public Task<Void> updateNickname(String nickname) {
+        HashMap<String, Object> map = new HashMap<>();
+        map.put("fullname", nickname);
+        return loggedInUser().update(map);
+    }
+
+    @Override
+    public Task<String> getNickname() {
         return loggedInUser().get().continueWith(task -> {
             DocumentSnapshot doc = task.getResult();
             return doc != null? (String) doc.get("fullname") : null;
+        });
+    }
+
+    @Override
+    public Task<String> getUsername() {
+        return loggedInUser().get().continueWith(task -> {
+            DocumentSnapshot doc = task.getResult();
+            return doc != null? (String) doc.get("username") : null;
         });
     }
 

@@ -44,10 +44,10 @@ public class RegisterActivityTest {
 
 
         onView(withId (R.id.loginBtn)).perform(click());
-        onView(withId(R.id.fullName)).check(matches( hasErrorText("Your full name is required !")));
+        onView(withId(R.id.username)).check(matches( hasErrorText("Your username is required !")));
 
-        onView(withId (R.id.fullName)).perform(typeText ("test"));
-        onView(withId (R.id.fullName)).perform(closeSoftKeyboard());
+        onView(withId (R.id.username)).perform(typeText ("test"));
+        onView(withId (R.id.username)).perform(closeSoftKeyboard());
 
         onView(withId (R.id.loginBtn)).perform(click());
         onView(withId(R.id.email)).check(matches( hasErrorText("Your email is required !")));
@@ -75,8 +75,8 @@ public class RegisterActivityTest {
     @Test
     public void accountCreationShouldFail() {
 
-        onView(withId (R.id.fullName)).perform(typeText ("Mock User"));
-        onView(withId (R.id.fullName)).perform(closeSoftKeyboard());
+        onView(withId (R.id.username)).perform(typeText ("mock"));
+        onView(withId (R.id.username)).perform(closeSoftKeyboard());
 
         onView(withId (R.id.email)).perform(typeText ("user1@test.com"));
         onView(withId (R.id.email)).perform(closeSoftKeyboard());
@@ -97,8 +97,8 @@ public class RegisterActivityTest {
 
         Intents.init();
 
-        onView(withId (R.id.fullName)).perform(typeText ("zzdrian Freeman"));
-        onView(withId (R.id.fullName)).perform(closeSoftKeyboard());
+        onView(withId (R.id.username)).perform(typeText ("zzdrian"));
+        onView(withId (R.id.username)).perform(closeSoftKeyboard());
 
         onView(withId (R.id.email)).perform(typeText ("zzrian@test.com"));
         onView(withId (R.id.email)).perform(closeSoftKeyboard());
@@ -110,10 +110,6 @@ public class RegisterActivityTest {
         onView(withId (R.id.passwordConfirm)).perform(closeSoftKeyboard());
 
         onView(withId(R.id.loginBtn)).perform(click());
-
-
-       // onView(withId (R.id.email)).perform(closeSoftKeyboard());
-        //onView(withId(R.id.loginBtn)).perform(click());
 
 
         intended(hasComponent(CustomAccountActivity.class.getName()));
@@ -132,6 +128,25 @@ public class RegisterActivityTest {
 
         onView(withId(R.id.signInLink)).perform(click());
         //intended(hasComponent(LoginActivity.class.getName()));
+    }
+
+    @Test
+    public void usernameAlreadyExists() {
+        onView(withId (R.id.username)).perform(typeText ("user1"));
+        onView(withId (R.id.username)).perform(closeSoftKeyboard());
+
+        onView(withId (R.id.email)).perform(typeText ("testexists@test.com"));
+        onView(withId (R.id.email)).perform(closeSoftKeyboard());
+
+        onView(withId (R.id.password)).perform(typeText ("12345678"));
+        onView(withId (R.id.password)).perform(closeSoftKeyboard());
+
+        onView(withId (R.id.passwordConfirm)).perform(typeText ("12345678"));
+        onView(withId (R.id.passwordConfirm)).perform(closeSoftKeyboard());
+
+        onView(withId(R.id.loginBtn)).perform(click());
+
+        onView(withId(R.id.username)).check(matches( hasErrorText("This username is already used !")));
     }
 
 

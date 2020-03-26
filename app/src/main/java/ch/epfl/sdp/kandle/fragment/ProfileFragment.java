@@ -1,20 +1,25 @@
 package ch.epfl.sdp.kandle.fragment;
 
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.ViewSwitcher;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.android.material.navigation.NavigationView;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
@@ -23,6 +28,8 @@ import java.util.List;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 import ch.epfl.sdp.kandle.CustomAccountActivity;
+import ch.epfl.sdp.kandle.ImagePicker.ProfilePicPicker;
+import ch.epfl.sdp.kandle.MainActivity;
 import ch.epfl.sdp.kandle.dependencies.Authentication;
 import ch.epfl.sdp.kandle.dependencies.AuthenticationUser;
 import ch.epfl.sdp.kandle.dependencies.Database;
@@ -34,14 +41,17 @@ import ch.epfl.sdp.kandle.User;
 public class ProfileFragment extends Fragment {
 
     User user;
-
-    ImageView mProfilePicture, mEdit;
-    TextView mNumberOfFollowers, mNumberOfFollowing, mUsername;
-    Button mFollowButton;
+    private ProfilePicPicker profilePicPicker;
+    ImageView mProfilePicture, mEditPicture, mProfilePictureInMenu, mEditName;
+    TextView mNumberOfFollowers, mNumberOfFollowing, mUsername, mNicknameView, mNickNameInMenu;
+    EditText mNicknameEdit;
+    ViewSwitcher mNickname;
+    Button mFollowButton, mValidateNameButton;
     Authentication auth;
     Database database;
 
-    public final static int PROFILE_PICTURE_TAG = 6;
+    public final static int PROFILE_PICTURE_BEFORE = 6;
+    public final static int PROFILE_PICTURE_AFTER = 7;
 
     private ProfileFragment (User user){
         this.user = user;
@@ -54,11 +64,17 @@ public class ProfileFragment extends Fragment {
 
     private void getViews(View parent) {
         mProfilePicture = parent.findViewById(R.id.profilePicture);
+        NavigationView mNavigationView = getActivity().findViewById(R.id.navigation_view);
+        mProfilePictureInMenu = mNavigationView.getHeaderView(0).findViewById(R.id.profilePicInMenu);
+        mNickNameInMenu = mNavigationView.getHeaderView(0).findViewById(R.id.nicknameInMenu);
         mNumberOfFollowers = parent.findViewById(R.id.profileNumberOfFollowers);
         mNumberOfFollowing = parent.findViewById(R.id.profileNumberOfFollowing);
+        mNickname = parent.findViewById(R.id.profileNickname);
         mUsername = parent.findViewById(R.id.profileUsername);
         mFollowButton = parent.findViewById(R.id.profileFollowButton);
-        mEdit = parent.findViewById(R.id.profileEditButton);
+        mEditPicture = parent.findViewById(R.id.profileEditPictureButton);
+        mEditName = parent.findViewById(R.id.profileEditNameButton);
+        mValidateNameButton = parent.findViewById(R.id.profileValidateNameButton);
     }
 
 
@@ -71,30 +87,51 @@ public class ProfileFragment extends Fragment {
         auth = DependencyManager.getAuthSystem();
         database = DependencyManager.getDatabaseSystem();
 
+        profilePicPicker = new ProfilePicPicker(this);
+
         getViews(view);
 
         final AuthenticationUser authenticationUser = auth.getCurrentUser();
 
+        mValidateNameButton.setVisibility(View.GONE);
+
         if(!user.getId().equals(authenticationUser.getUid())){
-            mEdit.setVisibility(View.GONE);
+            mEditPicture.setVisibility(View.GONE);
+            mEditName.setVisibility(View.GONE);
         }
         else {
-            /*
-            mEdit.setOnClickListener(new View.OnClickListener() {
-
-                @Override
-                public void onClick(View v) {
-                    startActivity(new Intent(getActivity().getApplicationContext(), CustomAccountActivity.class));
-                }
-
+            mEditPicture.setOnClickListener(v -> {
+                profilePicPicker.openImage();
             });
 
-             */
         }
 
-        mUsername.setText(user.getUsername());
+        mEditName.setOnClickListener(v -> {
+            mEditName.setVisibility(View.GONE);
+            mValidateNameButton.setVisibility(View.VISIBLE);
+            mNickname.showNext();
+        });
+
+        mValidateNameButton.setOnClickListener(v -> {
+            String nickname = mNicknameEdit.getText().toString();
+            if (nickname.trim().length()>0) {
+                mNicknameView.setText(nickname.trim());
+                mNickNameInMenu.setText(nickname.trim());
+                database.updateNickname(nickname.trim());
+            }
+            mNickname.showPrevious();
+            mValidateNameButton.setVisibility(View.GONE);
+            mEditName.setVisibility(View.VISIBLE);
+        });
+
+        mNicknameView = mNickname.findViewById(R.id.text_view);
+        mNicknameEdit = mNickname.findViewById(R.id.edit_view);
+        mNicknameView.setText(user.getFullname());
+        mNicknameEdit.setText(user.getFullname());
+
+        mUsername.setText("@" + user.getUsername());
         if(user.getImageURL() != null) {
-            mProfilePicture.setTag(PROFILE_PICTURE_TAG);
+            mProfilePicture.setTag(PROFILE_PICTURE_BEFORE);
             Picasso.get().load(user.getImageURL()).into(mProfilePicture);
         }
 
@@ -197,5 +234,18 @@ public class ProfileFragment extends Fragment {
                 }
             }
         });
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        Uri uri = profilePicPicker.handleActivityResult(requestCode, resultCode, data);
+
+        if (uri != null) {
+            mProfilePicture.setTag(PROFILE_PICTURE_AFTER);
+            mProfilePicture.setImageURI(uri);
+            mProfilePictureInMenu.setTag(PROFILE_PICTURE_AFTER);
+            mProfilePictureInMenu.setImageURI(uri);
+        }
     }
 }

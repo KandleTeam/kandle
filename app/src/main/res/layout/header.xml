@@ -14,20 +14,29 @@
         android:orientation="vertical"
         android:gravity="center_vertical">
 
-        <ImageView
+
+        <de.hdodenhof.circleimageview.CircleImageView
             android:id="@+id/profilePicInMenu"
             android:layout_width="85dp"
             android:layout_height="85dp"
+            android:src="@drawable/ic_profil_24dp"
             android:clickable="true"
-            android:paddingLeft="10dp"
-            android:src="@drawable/ic_profil_24dp" />
+            android:paddingLeft="10dp" />
 
         <TextView
-            android:id="@+id/username"
+            android:id="@+id/nicknameInMenu"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:paddingLeft="10dp"
-            android:text="Username"
+            android:text="Nickname"
             android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/usernameInMenu"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingLeft="10dp"
+            android:text="\@username" />
+
     </LinearLayout>
 </LinearLayout>
