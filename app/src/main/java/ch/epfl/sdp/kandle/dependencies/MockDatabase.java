@@ -284,7 +284,7 @@ public class MockDatabase implements Database {
         User user = users.get("user1Id");
         user.setFullname(nickname);
         return source.getTask();
-    }>>>>>>> master
+    }
 
     @Override
     public Task<String> getNickname() {
