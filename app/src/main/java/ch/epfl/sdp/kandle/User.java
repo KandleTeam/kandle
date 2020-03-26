@@ -1,10 +1,12 @@
 package ch.epfl.sdp.kandle;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 
 public class User implements Serializable {
-
+    private ArrayList<String> postsIds;
     private String id, username, email, fullname , imageURL;
+
 
     public User() {
         // Keep fields null
@@ -15,7 +17,9 @@ public class User implements Serializable {
         this.username = username;
         this.email = email;
         this.imageURL = imageURL;
+        this.postsIds = new ArrayList<>();
         this.fullname = fullname;
+
     }
 
     public String getFullname() {
@@ -48,5 +52,17 @@ public class User implements Serializable {
 
     public String getImageURL() {
         return imageURL;
+    }
+
+    public ArrayList<String> getPosts(){
+        return postsIds;
+    }
+
+    public void addPostId(String postId){
+        postsIds.add(postId);
+    }
+
+    public void removePostId(String postId){
+        postsIds.remove(postId);
     }
 }

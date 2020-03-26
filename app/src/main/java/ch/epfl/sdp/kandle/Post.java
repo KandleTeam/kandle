@@ -19,7 +19,7 @@ public class Post {
     private ArrayList<String> likers;
     private String userId;
     private String postId;
-    private Uri image;
+    private String imageURL;
     private String description;
     private ArrayList<String> comments;
     private Date date;
@@ -35,9 +35,11 @@ public class Post {
         this.date = date;
     }*/
 
-    public Post(){
 
-    }
+   public Post(){
+
+   }
+
 
     public Post(String type, String description, Date date, String userId) {
         this.type = type;
@@ -48,8 +50,24 @@ public class Post {
         this.likers = new ArrayList<>();
         this.postId = UUID.randomUUID().toString();
         this.userId = userId;
+
     }
 
+    //Useful for tests
+    public Post(String type, String description, Date date, String userId, String postId) {
+        this.type = type;
+        this.location = null;
+        this.description = description;
+        this.comments = null;
+        this.date = date;
+        this.likers = new ArrayList<>();
+        this.postId = postId;
+        this.userId = userId;
+    }
+
+
+
+    /*
 
     public String getType() {
         return type;
@@ -58,11 +76,11 @@ public class Post {
     public LatLng getLocation() {
         return location;
     }
+     */
 
     public ArrayList<String> getLikers(){
         return likers;
     }
-
 
     public int getLikes() {
         return likers.size();
@@ -76,20 +94,24 @@ public class Post {
         return description;
     }
 
+    /*
     public ArrayList<String> getComments() {
         return comments;
     }
+     */
 
     public Date getDate() {
         return date;
     }
 
-    public void likePost() {
+    public void likePost(String userId) {
         likers.add(userId);
     }
-    public void unlikePost() {
+    public void unlikePost(String userId) {
         likers.remove(userId);
     }
+
+    /*
 
     public String getUserId() {
         return userId;
@@ -99,11 +121,12 @@ public class Post {
         this.userId = userId;
     }
 
-    public Uri getImage(){
-        return image;
+    public String getImage(){
+        return imageURL;
     }
+     */
 
-    public void setImage(Uri image){
-        this.image = image;
+    public void setImage(String imageURL){
+        this.imageURL = imageURL;
     }
 }
