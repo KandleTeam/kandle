@@ -1,5 +1,7 @@
 package ch.epfl.sdp.kandle;
 
+import static android.support.test.InstrumentationRegistry.getInstrumentation;
+import static android.support.test.InstrumentationRegistry.getTargetContext;
 import static androidx.test.espresso.Espresso.onView;
 import static androidx.test.espresso.action.ViewActions.click;
 import static androidx.test.espresso.assertion.ViewAssertions.matches;
@@ -8,6 +10,8 @@ import static androidx.test.espresso.matcher.ViewMatchers.withId;
 import static org.junit.Assume.assumeTrue;
 import android.content.Context;
 import android.content.Intent;
+import android.os.Build;
+
 import androidx.camera.core.ImageAnalysis;
 import androidx.camera.core.Preview;
 import androidx.test.core.app.ApplicationProvider;
@@ -18,6 +22,10 @@ import androidx.test.platform.app.InstrumentationRegistry;
 import androidx.test.rule.ActivityTestRule;
 import androidx.test.rule.GrantPermissionRule;
 import androidx.test.uiautomator.UiDevice;
+import androidx.test.uiautomator.UiObject;
+import androidx.test.uiautomator.UiObjectNotFoundException;
+import androidx.test.uiautomator.UiSelector;
+
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Rule;
@@ -49,9 +57,10 @@ public class CameraUITest {
         /*assumeTrue(CameraUtil.deviceHasCamera());
         CoreAppTestUtil.assumeCompatibleDevice();*/
         // Clear the device UI before start each test.
-        //clearDeviceUI(InstrumentationRegistry.getInstrumentation());
+        allowPermission();
         // Launch Activity
         mActivityRule.launchActivity(mIntent);
+        allowPermission();
     }
     @After
     public void tearDown() {
@@ -60,7 +69,9 @@ public class CameraUITest {
     }
     @Test
     public void testPreviewButton() {
+        allowPermission();
         IdlingRegistry.getInstance().register(mActivityRule.getActivity().getViewIdlingResource());
+        allowPermission();
         Preview preview = mActivityRule.getActivity().getPreview();
         // Click to disable the preview use case.
         if (preview != null) {
@@ -83,5 +94,18 @@ public class CameraUITest {
         // Returns to Home to restart next test.
         mDevice.pressHome();
         mDevice.waitForIdle(3000);
+    }
+
+    private void allowPermission(){
+        if (Build.VERSION.SDK_INT >= 23) {
+            UiObject allowPermissions = mDevice.findObject(new UiSelector().text("allow"));
+            if (allowPermissions.exists()) {
+                try {
+                    allowPermissions.click();
+                } catch (UiObjectNotFoundException e) {
+                    System.out.println("There is no permissions dialog to interact with ");
+                }
+            }
+        }
     }
 }

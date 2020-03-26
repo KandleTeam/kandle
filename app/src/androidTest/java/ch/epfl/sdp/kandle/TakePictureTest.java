@@ -10,6 +10,8 @@ import static org.junit.Assert.assertTrue;
 import static org.junit.Assume.assumeTrue;
 import android.content.Context;
 import android.content.Intent;
+import android.os.Build;
+
 import androidx.camera.core.ImageAnalysis;
 import androidx.camera.core.ImageCapture;
 import androidx.camera.core.Preview;
@@ -21,6 +23,9 @@ import androidx.test.platform.app.InstrumentationRegistry;
 import androidx.test.rule.ActivityTestRule;
 import androidx.test.rule.GrantPermissionRule;
 import androidx.test.uiautomator.UiDevice;
+import androidx.test.uiautomator.UiObject;
+import androidx.test.uiautomator.UiObjectNotFoundException;
+import androidx.test.uiautomator.UiSelector;
 
 import junit.framework.AssertionFailedError;
 
@@ -54,7 +59,9 @@ public class TakePictureTest {
         // Clear the device UI before start each test.
         //clearDeviceUI(InstrumentationRegistry.getInstrumentation());
         // Launch Activity
+        allowPermission();
         mActivityRule.launchActivity(mIntent);
+        allowPermission();
     }
     @After
     public void tearDown() {
@@ -63,8 +70,10 @@ public class TakePictureTest {
     }
     @Test
     public void testPictureButton() {
+        allowPermission();
         assertTrue(checkPreviewReady());
         ImageCapture imageCapture = mActivityRule.getActivity().getImageCapture();
+        allowPermission();
         assertNotNull(imageCapture);
         onView(withId(R.id.Picture)).perform(click());
     }
@@ -90,5 +99,18 @@ public class TakePictureTest {
             return false;
         }
 
+    }
+
+    private void allowPermission(){
+        if (Build.VERSION.SDK_INT >= 23) {
+            UiObject allowPermissions = mDevice.findObject(new UiSelector().text("allow"));
+            if (allowPermissions.exists()) {
+                try {
+                    allowPermissions.click();
+                } catch (UiObjectNotFoundException e) {
+                    System.out.println("There is no permissions dialog to interact with ");
+                }
+            }
+        }
     }
 }

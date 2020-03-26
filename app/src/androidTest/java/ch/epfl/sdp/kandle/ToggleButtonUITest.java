@@ -1,5 +1,7 @@
 package ch.epfl.sdp.kandle;
 
+import static android.support.test.InstrumentationRegistry.getInstrumentation;
+import static android.support.test.InstrumentationRegistry.getTargetContext;
 import static androidx.test.espresso.Espresso.onView;
 import static androidx.test.espresso.action.ViewActions.click;
 import static androidx.test.espresso.assertion.ViewAssertions.matches;
@@ -10,6 +12,8 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assume.assumeTrue;
 import android.content.Intent;
+import android.os.Build;
+
 import androidx.camera.core.CameraInfo;
 import androidx.camera.core.CameraSelector;
 import androidx.camera.core.ImageCapture;
@@ -24,6 +28,10 @@ import androidx.test.platform.app.InstrumentationRegistry;
 import androidx.test.rule.ActivityTestRule;
 import androidx.test.rule.GrantPermissionRule;
 import androidx.test.uiautomator.UiDevice;
+import androidx.test.uiautomator.UiObject;
+import androidx.test.uiautomator.UiObjectNotFoundException;
+import androidx.test.uiautomator.UiSelector;
+
 import junit.framework.AssertionFailedError;
 import org.junit.After;
 import org.junit.Before;
@@ -64,7 +72,9 @@ public final class ToggleButtonUITest {
     public void setUp() {
         // Clear the device UI before start each test.
         // Launch Activity
+
         mActivityRule.launchActivity(mIntent);
+        allowPermission();
     }
     @After
     public void tearDown() {
@@ -77,6 +87,7 @@ public final class ToggleButtonUITest {
     }
     @Test
     public void testFlashToggleButton() {
+        allowPermission();
         waitFor(new WaitForViewToShow(R.id.constraintLayout));
         assumeTrue(detectButtonVisibility(R.id.flash_toggle));
         ImageCapture useCase = mActivityRule.getActivity().getImageCapture();
@@ -98,6 +109,7 @@ public final class ToggleButtonUITest {
     }
     @Test
     public void testSwitchCameraToggleButton() {
+        allowPermission();
         waitFor(new WaitForViewToShow(R.id.direction_toggle));
         boolean isPreviewExist = mActivityRule.getActivity().getPreview() != null;
         boolean isImageCaptureExist = mActivityRule.getActivity().getImageCapture() != null;
@@ -127,6 +139,19 @@ public final class ToggleButtonUITest {
         } catch (Exception e) {
             // View is not in hierarchy
             return false;
+        }
+    }
+
+    private void allowPermission(){
+        if (Build.VERSION.SDK_INT >= 23) {
+            UiObject allowPermissions = mDevice.findObject(new UiSelector().text("allow"));
+            if (allowPermissions.exists()) {
+                try {
+                    allowPermissions.click();
+                } catch (UiObjectNotFoundException e) {
+                    System.out.println("There is no permissions dialog to interact with ");
+                }
+            }
         }
     }
 }
