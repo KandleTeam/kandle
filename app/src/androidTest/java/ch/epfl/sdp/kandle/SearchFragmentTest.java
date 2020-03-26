@@ -79,19 +79,28 @@ public class SearchFragmentTest {
         onView(withId(R.id.profileNumberOfFollowing)).check(matches( withText("1")));
         onView(withId(R.id.profileNumberOfFollowers)).check(matches( withText("0")));
 
-
-
         onView(withId(R.id.profileFollowButton)).perform(click());
         onView(withId(R.id.profileNumberOfFollowers)).check(matches( withText("1")));
         onView(withId(R.id.profileFollowButton)).perform(click());
         onView(withId(R.id.profileNumberOfFollowers)).check(matches( withText("0")));
+        onView(withId(R.id.profileFollowButton)).perform(click());
     }
+
+    @Test
+    public void clickOnUserProfile(){
+        onView(withId(R.id.search_bar)).perform(typeText("us"));
+        onView(withId (R.id.search_bar)).perform(closeSoftKeyboard());
+        onView(withId(R.id.recycler_view)).perform(RecyclerViewActions.actionOnItemAtPosition(0, click()));
+        onView(withId(R.id.profileUsername)).check(matches(withText("user2")));
+
+    }
+
+
 
     @Test
     public void userWithNoProfilePic() {
         onView(withId(R.id.search_bar)).perform(typeText("user3"));
         onView(withId (R.id.search_bar)).perform(closeSoftKeyboard());
-
     }
 
 

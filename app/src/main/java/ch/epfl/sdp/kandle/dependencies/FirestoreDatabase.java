@@ -3,7 +3,9 @@ package ch.epfl.sdp.kandle.dependencies;
 import androidx.annotation.NonNull;
 
 import com.google.android.gms.tasks.Continuation;
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.android.gms.tasks.TaskCompletionSource;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
@@ -12,8 +14,11 @@ import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.FirebaseFirestoreSettings;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.firestore.SetOptions;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -247,7 +252,7 @@ public class FirestoreDatabase implements Database {
     }
 
     @Override
-    public Task<List<String>> followingList(String userId) {
+    public Task<List<String>> userIdFollowingList(String userId) {
         return follow
                 .document(userId)
                 .get()
@@ -255,12 +260,107 @@ public class FirestoreDatabase implements Database {
     }
 
     @Override
-    public Task<List<String>> followersList(String userId) {
+    public Task<List<String>> userIdFollowersList(String userId) {
         return follow
                 .document(userId)
                 .get()
                 .continueWith(task -> (List<String>)  task.getResult().get("followers"));
     }
+
+    @Override
+    public Task<List<User>> userFollowingList(String userId) {
+
+       // Task<List<String>> taskUserIdFollowing = userIdFollowingList(userId);
+        TaskCompletionSource<List<User>> source = new TaskCompletionSource<>();
+
+        userIdFollowingList(userId).addOnCompleteListener(new OnCompleteListener<List<String>>() {
+            @Override
+            public void onComplete(@NonNull Task<List<String>> task) {
+
+                if (task.isSuccessful()){
+
+                    if (task.getResult() != null) {
+
+                        users.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                            @Override
+                            public void onComplete(@NonNull Task<QuerySnapshot> task2) {
+                                if (task2.isSuccessful()){
+                                    List<User> users = new ArrayList<>();
+                                    for (QueryDocumentSnapshot document : task2.getResult()) {
+                                        String id =  (String) document.get("id");
+                                        if (task.getResult().contains(id)){
+                                            users.add(document.toObject(User.class));
+                                        }
+                                    }
+
+                                    source.setResult(users);
+                                }
+
+                                else {
+                                    source.setException( new Exception(task2.getException().getMessage()));
+                                }
+
+                            }
+                        });
+
+                    }
+                    else {
+                        source.setResult(null);
+                    }
+                }
+                else {
+                    source.setException( new Exception(task.getException().getMessage()));
+            }
+            }
+        });
+
+        return source.getTask();
+    }
+
+    @Override
+    public Task<List<User>> userFollowersList(String userId) {
+       // Task<List<String>> taskUserIdFollowers = userIdFollowersList(userId);
+        TaskCompletionSource<List<User>> source = new TaskCompletionSource<>();
+
+        userIdFollowersList(userId).addOnCompleteListener(new OnCompleteListener<List<String>>() {
+            @Override
+            public void onComplete(@NonNull Task<List<String>> task) {
+
+                if (task.isSuccessful()){
+
+                    users.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                        @Override
+                        public void onComplete(@NonNull Task<QuerySnapshot> task2) {
+                            if (task2.isSuccessful()){
+                                List<User> users = new ArrayList<>();
+                                for (QueryDocumentSnapshot document : task2.getResult()) {
+                                    String id =  (String) document.get("id");
+                                    if (task.getResult().contains(id)){
+                                        users.add(document.toObject(User.class));
+                                    }
+                                }
+
+                                source.setResult(users);
+                            }
+
+                            else {
+                                source.setException( new Exception(task2.getException().getMessage()));
+                            }
+
+                        }
+                    });
+                }
+                else {
+                    source.setException( new Exception(task.getException().getMessage()));
+                }
+            }
+        });
+
+        return source.getTask();
+    }
+
+
+
 
     @Override
     public Task<Void> updateProfilePicture(String uri) {

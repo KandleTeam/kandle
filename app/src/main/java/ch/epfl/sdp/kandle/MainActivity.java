@@ -9,6 +9,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
@@ -17,17 +18,22 @@ import androidx.fragment.app.Fragment;
 
 import androidx.fragment.app.FragmentManager;
 
+
+import androidx.fragment.app.FragmentTransaction;
 import ch.epfl.sdp.kandle.dependencies.Database;
 import ch.epfl.sdp.kandle.dependencies.DependencyManager;
 import ch.epfl.sdp.kandle.fragment.AboutFragment;
 import ch.epfl.sdp.kandle.fragment.MapFragment;
 //import ch.epfl.sdp.kandle.Fragment.ProfileFragment;
+import ch.epfl.sdp.kandle.fragment.ProfileFragment;
 import ch.epfl.sdp.kandle.fragment.YourPostListFragment;
 import ch.epfl.sdp.kandle.fragment.SearchFragment;
 import ch.epfl.sdp.kandle.fragment.SettingsFragment;
 import ch.epfl.sdp.kandle.dependencies.Authentication;
 
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationView;
 import com.squareup.picasso.Picasso;
@@ -42,9 +48,7 @@ public class MainActivity extends AppCompatActivity {
     private BottomNavigationView mBottomNavigationView;
     private Button mPostButton;
     private Authentication auth;
-    private Database database;
-
-
+    private Database database;+
     private ImageView mProfilePic;
     private TextView mUsername;
 
@@ -61,7 +65,6 @@ public class MainActivity extends AppCompatActivity {
 
         auth = DependencyManager.getAuthSystem();
         database = DependencyManager.getDatabaseSystem();
-
         // Set a Toolbar to replace the ActionBar.
         toolbar = findViewById(R.id.toolbar);
         mDrawerLayout = findViewById(R.id.drawer_layout);
@@ -83,6 +86,35 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(new Intent(getApplicationContext(), PostActivity.class));
             }
         });
+
+        final FragmentManager fragmentManager = getSupportFragmentManager();
+        mProfilePic.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                database.getUserById(auth.getCurrentUser().getUid()).addOnCompleteListener(new OnCompleteListener<User>() {
+                    @Override
+                    public void onComplete(@NonNull Task<User> task) {
+                        if (task.isSuccessful()){
+                            mPostButton.setVisibility(View.GONE);
+                            fragmentManager.beginTransaction().replace(R.id.flContent, ProfileFragment.newInstance(task.getResult()))
+                                    .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
+                                    .addToBackStack(null)
+                                    .commit();
+                            setTitle("Your Profile");
+                            mDrawerLayout.closeDrawers();
+                        }
+                        else {
+
+                        }
+
+                    }
+                });
+
+
+            }
+        });
+
     }
 
     @Override
@@ -169,7 +201,16 @@ public class MainActivity extends AppCompatActivity {
         }
         if (fragment != null) {
             FragmentManager fragmentManager = getSupportFragmentManager();
-            fragmentManager.beginTransaction().replace(R.id.flContent, fragment).commit();
+            fragmentManager.beginTransaction()
+                    .replace(R.id.flContent, fragment)
+                    .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
+                    .addToBackStack(null)
+                    .commit();
+
+
+            // Insert the fragment by replacing any existing fragment
+
+
         }
         // Highlight the selected item has been done by NavigationView
         // Set action bar title
