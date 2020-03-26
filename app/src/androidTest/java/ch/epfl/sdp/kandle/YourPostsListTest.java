@@ -36,17 +36,14 @@ import static junit.framework.TestCase.assertEquals;
 @RunWith(AndroidJUnit4.class)
 public class YourPostsListTest {
 
-    /*@Rule
-    public ActivityTestRule<MainActivity> mainActivityRule =
-            new ActivityTestRule<>(MainActivity.class, true, true);
-    */
+
 
     @Rule
     public ActivityTestRule<MainActivity> intentsRule =
-            new ActivityTestRule<MainActivity>(MainActivity.class,true,true
-            ){
+            new ActivityTestRule<MainActivity>(MainActivity.class, true, true) {
                 @Override
-                protected  void beforeActivityLaunched() {
+                protected void beforeActivityLaunched() {
+
                     DependencyManager.setFreshTestDependencies(true);
                 }
             };
@@ -59,9 +56,9 @@ public class YourPostsListTest {
 
 
 
+
     @Test
     public void canClickOnAlreadyCreatedPostToSeeDescriptionAndRemoveDescription() throws Throwable {
-
         onView(withId(R.id.rvPosts)).perform(RecyclerViewActions.actionOnItemAtPosition(0,click()));
         onView(withId(R.id.post_content)).perform(click());
         onView(withId(R.id.rvPosts)).perform(RecyclerViewActions.actionOnItemAtPosition(1,click()));

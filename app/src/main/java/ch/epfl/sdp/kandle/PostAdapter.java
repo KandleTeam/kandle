@@ -72,12 +72,14 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder>{
         holder.mlikeButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
                 if(post.getLikers().contains(userId)){
                     database.unlikePost(userId, post.getPostId());
                     post.unlikePost(userId);
                 }else{
                     database.likePost(userId, post.getPostId());
                     post.likePost(userId);
+
                 }
                 likeView.setText(String.valueOf(post.getLikes()));
             }

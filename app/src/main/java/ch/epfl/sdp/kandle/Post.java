@@ -33,12 +33,13 @@ public class Post {
         this.description = description;
         this.comments = comments;
         this.date = date;
-
     }*/
+
 
    public Post(){
 
    }
+
 
     public Post(String type, String description, Date date, String userId) {
         this.type = type;
@@ -49,6 +50,7 @@ public class Post {
         this.likers = new ArrayList<>();
         this.postId = UUID.randomUUID().toString();
         this.userId = userId;
+
     }
 
     //Useful for tests
@@ -66,6 +68,7 @@ public class Post {
 
 
     /*
+
     public String getType() {
         return type;
     }
@@ -74,6 +77,11 @@ public class Post {
         return location;
     }
      */
+
+    public ArrayList<String> getLikers(){
+        return likers;
+    }
+
 
     public ArrayList<String> getLikers(){
         return likers;
@@ -110,6 +118,7 @@ public class Post {
     }
 
     /*
+
     public String getUserId() {
         return userId;
     }
