@@ -49,8 +49,7 @@ public class YourPostListFragment extends Fragment {
                              @Nullable Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_your_post_list, container, false);
         rvPosts = rootView.findViewById(R.id.rvPosts);
-        Post p =  new Post("Text", 0,"( : this is my post : )", new Date());
-        posts.add(p);
+
 
         adapter.setOnItemClickListener((position, view) -> {
             LayoutInflater inflater1 = getLayoutInflater();

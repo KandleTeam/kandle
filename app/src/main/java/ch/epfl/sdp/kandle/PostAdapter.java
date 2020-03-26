@@ -50,7 +50,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder>{
 
         // Set item views based on your views and data model
         TextView titleView = holder.mtitleText;
-        titleView.setText(String.valueOf(post.getPost_id()));
+        titleView.setText(String.valueOf(post.getPostId()));
         TextView dateView = holder.mdate;
         dateView.setText((dateFormat.format(post.getDate())));
         final TextView likeView = holder.mlikes;
@@ -61,10 +61,10 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder>{
             public void onClick(View v) {
                 if(holder.alreadyLiked){
                     holder.alreadyLiked = false;
-                    int likes = post.dislikePost();
+                    post.unlikePost();
                 }else{
                     holder.alreadyLiked = true;
-                    int likes = post.likePost();
+                    post.likePost();
                 }
                 likeView.setText(String.valueOf(post.getLikes()));
             }

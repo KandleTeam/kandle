@@ -23,14 +23,17 @@ public interface Database {
      *      * @param userId the user's userId
      *      * @return
      */
-     Task<User> getUserById(String userId);
+
+    Task<User> getUserById(String userId);
+
+
 
 
     /**
      * Asynchronously attempts to create a User in the Database. The task can fail if:
      * - the client cannot access the database
      * - there is already a user with this userId
-     * - there is already a user with this name
+     * - there is already a user with this namedi
      * @param user the user to be created in the database
      * @return an empty Task, signifying the outcome
      */

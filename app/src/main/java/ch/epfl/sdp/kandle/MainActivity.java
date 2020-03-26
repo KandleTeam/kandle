@@ -8,6 +8,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBarDrawerToggle;
@@ -17,6 +18,7 @@ import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
 
 import androidx.fragment.app.FragmentManager;
+
 
 import androidx.fragment.app.FragmentTransaction;
 
@@ -42,24 +44,19 @@ import com.squareup.picasso.Picasso;
 public class MainActivity extends AppCompatActivity {
 
     public final static int PROFILE_PICTURE_TAG = 5;
-
     private DrawerLayout mDrawerLayout;
     private Toolbar toolbar;
     private NavigationView mNavigationView;
     private BottomNavigationView mBottomNavigationView;
     private Button mPostButton;
+
     private Authentication auth;
     private Database database;
-
     private ImageView mProfilePic;
     private TextView mNickname;
     private TextView mUsername;
-
-    // Make sure to be using androidx.appcompat.app.ActionBarDrawerToggle version.
     private ActionBarDrawerToggle drawerToggle;
-
     private Fragment bottomFragment = null;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -74,6 +71,8 @@ public class MainActivity extends AppCompatActivity {
         mNavigationView = findViewById(R.id.navigation_view);
         mPostButton = findViewById(R.id.postButton);
         mProfilePic = mNavigationView.getHeaderView(0).findViewById(R.id.profilePicInMenu);
+        mUsername = mNavigationView.getHeaderView(0).findViewById(R.id.username);
+
         mNickname = mNavigationView.getHeaderView(0).findViewById(R.id.nicknameInMenu);
 
         mUsername = mNavigationView.getHeaderView(0).findViewById(R.id.usernameInMenu);
@@ -90,7 +89,6 @@ public class MainActivity extends AppCompatActivity {
         setupDrawerContent(mNavigationView);
         drawerToggle.syncState();
         mDrawerLayout.addDrawerListener(drawerToggle);
-
         mPostButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -126,7 +124,14 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+
         database.getProfilePicture().addOnCompleteListener(task -> {
+
             if (task.isSuccessful()) {
                 String imageUrl = task.getResult();
                 if (imageUrl != null) {
@@ -153,7 +158,9 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    /*Listens if a navigation item is selected
+    /**
+     * Calls the slectDrawerItem method if one of the items in the drawer menu is selected by the user
+     * @param navigationView
      */
     private void setupDrawerContent(NavigationView navigationView) {
         navigationView.setNavigationItemSelectedListener(
@@ -166,31 +173,23 @@ public class MainActivity extends AppCompatActivity {
                 });
     }
 
-    public void selectDrawerItem(MenuItem menuItem) {
+    /**
+     * This method allows to navigate between different fragment from the main activity
+     * @param menuItem
+     */
+    private void selectDrawerItem(MenuItem menuItem) {
         // Create a new fragment and specify the fragment to show based on nav item clicked
-
         Fragment fragment = null;
         Class fragmentClass = null;
         Intent intent = null;
         int size = mNavigationView.getMenu().size();
-
         switch (menuItem.getItemId()) {
-
-            //For activities
-
-
-                /*
-            case R.id.settings :
-                intent = new Intent(this, SettingsActivity.class);
-                startActivity(intent);
-             */
             case R.id.logout:
                 auth.signOut();
+
                 startActivity(new Intent(getApplicationContext(), LoginActivity.class));
                 finish();
-
                 break;
-
 
             case R.id.your_posts:
                 fragmentClass = YourPostListFragment.class;
@@ -200,9 +199,11 @@ public class MainActivity extends AppCompatActivity {
                 mPostButton.setVisibility(View.VISIBLE);
                 fragmentClass = MapFragment.class;
                 break;
+
             case R.id.settings:
                 fragmentClass = SettingsFragment.class;
                 break;
+
             case R.id.about:
                 fragmentClass = AboutFragment.class;
                 break;
@@ -212,27 +213,16 @@ public class MainActivity extends AppCompatActivity {
                 fragmentClass = SearchFragment.class;
                 break;
 
-
             default:
                 fragmentClass = null;
                 break;
-
-
         }
-
-
         try {
-
             fragment = (Fragment) fragmentClass.newInstance();
-
         } catch (Exception e) {
             e.printStackTrace();
         }
-
-
         if (fragment != null) {
-
-
             FragmentManager fragmentManager = getSupportFragmentManager();
             fragmentManager.beginTransaction()
                     .replace(R.id.flContent, fragment)
@@ -243,18 +233,11 @@ public class MainActivity extends AppCompatActivity {
 
             // Insert the fragment by replacing any existing fragment
 
+
         }
-
-        // Highlight the selected item has been done by NavigationView
-
-        // Set action bar title
         menuItem.setChecked(true);
         setTitle(menuItem.getTitle());
         mDrawerLayout.closeDrawers();
-        // Close the navigation drawer
-
 
     }
-
-
 }

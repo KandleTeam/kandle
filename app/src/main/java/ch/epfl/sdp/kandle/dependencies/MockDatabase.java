@@ -53,7 +53,7 @@ public class MockDatabase implements Database {
     }
 
 
-    private static Map<String, User> users;
+    public static Map<String, User> users;
     private static Map<String, Follow> followMap;
 
     public MockDatabase() {

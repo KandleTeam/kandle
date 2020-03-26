@@ -123,7 +123,7 @@ public class MainActivityTest {
         onView(withId(R.id.drawer_layout)).check(matches(isClosed(Gravity.LEFT))).perform(DrawerActions.open());
         onView(withId(R.id.usernameInMenu)).check(matches(withText("@user1")));
     }
-    
+
     @Test
     public void navigateToPost(){
         Intents.init();

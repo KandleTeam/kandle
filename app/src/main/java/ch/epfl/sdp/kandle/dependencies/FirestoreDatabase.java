@@ -1,5 +1,7 @@
 package ch.epfl.sdp.kandle.dependencies;
 
+import androidx.annotation.NonNull;
+
 import com.google.android.gms.tasks.Continuation;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -15,7 +17,6 @@ import com.google.firebase.firestore.FirebaseFirestoreSettings;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.firestore.SetOptions;
-import com.google.firebase.firestore.Transaction;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -24,8 +25,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import ch.epfl.sdp.kandle.User;
 
 public class FirestoreDatabase implements Database {
@@ -81,9 +80,13 @@ public class FirestoreDatabase implements Database {
                 .continueWith(new Continuation<DocumentSnapshot, User>() {
 
                     @Override
+
+
                     public User then(@NonNull Task<DocumentSnapshot> task) {
 
                         User user = Objects.requireNonNull(task.getResult()).toObject(User.class);
+                        assert(user != null);
+                        System.out.println(user.getId());
                         if (!user.getId().equals(userId)) throw new AssertionError("We done goofed somewhere! Unexpected uid");
 
                         return user;
