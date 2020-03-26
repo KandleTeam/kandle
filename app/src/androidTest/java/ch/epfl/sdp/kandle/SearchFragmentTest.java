@@ -91,7 +91,7 @@ public class SearchFragmentTest {
         onView(withId(R.id.search_bar)).perform(typeText("us"));
         onView(withId (R.id.search_bar)).perform(closeSoftKeyboard());
         onView(withId(R.id.recycler_view)).perform(RecyclerViewActions.actionOnItemAtPosition(0, click()));
-        onView(withId(R.id.profileUsername)).check(matches(withText("user2")));
+        onView(withId(R.id.profileUsername)).check(matches(withText("@user2")));
 
     }
 

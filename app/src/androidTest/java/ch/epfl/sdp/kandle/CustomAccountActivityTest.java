@@ -10,6 +10,8 @@ import androidx.test.ext.junit.runners.AndroidJUnit4;
 
 import static androidx.test.espresso.Espresso.onView;
 import static androidx.test.espresso.action.ViewActions.click;
+import static androidx.test.espresso.action.ViewActions.closeSoftKeyboard;
+import static androidx.test.espresso.action.ViewActions.typeText;
 import static androidx.test.espresso.assertion.ViewAssertions.matches;
 import static androidx.test.espresso.intent.Intents.intended;
 import static androidx.test.espresso.intent.Intents.intending;
@@ -44,6 +46,18 @@ public class CustomAccountActivityTest {
 
             };
 
+
+    @Test
+    public void enterUsername() {
+        onView(withId (R.id.nickname)).perform(typeText ("User 1"));
+        onView(withId (R.id.nickname)).perform(closeSoftKeyboard());
+        onView(withId(R.id.startButton)).perform(click());
+
+        DependencyManager.getDatabaseSystem().getNickname().addOnCompleteListener(task -> {
+            String nickname = task.getResult();
+            assertThat(nickname, is(equalTo("User 1")));
+        });
+    }
     @Test
     public void selectProfilePicture() {
 

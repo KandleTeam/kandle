@@ -2,6 +2,7 @@ package ch.epfl.sdp.kandle;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
@@ -20,6 +21,8 @@ import androidx.fragment.app.FragmentManager;
 
 
 import androidx.fragment.app.FragmentTransaction;
+
+import ch.epfl.sdp.kandle.ImagePicker.ImagePicker;
 import ch.epfl.sdp.kandle.dependencies.Database;
 import ch.epfl.sdp.kandle.dependencies.DependencyManager;
 import ch.epfl.sdp.kandle.fragment.AboutFragment;
@@ -50,6 +53,7 @@ public class MainActivity extends AppCompatActivity {
     private Authentication auth;
     private Database database;
     private ImageView mProfilePic;
+    private TextView mNickname;
     private TextView mUsername;
 
     // Make sure to be using androidx.appcompat.app.ActionBarDrawerToggle version.
@@ -71,7 +75,14 @@ public class MainActivity extends AppCompatActivity {
         mNavigationView = findViewById(R.id.navigation_view);
         mPostButton = findViewById(R.id.postButton);
         mProfilePic = mNavigationView.getHeaderView(0).findViewById(R.id.profilePicInMenu);
-        mUsername = mNavigationView.getHeaderView(0).findViewById(R.id.username);
+        mNickname = mNavigationView.getHeaderView(0).findViewById(R.id.nicknameInMenu);
+
+        mUsername = mNavigationView.getHeaderView(0).findViewById(R.id.usernameInMenu);
+        database.getUsername().addOnCompleteListener(task -> {
+            if (task.isSuccessful()) {
+                mUsername.setText("@" + task.getResult());
+            }
+        });
 
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -121,7 +132,8 @@ public class MainActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
 
-        DependencyManager.getDatabaseSystem().getProfilePicture().addOnCompleteListener(task -> {
+        database.getProfilePicture().addOnCompleteListener(task -> {
+
             if (task.isSuccessful()) {
                 String imageUrl = task.getResult();
                 if (imageUrl != null) {
@@ -133,16 +145,19 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        DependencyManager.getDatabaseSystem().getUsername().addOnCompleteListener(task -> {
+        database.getNickname().addOnCompleteListener(task -> {
             if (task.isSuccessful()) {
                 String username = task.getResult();
                 if (username != null) {
-                    mUsername.setText(username);
+                    mNickname.setText(username);
                 }
             } else {
                 //TODO handle case when user is offline (get username from cache)
             }
         });
+
+
+
     }
 
     private void setupDrawerContent(NavigationView navigationView) {
@@ -218,5 +233,6 @@ public class MainActivity extends AppCompatActivity {
         setTitle(menuItem.getTitle());
         mDrawerLayout.closeDrawers();
         // Close the navigation drawer
+
     }
 }
