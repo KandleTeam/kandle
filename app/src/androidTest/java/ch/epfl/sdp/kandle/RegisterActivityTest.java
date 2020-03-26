@@ -98,8 +98,8 @@ public class RegisterActivityTest {
         Intents.init();
 
 
-        onView(withId (R.id.fullName)).perform(typeText ("newUserId"));
-        onView(withId (R.id.fullName)).perform(closeSoftKeyboard());
+        onView(withId (R.id.username)).perform(typeText ("newUserId"));
+        onView(withId (R.id.username)).perform(closeSoftKeyboard());
 
 
         onView(withId (R.id.email)).perform(typeText ("newUser@kandle.ch"));
