@@ -19,19 +19,34 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/profileNickname" />
 
-    <TextView
+    <ViewSwitcher
         android:id="@+id/profileNickname"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="TextView"
-        android:textAlignment="center"
-        android:textSize="24sp"
-        android:textStyle="bold"
         app:layout_constraintBottom_toTopOf="@+id/profilePicture"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.19999999" />
+        android:measureAllChildren="false">
+
+        <TextView
+            android:id="@+id/text_view"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="TextView"
+            android:textAlignment="center"
+            android:textSize="24sp"
+            android:textStyle="bold" />
+
+        <EditText
+            android:id="@+id/edit_view"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="TextView"
+            android:textAlignment="center"
+            android:textSize="24sp"
+            android:textStyle="bold" />
+    </ViewSwitcher>
 
     <TextView
         android:id="@+id/profileUsername"
@@ -112,7 +127,7 @@
         app:layout_constraintTop_toTopOf="@+id/profileUsername" />
 
     <ImageView
-        android:id="@+id/profileEditButton"
+        android:id="@+id/profileEditPictureButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:clickable="true"
@@ -123,5 +138,29 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/profileUsername"
         app:layout_constraintVertical_bias="0.858" />
+
+    <ImageView
+        android:id="@+id/profileEditNameButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:clickable="true"
+        android:src="@android:drawable/ic_menu_edit"
+        app:layout_constraintBottom_toTopOf="@+id/profileNickname"
+        app:layout_constraintEnd_toEndOf="@id/profileEditPictureButton"
+        app:layout_constraintStart_toStartOf="@id/profileEditPictureButton"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="1.0" />
+
+    <Button
+        android:id="@+id/profileValidateNameButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@drawable/button_background"
+        android:text="save"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="@id/profileNickname"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/profileNickname"
+        app:layout_constraintTop_toTopOf="@id/profileNickname" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

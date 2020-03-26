@@ -2,6 +2,7 @@ package ch.epfl.sdp.kandle;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
@@ -18,6 +19,8 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 
 import androidx.fragment.app.FragmentTransaction;
+
+import ch.epfl.sdp.kandle.ImagePicker.ImagePicker;
 import ch.epfl.sdp.kandle.dependencies.Database;
 import ch.epfl.sdp.kandle.dependencies.DependencyManager;
 import ch.epfl.sdp.kandle.fragment.AboutFragment;
@@ -123,12 +126,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-        DependencyManager.getDatabaseSystem().getProfilePicture().addOnCompleteListener(task -> {
+        database.getProfilePicture().addOnCompleteListener(task -> {
             if (task.isSuccessful()) {
                 String imageUrl = task.getResult();
                 if (imageUrl != null) {
@@ -140,7 +138,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        DependencyManager.getDatabaseSystem().getNickname().addOnCompleteListener(task -> {
+        database.getNickname().addOnCompleteListener(task -> {
             if (task.isSuccessful()) {
                 String username = task.getResult();
                 if (username != null) {
@@ -150,6 +148,9 @@ public class MainActivity extends AppCompatActivity {
                 //TODO handle case when user is offline (get username from cache)
             }
         });
+
+
+
     }
 
     /*Listens if a navigation item is selected
@@ -251,7 +252,6 @@ public class MainActivity extends AppCompatActivity {
         setTitle(menuItem.getTitle());
         mDrawerLayout.closeDrawers();
         // Close the navigation drawer
-
 
 
     }
