@@ -1,17 +1,12 @@
 package ch.epfl.sdp.kandle.dependencies;
 
-import android.content.Context;
-import android.telephony.TelephonyManager;
-
 import androidx.annotation.NonNull;
-
-import java.io.FileNotFoundException;
-
 import ch.epfl.sdp.kandle.User;
 
 /**
  * @Author Marc Egli
  * This class mocks the internal storage of the application for testing
+ * by storing a user instance as a static variable
  */
 public class MockInternalStorage implements InternalStorage {
     private static boolean userSavedLocally;

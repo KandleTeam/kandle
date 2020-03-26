@@ -1,19 +1,13 @@
 package ch.epfl.sdp.kandle.dependencies;
 
-
 import android.content.Context;
-
 import androidx.annotation.NonNull;
-
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.PrintWriter;
-
 import ch.epfl.sdp.kandle.User;
-import ch.epfl.sdp.kandle.dependencies.InternalStorage;
 
 /**
  * @Author Marc Egli
@@ -26,7 +20,7 @@ public class InternalStorageHandler implements InternalStorage {
 
     public InternalStorageHandler(Context context) {
         if (context == null) {
-            throw new IllegalArgumentException();
+            throw new IllegalArgumentException("Context was null");
         }
         this.context = context;
     }
@@ -34,7 +28,7 @@ public class InternalStorageHandler implements InternalStorage {
     /**
      * Stores the user locally
      * This is a private method and can only be used by this class to ensure good behavior
-     *
+     * @Author Marc Egli
      * @param user
      * @throws IllegalArgumentException
      */
@@ -53,7 +47,7 @@ public class InternalStorageHandler implements InternalStorage {
 
     /**
      * Retrieves the user instance from the internal storage
-     *
+     * @Author Marc Egli
      * @return user
      */
     @Override
@@ -75,6 +69,7 @@ public class InternalStorageHandler implements InternalStorage {
     /**
      * Stores the user only if there is another user stored already or if there isn't one
      * The condition to save the user relies on short circuit evaluation
+     * @Author Marc Egli
      * @param user
      * @throws IllegalArgumentException
      */
@@ -98,6 +93,7 @@ public class InternalStorageHandler implements InternalStorage {
     /**
      * Updates the stored user with a new user instance
      * This function overwrites the current
+     * @Author Marc Egli
      * @param
      * @throws IllegalArgumentException
      */
@@ -115,7 +111,8 @@ public class InternalStorageHandler implements InternalStorage {
 
     /**
      * Deletes the user entry saved locally by writing an empty string to the file without append mode
-     * Therefor the file is cleared
+     * Therefor the file is cleared, this is done in case many user login on the same app instance.
+     * @Author Marc Egli
      */
     @Override
     public void deleteUser(){

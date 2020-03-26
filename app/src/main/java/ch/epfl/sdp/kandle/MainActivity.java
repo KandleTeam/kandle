@@ -35,24 +35,17 @@ import com.squareup.picasso.Picasso;
 public class MainActivity extends AppCompatActivity {
 
     public final static int PROFILE_PICTURE_TAG = 5;
-
     private DrawerLayout mDrawerLayout;
     private Toolbar toolbar;
     private NavigationView mNavigationView;
     private BottomNavigationView mBottomNavigationView;
     private Button mPostButton;
-    private Authentication auth;
-    private Database database;
-
-
     private ImageView mProfilePic;
     private TextView mUsername;
-
-    // Make sure to be using androidx.appcompat.app.ActionBarDrawerToggle version.
+    private Authentication auth;
+    private Database database;
     private ActionBarDrawerToggle drawerToggle;
-
     private Fragment bottomFragment = null;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -69,7 +62,6 @@ public class MainActivity extends AppCompatActivity {
         mPostButton = findViewById(R.id.postButton);
         mProfilePic = mNavigationView.getHeaderView(0).findViewById(R.id.profilePicInMenu);
         mUsername = mNavigationView.getHeaderView(0).findViewById(R.id.username);
-
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         drawerToggle = new ActionBarDrawerToggle(this, mDrawerLayout, toolbar, R.string.drawer_open, R.string.drawer_close);
@@ -113,6 +105,10 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
+    /**
+     * Calls the slectDrawerItem method if one of the items in the drawer menu is selected by the user
+     * @param navigationView
+     */
     private void setupDrawerContent(NavigationView navigationView) {
         navigationView.setNavigationItemSelectedListener(
                 new NavigationView.OnNavigationItemSelectedListener() {
@@ -124,7 +120,11 @@ public class MainActivity extends AppCompatActivity {
                 });
     }
 
-    public void selectDrawerItem(MenuItem menuItem) {
+    /**
+     * This method allows to navigate between different fragment from the main activity
+     * @param menuItem
+     */
+    private void selectDrawerItem(MenuItem menuItem) {
         // Create a new fragment and specify the fragment to show based on nav item clicked
         Fragment fragment = null;
         Class fragmentClass = null;
@@ -146,9 +146,11 @@ public class MainActivity extends AppCompatActivity {
                 mPostButton.setVisibility(View.VISIBLE);
                 fragmentClass = MapFragment.class;
                 break;
+
             case R.id.settings:
                 fragmentClass = SettingsFragment.class;
                 break;
+
             case R.id.about:
                 fragmentClass = AboutFragment.class;
                 break;
@@ -171,11 +173,8 @@ public class MainActivity extends AppCompatActivity {
             FragmentManager fragmentManager = getSupportFragmentManager();
             fragmentManager.beginTransaction().replace(R.id.flContent, fragment).commit();
         }
-        // Highlight the selected item has been done by NavigationView
-        // Set action bar title
         menuItem.setChecked(true);
         setTitle(menuItem.getTitle());
         mDrawerLayout.closeDrawers();
-        // Close the navigation drawer
     }
 }
