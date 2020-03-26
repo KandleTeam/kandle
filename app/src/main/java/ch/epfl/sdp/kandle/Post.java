@@ -82,12 +82,6 @@ public class Post {
         return likers;
     }
 
-
-    public ArrayList<String> getLikers(){
-        return likers;
-    }
-
-
     public int getLikes() {
         return likers.size();
     }
