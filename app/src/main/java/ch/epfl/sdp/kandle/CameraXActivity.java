@@ -85,10 +85,7 @@ public class CameraXActivity extends AppCompatActivity
                     CameraSelector.LENS_FACING_FRONT).build();
     private boolean mPermissionsGranted = false;
     private CallbackToFutureAdapter.Completer<Boolean> mPermissionsCompleter;
-    private final AtomicLong mImageAnalysisFrameCount = new AtomicLong(0);
     private final AtomicLong mPreviewFrameCount = new AtomicLong(0);
-    private final MutableLiveData<String> mImageAnalysisResult = new MutableLiveData<>();
-    //private VideoSaver mVideoFileSaver;
     /** The camera to use */
     CameraSelector mCurrentCameraSelector = BACK_SELECTOR;
     @CameraSelector.LensFacing

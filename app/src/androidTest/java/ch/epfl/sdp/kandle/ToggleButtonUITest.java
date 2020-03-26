@@ -63,6 +63,10 @@ public final class ToggleButtonUITest {
     public GrantPermissionRule mStoragePermissionRule =
             GrantPermissionRule.grant(android.Manifest.permission.WRITE_EXTERNAL_STORAGE);
 
+    @Rule
+    public GrantPermissionRule mAudioPermissionRule =
+            GrantPermissionRule.grant(android.Manifest.permission.RECORD_AUDIO);
+
     public static void waitFor(IdlingResource idlingResource) {
         IdlingRegistry.getInstance().register(idlingResource);
         Espresso.onIdle();
@@ -72,9 +76,7 @@ public final class ToggleButtonUITest {
     public void setUp() {
         // Clear the device UI before start each test.
         // Launch Activity
-
         mActivityRule.launchActivity(mIntent);
-        allowPermission();
     }
     @After
     public void tearDown() {
@@ -87,7 +89,6 @@ public final class ToggleButtonUITest {
     }
     @Test
     public void testFlashToggleButton() {
-        allowPermission();
         waitFor(new WaitForViewToShow(R.id.constraintLayout));
         assumeTrue(detectButtonVisibility(R.id.flash_toggle));
         ImageCapture useCase = mActivityRule.getActivity().getImageCapture();
@@ -109,7 +110,6 @@ public final class ToggleButtonUITest {
     }
     @Test
     public void testSwitchCameraToggleButton() {
-        allowPermission();
         waitFor(new WaitForViewToShow(R.id.direction_toggle));
         boolean isPreviewExist = mActivityRule.getActivity().getPreview() != null;
         boolean isImageCaptureExist = mActivityRule.getActivity().getImageCapture() != null;
@@ -139,19 +139,6 @@ public final class ToggleButtonUITest {
         } catch (Exception e) {
             // View is not in hierarchy
             return false;
-        }
-    }
-
-    private void allowPermission(){
-        if (Build.VERSION.SDK_INT >= 23) {
-            UiObject allowPermissions = mDevice.findObject(new UiSelector().text("allow"));
-            if (allowPermissions.exists()) {
-                try {
-                    allowPermissions.click();
-                } catch (UiObjectNotFoundException e) {
-                    System.out.println("There is no permissions dialog to interact with ");
-                }
-            }
         }
     }
 }

@@ -49,18 +49,12 @@ public class CameraUITest {
     @Rule
     public GrantPermissionRule mStoragePermissionRule =
             GrantPermissionRule.grant(android.Manifest.permission.WRITE_EXTERNAL_STORAGE);
-    /*@Rule
+    @Rule
     public GrantPermissionRule mAudioPermissionRule =
-            GrantPermissionRule.grant(android.Manifest.permission.RECORD_AUDIO);*/
+            GrantPermissionRule.grant(android.Manifest.permission.RECORD_AUDIO);
     @Before
     public void setUp() {
-        /*assumeTrue(CameraUtil.deviceHasCamera());
-        CoreAppTestUtil.assumeCompatibleDevice();*/
-        // Clear the device UI before start each test.
-        allowPermission();
-        // Launch Activity
         mActivityRule.launchActivity(mIntent);
-        allowPermission();
     }
     @After
     public void tearDown() {
@@ -69,9 +63,7 @@ public class CameraUITest {
     }
     @Test
     public void testPreviewButton() {
-        allowPermission();
         IdlingRegistry.getInstance().register(mActivityRule.getActivity().getViewIdlingResource());
-        allowPermission();
         Preview preview = mActivityRule.getActivity().getPreview();
         // Click to disable the preview use case.
         if (preview != null) {
@@ -94,18 +86,5 @@ public class CameraUITest {
         // Returns to Home to restart next test.
         mDevice.pressHome();
         mDevice.waitForIdle(3000);
-    }
-
-    private void allowPermission(){
-        if (Build.VERSION.SDK_INT >= 23) {
-            UiObject allowPermissions = mDevice.findObject(new UiSelector().text("allow"));
-            if (allowPermissions.exists()) {
-                try {
-                    allowPermissions.click();
-                } catch (UiObjectNotFoundException e) {
-                    System.out.println("There is no permissions dialog to interact with ");
-                }
-            }
-        }
     }
 }

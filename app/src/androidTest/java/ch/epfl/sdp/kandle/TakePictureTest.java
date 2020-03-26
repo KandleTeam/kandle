@@ -3,6 +3,7 @@ package ch.epfl.sdp.kandle;
 import static androidx.test.espresso.Espresso.onView;
 import static androidx.test.espresso.action.ViewActions.click;
 import static androidx.test.espresso.assertion.ViewAssertions.matches;
+import static androidx.test.espresso.matcher.ViewMatchers.hasTextColor;
 import static androidx.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static androidx.test.espresso.matcher.ViewMatchers.withId;
 import static org.junit.Assert.assertNotNull;
@@ -10,6 +11,7 @@ import static org.junit.Assert.assertTrue;
 import static org.junit.Assume.assumeTrue;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Build;
 
 import androidx.camera.core.ImageAnalysis;
@@ -52,16 +54,14 @@ public class TakePictureTest {
     @Rule
     public GrantPermissionRule mStoragePermissionRule =
             GrantPermissionRule.grant(android.Manifest.permission.WRITE_EXTERNAL_STORAGE);
+
+    @Rule
+    public GrantPermissionRule mAudioPermissionRule =
+            GrantPermissionRule.grant(android.Manifest.permission.RECORD_AUDIO);
+
     @Before
     public void setUp() {
-        /*assumeTrue(CameraUtil.deviceHasCamera());
-        CoreAppTestUtil.assumeCompatibleDevice();*/
-        // Clear the device UI before start each test.
-        //clearDeviceUI(InstrumentationRegistry.getInstrumentation());
-        // Launch Activity
-        allowPermission();
         mActivityRule.launchActivity(mIntent);
-        allowPermission();
     }
     @After
     public void tearDown() {
@@ -70,12 +70,18 @@ public class TakePictureTest {
     }
     @Test
     public void testPictureButton() {
-        allowPermission();
         assertTrue(checkPreviewReady());
         ImageCapture imageCapture = mActivityRule.getActivity().getImageCapture();
-        allowPermission();
         assertNotNull(imageCapture);
         onView(withId(R.id.Picture)).perform(click());
+    }
+
+    @Test
+    public void testDisableCamera() {
+        assertTrue(checkPreviewReady());
+        ImageCapture imageCapture = mActivityRule.getActivity().getImageCapture();
+        assertNotNull(imageCapture);
+        onView(withId(R.id.PhotoToggle)).perform(click());
     }
 
 
@@ -99,18 +105,5 @@ public class TakePictureTest {
             return false;
         }
 
-    }
-
-    private void allowPermission(){
-        if (Build.VERSION.SDK_INT >= 23) {
-            UiObject allowPermissions = mDevice.findObject(new UiSelector().text("allow"));
-            if (allowPermissions.exists()) {
-                try {
-                    allowPermissions.click();
-                } catch (UiObjectNotFoundException e) {
-                    System.out.println("There is no permissions dialog to interact with ");
-                }
-            }
-        }
     }
 }

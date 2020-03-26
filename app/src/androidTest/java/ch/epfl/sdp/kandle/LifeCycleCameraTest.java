@@ -47,14 +47,12 @@ public class LifeCycleCameraTest {
     @Rule
     public GrantPermissionRule mStoragePermissionRule =
             GrantPermissionRule.grant(android.Manifest.permission.WRITE_EXTERNAL_STORAGE);
-    /*@Rule
+    @Rule
     public GrantPermissionRule mAudioPermissionRule =
-            GrantPermissionRule.grant(android.Manifest.permission.RECORD_AUDIO);*/
+            GrantPermissionRule.grant(android.Manifest.permission.RECORD_AUDIO);
     @Before
     public void setup() {
-        allowPermission();
         assertThat(mLauncherPackageName, notNullValue());
-        allowPermission();
     }
     @After
     public void tearDown() {
@@ -64,11 +62,9 @@ public class LifeCycleCameraTest {
     // Check if Preview screen is updated or not, after Destroy-Create lifecycle.
     @Test
     public void checkPreviewUpdatedAfterDestroyRecreate() {
-        allowPermission();
         // Launch activity.
         try (ActivityScenario<CameraXActivity> activityScenario =
                      ActivityScenario.launch(CameraXActivity.class)) {
-            allowPermission();
             // Check for view idle, then destroy it.
             checkForViewIdle(activityScenario);
             // Launch new activity and check for view idle.
@@ -79,10 +75,8 @@ public class LifeCycleCameraTest {
     @Test
     public void checkPreviewUpdatedAfterStopResume() {
         // Launch activity.
-        allowPermission();
         try (ActivityScenario<CameraXActivity> activityScenario =
                      ActivityScenario.launch(CameraXActivity.class)) {
-            allowPermission();
             // Check view gets to idle.
             checkForViewIdle(activityScenario);
             // Go through pause/resume then check again for view to get frames then idle.
@@ -102,11 +96,9 @@ public class LifeCycleCameraTest {
     // lifecycle.
     @Test
     public void checkPreviewUpdatedAfterToggleCameraAndStopResume() {
-        allowPermission();
         // check have front camera
         try (ActivityScenario<CameraXActivity> activityScenario =
                      ActivityScenario.launch(CameraXActivity.class)) {
-            allowPermission();
             try {
                 activityScenario.onActivity(activity -> {
                     IdlingRegistry.getInstance().register(activity.getViewIdlingResource());
@@ -132,11 +124,9 @@ public class LifeCycleCameraTest {
     @Test
     public void checkPreviewUpdatedAfterRotateDeviceAndStopResume() {
         // Launch activity.
-        allowPermission();
         try (ActivityScenario<CameraXActivity> activityScenario =
                      checkForViewIdle(ActivityScenario.launch(CameraXActivity.class))) {
             // Check view gets to idle.
-            allowPermission();
             checkForViewIdle(activityScenario);
             // Rotate to Landscape and the activity will be recreated.
             activityScenario.onActivity(activity -> {
@@ -170,19 +160,5 @@ public class LifeCycleCameraTest {
             });
         }
         return activityScenario;
-    }
-
-
-    private void allowPermission(){
-        if (Build.VERSION.SDK_INT >= 23) {
-            UiObject allowPermissions = mDevice.findObject(new UiSelector().text("allow"));
-            if (allowPermissions.exists()) {
-                try {
-                    allowPermissions.click();
-                } catch (UiObjectNotFoundException e) {
-                    System.out.println("There is no permissions dialog to interact with ");
-                }
-            }
-        }
     }
 }
