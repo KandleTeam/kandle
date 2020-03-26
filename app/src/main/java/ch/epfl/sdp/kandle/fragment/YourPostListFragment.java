@@ -69,7 +69,7 @@ public class YourPostListFragment extends Fragment {
 
         database.getPostsByUserId(userId).addOnCompleteListener(new OnCompleteListener<List<Post>>() {
             @Override
-121
+
 
             public void onComplete(@NonNull Task<List<Post>> task) {
 
@@ -92,9 +92,7 @@ public class YourPostListFragment extends Fragment {
                         View popupView = inflater1.inflate(R.layout.post_content, null);
                         int width = LinearLayout.LayoutParams.WRAP_CONTENT;
                         int height = LinearLayout.LayoutParams.WRAP_CONTENT;
-                        boolean focusable = true; // lets taps ou
-121
-tside the popup also dismiss it
+                        boolean focusable = true; // lets taps ouside the popup also dismiss it
                         final PopupWindow popupWindow = new PopupWindow(popupView, width, height, focusable);
                         popupWindow.showAtLocation(view, Gravity.CENTER, 0, 0);
                         TextView content = popupView.findViewById(R.id.post_content);
