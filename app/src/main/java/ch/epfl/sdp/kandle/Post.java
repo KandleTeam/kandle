@@ -14,7 +14,6 @@ import java.util.UUID;
 
 public class Post {
 
-    private String type;    //photo, texte, video
     private LatLng location;
     private ArrayList<String> likers;
     private String userId;
@@ -41,8 +40,7 @@ public class Post {
    }
 
 
-    public Post(String type, String description, Date date, String userId) {
-        this.type = type;
+    public Post(String description, String imageURL, Date date, String userId) {
         this.location = null;
         this.description = description;
         this.comments = null;
@@ -50,12 +48,12 @@ public class Post {
         this.likers = new ArrayList<>();
         this.postId = UUID.randomUUID().toString();
         this.userId = userId;
+        this.imageURL = imageURL;
 
     }
 
     //Useful for tests
-    public Post(String type, String description, Date date, String userId, String postId) {
-        this.type = type;
+    public Post(String description, String imageURL, Date date, String userId, String postId) {
         this.location = null;
         this.description = description;
         this.comments = null;
@@ -63,16 +61,13 @@ public class Post {
         this.likers = new ArrayList<>();
         this.postId = postId;
         this.userId = userId;
+        this.imageURL = imageURL;
     }
+
 
 
 
     /*
-
-    public String getType() {
-        return type;
-    }
-
     public LatLng getLocation() {
         return location;
     }
@@ -119,14 +114,14 @@ public class Post {
 
     public void setUserId(String userId) {
         this.userId = userId;
-    }
+    }*/
 
-    public String getImage(){
+    public String getImageURL(){
         return imageURL;
     }
-     */
 
-    public void setImage(String imageURL){
+
+    public void setImageURL(String imageURL){
         this.imageURL = imageURL;
     }
 }

@@ -83,13 +83,12 @@ public class MockDatabase implements Database {
 
         posts = new HashMap<>();
 
-        posts.put("post1Id", new Post("text", "Hello world !", new Date(), "user1Id", "post1Id"));
-        posts.put("post2Id", new Post("text", "I'm user 1 !", new Date(), "user1Id", "post2Id"));
-        posts.get("post1Id").setImage("image");
+        posts.put("post1Id", new Post("Hello world !", "image", new Date(), "user1Id", "post1Id"));
+        posts.put("post2Id", new Post("I'm user 1 !", null, new Date(), "user1Id", "post2Id"));
         users.get("user1Id").addPostId(posts.get("post1Id").getPostId());
         users.get("user1Id").addPostId(posts.get("post2Id").getPostId());
 
-        posts.put("post3Id", new Post("text", "I'm user 2 :)", new Date(), "user2Id", "post3Id"));
+        posts.put("post3Id", new Post("I'm user 2 :)", null, new Date(), "user2Id", "post3Id"));
         users.get("user2Id").addPostId(posts.get("post3Id").getPostId());
 
 

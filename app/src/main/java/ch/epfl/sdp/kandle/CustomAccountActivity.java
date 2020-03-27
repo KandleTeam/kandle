@@ -65,9 +65,11 @@ public class CustomAccountActivity extends AppCompatActivity {
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        Uri uri = profilePicPicker.handleActivityResult(requestCode, resultCode, data);
+        profilePicPicker.handleActivityResult(requestCode, resultCode, data);
+        Uri uri = profilePicPicker.getImageUri();
 
         if (uri != null) {
+            profilePicPicker.setProfilePicture();
             profilePic.setTag(PROFILE_PICTURE_TAG);
             profilePic.setImageURI(uri);
         }
