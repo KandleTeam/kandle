@@ -7,6 +7,7 @@ import androidx.test.espresso.ViewAction;
 import androidx.test.espresso.contrib.DrawerActions;
 import androidx.test.espresso.contrib.NavigationViewActions;
 import androidx.test.espresso.contrib.RecyclerViewActions;
+import androidx.test.espresso.intent.rule.IntentsTestRule;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 import androidx.test.rule.ActivityTestRule;
 import org.hamcrest.Matcher;
@@ -17,6 +18,7 @@ import org.junit.runner.RunWith;
 
 import java.util.Date;
 
+import ch.epfl.sdp.kandle.dependencies.DependencyManager;
 import ch.epfl.sdp.kandle.fragment.YourPostListFragment;
 
 import static androidx.test.espresso.Espresso.onView;
@@ -30,9 +32,15 @@ import static androidx.test.espresso.matcher.ViewMatchers.withText;
 public class YourPostsListTest {
 
     @Rule
-    public ActivityTestRule<MainActivity> mainActivityRule =
-            new ActivityTestRule<>(MainActivity.class, true, true);
+    public IntentsTestRule<MainActivity> mainActivityRule =
+            new IntentsTestRule<MainActivity>(MainActivity.class,true,true
+            ){
+                @Override
+                protected  void beforeActivityLaunched() {
+                    DependencyManager.setFreshTestDependencies(true);
+                }
 
+            };
 
     @Before
     public void loadPostView() {

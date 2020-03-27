@@ -48,7 +48,7 @@ public class AbstractLocation {
     }
 
     @RequiresPermission(Manifest.permission.ACCESS_FINE_LOCATION)
-    protected void startLocationUpdates(Context context) {
+    public void startLocationUpdates(Context context) {
         mLocationRequest = new LocationRequest();
         mLocationRequest.setPriority(LocationRequest.PRIORITY_BALANCED_POWER_ACCURACY);
         mLocationRequest.setInterval(UPDATE_INTERVAL);
@@ -60,7 +60,7 @@ public class AbstractLocation {
 
         SettingsClient settingsClient = LocationServices.getSettingsClient(context);
         settingsClient.checkLocationSettings(locationSettingsRequest);
-        //noinspection MissingPermission
+
         getFusedLocationProviderClient(context).requestLocationUpdates(mLocationRequest, new LocationCallback() {
                     @Override
                     public void onLocationResult(LocationResult locationResult) {
@@ -79,16 +79,15 @@ public class AbstractLocation {
         }
 
         // Report to the UI that the location was updated
-
-
         String msg = "Updated Location: " +
                 Double.toString(location.getLatitude()) + "," +
                 Double.toString(location.getLongitude());
         //Toast.makeText(this.getContext(), msg, Toast.LENGTH_SHORT).show();
         return location;
     }
+
     @RequiresPermission(Manifest.permission.ACCESS_FINE_LOCATION)
-    protected void loadMap(GoogleMap googleMap, Context context) {
+    public void loadMap(GoogleMap googleMap, Context context) {
         mMap = googleMap;
         if (mMap != null) {
             // Map is ready
@@ -101,28 +100,23 @@ public class AbstractLocation {
         }
     }
 
-    @SuppressWarnings({"MissingPermission"})
     @RequiresPermission(Manifest.permission.ACCESS_FINE_LOCATION)
     void getMyLocation(Context context) {
         mMap.setMyLocationEnabled(true);
-
         FusedLocationProviderClient locationClient = getFusedLocationProviderClient(context);
         locationClient.getLastLocation()
-                .addOnSuccessListener(new OnSuccessListener<Location>() {
-                    @Override
-                    public void onSuccess(Location location) {
-                        mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(location.getLatitude(), location.getLongitude()), 16));
-                        /*if (location != null) {
-                            onLocationChanged(location);
-                        }*/
+                .addOnSuccessListener(location -> {
+                    if (location != null) {
+                        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(location.getLatitude(), location.getLongitude()), 16));
+                        // mMap.animateCamera();
+                        onLocationChanged(location);
+                    } else {
+                        Log.d("Kandle>Location", "Location client returned null location");
                     }
                 })
-                .addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        Log.d("MapDemoActivity", "Error trying to get last GPS location");
-                        e.printStackTrace();
-                    }
+                .addOnFailureListener(e -> {
+                    Log.d("MapDemoActivity", "Error trying to get last GPS location");
+                    e.printStackTrace();
                 });
     }
 

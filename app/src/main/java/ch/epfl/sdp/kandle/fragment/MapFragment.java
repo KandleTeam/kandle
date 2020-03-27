@@ -1,13 +1,9 @@
-package ch.epfl.sdp.kandle;
+package ch.epfl.sdp.kandle.fragment;
 
 
 import android.Manifest;
 import android.annotation.SuppressLint;
-import android.app.Dialog;
-import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
-import android.location.LocationManager;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -17,8 +13,6 @@ import android.widget.ImageButton;
 import android.widget.Toast;
 
 import androidx.annotation.RequiresPermission;
-import androidx.appcompat.app.AlertDialog;
-import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.Fragment;
 
 import com.google.android.gms.common.ConnectionResult;
@@ -33,16 +27,17 @@ import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
 
-import static androidx.core.content.ContextCompat.getSystemService;
+import ch.epfl.sdp.kandle.AbstractLocation;
+import ch.epfl.sdp.kandle.PostActivity;
+import ch.epfl.sdp.kandle.R;
 
 public class MapFragment extends Fragment implements GoogleMap.OnMarkerClickListener {
 
     private GoogleMap mMap;
     public SupportMapFragment mapFragment = null;
     //Location mCurrentLocation;
-    private ImageButton mCreatePost;
+    //private ImageButton mCreatePost;
     public AbstractLocation abstractLocation = new AbstractLocation(this.getContext(), null);
-
 
 
     private final static String KEY_LOCATION = "location";
@@ -72,14 +67,14 @@ public class MapFragment extends Fragment implements GoogleMap.OnMarkerClickList
         }
 
 
-        mCreatePost = v.findViewById(R.id.createPostBtn);
-        mCreatePost.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                MapFragment.super.onSaveInstanceState(savedInstanceState);
-                startActivity(new Intent(getActivity().getApplicationContext(), PostActivity.class));
-            }
-        });
+//        mCreatePost = v.findViewById(R.id.createPostBtn);
+//        mCreatePost.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                MapFragment.super.onSaveInstanceState(savedInstanceState);
+//                startActivity(new Intent(getActivity().getApplicationContext(), PostActivity.class));
+//            }
+//        });
 
 
         if (mapFragment != null) {
@@ -139,8 +134,6 @@ public class MapFragment extends Fragment implements GoogleMap.OnMarkerClickList
         abstractLocation.startLocationUpdates(this.getContext());
     }
 
-
-    //Cette fonction ne sert a rien elle affiche juste un toast que ne sert à rien dans le cadre de notre application
 
 
     public void onSaveInstanceState(Bundle savedInstanceState) {

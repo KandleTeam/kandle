@@ -12,6 +12,8 @@ import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 
+import ch.epfl.sdp.kandle.fragment.MapFragment;
+
 import static androidx.test.espresso.Espresso.onView;
 import static androidx.test.espresso.action.ViewActions.click;
 import static androidx.test.espresso.assertion.ViewAssertions.matches;
@@ -37,49 +39,16 @@ public class MapTest {
 
 
     @Before
-    public void beforeEach() throws Throwable {
+    public void beforeEach() {
         countingIdlingResource.increment();
 
         mapFragment = (SupportMapFragment) mainActivityRule.getActivity().getCurrentFragment().getChildFragmentManager().findFragmentById(R.id.map_support);
-        final OnMapReadyCallback onMapReadyCallback = new OnMapReadyCallback() {
-            @Override public void onMapReady(GoogleMap googleMap) {
-                countingIdlingResource.decrement();
+        final OnMapReadyCallback onMapReadyCallback = googleMap -> {
+            countingIdlingResource.decrement();
 
-                MapTest.this.googleMap = googleMap;
-            }
+            MapTest.this.googleMap = googleMap;
         };
 
     }
-
-    @Test
-    public void navigateToMap(){
-        onView(withId(R.id.toolbar)).check(matches(hasDescendant(withText("Map"))));
-    }
-
-    @Test
-    public void goToPostCreation(){
-        MapFragment mapfrag = (MapFragment) mainActivityRule.getActivity().getSupportFragmentManager().findFragmentById(R.id.flContent);
-        onView(withId(R.id.createPostBtn)).perform(click());
-
-
-    }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 }

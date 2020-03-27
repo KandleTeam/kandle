@@ -39,12 +39,7 @@ public class LoginActivity extends AppCompatActivity {
             finish();
         }
         mSignIn = findViewById(R.id.signUpLink);
-        mSignIn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                startActivity(new Intent(getApplicationContext(), RegisterActivity.class));
-            }
-        });
+        mSignIn.setOnClickListener(v -> startActivity(new Intent(getApplicationContext(), RegisterActivity.class)));
 
 
         mEmail = findViewById(R.id.email);
@@ -52,20 +47,15 @@ public class LoginActivity extends AppCompatActivity {
         mSignUpBtn = findViewById(R.id.loginBtn);
 
 
+        mSignUpBtn.setOnClickListener(v -> {
+            String email = mEmail.getText().toString().trim();
+            String password = mPassword.getText().toString().trim();
 
-
-        mSignUpBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                String email = mEmail.getText().toString().trim();
-                String password = mPassword.getText().toString().trim();
-
-                if (!checkFields(email, password))  {
-                    return;
-                }
-
-                performLoginViaFirebase(email, password);
+            if (!checkFields(email, password))  {
+                return;
             }
+
+            performLoginViaFirebase(email, password);
         });
 
     }

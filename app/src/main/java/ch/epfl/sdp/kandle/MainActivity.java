@@ -1,40 +1,40 @@
 package ch.epfl.sdp.kandle;
 
+import android.Manifest;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.view.MenuItem;
-import android.view.View;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.ImageView;
-import android.widget.TextView;
 
-import androidx.annotation.NonNull;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.core.app.ActivityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
-import ch.epfl.sdp.kandle.dependencies.Database;
-import ch.epfl.sdp.kandle.dependencies.DependencyManager;
-import ch.epfl.sdp.kandle.fragment.AboutFragment;
-import ch.epfl.sdp.kandle.fragment.MapFragment;
-//import ch.epfl.sdp.kandle.Fragment.ProfileFragment;
-import ch.epfl.sdp.kandle.fragment.ProfileFragment;
-import ch.epfl.sdp.kandle.fragment.YourPostListFragment;
-import ch.epfl.sdp.kandle.fragment.SearchFragment;
-import ch.epfl.sdp.kandle.fragment.SettingsFragment;
-import ch.epfl.sdp.kandle.dependencies.Authentication;
+
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationView;
 import com.squareup.picasso.Picasso;
+
+import ch.epfl.sdp.kandle.dependencies.Authentication;
+import ch.epfl.sdp.kandle.dependencies.Database;
+import ch.epfl.sdp.kandle.dependencies.DependencyManager;
+import ch.epfl.sdp.kandle.fragment.AboutFragment;
+import ch.epfl.sdp.kandle.fragment.MapFragment;
+import ch.epfl.sdp.kandle.fragment.ProfileFragment;
+import ch.epfl.sdp.kandle.fragment.SearchFragment;
+import ch.epfl.sdp.kandle.fragment.SettingsFragment;
+import ch.epfl.sdp.kandle.fragment.YourPostListFragment;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -62,7 +62,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        //ActivityCompat.requestPermissions(this,new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 1);
+        ActivityCompat.requestPermissions(this,new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 1);
         setContentView(R.layout.activity_main);
 
         auth = DependencyManager.getAuthSystem();
@@ -89,40 +89,23 @@ public class MainActivity extends AppCompatActivity {
         setTitle(mNavigationView.getCheckedItem().getTitle());
 
 
-        mPostButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                startActivity(new Intent(getApplicationContext(), PostActivity.class));
-            }
-        });
+        mPostButton.setOnClickListener(v -> startActivity(new Intent(getApplicationContext(), PostActivity.class)));
 
         final FragmentManager fragmentManager = getSupportFragmentManager();
-        mProfilePic.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-                database.getUserById(auth.getCurrentUser().getUid()).addOnCompleteListener(new OnCompleteListener<User>() {
-                    @Override
-                    public void onComplete(@NonNull Task<User> task) {
-                        if (task.isSuccessful()){
-                            mPostButton.setVisibility(View.GONE);
-                            fragmentManager.beginTransaction().replace(R.id.flContent, ProfileFragment.newInstance(task.getResult()))
-                                    .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
-                                    .addToBackStack(null)
-                                    .commit();
-                            setTitle("Your Profile");
-                            mDrawerLayout.closeDrawers();
-                        }
-                        else {
-
-                        }
+        mProfilePic.setOnClickListener(v -> database.getUserById(auth.getCurrentUser().getUid()).addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
+                        mPostButton.setVisibility(View.GONE);
+                        fragmentManager.beginTransaction().replace(R.id.flContent, ProfileFragment.newInstance(task.getResult()))
+                                .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
+                                .addToBackStack(null)
+                                .commit();
+                        setTitle("Your Profile");
+                        mDrawerLayout.closeDrawers();
+                    } else {
 
                     }
-                });
 
-
-            }
-        });
+        }));
 
     }
 

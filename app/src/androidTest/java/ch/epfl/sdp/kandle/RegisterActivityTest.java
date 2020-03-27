@@ -6,6 +6,7 @@ import org.junit.Test;
 import androidx.test.espresso.contrib.DrawerActions;
 import androidx.test.espresso.contrib.NavigationViewActions;
 import androidx.test.espresso.intent.Intents;
+import androidx.test.espresso.intent.rule.IntentsTestRule;
 import androidx.test.rule.ActivityTestRule;
 
 import ch.epfl.sdp.kandle.dependencies.DependencyManager;
@@ -29,8 +30,8 @@ import static org.hamcrest.Matchers.not;
 public class RegisterActivityTest {
 
     @Rule
-    public ActivityTestRule<RegisterActivity> intentsRule =
-            new ActivityTestRule<RegisterActivity>(RegisterActivity.class,true,true
+    public IntentsTestRule<RegisterActivity> intentsRule =
+            new IntentsTestRule<RegisterActivity>(RegisterActivity.class,true,true
             ){
                 @Override
                 protected  void beforeActivityLaunched() {
@@ -95,8 +96,6 @@ public class RegisterActivityTest {
     @Test
     public void accountCreation() {
 
-        Intents.init();
-
         onView(withId (R.id.fullName)).perform(typeText ("zzdrian Freeman"));
         onView(withId (R.id.fullName)).perform(closeSoftKeyboard());
 
@@ -111,18 +110,11 @@ public class RegisterActivityTest {
 
         onView(withId(R.id.loginBtn)).perform(click());
 
-
-       // onView(withId (R.id.email)).perform(closeSoftKeyboard());
-        //onView(withId(R.id.loginBtn)).perform(click());
-
-
         intended(hasComponent(CustomAccountActivity.class.getName()));
         onView(withId(R.id.startButton)).perform(click());
         onView(withId(R.id.drawer_layout)).perform(DrawerActions.open());
         onView(withId(R.id.navigation_view)).perform(NavigationViewActions.navigateTo(R.id.logout));
 
-
-        Intents.release();
 
     }
 
@@ -131,7 +123,7 @@ public class RegisterActivityTest {
     public void alreadyHaveAnAccount() {
 
         onView(withId(R.id.signInLink)).perform(click());
-        //intended(hasComponent(LoginActivity.class.getName()));
+        intended(hasComponent(LoginActivity.class.getName()));
     }
 
 

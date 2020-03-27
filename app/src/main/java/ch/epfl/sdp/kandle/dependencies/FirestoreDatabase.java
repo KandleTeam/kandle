@@ -90,16 +90,12 @@ public class FirestoreDatabase implements Database {
         return users
                 .document(userId)
                 .get()
-                .continueWith(new Continuation<DocumentSnapshot, User>() {
+                .continueWith(task -> {
 
-                    @Override
-                    public User then(@NonNull Task<DocumentSnapshot> task) {
+                    User user = Objects.requireNonNull(task.getResult()).toObject(User.class);
+                    if (!user.getId().equals(userId)) throw new AssertionError("We done goofed somewhere! Unexpected uid");
 
-                        User user = Objects.requireNonNull(task.getResult()).toObject(User.class);
-                        if (!user.getId().equals(userId)) throw new AssertionError("We done goofed somewhere! Unexpected uid");
-
-                        return user;
-                    }
+                    return user;
                 });
     }
 
@@ -270,45 +266,42 @@ public class FirestoreDatabase implements Database {
        // Task<List<String>> taskUserIdFollowing = userIdFollowingList(userId);
         TaskCompletionSource<List<User>> source = new TaskCompletionSource<>();
 
-        userIdFollowingList(userId).addOnCompleteListener(new OnCompleteListener<List<String>>() {
-            @Override
-            public void onComplete(@NonNull Task<List<String>> task) {
+        userIdFollowingList(userId).addOnCompleteListener(task -> {
 
-                if (task.isSuccessful()){
+            if (task.isSuccessful()){
 
-                    if (task.getResult() != null) {
+                if (task.getResult() != null) {
 
-                        users.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                            @Override
-                            public void onComplete(@NonNull Task<QuerySnapshot> task2) {
-                                if (task2.isSuccessful()){
-                                    List<User> users = new ArrayList<>();
-                                    for (QueryDocumentSnapshot document : task2.getResult()) {
-                                        String id =  (String) document.get("id");
-                                        if (task.getResult().contains(id)){
-                                            users.add(document.toObject(User.class));
-                                        }
+                    users.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                        @Override
+                        public void onComplete(@NonNull Task<QuerySnapshot> task2) {
+                            if (task2.isSuccessful()){
+                                List<User> users = new ArrayList<>();
+                                for (QueryDocumentSnapshot document : task2.getResult()) {
+                                    String id =  (String) document.get("id");
+                                    if (task.getResult().contains(id)){
+                                        users.add(document.toObject(User.class));
                                     }
-
-                                    source.setResult(users);
                                 }
 
-                                else {
-                                    source.setException( new Exception(task2.getException().getMessage()));
-                                }
-
+                                source.setResult(users);
                             }
-                        });
 
-                    }
-                    else {
-                        source.setResult(null);
-                    }
+                            else {
+                                source.setException( new Exception(task2.getException().getMessage()));
+                            }
+
+                        }
+                    });
+
                 }
                 else {
-                    source.setException( new Exception(task.getException().getMessage()));
+                    source.setResult(null);
+                }
             }
-            }
+            else {
+                source.setException( new Exception(task.getException().getMessage()));
+        }
         });
 
         return source.getTask();
