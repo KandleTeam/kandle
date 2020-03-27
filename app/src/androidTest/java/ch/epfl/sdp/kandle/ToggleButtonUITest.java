@@ -95,7 +95,7 @@ public final class ToggleButtonUITest {
         assertNotEquals(mode3, mode2);
         assertNotEquals(mode3, mode1);
     }
-    @Test
+    /*@Test
     public void testSwitchCameraToggleButton() {
         boolean isPreviewExist = mActivityRule.getActivity().getPreview() != null;
         boolean isImageCaptureExist = mActivityRule.getActivity().getImageCapture() != null;
@@ -108,7 +108,7 @@ public final class ToggleButtonUITest {
                 assertNotNull(mActivityRule.getActivity().getPreview());
             }
         }
-    }
+    }*/
 
     private boolean detectButtonVisibility(int resource) {
         try {

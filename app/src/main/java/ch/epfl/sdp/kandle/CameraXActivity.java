@@ -117,16 +117,7 @@ public class CameraXActivity extends AppCompatActivity
             new CountingIdlingResource("analysis");
     private final CountingIdlingResource mImageSavedIdlingResource =
             new CountingIdlingResource("imagesaved");
-    /**
-     * Retrieve idling resource that waits view to get texture update.
-     *
-     * @return idline resource for image capture
-     */
-    @VisibleForTesting
-    @NonNull
-    public IdlingResource getViewIdlingResource() {
-        return mViewIdlingResource;
-    }
+
     /**
      * Retrieve idling resource that waits for view to display frames before proceeding.
      */
