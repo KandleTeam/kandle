@@ -23,6 +23,7 @@ public class Post {
     private String description;
     private ArrayList<String> comments;
     private Date date;
+    private int likes;
 
 
    /* public Post(String type, LatLng location, int likes, String description, ArrayList<String> comments, Date date){
@@ -48,6 +49,7 @@ public class Post {
         this.comments = null;
         this.date = date;
         this.likers = new ArrayList<>();
+        this.likes=0;
         this.postId = UUID.randomUUID().toString();
         this.userId = userId;
 
@@ -61,8 +63,13 @@ public class Post {
         this.comments = null;
         this.date = date;
         this.likers = new ArrayList<>();
+        this.likes=0;
         this.postId = postId;
         this.userId = userId;
+    }
+
+    public String getType() {
+        return type;
     }
 
 
@@ -86,8 +93,16 @@ public class Post {
         return likers.size();
     }
 
+    public void setLikes(int likes) {
+        this.likes = likes;
+    }
+
     public String getPostId() {
         return postId;
+    }
+
+    public String getUserId() {
+        return userId;
     }
 
     public String getDescription() {
