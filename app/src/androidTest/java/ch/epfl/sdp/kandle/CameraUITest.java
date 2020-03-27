@@ -12,8 +12,11 @@ import android.content.Intent;
 import androidx.camera.core.Preview;
 import androidx.test.core.app.ApplicationProvider;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
+import androidx.test.platform.app.InstrumentationRegistry;
 import androidx.test.rule.ActivityTestRule;
 import androidx.test.rule.GrantPermissionRule;
+import androidx.test.uiautomator.UiDevice;
+
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Rule;
@@ -24,6 +27,8 @@ import org.junit.runner.RunWith;
 public class CameraUITest {
     private static final String BASIC_SAMPLE_PACKAGE = "androidx.camera.integration.core";
     private final Context mContext = ApplicationProvider.getApplicationContext();
+    private final UiDevice mDevice =
+            UiDevice.getInstance(InstrumentationRegistry.getInstrumentation());
     private final Intent mIntent = mContext.getPackageManager()
             .getLaunchIntentForPackage(BASIC_SAMPLE_PACKAGE);
     @Rule
@@ -65,10 +70,10 @@ public class CameraUITest {
             onView(withId(R.id.textureView)).check(matches(isDisplayed()));
         }
     }
-    /*private void pressBackAndReturnHome() {
+    private void pressBackAndReturnHome() {
         mDevice.pressBack();
         // Returns to Home to restart next test.
         mDevice.pressHome();
         mDevice.waitForIdle(3000);
-    }*/
+    }
 }

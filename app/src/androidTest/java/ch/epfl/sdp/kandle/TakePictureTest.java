@@ -10,8 +10,11 @@ import android.content.Intent;
 import androidx.camera.core.ImageCapture;
 import androidx.test.core.app.ApplicationProvider;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
+import androidx.test.platform.app.InstrumentationRegistry;
 import androidx.test.rule.ActivityTestRule;
 import androidx.test.rule.GrantPermissionRule;
+import androidx.test.uiautomator.UiDevice;
+
 import junit.framework.AssertionFailedError;
 
 import org.junit.After;
@@ -23,6 +26,8 @@ import org.junit.runner.RunWith;
 @RunWith(AndroidJUnit4.class)
 public class TakePictureTest {
     private static final String BASIC_SAMPLE_PACKAGE = "androidx.camera.integration.core";
+    private final UiDevice mDevice =
+            UiDevice.getInstance(InstrumentationRegistry.getInstrumentation());
     private final Context mContext = ApplicationProvider.getApplicationContext();
     private final Intent mIntent = mContext.getPackageManager()
             .getLaunchIntentForPackage(BASIC_SAMPLE_PACKAGE);
@@ -77,5 +82,12 @@ public class TakePictureTest {
             return false;
         }
 
+    }
+
+    private void pressBackAndReturnHome() {
+        mDevice.pressBack();
+        // Returns to Home to restart next test.
+        mDevice.pressHome();
+        mDevice.waitForIdle(3000);
     }
 }

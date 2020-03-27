@@ -45,6 +45,8 @@ import ch.epfl.sdp.kandle.idlingressource.WaitForViewToShow;
 @LargeTest
 public final class ToggleButtonUITest {
     private static final int IDLE_TIMEOUT_MS = 1000;
+    private final UiDevice mDevice =
+            UiDevice.getInstance(InstrumentationRegistry.getInstrumentation());
     private static final String BASIC_SAMPLE_PACKAGE = "androidx.camera.integration.core";
     private final Intent mIntent = ApplicationProvider.getApplicationContext().getPackageManager()
             .getLaunchIntentForPackage(BASIC_SAMPLE_PACKAGE);
@@ -65,15 +67,13 @@ public final class ToggleButtonUITest {
 
     @Before
     public void setUp() {
-        // Clear the device UI before start each test.
         // Launch Activity
         mActivityRule.launchActivity(mIntent);
     }
     @After
     public void tearDown() {
-        // Idles Espresso thread and make activity complete each action.
+        pressBackAndReturnHome();
         mActivityRule.finishActivity();
-        // Returns to Home to restart next test.
     }
     @Test
     public void testFlashToggleButton() {
@@ -110,9 +110,6 @@ public final class ToggleButtonUITest {
         }
     }
 
-    private boolean isTorchOn(CameraInfo cameraInfo) {
-        return cameraInfo.getTorchState().getValue() == TorchState.ON;
-    }
     private boolean detectButtonVisibility(int resource) {
         try {
             onView(withId(resource)).check(matches(isDisplayed()));
@@ -125,5 +122,12 @@ public final class ToggleButtonUITest {
             // View is not in hierarchy
             return false;
         }
+    }
+
+    private void pressBackAndReturnHome() {
+        mDevice.pressBack();
+        // Returns to Home to restart next test.
+        mDevice.pressHome();
+        mDevice.waitForIdle(3000);
     }
 }

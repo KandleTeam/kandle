@@ -27,6 +27,8 @@ import org.junit.runner.RunWith;
 @LargeTest
 public class LifeCycleCameraTest {
     private static final int HOME_TIMEOUT_MS = 3000;
+    private final UiDevice mDevice =
+            UiDevice.getInstance(InstrumentationRegistry.getInstrumentation());
     @Rule
     public GrantPermissionRule mCameraPermissionRule =
             GrantPermissionRule.grant(android.Manifest.permission.CAMERA);
@@ -133,5 +135,12 @@ public class LifeCycleCameraTest {
             });
         }
         return activityScenario;
+    }
+
+    private void pressBackAndReturnHome() {
+        mDevice.pressBack();
+        // Returns to Home to restart next test.
+        mDevice.pressHome();
+        mDevice.waitForIdle(3000);
     }
 }

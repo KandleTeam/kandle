@@ -637,7 +637,6 @@ public class CameraXActivity extends AppCompatActivity
             String s = finalPermissions[i];
             if((s.equals("android.permission.CAMERA") || s.equals("android.permission.RECORD_AUDIO") || s.equals("android.permission.WRITE_EXTERNAL_STORAGE")) && j < 3){
                 permissions[j] = s;
-                System.out.println("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!" + permissions[j]);
                 j++;
             }
         }
