@@ -11,7 +11,6 @@ import static org.hamcrest.core.IsNull.notNullValue;
 import android.content.pm.ActivityInfo;
 import androidx.lifecycle.Lifecycle;
 import androidx.test.core.app.ActivityScenario;
-import androidx.test.espresso.IdlingRegistry;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 import androidx.test.filters.LargeTest;
 import androidx.test.platform.app.InstrumentationRegistry;
@@ -79,7 +78,6 @@ public class LifeCycleCameraTest {
                      ActivityScenario.launch(CameraXActivity.class)) {
             try {
                 activityScenario.onActivity(activity -> {
-                    IdlingRegistry.getInstance().register(activity.getViewIdlingResource());
                 });
                 onView(withId(R.id.textureView)).check(matches(isDisplayed()));
                 // Switch camera.
@@ -93,7 +91,6 @@ public class LifeCycleCameraTest {
                 onView(withId(R.id.textureView)).check(matches(isDisplayed()));
             } finally {
                 activityScenario.onActivity(activity -> {
-                    IdlingRegistry.getInstance().unregister(activity.getViewIdlingResource());
                 });
             }
         }
@@ -127,14 +124,12 @@ public class LifeCycleCameraTest {
     checkForViewIdle(ActivityScenario<CameraXActivity> activityScenario) {
         try {
             activityScenario.onActivity(activity -> {
-                IdlingRegistry.getInstance().register(activity.getViewIdlingResource());
             });
             // Check the activity launched and Preview displays frames.
             onView(withId(R.id.textureView)).check(matches(isDisplayed()));
         } finally {
             // Always release the idling resource, in case of timeout exceptions.
             activityScenario.onActivity(activity -> {
-                IdlingRegistry.getInstance().unregister(activity.getViewIdlingResource());
             });
         }
         return activityScenario;

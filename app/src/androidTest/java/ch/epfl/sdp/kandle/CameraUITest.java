@@ -11,7 +11,6 @@ import android.content.Intent;
 
 import androidx.camera.core.Preview;
 import androidx.test.core.app.ApplicationProvider;
-import androidx.test.espresso.IdlingRegistry;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 import androidx.test.rule.ActivityTestRule;
 import androidx.test.rule.GrantPermissionRule;
@@ -51,7 +50,6 @@ public class CameraUITest {
     }
     @Test
     public void testPreviewButton() {
-        IdlingRegistry.getInstance().register(mActivityRule.getActivity().getViewIdlingResource());
         Preview preview = mActivityRule.getActivity().getPreview();
         // Click to disable the preview use case.
         if (preview != null) {
@@ -66,8 +64,6 @@ public class CameraUITest {
             // Check preview started.
             onView(withId(R.id.textureView)).check(matches(isDisplayed()));
         }
-        IdlingRegistry.getInstance().unregister(
-                mActivityRule.getActivity().getViewIdlingResource());
     }
     /*private void pressBackAndReturnHome() {
         mDevice.pressBack();

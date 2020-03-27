@@ -20,8 +20,6 @@ import androidx.camera.core.ImageCapture;
 import androidx.camera.core.TorchState;
 import androidx.test.core.app.ApplicationProvider;
 import androidx.test.espresso.Espresso;
-import androidx.test.espresso.IdlingRegistry;
-import androidx.test.espresso.IdlingResource;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 import androidx.test.filters.LargeTest;
 import androidx.test.platform.app.InstrumentationRegistry;
@@ -65,11 +63,6 @@ public final class ToggleButtonUITest {
     public GrantPermissionRule mAudioPermissionRule =
             GrantPermissionRule.grant(android.Manifest.permission.RECORD_AUDIO);
 
-    public static void waitFor(IdlingResource idlingResource) {
-        IdlingRegistry.getInstance().register(idlingResource);
-        Espresso.onIdle();
-        IdlingRegistry.getInstance().unregister(idlingResource);
-    }
     @Before
     public void setUp() {
         // Clear the device UI before start each test.
@@ -79,13 +72,11 @@ public final class ToggleButtonUITest {
     @After
     public void tearDown() {
         // Idles Espresso thread and make activity complete each action.
-        waitFor(new ElapsedTimeIdlingResource(IDLE_TIMEOUT_MS));
         mActivityRule.finishActivity();
         // Returns to Home to restart next test.
     }
     @Test
     public void testFlashToggleButton() {
-        waitFor(new WaitForViewToShow(R.id.constraintLayout));
         assumeTrue(detectButtonVisibility(R.id.flash_toggle));
         ImageCapture useCase = mActivityRule.getActivity().getImageCapture();
         assertNotNull(useCase);
@@ -106,12 +97,10 @@ public final class ToggleButtonUITest {
     }
     @Test
     public void testSwitchCameraToggleButton() {
-        waitFor(new WaitForViewToShow(R.id.direction_toggle));
         boolean isPreviewExist = mActivityRule.getActivity().getPreview() != null;
         boolean isImageCaptureExist = mActivityRule.getActivity().getImageCapture() != null;
         for (int i = 0; i < 2; i++) {
             onView(withId(R.id.direction_toggle)).perform(click());
-            waitFor(new ElapsedTimeIdlingResource(2000));
             if (isImageCaptureExist) {
                 assertNotNull(mActivityRule.getActivity().getImageCapture());
             }
