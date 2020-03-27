@@ -40,8 +40,6 @@ import org.junit.runner.RunWith;
 @RunWith(AndroidJUnit4.class)
 public class TakePictureTest {
     private static final String BASIC_SAMPLE_PACKAGE = "androidx.camera.integration.core";
-    private final UiDevice mDevice =
-            UiDevice.getInstance(InstrumentationRegistry.getInstrumentation());
     private final Context mContext = ApplicationProvider.getApplicationContext();
     private final Intent mIntent = mContext.getPackageManager()
             .getLaunchIntentForPackage(BASIC_SAMPLE_PACKAGE);
@@ -65,7 +63,6 @@ public class TakePictureTest {
     }
     @After
     public void tearDown() {
-        pressBackAndReturnHome();
         mActivityRule.finishActivity();
     }
     @Test
@@ -82,14 +79,6 @@ public class TakePictureTest {
         ImageCapture imageCapture = mActivityRule.getActivity().getImageCapture();
         assertNotNull(imageCapture);
         onView(withId(R.id.PhotoToggle)).perform(click());
-    }
-
-
-    private void pressBackAndReturnHome() {
-        mDevice.pressBack();
-        // Returns to Home to restart next test.
-        mDevice.pressHome();
-        mDevice.waitForIdle(3000);
     }
 
     private boolean checkPreviewReady() {

@@ -48,8 +48,6 @@ import ch.epfl.sdp.kandle.idlingressource.WaitForViewToShow;
 public final class ToggleButtonUITest {
     private static final int IDLE_TIMEOUT_MS = 1000;
     private static final String BASIC_SAMPLE_PACKAGE = "androidx.camera.integration.core";
-    private final UiDevice mDevice =
-            UiDevice.getInstance(InstrumentationRegistry.getInstrumentation());
     private final Intent mIntent = ApplicationProvider.getApplicationContext().getPackageManager()
             .getLaunchIntentForPackage(BASIC_SAMPLE_PACKAGE);
     @Rule
@@ -84,8 +82,6 @@ public final class ToggleButtonUITest {
         waitFor(new ElapsedTimeIdlingResource(IDLE_TIMEOUT_MS));
         mActivityRule.finishActivity();
         // Returns to Home to restart next test.
-        mDevice.pressHome();
-        mDevice.waitForIdle(IDLE_TIMEOUT_MS);
     }
     @Test
     public void testFlashToggleButton() {

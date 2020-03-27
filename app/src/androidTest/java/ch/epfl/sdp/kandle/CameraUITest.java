@@ -13,10 +13,8 @@ import androidx.camera.core.Preview;
 import androidx.test.core.app.ApplicationProvider;
 import androidx.test.espresso.IdlingRegistry;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
-import androidx.test.platform.app.InstrumentationRegistry;
 import androidx.test.rule.ActivityTestRule;
 import androidx.test.rule.GrantPermissionRule;
-import androidx.test.uiautomator.UiDevice;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Rule;
@@ -26,8 +24,6 @@ import org.junit.runner.RunWith;
 @RunWith(AndroidJUnit4.class)
 public class CameraUITest {
     private static final String BASIC_SAMPLE_PACKAGE = "androidx.camera.integration.core";
-    private final UiDevice mDevice =
-            UiDevice.getInstance(InstrumentationRegistry.getInstrumentation());
     private final Context mContext = ApplicationProvider.getApplicationContext();
     private final Intent mIntent = mContext.getPackageManager()
             .getLaunchIntentForPackage(BASIC_SAMPLE_PACKAGE);
@@ -50,7 +46,7 @@ public class CameraUITest {
     }
     @After
     public void tearDown() {
-        pressBackAndReturnHome();
+        //pressBackAndReturnHome();
         mActivityRule.finishActivity();
     }
     @Test
@@ -73,10 +69,10 @@ public class CameraUITest {
         IdlingRegistry.getInstance().unregister(
                 mActivityRule.getActivity().getViewIdlingResource());
     }
-    private void pressBackAndReturnHome() {
+    /*private void pressBackAndReturnHome() {
         mDevice.pressBack();
         // Returns to Home to restart next test.
         mDevice.pressHome();
         mDevice.waitForIdle(3000);
-    }
+    }*/
 }
