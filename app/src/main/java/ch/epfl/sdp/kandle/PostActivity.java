@@ -66,8 +66,6 @@ public class PostActivity extends AppCompatActivity {
                 if (task.isSuccessful()) {
                     Toast.makeText(PostActivity.this, "You have successfully posted : " + postText, Toast.LENGTH_LONG ).show();
                     finish();
-                    finish();
-                    startActivity(new Intent(getApplicationContext(), MainActivity.class));
                 }else{
                     System.out.println(task.getException().getMessage());
                 }

@@ -186,6 +186,7 @@ public class MainActivity extends AppCompatActivity {
                 break;
 
             case R.id.your_posts:
+                mPostButton.setVisibility(View.VISIBLE);
                 fragmentClass = YourPostListFragment.class;
                 break;
 
