@@ -8,6 +8,8 @@
     android:layout_height="match_parent">
 
     <!-- This LinearLayout represents the contents of the screen  -->
+
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -20,12 +22,26 @@
             android:layout_height="wrap_content" />
 
         <!-- The main content view where fragments are loaded -->
-        <FrameLayout
+        <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/flContent"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             app:layout_behavior="@string/appbar_scrolling_view_behavior">
-        </FrameLayout>
+
+            <Button
+                android:id="@+id/postButton"
+                android:layout_width="77dp"
+                android:layout_height="61dp"
+                android:layout_marginEnd="40dp"
+                android:layout_marginBottom="40dp"
+                android:background="@drawable/button_background"
+                android:text="Post"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+
     </LinearLayout>
 
     <!-- The navigation drawer that comes from the left -->
@@ -37,6 +53,12 @@
         android:layout_gravity="start"
         android:background="@android:color/white"
         app:menu="@menu/menu_item"
-        app:headerLayout="@layout/header"/>
+        app:headerLayout="@layout/header">
+
+
+
+    </com.google.android.material.navigation.NavigationView>
+
+
 
 </androidx.drawerlayout.widget.DrawerLayout>

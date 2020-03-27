@@ -1,34 +1,26 @@
 package ch.epfl.sdp.kandle;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import ch.epfl.sdp.kandle.dependencies.Authentication;
+import ch.epfl.sdp.kandle.dependencies.Database;
+import ch.epfl.sdp.kandle.dependencies.DependencyManager;
 
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
-import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
-
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
-import com.google.firebase.auth.AuthResult;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.firestore.DocumentReference;
-import com.google.firebase.firestore.FirebaseFirestore;
-
-import java.util.HashMap;
-import java.util.Map;
 
 public class RegisterActivity extends AppCompatActivity {
 
     EditText mFullName,mEmail,mPassword, mPasswordConfirm;
     Button mSignUpBtn;
     TextView mSignInLink;
-    FirebaseAuth fAuth;
+    Authentication auth;
 
-    FirebaseFirestore fStore;
+    Database database;
     String userID;
 
     @Override
@@ -41,66 +33,63 @@ public class RegisterActivity extends AppCompatActivity {
         mPasswordConfirm = findViewById(R.id.passwordConfirm);
         mSignUpBtn = findViewById(R.id.loginBtn);
         mSignInLink = findViewById(R.id.signInLink);
-        fStore = FirebaseFirestore.getInstance();
-        fAuth = FirebaseAuth.getInstance();
+        database = DependencyManager.getDatabaseSystem();
+        auth = DependencyManager.getAuthSystem();
 
-        mSignInLink.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                startActivity(new Intent(getApplicationContext(),LoginActivity.class));
-                finish();
-            }
+        mSignInLink.setOnClickListener(v -> {
+            startActivity(new Intent(getApplicationContext(),LoginActivity.class));
+            finish();
         });
 
 
 
-        mSignUpBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                final String fullName = mFullName.getText().toString();
-                final String email = mEmail.getText().toString().trim();
-                String password = mPassword.getText().toString().trim();
-                String passwordConfirm = mPasswordConfirm.getText().toString().trim();
+        mSignUpBtn.setOnClickListener(v -> {
+            final String fullName = mFullName.getText().toString();
+            final String email = mEmail.getText().toString().trim();
+            String password = mPassword.getText().toString().trim();
+            String passwordConfirm = mPasswordConfirm.getText().toString().trim();
 
-                if (!checkFields(fullName,email, password, passwordConfirm)){
-                    return;
-                }
-
-                performRegisterViaFirebase(fullName, email, password);
-
+            if (!checkFields(fullName,email, password, passwordConfirm)){
+                return;
             }
+             performRegisterViaFirebase(fullName, email, password);
         });
 
 
     }
 
-    private void performRegisterViaFirebase (final String fullName, final String email, String password) {
-        fAuth.createUserWithEmailAndPassword(email, password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
-            @Override
-            public void onComplete(@NonNull Task<AuthResult> task) {
-                if (task.isSuccessful()){
-                    Toast.makeText(RegisterActivity.this, "User has been created", Toast.LENGTH_LONG ).show();
+    private void performRegisterViaFirebase (final String fullName, final String email, String password)  {
 
-                    //store user in the database
-                    userID = fAuth.getCurrentUser().getUid();
-                    DocumentReference documentReference = fStore.collection("users").document(userID);
-                    Map<String,Object> user = new HashMap<>();
-                    user.put("fullName",fullName);
-                    user.put("email",email);
-                    documentReference.set(user);
+        ProgressDialog pd = new ProgressDialog(RegisterActivity.this);
+        pd.setMessage("Your account is being created");
+        pd.show();
 
-                    startActivity(new Intent(getApplicationContext(), MainActivity.class));
-                    finish();
+        auth.createUserWithEmailAndPassword(email, password).addOnCompleteListener(task -> {
 
-                }
+            if (task.isSuccessful()){
 
-                else {
-                    Toast.makeText(RegisterActivity.this, "An error has occurred : " + task.getException().getMessage(), Toast.LENGTH_SHORT).show();
 
-                }
+
+                userID = auth.getCurrentUser().getUid();
+
+                User user = new User(userID, email, email, null);
+                user.setFullname(fullName);
+                database.createUser(user);
+
+                pd.dismiss();
+                Toast.makeText(RegisterActivity.this, "User has been created", Toast.LENGTH_LONG ).show();
+
+                startActivity(new Intent(getApplicationContext(), CustomAccountActivity.class));
+                finishAffinity();
+
             }
-        });
 
+            else {
+                pd.dismiss();
+                Toast.makeText(RegisterActivity.this, "An error has occurred : " + task.getException().getMessage(), Toast.LENGTH_SHORT).show();
+            }
+
+        });
 
     }
 

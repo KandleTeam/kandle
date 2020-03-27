@@ -5,8 +5,8 @@
     <string name="title_activity_maps">Map</string>
 
 
-    <string name="login_email_hint">e-mail address</string>
-    <string name="login_password_hint">password</string>
+    <string name="login_email_hint">E-mail address</string>
+    <string name="login_password_hint">Password</string>
     <string name="login_btn_text">Log In</string>
     <string name="login_signup_btn_text">Do not have an account?</string>
     <string name="app_logo_desc">Kandle logo</string>
@@ -19,5 +19,18 @@
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_map_fragment">Map</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_addPost_fragment">Add a Post</string>
+    <string name="hello_search_fragment">Search</string>
+    <string name="hello_profile_fragment">Profile</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="followBtnNotFollowing">follow</string>
+    <string name="followBtnAlreadyFollowing">unfollow</string>
 
 </resources>
