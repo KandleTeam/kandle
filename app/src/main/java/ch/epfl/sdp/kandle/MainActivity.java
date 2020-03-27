@@ -124,12 +124,6 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-
         database.getProfilePicture().addOnCompleteListener(task -> {
 
             if (task.isSuccessful()) {
@@ -149,12 +143,12 @@ public class MainActivity extends AppCompatActivity {
                 if (username != null) {
                     mNickname.setText(username);
                 }
+                Log.d("testpp", "task is successful " + username + " !");
             } else {
                 //TODO handle case when user is offline (get username from cache)
+                Log.d("testpp", "task is not successful");
             }
         });
-
-
 
     }
 

@@ -46,11 +46,18 @@ public class CustomAccountActivity extends AppCompatActivity {
         leaveButton.setOnClickListener(v -> {
             String nickname = m_nickname.getText().toString();
             if (nickname.trim().length() > 0) {
-                database.updateNickname(nickname.trim());
+                database.updateNickname(nickname.trim()).addOnCompleteListener(task -> {
+                    startMainActivity();
+                });
+            } else {
+                startMainActivity();
             }
-            startActivity(new Intent(getApplicationContext(), MainActivity.class));
-            finish();
         });
+    }
+
+    private void startMainActivity() {
+        startActivity(new Intent(getApplicationContext(), MainActivity.class));
+        finish();
     }
 
 
