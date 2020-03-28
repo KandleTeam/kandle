@@ -10,15 +10,9 @@ import com.google.android.gms.maps.SupportMapFragment;
 
 import org.junit.Before;
 import org.junit.Rule;
-import org.junit.Test;
 
-import ch.epfl.sdp.kandle.fragment.MapFragment;
-
-import static androidx.test.espresso.Espresso.onView;
 import static androidx.test.espresso.action.ViewActions.click;
-import static androidx.test.espresso.assertion.ViewAssertions.matches;
 import static androidx.test.espresso.contrib.DrawerMatchers.isClosed;
-import static androidx.test.espresso.matcher.ViewMatchers.hasDescendant;
 import static androidx.test.espresso.matcher.ViewMatchers.withId;
 import static androidx.test.espresso.matcher.ViewMatchers.withText;
 import static org.hamcrest.MatcherAssert.assertThat;

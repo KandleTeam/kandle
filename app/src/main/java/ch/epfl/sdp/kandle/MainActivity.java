@@ -10,7 +10,6 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
@@ -20,8 +19,6 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationView;
 import com.squareup.picasso.Picasso;
@@ -30,7 +27,7 @@ import ch.epfl.sdp.kandle.dependencies.Authentication;
 import ch.epfl.sdp.kandle.dependencies.Database;
 import ch.epfl.sdp.kandle.dependencies.DependencyManager;
 import ch.epfl.sdp.kandle.fragment.AboutFragment;
-import ch.epfl.sdp.kandle.fragment.MapFragment;
+import ch.epfl.sdp.kandle.fragment.KandleMapFragment;
 import ch.epfl.sdp.kandle.fragment.ProfileFragment;
 import ch.epfl.sdp.kandle.fragment.SearchFragment;
 import ch.epfl.sdp.kandle.fragment.SettingsFragment;
@@ -83,7 +80,7 @@ public class MainActivity extends AppCompatActivity {
         drawerToggle.syncState();
         mDrawerLayout.addDrawerListener(drawerToggle);
 
-        createNewFragmentInstance(MapFragment.class);
+        createNewFragmentInstance(KandleMapFragment.class);
         fragmentManager = getSupportFragmentManager();
         fragmentManager.beginTransaction().replace(R.id.flContent, fragment).commit();
         setTitle(mNavigationView.getCheckedItem().getTitle());
@@ -175,7 +172,7 @@ public class MainActivity extends AppCompatActivity {
 
             case R.id.map_support:
                 mPostButton.setVisibility(View.VISIBLE);
-                fragmentClass = MapFragment.class;
+                fragmentClass = KandleMapFragment.class;
                 break;
             case R.id.settings:
                 fragmentClass = SettingsFragment.class;
