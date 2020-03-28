@@ -9,17 +9,17 @@ import com.google.android.gms.maps.model.LatLng;
 import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.UUID;
 
 
 public class Post {
 
-    //private User author;
     private String type;    //photo, texte, video
     private LatLng location;
-    private int likes;
-    private static int count = 0;
-    private int postId = 0;
-    private Uri image;
+    private ArrayList<String> likers;
+    private String userId;
+    private String postId;
+    private String imageURL;
     private String description;
     private ArrayList<String> comments;
     private Date date;
@@ -33,33 +33,60 @@ public class Post {
         this.description = description;
         this.comments = comments;
         this.date = date;
-
     }*/
 
-    public Post(String type, int likes, String description, Date date) {
+
+   public Post(){
+
+   }
+
+
+    public Post(String type, String description, Date date, String userId) {
         this.type = type;
         this.location = null;
-        this.likes = likes;
         this.description = description;
         this.comments = null;
         this.date = date;
-        postId = count++;
+        this.likers = new ArrayList<>();
+        this.postId = UUID.randomUUID().toString();
+        this.userId = userId;
+
+    }
+
+    //Useful for tests
+    public Post(String type, String description, Date date, String userId, String postId) {
+        this.type = type;
+        this.location = null;
+        this.description = description;
+        this.comments = null;
+        this.date = date;
+        this.likers = new ArrayList<>();
+        this.postId = postId;
+        this.userId = userId;
     }
 
 
-    public String getString() {
+
+    /*
+
+    public String getType() {
         return type;
     }
 
     public LatLng getLocation() {
         return location;
     }
+     */
 
-    public int getLikes() {
-        return likes;
+    public ArrayList<String> getLikers(){
+        return likers;
     }
 
-    public int getPost_id() {
+    public int getLikes() {
+        return likers.size();
+    }
+
+    public String getPostId() {
         return postId;
     }
 
@@ -67,27 +94,39 @@ public class Post {
         return description;
     }
 
+    /*
     public ArrayList<String> getComments() {
         return comments;
     }
+     */
 
     public Date getDate() {
         return date;
     }
 
-    public int likePost() {
-        return likes++;
+    public void likePost(String userId) {
+        likers.add(userId);
+    }
+    public void unlikePost(String userId) {
+        likers.remove(userId);
     }
 
-    public int dislikePost() {
-        return likes--;
+    /*
+
+    public String getUserId() {
+        return userId;
     }
 
-    public Uri getImage(){
-        return image;
+    public void setUserId(String userId) {
+        this.userId = userId;
     }
 
-    public void setImage(Uri image){
-        this.image = image;
+    public String getImage(){
+        return imageURL;
+    }
+     */
+
+    public void setImage(String imageURL){
+        this.imageURL = imageURL;
     }
 }

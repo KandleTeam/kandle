@@ -8,11 +8,14 @@ import android.net.Uri;
 
 import androidx.test.espresso.intent.rule.IntentsTestRule;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
+import androidx.test.rule.ActivityTestRule;
 
 
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+
+import ch.epfl.sdp.kandle.dependencies.DependencyManager;
 
 import static androidx.test.espresso.Espresso.onView;
 import static androidx.test.espresso.action.ViewActions.click;
@@ -29,16 +32,23 @@ import static androidx.test.espresso.matcher.ViewMatchers.withId;
 import static androidx.test.espresso.matcher.ViewMatchers.withTagValue;
 import static org.hamcrest.CoreMatchers.not;
 import static org.hamcrest.Matchers.is;
+import static org.hamcrest.core.IsEqual.equalTo;
 import static org.junit.Assert.*;
 
 
 @RunWith(AndroidJUnit4.class)
 public class PostActivityTest {
 
-    @Rule
-    public final IntentsTestRule<PostActivity> postActivityRule =
-            new IntentsTestRule<>(PostActivity.class);
 
+    @Rule
+    public IntentsTestRule<PostActivity> intentsRule =
+            new IntentsTestRule<PostActivity>(PostActivity.class,true,true
+            ){
+                @Override
+                protected  void beforeActivityLaunched() {
+                    DependencyManager.setFreshTestDependencies(true);
+                }
+            };
 
 
     @Test
@@ -60,7 +70,7 @@ public class PostActivityTest {
 
         onView(withId(R.id.postButton)).perform(click());
 
-        assertTrue(postActivityRule.getActivity().isFinishing());
+        assertTrue(intentsRule.getActivity().isFinishing());
 
 
     }
@@ -69,11 +79,8 @@ public class PostActivityTest {
     public void clickCameraButtonLeavesToPostActivity() {
 
         onView(withId(R.id.cameraButton)).perform(click());
-        //Thread.sleep(1000);
-        //intended(hasComponent(PostActivity.class.getName()));
 
     }
-
 
     @Test
     public void clickGalleryButtonDisplaysImage() {
@@ -89,7 +96,6 @@ public class PostActivityTest {
         onView(withId(R.id.postImage)).check(matches(withTagValue(is(PostActivity.POST_IMAGE_TAG))));
 
     }
-
 
 
 }

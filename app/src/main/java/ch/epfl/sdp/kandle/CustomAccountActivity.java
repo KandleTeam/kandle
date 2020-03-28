@@ -7,9 +7,12 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
 
 import ch.epfl.sdp.kandle.ImagePicker.ProfilePicPicker;
+import ch.epfl.sdp.kandle.dependencies.Database;
+import ch.epfl.sdp.kandle.dependencies.DependencyManager;
 
 
 public class CustomAccountActivity extends AppCompatActivity {
@@ -20,24 +23,41 @@ public class CustomAccountActivity extends AppCompatActivity {
     Button uploadButton;
     Button leaveButton;
     ImageView profilePic;
+    EditText m_nickname;
+
+    Database database;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_custom_account);
 
+        database = DependencyManager.getDatabaseSystem();
+
         uploadButton = findViewById(R.id.button);
         leaveButton = findViewById(R.id.startButton);
         profilePic = findViewById(R.id.profilePic);
+        m_nickname = findViewById(R.id.nickname);
 
         profilePicPicker = new ProfilePicPicker(this);
 
         uploadButton.setOnClickListener(v -> profilePicPicker.openImage());
 
         leaveButton.setOnClickListener(v -> {
-            startActivity(new Intent(getApplicationContext(), MainActivity.class));
-            finish();
+            String nickname = m_nickname.getText().toString();
+            if (nickname.trim().length() > 0) {
+                database.updateNickname(nickname.trim()).addOnCompleteListener(task -> {
+                    startMainActivity();
+                });
+            } else {
+                startMainActivity();
+            }
         });
+    }
+
+    private void startMainActivity() {
+        startActivity(new Intent(getApplicationContext(), MainActivity.class));
+        finish();
     }
 
 
