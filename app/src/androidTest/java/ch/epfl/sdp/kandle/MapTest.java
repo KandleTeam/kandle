@@ -11,12 +11,6 @@ import com.google.android.gms.maps.SupportMapFragment;
 import org.junit.Before;
 import org.junit.Rule;
 
-import static androidx.test.espresso.action.ViewActions.click;
-import static androidx.test.espresso.contrib.DrawerMatchers.isClosed;
-import static androidx.test.espresso.matcher.ViewMatchers.withId;
-import static androidx.test.espresso.matcher.ViewMatchers.withText;
-import static org.hamcrest.MatcherAssert.assertThat;
-
 public class MapTest {
     @Rule
     public final ActivityTestRule<MainActivity> mainActivityRule =

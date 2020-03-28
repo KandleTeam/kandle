@@ -1,6 +1,5 @@
 package ch.epfl.sdp.kandle.dependencies;
 
-import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.gms.tasks.TaskCompletionSource;
 
@@ -13,9 +12,8 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
+
 import ch.epfl.sdp.kandle.Post;
-import androidx.annotation.NonNull;
 import ch.epfl.sdp.kandle.User;
 
 /**

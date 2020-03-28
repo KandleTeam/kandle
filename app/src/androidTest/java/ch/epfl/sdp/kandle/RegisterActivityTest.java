@@ -1,13 +1,11 @@
 package ch.epfl.sdp.kandle;
 
-import org.junit.Rule;
-import org.junit.Test;
-
 import androidx.test.espresso.contrib.DrawerActions;
 import androidx.test.espresso.contrib.NavigationViewActions;
-import androidx.test.espresso.intent.Intents;
 import androidx.test.espresso.intent.rule.IntentsTestRule;
-import androidx.test.rule.ActivityTestRule;
+
+import org.junit.Rule;
+import org.junit.Test;
 
 import ch.epfl.sdp.kandle.dependencies.DependencyManager;
 
@@ -23,7 +21,6 @@ import static androidx.test.espresso.matcher.ViewMatchers.hasErrorText;
 import static androidx.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static androidx.test.espresso.matcher.ViewMatchers.withId;
 import static androidx.test.espresso.matcher.ViewMatchers.withText;
-
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.not;
 

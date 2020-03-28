@@ -1,12 +1,8 @@
 package ch.epfl.sdp.kandle;
 
 
-import android.content.Context;
-import android.net.Uri;
-
 import com.google.android.gms.maps.model.LatLng;
 
-import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.UUID;

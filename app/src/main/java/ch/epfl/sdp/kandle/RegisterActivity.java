@@ -1,13 +1,5 @@
 package ch.epfl.sdp.kandle;
 
-import androidx.appcompat.app.AppCompatActivity;
-
-import ch.epfl.sdp.kandle.dependencies.Authentication;
-import ch.epfl.sdp.kandle.dependencies.Database;
-import ch.epfl.sdp.kandle.dependencies.DependencyManager;
-import ch.epfl.sdp.kandle.dependencies.InternalStorage;
-import ch.epfl.sdp.kandle.dependencies.InternalStorageHandler;
-
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
@@ -16,10 +8,13 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.google.android.gms.tasks.Task;
-import com.google.android.gms.tasks.TaskCompletionSource;
+import androidx.appcompat.app.AppCompatActivity;
 
-import java.util.List;
+import ch.epfl.sdp.kandle.dependencies.Authentication;
+import ch.epfl.sdp.kandle.dependencies.Database;
+import ch.epfl.sdp.kandle.dependencies.DependencyManager;
+import ch.epfl.sdp.kandle.dependencies.InternalStorage;
+import ch.epfl.sdp.kandle.dependencies.InternalStorageHandler;
 
 public class RegisterActivity extends AppCompatActivity {
 
