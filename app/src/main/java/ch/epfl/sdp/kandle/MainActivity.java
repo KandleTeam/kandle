@@ -1,6 +1,5 @@
 package ch.epfl.sdp.kandle;
 
-import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
@@ -13,7 +12,6 @@ import android.widget.TextView;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
-import androidx.core.app.ActivityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
@@ -44,7 +42,6 @@ public class MainActivity extends AppCompatActivity {
     private Button mPostButton;
 
     private Fragment fragment;
-    private Class fragmentClass;
     private FragmentManager fragmentManager;
 
     private ImageView mProfilePic;
@@ -59,7 +56,6 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        ActivityCompat.requestPermissions(this,new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 1);
         setContentView(R.layout.activity_main);
 
         auth = DependencyManager.getAuthSystem();
@@ -150,13 +146,11 @@ public class MainActivity extends AppCompatActivity {
         // Create a new fragment and specify the fragment to show based on nav item clicked
 
         fragment = null;
-        Intent intent = null;
-        int size = mNavigationView.getMenu().size();
+        Class fragmentClass = null;
 
         switch (menuItem.getItemId()) {
 
             //For activities
-
 
             case R.id.logout:
                 auth.signOut();
@@ -167,6 +161,7 @@ public class MainActivity extends AppCompatActivity {
 
 
             case R.id.your_posts:
+                mPostButton.setVisibility(View.VISIBLE);
                 fragmentClass = YourPostListFragment.class;
                 break;
 
@@ -175,9 +170,11 @@ public class MainActivity extends AppCompatActivity {
                 fragmentClass = KandleMapFragment.class;
                 break;
             case R.id.settings:
+                mPostButton.setVisibility(View.GONE);
                 fragmentClass = SettingsFragment.class;
                 break;
             case R.id.about:
+                mPostButton.setVisibility(View.GONE);
                 fragmentClass = AboutFragment.class;
                 break;
 
