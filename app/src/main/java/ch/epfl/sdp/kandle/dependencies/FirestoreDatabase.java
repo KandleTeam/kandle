@@ -398,7 +398,6 @@ public class FirestoreDatabase implements Database {
                         transaction.set(userAddingPostDoc, mapPosts, SetOptions.merge());
                     }
 
-
                     transaction.set(addedPostDoc, p);
                     return null;
                 });
@@ -441,12 +440,15 @@ public class FirestoreDatabase implements Database {
                     DocumentSnapshot likedPostSnapchot = transaction.get(likedPostDoc);
 
                     List<String> likers = (List<String>) likedPostSnapchot.get("likers");
+                   // int numberOfLikes = (int)likedPostSnapchot.get("likes");
 
                     if (likers != null) {
                         if (!likers.contains(userId)) {
                             Map<String, Object> mapLikers = new HashMap<>();
                             likers.add(userId);
                             mapLikers.put("likers",likers);
+                            //numberOfLikes++;
+                            //mapLikers.put("likes", numberOfLikes);
                             transaction.set(likedPostDoc, mapLikers, SetOptions.merge());
                         }
                     }

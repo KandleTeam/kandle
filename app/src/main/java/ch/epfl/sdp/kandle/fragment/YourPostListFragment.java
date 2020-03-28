@@ -118,6 +118,8 @@ public class YourPostListFragment extends Fragment {
         return rootView;
     }
 
+
+
 /*
     public List<Post> getPostList() {
         return posts;
