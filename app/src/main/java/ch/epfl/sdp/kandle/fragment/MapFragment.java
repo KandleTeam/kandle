@@ -1,13 +1,20 @@
 package ch.epfl.sdp.kandle.fragment;
 
+import android.Manifest;
 import android.content.IntentSender;
 import android.os.Bundle;
 
+import androidx.annotation.RequiresPermission;
 import androidx.fragment.app.Fragment;
 
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.google.android.gms.common.api.ResolvableApiException;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.maps.CameraUpdate;
+import com.google.android.gms.maps.CameraUpdateFactory;
+import com.google.android.gms.maps.model.LatLng;
 
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -15,6 +22,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import ch.epfl.sdp.kandle.R;
 
@@ -58,4 +66,45 @@ public class MapFragment extends Fragment {
 
         return view;
     }
+
+
+
+
+    private boolean isGooglePlayServicesAvailable() {
+        // Check that Google Play services is available
+        int resultCode = GooglePlayServicesUtil.isGooglePlayServicesAvailable(this.getContext());
+        // If Google Play services is available
+        if (ConnectionResult.SUCCESS == resultCode) {
+            // In debug mode, log the status
+            Log.d("Location Updates", "Google Play services is available.");
+            return true;
+        } else {
+            return false;
+
+        }
+    }
+
+
+
+    @Override
+    @RequiresPermission(Manifest.permission.ACCESS_FINE_LOCATION)
+    public void onResume() {
+        super.onResume();
+
+        // Display the connection status
+
+//        if (abstractLocation.getCurrentLocation() != null) {
+//            Toast.makeText(this.getContext(), "GPS location was found!", Toast.LENGTH_SHORT).show();
+//            LatLng latLng = new LatLng(abstractLocation.getCurrentLocation().getLatitude(), abstractLocation.getCurrentLocation().getLongitude());
+//            CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(latLng, 17);
+//            //mMap.animateCamera(cameraUpdate);
+//        } else {
+//            Toast.makeText(this.getContext(), "Current location was null, enable GPS on emulator!", Toast.LENGTH_SHORT).show();
+//        }
+//        abstractLocation.startLocationUpdates(this.getContext());
+    }
+
+
+
+
 }
