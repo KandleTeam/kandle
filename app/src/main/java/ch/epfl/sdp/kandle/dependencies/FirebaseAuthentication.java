@@ -38,12 +38,10 @@ public class FirebaseAuthentication implements Authentication {
 
     public AuthenticationUser getCurrentUser() {
             if (fAuth.getCurrentUser() != null){
-                System.out.println("non null");
                 return new FirebaseAuthenticationUser(fAuth);
             }
 
             else {
-                System.out.println("null");
                 return null;
             }
     }

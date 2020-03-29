@@ -1,12 +1,11 @@
 package ch.epfl.sdp.kandle;
 
-import org.junit.Rule;
-import org.junit.Test;
-
 import androidx.test.espresso.contrib.DrawerActions;
 import androidx.test.espresso.contrib.NavigationViewActions;
-import androidx.test.espresso.intent.Intents;
-import androidx.test.rule.ActivityTestRule;
+import androidx.test.espresso.intent.rule.IntentsTestRule;
+
+import org.junit.Rule;
+import org.junit.Test;
 
 import ch.epfl.sdp.kandle.dependencies.DependencyManager;
 
@@ -22,15 +21,14 @@ import static androidx.test.espresso.matcher.ViewMatchers.hasErrorText;
 import static androidx.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static androidx.test.espresso.matcher.ViewMatchers.withId;
 import static androidx.test.espresso.matcher.ViewMatchers.withText;
-
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.not;
 
 public class RegisterActivityTest {
 
     @Rule
-    public ActivityTestRule<RegisterActivity> intentsRule =
-            new ActivityTestRule<RegisterActivity>(RegisterActivity.class,true,true
+    public IntentsTestRule<RegisterActivity> intentsRule =
+            new IntentsTestRule<RegisterActivity>(RegisterActivity.class,true,true
             ){
                 @Override
                 protected  void beforeActivityLaunched() {
@@ -95,8 +93,6 @@ public class RegisterActivityTest {
     @Test
     public void accountCreation() {
 
-        Intents.init();
-
 
         onView(withId (R.id.username)).perform(typeText ("newUserId"));
         onView(withId (R.id.username)).perform(closeSoftKeyboard());
@@ -120,8 +116,6 @@ public class RegisterActivityTest {
         onView(withId(R.id.navigation_view)).perform(NavigationViewActions.navigateTo(R.id.logout));
 
 
-        Intents.release();
-
     }
 
 
@@ -129,7 +123,7 @@ public class RegisterActivityTest {
     public void alreadyHaveAnAccount() {
 
         onView(withId(R.id.signInLink)).perform(click());
-        //intended(hasComponent(LoginActivity.class.getName()));
+        intended(hasComponent(LoginActivity.class.getName()));
     }
 
     @Test
