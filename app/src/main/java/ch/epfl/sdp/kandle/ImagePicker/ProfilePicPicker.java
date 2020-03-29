@@ -16,14 +16,12 @@ public class ProfilePicPicker extends ImagePicker {
     }
     public ProfilePicPicker(Fragment fragment) {super(fragment); }
 
-    @Override
-    protected void uploadImage() {
+    public void setProfilePicture() {
         final ProgressDialog pd = new ProgressDialog(activity  != null? activity : fragment.getContext());
         pd.setMessage("Uploading");
         pd.show();
 
-        Storage storage = DependencyManager.getStorageSystem();
-        storage.storeAndGetDownloadUrl(getFileExtension(imageUri), imageUri).addOnCompleteListener(task -> {
+        uploadImage().addOnCompleteListener(task -> {
             //if (task.isSuccessful() && task.getResult()!=null) {
                 Uri downloadUri = task.getResult();
                 String sUri = downloadUri.toString();
