@@ -27,7 +27,6 @@ import ch.epfl.sdp.kandle.dependencies.Authentication;
 import ch.epfl.sdp.kandle.dependencies.AuthenticationUser;
 import ch.epfl.sdp.kandle.dependencies.Database;
 import ch.epfl.sdp.kandle.dependencies.DependencyManager;
-import ch.epfl.sdp.kandle.dependencies.InternalStorageHandler;
 
 public class SearchFragment extends Fragment {
 
@@ -36,7 +35,6 @@ public class SearchFragment extends Fragment {
     private Database database;
 
     private RecyclerView mRecyclerView;
-    private InternalStorageHandler internalStorageHandler;
     private ArrayList<User> mUsers = new ArrayList<>(0);
     private UserAdapter userAdapter = new UserAdapter(mUsers);
     private AuthenticationUser currentUser;
@@ -62,7 +60,6 @@ public class SearchFragment extends Fragment {
 
         mRecyclerView = view.findViewById(R.id.recycler_view);
         search_bar = view.findViewById(R.id.search_bar);
-        internalStorageHandler = new InternalStorageHandler(getActivity().getApplicationContext());
         currentUser = auth.getCurrentUser();
 
         mRecyclerView.setAdapter(userAdapter);

@@ -13,8 +13,6 @@ import androidx.appcompat.app.AppCompatActivity;
 import ch.epfl.sdp.kandle.dependencies.Authentication;
 import ch.epfl.sdp.kandle.dependencies.Database;
 import ch.epfl.sdp.kandle.dependencies.DependencyManager;
-import ch.epfl.sdp.kandle.dependencies.InternalStorage;
-import ch.epfl.sdp.kandle.dependencies.InternalStorageHandler;
 
 public class RegisterActivity extends AppCompatActivity {
 
@@ -23,7 +21,6 @@ public class RegisterActivity extends AppCompatActivity {
     private Button mSignUpBtn;
     private TextView mSignInLink;
     private Authentication auth;
-    private InternalStorageHandler internalStorageHandler;
     private Database database;
     private String userID;
 
@@ -41,7 +38,6 @@ public class RegisterActivity extends AppCompatActivity {
         mSignInLink = findViewById(R.id.signInLink);
         database = DependencyManager.getDatabaseSystem();
         auth = DependencyManager.getAuthSystem();
-        internalStorageHandler = new InternalStorageHandler(this);
         mSignInLink.setOnClickListener(v -> {
             startActivity(new Intent(getApplicationContext(), LoginActivity.class));
             finish();
@@ -53,7 +49,6 @@ public class RegisterActivity extends AppCompatActivity {
             final String email = mEmail.getText().toString().trim();
             String password = mPassword.getText().toString().trim();
             String passwordConfirm = mPasswordConfirm.getText().toString().trim();
-
 
             if (!checkFields(username, email, password, passwordConfirm)) {
                 return;
@@ -86,10 +81,7 @@ public class RegisterActivity extends AppCompatActivity {
                 userID = auth.getCurrentUser().getUid();
                 User user = new User(userID, username, email, null, null);
 
-
                 database.createUser(user);
-                InternalStorage internalStorage = DependencyManager.getInternalStorageSystem(getApplicationContext());
-                internalStorage.saveUserAtLoginOrRegister(user);
                 pd.dismiss();
                 Toast.makeText(RegisterActivity.this, "User has been created", Toast.LENGTH_LONG).show();
                 startActivity(new Intent(getApplicationContext(), CustomAccountActivity.class));
@@ -103,7 +95,7 @@ public class RegisterActivity extends AppCompatActivity {
 
 
 
-    private boolean checkFields (String username, String email, String password, String passwordConfirm){
+    private boolean checkFields (String username, String email, String password, String passwordConfirm) {
 
         boolean bool = true;
 
@@ -117,7 +109,7 @@ public class RegisterActivity extends AppCompatActivity {
             bool =  false;
         }
 
-        else if (password.length()<8){
+        else if (password.length() < 8){
 
             mPassword.setError("Please choose a password of more than 8 characters !");
             bool = false;
