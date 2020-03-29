@@ -55,7 +55,7 @@ public class User implements Serializable {
     }
 
     public ArrayList<String> getPosts(){
-        return postsIds;
+        return new ArrayList<String>(postsIds);
     }
 
     public void addPostId(String postId){

@@ -86,7 +86,7 @@ public class Post {
      */
 
     public ArrayList<String> getLikers(){
-        return likers;
+        return new ArrayList<String>(likers);
     }
 
     public int getLikes() {
@@ -136,10 +136,12 @@ public class Post {
         this.userId = userId;
     }
 
+     */
+
     public String getImage(){
         return imageURL;
     }
-     */
+
 
     public void setImage(String imageURL){
         this.imageURL = imageURL;
