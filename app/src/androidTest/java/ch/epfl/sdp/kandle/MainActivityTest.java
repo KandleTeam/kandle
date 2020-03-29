@@ -128,7 +128,7 @@ public class MainActivityTest {
     @Test
     public void navigateToPost(){
         Intents.init();
-        onView(withId(R.id.postButton)).perform(click());
+        onView(withId(R.id.newPostButton)).perform(click());
         intended(hasComponent(PostActivity.class.getName()));
         Intents.release();
     }

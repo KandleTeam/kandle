@@ -55,7 +55,6 @@ public class YourProfileFragmentTest {
     @Before
     public void loadFragment(){
         onView(withId(R.id.drawer_layout)).check(matches(isClosed(Gravity.LEFT))).perform(DrawerActions.open());
-        //onView(withId(R.id.navigation_view)).perform(NavigationViewActions.navigateTo(R.id.follow));
         onView(withId(R.id.profilePicInMenu)).perform(click());
     }
 

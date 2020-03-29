@@ -18,7 +18,6 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
-import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationView;
 import com.squareup.picasso.Picasso;
 
@@ -39,8 +38,7 @@ public class MainActivity extends AppCompatActivity {
     private DrawerLayout mDrawerLayout;
     private Toolbar toolbar;
     private NavigationView mNavigationView;
-    private BottomNavigationView mBottomNavigationView;
-    private Button mPostButton;
+    private Button mNewPostButton;
 
     private Fragment fragment;
     private FragmentManager fragmentManager;
@@ -66,7 +64,7 @@ public class MainActivity extends AppCompatActivity {
         toolbar = findViewById(R.id.toolbar);
         mDrawerLayout = findViewById(R.id.drawer_layout);
         mNavigationView = findViewById(R.id.navigation_view);
-        mPostButton = findViewById(R.id.postButton);
+        mNewPostButton = findViewById(R.id.newPostButton);
         mProfilePic = mNavigationView.getHeaderView(0).findViewById(R.id.profilePicInMenu);
         mUsername = mNavigationView.getHeaderView(0).findViewById(R.id.username);
 
@@ -93,18 +91,15 @@ public class MainActivity extends AppCompatActivity {
         setTitle(mNavigationView.getCheckedItem().getTitle());
 
 
-        mPostButton.setOnClickListener(v -> startActivity(new Intent(getApplicationContext(), PostActivity.class)));
-        mPostButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                startActivity(new Intent(getApplicationContext(), PostActivity.class));
-            }
+        mNewPostButton.setOnClickListener(v -> {
+            Log.d("MainActivity", "PRESSED NEWPOST BUTTON");
+            startActivity(new Intent(getApplicationContext(), PostActivity.class));
         });
 
         final FragmentManager fragmentManager = getSupportFragmentManager();
         mProfilePic.setOnClickListener(v -> database.getUserById(auth.getCurrentUser().getUid()).addOnCompleteListener(task -> {
                     if (task.isSuccessful()) {
-                        mPostButton.setVisibility(View.GONE);
+                        mNewPostButton.setVisibility(View.GONE);
                         fragmentManager.beginTransaction().replace(R.id.flContent, ProfileFragment.newInstance(task.getResult()))
                                 .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
                                 .addToBackStack(null)
@@ -112,7 +107,7 @@ public class MainActivity extends AppCompatActivity {
                         setTitle("Your Profile");
                         mDrawerLayout.closeDrawers();
                     } else {
-
+                        Log.e("Profile pic", "Error fetching profile pic", task.getException());
                     }
 
         }));
@@ -179,27 +174,27 @@ public class MainActivity extends AppCompatActivity {
                 break;
 
             case R.id.your_posts:
-                mPostButton.setVisibility(View.VISIBLE);
+                mNewPostButton.setVisibility(View.VISIBLE);
                 fragmentClass = YourPostListFragment.class;
                 break;
 
             case R.id.map_support:
-                mPostButton.setVisibility(View.VISIBLE);
+                mNewPostButton.setVisibility(View.VISIBLE);
                 fragmentClass = KandleMapFragment.class;
                 break;
 
             case R.id.settings:
-                mPostButton.setVisibility(View.GONE);
+                mNewPostButton.setVisibility(View.GONE);
                 fragmentClass = SettingsFragment.class;
                 break;
 
             case R.id.about:
-                mPostButton.setVisibility(View.GONE);
+                mNewPostButton.setVisibility(View.GONE);
                 fragmentClass = AboutFragment.class;
                 break;
 
             case R.id.follow:
-                mPostButton.setVisibility(View.GONE);
+                mNewPostButton.setVisibility(View.GONE);
                 fragmentClass = SearchFragment.class;
                 break;
 

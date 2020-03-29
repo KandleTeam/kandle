@@ -1,7 +1,9 @@
 package ch.epfl.sdp.kandle;
 
+import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
+import android.view.ViewGroup;
 
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.test.espresso.NoMatchingViewException;
@@ -11,8 +13,8 @@ import androidx.test.espresso.ViewAssertion;
 import androidx.test.espresso.contrib.DrawerActions;
 import androidx.test.espresso.contrib.NavigationViewActions;
 import androidx.test.espresso.contrib.RecyclerViewActions;
-import androidx.test.espresso.intent.rule.IntentsTestRule;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
+import androidx.test.rule.ActivityTestRule;
 
 import org.hamcrest.Matcher;
 import org.junit.Before;
@@ -35,13 +37,12 @@ import static junit.framework.TestCase.assertEquals;
 public class YourPostsListTest {
 
 
-
     @Rule
-    public IntentsTestRule<MainActivity> mainActivityRule =
-            new IntentsTestRule<MainActivity>(MainActivity.class,true,true
-            ){
+    public ActivityTestRule<MainActivity> mainActivityRule =
+            new ActivityTestRule<MainActivity>(MainActivity.class, true, true
+            ) {
                 @Override
-                protected  void beforeActivityLaunched() {
+                protected void beforeActivityLaunched() {
                     DependencyManager.setFreshTestDependencies(true);
                 }
 
@@ -54,57 +55,55 @@ public class YourPostsListTest {
     }
 
 
-
-
     @Test
-    public void canClickOnAlreadyCreatedPostToSeeDescriptionAndRemoveDescription() throws Throwable {
-        onView(withId(R.id.rvPosts)).perform(RecyclerViewActions.actionOnItemAtPosition(0,click()));
+    public void canClickOnAlreadyCreatedPostToSeeDescriptionAndRemoveDescription() {
+        onView(withId(R.id.rvPosts)).perform(RecyclerViewActions.actionOnItemAtPosition(0, click()));
         onView(withId(R.id.post_content)).perform(click());
-        onView(withId(R.id.rvPosts)).perform(RecyclerViewActions.actionOnItemAtPosition(1,click()));
+        onView(withId(R.id.rvPosts)).perform(RecyclerViewActions.actionOnItemAtPosition(1, click()));
         onView(withId(R.id.post_content)).perform(click());
 
     }
 
     @Test
-    public void likesThenUnlikesAlreadyCreatedPostsAndRemovesOldestPost() throws Throwable {
+    public void likesThenUnlikesAlreadyCreatedPostsAndRemovesOldestPost() {
 
         //2 posts should be displayed
         onView(withId(R.id.rvPosts)).check(new RecyclerViewItemCountAssertion(2));
 
         //Like then unlike the oldest (already created in the mockdatabase)
-        onView(withId(R.id.rvPosts)).perform(RecyclerViewActions.actionOnItemAtPosition(0,clickChildViewWithId(R.id.likeButton)));
-        onView(withId(R.id.rvPosts)).perform(RecyclerViewActions.actionOnItemAtPosition(1,clickChildViewWithId(R.id.likeButton)));
-        onView(withId(R.id.rvPosts)).perform(RecyclerViewActions.actionOnItemAtPosition(0,clickChildViewWithId(R.id.likeButton)));
-        onView(withId(R.id.rvPosts)).perform(RecyclerViewActions.actionOnItemAtPosition(1,clickChildViewWithId(R.id.likeButton)));
+        onView(withId(R.id.rvPosts)).perform(RecyclerViewActions.actionOnItemAtPosition(0, clickChildViewWithId(R.id.likeButton)));
+        onView(withId(R.id.rvPosts)).perform(RecyclerViewActions.actionOnItemAtPosition(1, clickChildViewWithId(R.id.likeButton)));
+        onView(withId(R.id.rvPosts)).perform(RecyclerViewActions.actionOnItemAtPosition(0, clickChildViewWithId(R.id.likeButton)));
+        onView(withId(R.id.rvPosts)).perform(RecyclerViewActions.actionOnItemAtPosition(1, clickChildViewWithId(R.id.likeButton)));
 
         //Remove the the oldest post
-        onView(withId(R.id.rvPosts)).perform(RecyclerViewActions.actionOnItemAtPosition(1,clickChildViewWithId(R.id.deleteButton)));
+        onView(withId(R.id.rvPosts)).perform(RecyclerViewActions.actionOnItemAtPosition(1, clickChildViewWithId(R.id.deleteButton)));
 
         //only 1 post should be displayed
         onView(withId(R.id.rvPosts)).check(new RecyclerViewItemCountAssertion(1));
     }
 
     @Test
-    public void createTwoNewPosts() throws Throwable {
+    public void createTwoNewPosts() {
 
         //2 posts should be displayed
         onView(withId(R.id.rvPosts)).check(new RecyclerViewItemCountAssertion(2));
-
         //Create two new posts
-        onView(withId(R.id.postButton)).perform(click());
+        onView(withId(R.id.newPostButton)).perform(click());
         onView(withId(R.id.postText)).perform(typeText("Post 3"));
-        onView(withId (R.id.postText)).perform(closeSoftKeyboard());
+        onView(withId(R.id.postText)).perform(closeSoftKeyboard());
         onView(withId(R.id.postButton)).perform(click());
 
-        onView(withId(R.id.postButton)).perform(click());
+        onView(withId(R.id.newPostButton)).perform(click());
         onView(withId(R.id.postText)).perform(typeText("Post 4"));
-        onView(withId (R.id.postText)).perform(closeSoftKeyboard());
+        onView(withId(R.id.postText)).perform(closeSoftKeyboard());
         onView(withId(R.id.postButton)).perform(click());
 
         loadPostView();
 
         //4 posts should be displayed
         onView(withId(R.id.rvPosts)).check(new RecyclerViewItemCountAssertion(4));
+
 
     }
 
@@ -131,10 +130,10 @@ public class YourPostsListTest {
     }
 
 
-    public class RecyclerViewItemCountAssertion implements ViewAssertion {
+    public static class RecyclerViewItemCountAssertion implements ViewAssertion {
         private final int expectedCount;
 
-        public RecyclerViewItemCountAssertion(int expectedCount) {
+        RecyclerViewItemCountAssertion(int expectedCount) {
             this.expectedCount = expectedCount;
         }
 
@@ -149,10 +148,6 @@ public class YourPostsListTest {
             assertEquals(adapter.getItemCount(), expectedCount);
         }
     }
-
-
-
-
 
 
 }

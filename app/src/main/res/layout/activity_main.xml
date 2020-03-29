@@ -29,7 +29,7 @@
             app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
             <Button
-                android:id="@+id/postButton"
+                android:id="@+id/newPostButton"
                 android:layout_width="77dp"
                 android:layout_height="61dp"
                 android:layout_marginEnd="40dp"
