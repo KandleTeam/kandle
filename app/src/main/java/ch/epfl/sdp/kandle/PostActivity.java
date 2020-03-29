@@ -35,6 +35,8 @@ public class PostActivity extends AppCompatActivity {
     private ImageView mPostImage;
     private PostImagePicker postImagePicker;
     public final static int POST_IMAGE_TAG = 42;
+    User user;
+
 
 
     @Override
@@ -48,7 +50,6 @@ public class PostActivity extends AppCompatActivity {
         mCameraButton =findViewById(R.id.cameraButton);
         mPostImage =findViewById(R.id.postImage);
         postImagePicker = new PostImagePicker(this);
-
         auth = DependencyManager.getAuthSystem();
         database = DependencyManager.getDatabaseSystem();
 
@@ -61,10 +62,28 @@ public class PostActivity extends AppCompatActivity {
                 return;
             }
 
+            database.getUserById(auth.getCurrentUser().getUid()).addOnCompleteListener(task1 -> {
+                        if(task1.isSuccessful()){
+                            user = task1.getResult();
+                    }
+                        else {System.out.println("There is an error");}
+            });
+
+
+            //
+
             p = new Post("text", postText, new Date(), auth.getCurrentUser().getUid());
             database.addPost(auth.getCurrentUser().getUid(), p).addOnCompleteListener(task -> {
                 if (task.isSuccessful()) {
                     Toast.makeText(PostActivity.this, "You have successfully posted : " + postText, Toast.LENGTH_LONG ).show();
+                        user.addPostId(p.getPostId());
+                        user.incrementNumberOfPosts();
+                        System.out.println("THE NUMBER OF POSTS IS " + user.getNumberOfPosts());
+                        if(user.getNumberOfPosts() == 10){
+                            Intent intent = new Intent(this, AchievementsActivity.class);
+                            startActivity(intent);
+                        }
+
                     finish();
                 }else{
                     System.out.println(task.getException().getMessage());

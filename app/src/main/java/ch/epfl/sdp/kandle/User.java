@@ -1,11 +1,16 @@
 package ch.epfl.sdp.kandle;
 
+import android.content.Context;
+import android.util.Log;
+import android.widget.Toast;
+
 import java.io.Serializable;
 import java.util.ArrayList;
 
 public class User implements Serializable {
     private ArrayList<String> postsIds;
     private String id, username, email, fullname , imageURL;
+    private int numberOfPosts = 0;
 
 
     public User() {
@@ -19,6 +24,7 @@ public class User implements Serializable {
         this.imageURL = imageURL;
         this.postsIds = new ArrayList<>();
         this.fullname = fullname;
+
 
     }
 
@@ -54,15 +60,25 @@ public class User implements Serializable {
         return imageURL;
     }
 
+    public int getNumberOfPosts(){ return numberOfPosts; }
+
+    public void incrementNumberOfPosts(){ ++numberOfPosts; }
+
     public ArrayList<String> getPosts(){
         return postsIds;
     }
 
     public void addPostId(String postId){
-        postsIds.add(postId);
+        if(postsIds == null){
+            System.out.println("the array is null");
+        }
+        else {
+            postsIds.add(postId);
+        }
     }
 
     public void removePostId(String postId){
         postsIds.remove(postId);
+        numberOfPosts--;
     }
 }
