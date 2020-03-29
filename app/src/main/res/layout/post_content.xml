@@ -10,24 +10,22 @@
         android:id="@+id/post_content"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_margin="45dp"
-        android:textSize="22sp"
-        android:text="This is a popup window."/>
+        android:layout_alignParentStart="true"
+        android:layout_alignParentEnd="true"
+        android:text="This is a popup window."
+        android:textSize="22sp" />
 
     <ImageView
         android:id="@+id/postImage"
-        android:layout_width="167dp"
-        android:layout_height="163dp"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentBottom="true"
-        android:layout_marginStart="122dp"
-        android:layout_marginEnd="122dp"
-        android:layout_marginBottom="0dp"
+        android:layout_width="150dp"
+        android:layout_height="150dp"
+        android:layout_below="@id/post_content"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="20dp"
+        android:layout_marginBottom="20dp"
         android:adjustViewBounds="true"
         android:contentDescription="Posted image"
-        android:cropToPadding="true"
-        android:scaleType="centerCrop" />
+        android:scaleType="centerInside" />
 
 </RelativeLayout>
 
