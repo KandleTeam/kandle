@@ -10,8 +10,6 @@ import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 
-import java.util.ArrayList;
-
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
@@ -20,14 +18,15 @@ import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import ch.epfl.sdp.kandle.dependencies.AuthenticationUser;
-import ch.epfl.sdp.kandle.dependencies.InternalStorageHandler;
-import ch.epfl.sdp.kandle.dependencies.Authentication;
-import ch.epfl.sdp.kandle.dependencies.Database;
-import ch.epfl.sdp.kandle.dependencies.DependencyManager;
+import java.util.ArrayList;
+
 import ch.epfl.sdp.kandle.R;
 import ch.epfl.sdp.kandle.User;
 import ch.epfl.sdp.kandle.UserAdapter;
+import ch.epfl.sdp.kandle.dependencies.Authentication;
+import ch.epfl.sdp.kandle.dependencies.AuthenticationUser;
+import ch.epfl.sdp.kandle.dependencies.Database;
+import ch.epfl.sdp.kandle.dependencies.DependencyManager;
 
 public class SearchFragment extends Fragment {
 
@@ -36,7 +35,6 @@ public class SearchFragment extends Fragment {
     private Database database;
 
     private RecyclerView mRecyclerView;
-    private InternalStorageHandler internalStorageHandler;
     private ArrayList<User> mUsers = new ArrayList<>(0);
     private UserAdapter userAdapter = new UserAdapter(mUsers);
     private AuthenticationUser currentUser;
@@ -62,7 +60,6 @@ public class SearchFragment extends Fragment {
 
         mRecyclerView = view.findViewById(R.id.recycler_view);
         search_bar = view.findViewById(R.id.search_bar);
-        internalStorageHandler = new InternalStorageHandler(getActivity().getApplicationContext());
         currentUser = auth.getCurrentUser();
 
         mRecyclerView.setAdapter(userAdapter);

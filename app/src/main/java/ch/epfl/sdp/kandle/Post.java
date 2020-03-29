@@ -1,14 +1,12 @@
 package ch.epfl.sdp.kandle;
 
 
-import android.content.Context;
-import android.net.Uri;
-
 import com.google.android.gms.maps.model.LatLng;
 
-import java.text.DateFormat;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
+import java.util.List;
 import java.util.UUID;
 
 
@@ -22,6 +20,7 @@ public class Post {
     private String description;
     private ArrayList<String> comments;
     private Date date;
+    private int likes;
 
 
    /* public Post(String type, LatLng location, int likes, String description, ArrayList<String> comments, Date date){
@@ -46,6 +45,7 @@ public class Post {
         this.comments = null;
         this.date = date;
         this.likers = new ArrayList<>();
+        this.likes=0;
         this.postId = UUID.randomUUID().toString();
         this.userId = userId;
         this.imageURL = imageURL;
@@ -59,6 +59,7 @@ public class Post {
         this.comments = null;
         this.date = date;
         this.likers = new ArrayList<>();
+        this.likes=0;
         this.postId = postId;
         this.userId = userId;
         this.imageURL = imageURL;
@@ -73,16 +74,24 @@ public class Post {
     }
      */
 
-    public ArrayList<String> getLikers(){
-        return likers;
+    public List<String> getLikers(){
+        return Collections.unmodifiableList(likers);
     }
 
     public int getLikes() {
         return likers.size();
     }
 
+    public void setLikes(int likes) {
+        this.likes = likes;
+    }
+
     public String getPostId() {
         return postId;
+    }
+
+    public String getUserId() {
+        return userId;
     }
 
     public String getDescription() {
@@ -96,7 +105,7 @@ public class Post {
      */
 
     public Date getDate() {
-        return date;
+        return (Date) date.clone();
     }
 
     public void likePost(String userId) {
@@ -119,7 +128,6 @@ public class Post {
     public String getImageURL(){
         return imageURL;
     }
-
 
     public void setImageURL(String imageURL){
         this.imageURL = imageURL;

@@ -2,7 +2,6 @@ package ch.epfl.sdp.kandle.dependencies;
 
 import androidx.annotation.NonNull;
 
-import com.google.android.gms.tasks.Continuation;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.gms.tasks.TaskCompletionSource;
@@ -24,8 +23,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
+
 import ch.epfl.sdp.kandle.Post;
 import ch.epfl.sdp.kandle.User;
 
@@ -79,20 +77,12 @@ public class FirestoreDatabase implements Database {
         return users
                 .document(userId)
                 .get()
-                .continueWith(new Continuation<DocumentSnapshot, User>() {
+                .continueWith(task -> {
 
-                    @Override
+                    User user = Objects.requireNonNull(task.getResult()).toObject(User.class);
+                    if (!user.getId().equals(userId)) throw new AssertionError("We done goofed somewhere! Unexpected uid");
 
-
-                    public User then(@NonNull Task<DocumentSnapshot> task) {
-
-                        User user = Objects.requireNonNull(task.getResult()).toObject(User.class);
-                        assert(user != null);
-                        System.out.println(user.getId());
-                        if (!user.getId().equals(userId)) throw new AssertionError("We done goofed somewhere! Unexpected uid");
-
-                        return user;
-                    }
+                    return user;
                 });
     }
 
@@ -408,7 +398,6 @@ public class FirestoreDatabase implements Database {
                         transaction.set(userAddingPostDoc, mapPosts, SetOptions.merge());
                     }
 
-
                     transaction.set(addedPostDoc, p);
                     return null;
                 });
@@ -451,12 +440,15 @@ public class FirestoreDatabase implements Database {
                     DocumentSnapshot likedPostSnapchot = transaction.get(likedPostDoc);
 
                     List<String> likers = (List<String>) likedPostSnapchot.get("likers");
+                   // int numberOfLikes = (int)likedPostSnapchot.get("likes");
 
                     if (likers != null) {
                         if (!likers.contains(userId)) {
                             Map<String, Object> mapLikers = new HashMap<>();
                             likers.add(userId);
                             mapLikers.put("likers",likers);
+                            //numberOfLikes++;
+                            //mapLikers.put("likes", numberOfLikes);
                             transaction.set(likedPostDoc, mapLikers, SetOptions.merge());
                         }
                     }
@@ -487,7 +479,7 @@ public class FirestoreDatabase implements Database {
                     return null;
                 });
     }
-    
+
     /*
     @Override
     public Task<List<String>> likers(String postId) {

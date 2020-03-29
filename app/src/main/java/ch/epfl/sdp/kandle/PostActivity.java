@@ -1,7 +1,5 @@
 package ch.epfl.sdp.kandle;
 
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -11,6 +9,7 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import androidx.appcompat.app.AppCompatActivity;
 import java.util.Date;
 
 import ch.epfl.sdp.kandle.ImagePicker.ImagePicker;
@@ -93,8 +92,6 @@ public class PostActivity extends AppCompatActivity {
             if (task.isSuccessful()) {
                 Toast.makeText(PostActivity.this, "You have successfully posted : " + p.getDescription(), Toast.LENGTH_LONG ).show();
                 finish();
-                finish();
-                startActivity(new Intent(getApplicationContext(), MainActivity.class));
             }else{
                 System.out.println(task.getException().getMessage());
             }

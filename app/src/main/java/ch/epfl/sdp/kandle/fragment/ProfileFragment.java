@@ -1,41 +1,38 @@
 package ch.epfl.sdp.kandle.fragment;
 
+import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-
-import androidx.annotation.NonNull;
-import androidx.fragment.app.Fragment;
-
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.ViewSwitcher;
 
+import androidx.annotation.NonNull;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
+
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.navigation.NavigationView;
 import com.squareup.picasso.Picasso;
 
-import java.util.ArrayList;
 import java.util.List;
 
-import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentTransaction;
-import ch.epfl.sdp.kandle.CustomAccountActivity;
 import ch.epfl.sdp.kandle.ImagePicker.ProfilePicPicker;
-import ch.epfl.sdp.kandle.MainActivity;
+import ch.epfl.sdp.kandle.R;
+import ch.epfl.sdp.kandle.User;
 import ch.epfl.sdp.kandle.dependencies.Authentication;
 import ch.epfl.sdp.kandle.dependencies.AuthenticationUser;
 import ch.epfl.sdp.kandle.dependencies.Database;
 import ch.epfl.sdp.kandle.dependencies.DependencyManager;
-import ch.epfl.sdp.kandle.R;
-import ch.epfl.sdp.kandle.User;
 
 
 public class ProfileFragment extends Fragment {
@@ -113,6 +110,10 @@ public class ProfileFragment extends Fragment {
         });
 
         mValidateNameButton.setOnClickListener(v -> {
+            InputMethodManager imm = (InputMethodManager)getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+            //if (getActivity().getCurrentFocus()!=null)
+            imm.hideSoftInputFromWindow(getActivity().getCurrentFocus().getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
+
             String nickname = mNicknameEdit.getText().toString();
             if (nickname.trim().length()>0) {
                 mNicknameView.setText(nickname.trim());
