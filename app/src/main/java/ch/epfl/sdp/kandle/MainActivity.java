@@ -5,8 +5,6 @@ import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
-import android.view.View;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -25,7 +23,7 @@ import ch.epfl.sdp.kandle.dependencies.Authentication;
 import ch.epfl.sdp.kandle.dependencies.Database;
 import ch.epfl.sdp.kandle.dependencies.DependencyManager;
 import ch.epfl.sdp.kandle.fragment.AboutFragment;
-import ch.epfl.sdp.kandle.fragment.KandleMapFragment;
+import ch.epfl.sdp.kandle.fragment.MapViewFragment;
 import ch.epfl.sdp.kandle.fragment.ProfileFragment;
 import ch.epfl.sdp.kandle.fragment.SearchFragment;
 import ch.epfl.sdp.kandle.fragment.SettingsFragment;
@@ -83,7 +81,7 @@ public class MainActivity extends AppCompatActivity {
         drawerToggle.syncState();
         mDrawerLayout.addDrawerListener(drawerToggle);
 
-        createNewFragmentInstance(KandleMapFragment.class);
+        createNewFragmentInstance(MapViewFragment.class);
         fragmentManager = getSupportFragmentManager();
         fragmentManager.beginTransaction().replace(R.id.flContent, fragment).commit();
         setTitle(mNavigationView.getCheckedItem().getTitle());
@@ -166,7 +164,7 @@ public class MainActivity extends AppCompatActivity {
                 break;
 
             case R.id.map_support:
-                fragmentClass = KandleMapFragment.class;
+                fragmentClass = MapViewFragment.class;
                 break;
 
             case R.id.settings:

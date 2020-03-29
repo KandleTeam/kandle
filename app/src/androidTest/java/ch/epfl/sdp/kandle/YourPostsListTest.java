@@ -10,6 +10,7 @@ import androidx.test.espresso.NoMatchingViewException;
 import androidx.test.espresso.UiController;
 import androidx.test.espresso.ViewAction;
 import androidx.test.espresso.ViewAssertion;
+import androidx.test.espresso.action.ViewActions;
 import androidx.test.espresso.contrib.DrawerActions;
 import androidx.test.espresso.contrib.NavigationViewActions;
 import androidx.test.espresso.contrib.RecyclerViewActions;
@@ -47,6 +48,7 @@ public class YourPostsListTest {
                 }
 
             };
+
 
     @Before
     public void loadPostView() {
@@ -92,12 +94,12 @@ public class YourPostsListTest {
 
 
         // Move back to map
-        onView(withId(R.id.drawer_layout)).perform(DrawerActions.open());
+        onView(withId(R.id.drawer_layout)).check(matches(isClosed(Gravity.LEFT))).perform(DrawerActions.open());
         onView(withId(R.id.navigation_view)).perform(NavigationViewActions.navigateTo(R.id.map_support));
-
+        onView(withId(R.id.drawer_layout)).perform(DrawerActions.close());
 
         // Create two new posts
-        onView(withId(R.id.newPostButton)).perform(click());
+        onView(withId(R.id.newPostButton)).perform(ViewActions.click());
         onView(withId(R.id.postText)).perform(typeText("Post 3"));
         onView(withId(R.id.postText)).perform(closeSoftKeyboard());
         onView(withId(R.id.postButton)).perform(click());

@@ -3,6 +3,7 @@ package ch.epfl.sdp.kandle.fragment;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,7 +20,8 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import ch.epfl.sdp.kandle.PostActivity;
 import ch.epfl.sdp.kandle.R;
 
-public class KandleMapFragment extends Fragment implements OnMapReadyCallback {
+
+public class MapViewFragment extends Fragment implements OnMapReadyCallback {
 
     private GoogleMap gmap;
     private SupportMapFragment innerMapFragment;
