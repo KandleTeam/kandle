@@ -70,8 +70,6 @@ public class PostActivity extends AppCompatActivity {
                             p = new Post(postText, downloadUri.toString(), new Date(), auth.getCurrentUser().getUid());
                             post(p);
                         }
-                    }else{
-                        System.out.println(task.getException().getMessage());
                     }
                 });
             }
@@ -95,8 +93,6 @@ public class PostActivity extends AppCompatActivity {
                 finish();
                 finish();
                 startActivity(new Intent(getApplicationContext(), MainActivity.class));
-            }else{
-                System.out.println(task.getException().getMessage());
             }
         });
     }
