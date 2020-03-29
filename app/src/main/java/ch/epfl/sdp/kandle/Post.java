@@ -4,7 +4,9 @@ package ch.epfl.sdp.kandle;
 import com.google.android.gms.maps.model.LatLng;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
+import java.util.List;
 import java.util.UUID;
 
 
@@ -81,8 +83,8 @@ public class Post {
     }
      */
 
-    public ArrayList<String> getLikers(){
-        return likers;
+    public List<String> getLikers(){
+        return Collections.unmodifiableList(likers);
     }
 
     public int getLikes() {
@@ -112,7 +114,7 @@ public class Post {
      */
 
     public Date getDate() {
-        return date;
+        return (Date) date.clone();
     }
 
     public void likePost(String userId) {
@@ -132,10 +134,12 @@ public class Post {
         this.userId = userId;
     }
 
+     */
+
     public String getImage(){
         return imageURL;
     }
-     */
+
 
     public void setImage(String imageURL){
         this.imageURL = imageURL;
