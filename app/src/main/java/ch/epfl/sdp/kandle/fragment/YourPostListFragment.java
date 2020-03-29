@@ -55,6 +55,8 @@ public class YourPostListFragment extends Fragment {
 
     private DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
 
+    public final static int POST_IMAGE = 10;
+
 
     public static YourPostListFragment newInstance() {
         return new YourPostListFragment();
@@ -101,6 +103,7 @@ public class YourPostListFragment extends Fragment {
                         ImageView image = popupView.findViewById(R.id.postImage);
                         content.setText(posts.get(position).getDescription());
                         if(posts.get(position).getImageURL() != null){
+                            image.setTag(POST_IMAGE);
                             Picasso.get().load(posts.get(position).getImageURL()).into(image);
                         }
 

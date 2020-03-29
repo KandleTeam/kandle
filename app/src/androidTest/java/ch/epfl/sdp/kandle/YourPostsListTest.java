@@ -30,8 +30,11 @@ import static androidx.test.espresso.action.ViewActions.typeText;
 import static androidx.test.espresso.assertion.ViewAssertions.matches;
 import static androidx.test.espresso.contrib.DrawerMatchers.isClosed;
 import static androidx.test.espresso.matcher.ViewMatchers.withId;
+import static androidx.test.espresso.matcher.ViewMatchers.withTagValue;
 import static androidx.test.espresso.matcher.ViewMatchers.withText;
 import static junit.framework.TestCase.assertEquals;
+import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.not;
 
 @RunWith(AndroidJUnit4.class)
 public class YourPostsListTest {
@@ -107,6 +110,21 @@ public class YourPostsListTest {
         //4 posts should be displayed
         onView(withId(R.id.rvPosts)).check(new RecyclerViewItemCountAssertion(4));
 
+    }
+
+    @Test
+    public void ChecksOnePostHasAnImageNotTheOther() throws Throwable {
+
+        //2 posts should be displayed
+        onView(withId(R.id.rvPosts)).check(new RecyclerViewItemCountAssertion(2));
+
+        onView(withId(R.id.rvPosts)).perform(RecyclerViewActions.actionOnItemAtPosition(1,click()));
+        onView(withId(R.id.postImage)).check(matches(withTagValue(is(YourPostListFragment.POST_IMAGE))));
+        onView(withId(R.id.post_content)).perform(click());
+
+        onView(withId(R.id.rvPosts)).perform(RecyclerViewActions.actionOnItemAtPosition(0,click()));
+        onView(withId(R.id.postImage)).check(matches(not(withTagValue(is(YourPostListFragment.POST_IMAGE)))));
+        onView(withId(R.id.post_content)).perform(click());
     }
 
     public static ViewAction clickChildViewWithId(final int id) {
