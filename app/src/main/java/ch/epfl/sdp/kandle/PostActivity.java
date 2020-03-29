@@ -69,8 +69,6 @@ public class PostActivity extends AppCompatActivity {
                             p = new Post(postText, downloadUri.toString(), new Date(), auth.getCurrentUser().getUid());
                             post(p);
                         }
-                    }else{
-                        System.out.println(task.getException().getMessage());
                     }
                 });
             }
@@ -92,8 +90,6 @@ public class PostActivity extends AppCompatActivity {
             if (task.isSuccessful()) {
                 Toast.makeText(PostActivity.this, "You have successfully posted : " + p.getDescription(), Toast.LENGTH_LONG ).show();
                 finish();
-            }else{
-                System.out.println(task.getException().getMessage());
             }
         });
     }
