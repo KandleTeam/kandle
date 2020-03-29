@@ -14,12 +14,14 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.PopupWindow;
 import android.widget.TextView;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.squareup.picasso.Picasso;
 
 import java.lang.reflect.Array;
 import java.text.DateFormat;
@@ -77,8 +79,8 @@ public class YourPostListFragment extends Fragment {
 
                     if (task.getResult()!=null){
                         posts= new ArrayList<>(task.getResult());
-                        //reverse to have the newer posts first
-                        Collections.reverse(posts);
+                        //in order to have the newer posts first, we should sort the posts with the date they were posted.
+
                     }
 
                     else {
@@ -96,7 +98,11 @@ public class YourPostListFragment extends Fragment {
                         final PopupWindow popupWindow = new PopupWindow(popupView, width, height, focusable);
                         popupWindow.showAtLocation(view, Gravity.CENTER, 0, 0);
                         TextView content = popupView.findViewById(R.id.post_content);
+                        ImageView image = popupView.findViewById(R.id.postImage);
                         content.setText(posts.get(position).getDescription());
+                        if(posts.get(position).getImageURL() != null){
+                            Picasso.get().load(posts.get(position).getImageURL()).into(image);
+                        }
 
                         popupView.setOnClickListener((popup) -> {
                             popupWindow.dismiss();

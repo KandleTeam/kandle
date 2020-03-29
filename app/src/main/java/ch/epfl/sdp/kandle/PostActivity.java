@@ -67,14 +67,16 @@ public class PostActivity extends AppCompatActivity {
                             Toast.makeText(PostActivity.this, "Unable to upload image", Toast.LENGTH_LONG).show();
                         }
                         else {
-                            Post p = new Post(postText, downloadUri.toString(), new Date(), auth.getCurrentUser().getUid());
+                            p = new Post(postText, downloadUri.toString(), new Date(), auth.getCurrentUser().getUid());
                             post(p);
                         }
+                    }else{
+                        System.out.println(task.getException().getMessage());
                     }
                 });
             }
             else {
-                Post p = new Post(postText, null, new Date(), auth.getCurrentUser().getUid());
+                p = new Post(postText, null, new Date(), auth.getCurrentUser().getUid());
                 post(p);
             }
 

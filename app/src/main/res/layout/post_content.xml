@@ -14,4 +14,20 @@
         android:textSize="22sp"
         android:text="This is a popup window."/>
 
+    <ImageView
+        android:id="@+id/postImage"
+        android:layout_width="167dp"
+        android:layout_height="163dp"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginStart="122dp"
+        android:layout_marginEnd="122dp"
+        android:layout_marginBottom="0dp"
+        android:adjustViewBounds="true"
+        android:contentDescription="Posted image"
+        android:cropToPadding="true"
+        android:scaleType="centerCrop" />
+
 </RelativeLayout>
+
