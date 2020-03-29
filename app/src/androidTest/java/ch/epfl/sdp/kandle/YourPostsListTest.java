@@ -52,6 +52,7 @@ public class YourPostsListTest {
     public void loadPostView() {
         onView(withId(R.id.drawer_layout)).check(matches(isClosed(Gravity.LEFT))).perform(DrawerActions.open());
         onView(withId(R.id.navigation_view)).perform(NavigationViewActions.navigateTo(R.id.your_posts));
+        onView(withId(R.id.drawer_layout)).perform(DrawerActions.close());
     }
 
 
@@ -86,9 +87,16 @@ public class YourPostsListTest {
     @Test
     public void createTwoNewPosts() {
 
-        //2 posts should be displayed
+        // 2 posts should be displayed
         onView(withId(R.id.rvPosts)).check(new RecyclerViewItemCountAssertion(2));
-        //Create two new posts
+
+
+        // Move back to map
+        onView(withId(R.id.drawer_layout)).perform(DrawerActions.open());
+        onView(withId(R.id.navigation_view)).perform(NavigationViewActions.navigateTo(R.id.map_support));
+
+
+        // Create two new posts
         onView(withId(R.id.newPostButton)).perform(click());
         onView(withId(R.id.postText)).perform(typeText("Post 3"));
         onView(withId(R.id.postText)).perform(closeSoftKeyboard());

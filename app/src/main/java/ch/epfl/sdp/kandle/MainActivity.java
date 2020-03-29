@@ -38,7 +38,6 @@ public class MainActivity extends AppCompatActivity {
     private DrawerLayout mDrawerLayout;
     private Toolbar toolbar;
     private NavigationView mNavigationView;
-    private Button mNewPostButton;
 
     private Fragment fragment;
     private FragmentManager fragmentManager;
@@ -64,7 +63,6 @@ public class MainActivity extends AppCompatActivity {
         toolbar = findViewById(R.id.toolbar);
         mDrawerLayout = findViewById(R.id.drawer_layout);
         mNavigationView = findViewById(R.id.navigation_view);
-        mNewPostButton = findViewById(R.id.newPostButton);
         mProfilePic = mNavigationView.getHeaderView(0).findViewById(R.id.profilePicInMenu);
         mUsername = mNavigationView.getHeaderView(0).findViewById(R.id.username);
 
@@ -90,16 +88,9 @@ public class MainActivity extends AppCompatActivity {
         fragmentManager.beginTransaction().replace(R.id.flContent, fragment).commit();
         setTitle(mNavigationView.getCheckedItem().getTitle());
 
-
-        mNewPostButton.setOnClickListener(v -> {
-            Log.d("MainActivity", "PRESSED NEWPOST BUTTON");
-            startActivity(new Intent(getApplicationContext(), PostActivity.class));
-        });
-
         final FragmentManager fragmentManager = getSupportFragmentManager();
         mProfilePic.setOnClickListener(v -> database.getUserById(auth.getCurrentUser().getUid()).addOnCompleteListener(task -> {
                     if (task.isSuccessful()) {
-                        mNewPostButton.setVisibility(View.GONE);
                         fragmentManager.beginTransaction().replace(R.id.flContent, ProfileFragment.newInstance(task.getResult()))
                                 .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
                                 .addToBackStack(null)
@@ -146,12 +137,9 @@ public class MainActivity extends AppCompatActivity {
      */
     private void setupDrawerContent(NavigationView navigationView) {
         navigationView.setNavigationItemSelectedListener(
-                new NavigationView.OnNavigationItemSelectedListener() {
-                    @Override
-                    public boolean onNavigationItemSelected(MenuItem menuItem) {
-                        selectDrawerItem(menuItem);
-                        return true;
-                    }
+                menuItem -> {
+                    selectDrawerItem(menuItem);
+                    return true;
                 });
     }
 
@@ -174,27 +162,22 @@ public class MainActivity extends AppCompatActivity {
                 break;
 
             case R.id.your_posts:
-                mNewPostButton.setVisibility(View.VISIBLE);
                 fragmentClass = YourPostListFragment.class;
                 break;
 
             case R.id.map_support:
-                mNewPostButton.setVisibility(View.VISIBLE);
                 fragmentClass = KandleMapFragment.class;
                 break;
 
             case R.id.settings:
-                mNewPostButton.setVisibility(View.GONE);
                 fragmentClass = SettingsFragment.class;
                 break;
 
             case R.id.about:
-                mNewPostButton.setVisibility(View.GONE);
                 fragmentClass = AboutFragment.class;
                 break;
 
             case R.id.follow:
-                mNewPostButton.setVisibility(View.GONE);
                 fragmentClass = SearchFragment.class;
                 break;
 

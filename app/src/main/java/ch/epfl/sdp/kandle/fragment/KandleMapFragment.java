@@ -1,10 +1,12 @@
 package ch.epfl.sdp.kandle.fragment;
 
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
 
 import androidx.fragment.app.Fragment;
 
@@ -14,6 +16,7 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 
+import ch.epfl.sdp.kandle.PostActivity;
 import ch.epfl.sdp.kandle.R;
 
 public class KandleMapFragment extends Fragment implements OnMapReadyCallback {
@@ -23,12 +26,6 @@ public class KandleMapFragment extends Fragment implements OnMapReadyCallback {
 
 
     @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-
-    }
-
-    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              final Bundle savedInstanceState) {
 
@@ -36,9 +33,10 @@ public class KandleMapFragment extends Fragment implements OnMapReadyCallback {
         View view = inflater.inflate(R.layout.fragment_map, container, false);
 
         innerMapFragment = (SupportMapFragment) getChildFragmentManager().findFragmentById(R.id.inner_map_fragment);
-
-
         innerMapFragment.getMapAsync(this);
+
+        ImageButton mNewPostButton = view.findViewById(R.id.newPostButton);
+        mNewPostButton.setOnClickListener(v -> startActivity(new Intent(getContext(), PostActivity.class)));
 
         return view;
     }
