@@ -1,5 +1,6 @@
 package ch.epfl.sdp.kandle;
 
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -43,14 +44,22 @@ public class CustomAccountActivity extends AppCompatActivity {
         uploadButton.setOnClickListener(v -> profilePicPicker.openImage());
 
         leaveButton.setOnClickListener(v -> {
-            String nickname = m_nickname.getText().toString();
-            if (nickname.trim().length() > 0) {
-                database.updateNickname(nickname.trim()).addOnCompleteListener(task -> {
+            ProgressDialog pd = new ProgressDialog(CustomAccountActivity.this);
+            pd.setMessage("Finalizing your account");
+            pd.show();
+            profilePicPicker.setProfilePicture().addOnCompleteListener(task -> {
+                String nickname = m_nickname.getText().toString().trim();
+                if (nickname.length() > 0) {
+                    database.updateNickname(nickname).addOnCompleteListener(task1 -> {
+                        pd.dismiss();
+                        startMainActivity();;
+                    });
+                }
+                else {
+                    pd.dismiss();
                     startMainActivity();
-                });
-            } else {
-                startMainActivity();
-            }
+                }
+            });
         });
     }
 
@@ -68,7 +77,6 @@ public class CustomAccountActivity extends AppCompatActivity {
         Uri uri = profilePicPicker.getImageUri();
 
         if (uri != null) {
-            profilePicPicker.setProfilePicture();
             profilePic.setTag(PROFILE_PICTURE_TAG);
             profilePic.setImageURI(uri);
         }

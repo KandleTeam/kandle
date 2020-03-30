@@ -28,4 +28,10 @@ public class CloudStorage implements Storage {
             return fileReference.getDownloadUrl();
         });
     }
+
+    @Override
+    public Task<Void> delete(String path) {
+        final StorageReference reference = FirebaseStorage.getInstance().getReferenceFromUrl(path);
+        return reference.delete();
+    }
 }

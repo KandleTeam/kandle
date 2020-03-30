@@ -79,7 +79,7 @@ public class RegisterActivity extends AppCompatActivity {
         auth.createUserWithEmailAndPassword(email, password).addOnCompleteListener(task -> {
             if (task.isSuccessful()) {
                 userID = auth.getCurrentUser().getUid();
-                User user = new User(userID, username, email, null, null);
+                User user = new User(userID, username, email, username, null);
 
                 database.createUser(user);
                 pd.dismiss();

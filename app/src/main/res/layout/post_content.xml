@@ -12,17 +12,19 @@
         android:layout_height="wrap_content"
         android:layout_alignParentStart="true"
         android:layout_alignParentEnd="true"
+        android:layout_marginHorizontal="20dp"
+        android:layout_centerHorizontal="true"
         android:text="This is a popup window."
         android:textSize="22sp" />
 
     <ImageView
         android:id="@+id/postImage"
+        android:visibility="gone"
         android:layout_width="150dp"
         android:layout_height="150dp"
         android:layout_below="@id/post_content"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="20dp"
-        android:layout_marginBottom="20dp"
+        android:layout_marginVertical="20dp"
         android:adjustViewBounds="true"
         android:contentDescription="Posted image"
         android:scaleType="centerInside" />
