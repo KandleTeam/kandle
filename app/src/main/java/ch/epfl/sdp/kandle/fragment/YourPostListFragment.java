@@ -97,6 +97,7 @@ public class YourPostListFragment extends Fragment {
                         ImageView image = popupView.findViewById(R.id.postImage);
                         content.setText(posts.get(position).getDescription());
                         if(posts.get(position).getImageURL() != null){
+                            image.setVisibility(View.VISIBLE);
                             image.setTag(POST_IMAGE);
                             Picasso.get().load(posts.get(position).getImageURL()).into(image);
                         }
