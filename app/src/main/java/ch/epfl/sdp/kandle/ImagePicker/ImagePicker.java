@@ -20,7 +20,7 @@ import static android.app.Activity.RESULT_OK;
 public class ImagePicker {
 
     private Activity activity;
-    protected Fragment fragment;
+    private Fragment fragment;
     private Uri imageUri;
 
     private static final int IMAGE_REQUEST = 1;

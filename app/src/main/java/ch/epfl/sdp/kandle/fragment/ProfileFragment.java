@@ -38,15 +38,15 @@ import ch.epfl.sdp.kandle.dependencies.DependencyManager;
 
 public class ProfileFragment extends Fragment {
 
-    User user;
+    private User user;
     private ProfilePicPicker profilePicPicker;
-    ImageView mProfilePicture, mEditPicture, mProfilePictureInMenu, mEditName;
-    TextView mNumberOfFollowers, mNumberOfFollowing, mUsername, mNicknameView, mNickNameInMenu;
-    EditText mNicknameEdit;
-    ViewSwitcher mNickname;
-    Button mFollowButton, mValidateNameButton, mValidatePictureButton;
-    Authentication auth;
-    Database database;
+    private ImageView mProfilePicture, mEditPicture, mProfilePictureInMenu, mEditName;
+    private TextView mNumberOfFollowers, mNumberOfFollowing, mUsername, mNicknameView, mNickNameInMenu;
+    private EditText mNicknameEdit;
+    private ViewSwitcher mNickname;
+    private Button mFollowButton, mValidateNameButton, mValidatePictureButton;
+    private Authentication auth;
+    private Database database;
 
     public final static int PROFILE_PICTURE_BEFORE = 6;
     public final static int PROFILE_PICTURE_AFTER = 7;
