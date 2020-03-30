@@ -116,7 +116,7 @@ public class CustomAccountActivityTest {
     }
 
     @Test
-    public void leaveActivity() throws InterruptedException {
+    public void leaveActivity() {
         onView(withId(R.id.startButton)).perform(click());
         intended(hasComponent(MainActivity.class.getName()));
     }
