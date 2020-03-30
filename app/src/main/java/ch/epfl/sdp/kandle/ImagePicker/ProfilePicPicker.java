@@ -19,6 +19,12 @@ public class ProfilePicPicker extends ImagePicker {
     public ProfilePicPicker(Fragment fragment) {super(fragment); }
 
     public Task<Void> setProfilePicture() {
+        DependencyManager.getDatabaseSystem().getProfilePicture().addOnCompleteListener(task -> {
+            if (task.isSuccessful() && task.getResult() != null) {
+                DependencyManager.getStorageSystem().delete(task.getResult());
+            }
+        });
+
         return uploadImage().continueWithTask(task -> {
             String sUri = null;
             Uri downloadUri = task.getResult();

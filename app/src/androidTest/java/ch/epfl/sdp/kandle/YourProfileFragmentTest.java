@@ -90,6 +90,8 @@ public class YourProfileFragmentTest {
 
         onView(withId(R.id.profileEditPictureButton)).perform(click());
         onView(withId(R.id.profilePicture)).check(matches(withTagValue(is(ProfileFragment.PROFILE_PICTURE_AFTER))));
+
+        onView(withId(R.id.profileValidatePictureButton)).perform(click());
     }
 
     @Test
