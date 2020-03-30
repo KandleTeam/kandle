@@ -262,7 +262,7 @@ public class MockDatabase implements Database {
         TaskCompletionSource<Void> source = new TaskCompletionSource<>();
         User user = users.get("user1Id");
         user.setImageURL(uri);
-
+        source.setResult(null);
         return source.getTask();
     }
 
@@ -280,6 +280,7 @@ public class MockDatabase implements Database {
         TaskCompletionSource<Void> source = new TaskCompletionSource<>();
         User user = users.get("user1Id");
         user.setFullname(nickname);
+        source.setResult(null);
         return source.getTask();
     }
 
