@@ -97,12 +97,6 @@ public class FirestoreDatabase implements Database {
     }
 
 
-
-
-
-
-
-
     @Override
     public Task<Void> createUser(final User user) {
 
@@ -384,9 +378,9 @@ public class FirestoreDatabase implements Database {
 
     @Override
 
-    public Task<Void> addPost(String userId, Post p) {
+    public Task<Void> addPost(Post p) {
         final DocumentReference addedPostDoc = posts.document(p.getPostId());
-        final DocumentReference userAddingPostDoc = users.document(userId);
+        final DocumentReference userAddingPostDoc = users.document(p.getUserId());
 
         return firestore
                 .runTransaction(transaction -> {
@@ -414,9 +408,9 @@ public class FirestoreDatabase implements Database {
     }
 
     @Override
-    public Task<Void> deletePost(String userId, Post p) {
+    public Task<Void> deletePost(Post p) {
         final DocumentReference deletedPostDoc = posts.document(p.getPostId());
-        final DocumentReference userDeletingPostDoc = users.document(userId);
+        final DocumentReference userDeletingPostDoc = users.document(p.getUserId());
 
         return firestore
                 .runTransaction(transaction -> {
@@ -508,42 +502,36 @@ public class FirestoreDatabase implements Database {
                 .continueWith(task -> (List<String>) task.getResult().get("posts"));
 
         TaskCompletionSource<List<Post>> source = new TaskCompletionSource<>();
-        taskListPostId.addOnCompleteListener(new OnCompleteListener<List<String>>() {
-            @Override
-            public void onComplete(@NonNull Task<List<String>> task) {
+        taskListPostId.addOnCompleteListener(task -> {
 
-                if (task.isSuccessful()){
-                   posts.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                       @Override
-                       public void onComplete(@NonNull Task<QuerySnapshot> task2) {
+            if (task.isSuccessful()){
+               posts.get().addOnCompleteListener(task2 -> {
 
-                           if (task2.isSuccessful()){
-                               List<Post> posts = new ArrayList<>();
+                   if (task2.isSuccessful()){
+                       List<Post> posts = new ArrayList<>();
 
-                               if (task2.getResult()!=null) {
+                       if (task2.getResult()!=null) {
 
-                                   for (QueryDocumentSnapshot documentSnapshot : task2.getResult()) {
-                                       String postId = (String) documentSnapshot.get("postId");
-                                       if (task.getResult().contains(postId)) {
-                                           posts.add(documentSnapshot.toObject(Post.class));
-                                       }
-                                   }
+                           for (QueryDocumentSnapshot documentSnapshot : task2.getResult()) {
+                               String postId = (String) documentSnapshot.get("postId");
+                               if (task.getResult().contains(postId)) {
+                                   posts.add(documentSnapshot.toObject(Post.class));
                                }
-
-                               source.setResult(posts);
                            }
-
-                           else {
-                               source.setException( new Exception(task2.getException().getMessage()));
-                           }
-
                        }
-                   });
 
-                }
-                else {
-                    source.setException( new Exception(task.getException().getMessage()));
-                }
+                       source.setResult(posts);
+                   }
+
+                   else {
+                       source.setException( new Exception(task2.getException().getMessage()));
+                   }
+
+               });
+
+            }
+            else {
+                source.setException( new Exception(task.getException().getMessage()));
             }
         });
 

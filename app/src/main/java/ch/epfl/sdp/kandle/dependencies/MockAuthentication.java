@@ -23,6 +23,7 @@ import com.google.firebase.auth.zzz;
 import java.util.ArrayList;
 import java.util.List;
 
+import ch.epfl.sdp.kandle.LoggedInUser;
 import ch.epfl.sdp.kandle.User;
 
 public class MockAuthentication implements Authentication {
@@ -31,17 +32,18 @@ public class MockAuthentication implements Authentication {
     private List<String> emails = new ArrayList<>();
     private MockDatabase database;
     private boolean isConnected;
+    private final User loggedInUser = new User("loggedInUserId","LoggedInUser","loggedInUser@kandle.ch","nickname","image");
 
     public MockAuthentication(boolean isConnected) {
         this.isConnected = isConnected;
-        emails.add("user1@kandle.ch");
+        emails.add(loggedInUser.getEmail());
         database = new MockDatabase();
     }
 
     @Override
-    public Task<AuthResult> createUserWithEmailAndPassword(String email, String password) {
+    public Task<User> createUserWithEmailAndPassword(String username, String email, String password) {
 
-        TaskCompletionSource source = new TaskCompletionSource<AuthResult>();
+        TaskCompletionSource source = new TaskCompletionSource<User>();
 
         if (emails.contains(email)){
             isConnected = false;
@@ -51,25 +53,24 @@ public class MockAuthentication implements Authentication {
             emails.add(email);
             isConnected = true;
             String newId = "newUserId";
-            source.setResult(getAuthResultWithUser(newId,email));
-            database.users.put(newId,new User(newId,"newUser","newUser@kandle.ch","newFullName",null));
+            User userToRegister = new User(newId,"newUser","newUser@kandle.ch","newFullName",null);
+            source.setResult(userToRegister);
+            database.createUser(userToRegister);
 
         }
         return source.getTask();
     }
 
     @Override
-    public Task<AuthResult> signInWithEmailAndPassword(String email, String password) {
+    public Task<User> signInWithEmailAndPassword(String email, String password) {
 
-        TaskCompletionSource source = new TaskCompletionSource<AuthResult>();
+        TaskCompletionSource source = new TaskCompletionSource<User>();
         if (emails.contains(email)) {
             isConnected = true;
-            User user = findUserinDatabasebyEmail(email);
-            source.setResult(getAuthResultWithUser(findUserinDatabasebyEmail(email).getId(),email));
+            database.getUserById("loggedInUserId");
+            source.setResult(loggedInUser);
 
-        }
-
-        else {
+        } else {
             isConnected = false;
             source.setException(new Exception ("You do not have an account yet"));
         }
@@ -83,181 +84,8 @@ public class MockAuthentication implements Authentication {
         isConnected=false;
     }
 
-    public AuthenticationUser getCurrentUser() {
-        if (isConnected){
-            return new MockAuthenticationUser();
-        }
-        else {
-            return null;
-        }
+    public boolean userCurrentlyLoggedIn(){
+        return isConnected;
     }
 
-
-    private AuthResult getAuthResultWithUser(String id, String email){
-        AuthResult authResult = new AuthResult() {
-            @Nullable
-            @Override
-            public FirebaseUser getUser() {
-                return new FirebaseUser() {
-                    @NonNull
-                    @Override
-                    public String getUid() {
-                        return id;
-                    }
-
-                    @NonNull
-                    @Override
-                    public String getProviderId() {
-                        return null;
-                    }
-
-                    @Override
-                    public boolean isAnonymous() {
-                        return false;
-                    }
-
-                    @Nullable
-                    @Override
-                    public List<String> zza() {
-                        return null;
-                    }
-
-                    @NonNull
-                    @Override
-                    public List<? extends UserInfo> getProviderData() {
-                        return null;
-                    }
-
-                    @NonNull
-                    @Override
-                    public FirebaseUser zza(@NonNull List<? extends UserInfo> list) {
-                        return null;
-                    }
-
-                    @Override
-                    public FirebaseUser zzb() {
-                        return null;
-                    }
-
-                    @NonNull
-                    @Override
-                    public FirebaseApp zzc() {
-                        return null;
-                    }
-
-                    @Nullable
-                    @Override
-                    public String getDisplayName() {
-                        return null;
-                    }
-
-                    @Nullable
-                    @Override
-                    public Uri getPhotoUrl() {
-                        return null;
-                    }
-
-                    @Nullable
-                    @Override
-                    public String getEmail() {
-                        return email;
-                    }
-
-                    @Nullable
-                    @Override
-                    public String getPhoneNumber() {
-                        return null;
-                    }
-
-                    @Nullable
-                    @Override
-                    public String zzd() {
-                        return null;
-                    }
-
-                    @NonNull
-                    @Override
-                    public zzff zze() {
-                        return null;
-                    }
-
-                    @Override
-                    public void zza(@NonNull zzff zzff) {
-
-                    }
-
-                    @NonNull
-                    @Override
-                    public String zzf() {
-                        return null;
-                    }
-
-                    @NonNull
-                    @Override
-                    public String zzg() {
-                        return null;
-                    }
-
-                    @Nullable
-                    @Override
-                    public FirebaseUserMetadata getMetadata() {
-                        return null;
-                    }
-
-                    @NonNull
-                    @Override
-                    public zzz zzh() {
-                        return null;
-                    }
-
-                    @Override
-                    public void zzb(List<zzy> list) {
-
-                    }
-
-                    @Override
-                    public void writeToParcel(Parcel dest, int flags) {
-
-                    }
-
-                    @Override
-                    public boolean isEmailVerified() {
-                        return false;
-                    }
-                };
-            }
-
-            @Nullable
-            @Override
-            public AdditionalUserInfo getAdditionalUserInfo() {
-                return null;
-            }
-
-            @Nullable
-            @Override
-            public AuthCredential getCredential() {
-                return null;
-            }
-
-            @Override
-            public int describeContents() {
-                return 0;
-            }
-
-            @Override
-            public void writeToParcel(Parcel dest, int flags) {
-
-            }
-        };
-        return authResult;
-    }
-
-    private User findUserinDatabasebyEmail(String email) {
-        for(User user : database.users.values()){
-            if(user.getEmail().equals(email)){
-                return user;
-            }
-        }
-        return null;
-    }
 }

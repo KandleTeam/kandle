@@ -72,9 +72,7 @@ public class MainActivity extends AppCompatActivity {
         mPostButton = findViewById(R.id.postButton);
         mProfilePic = mNavigationView.getHeaderView(0).findViewById(R.id.profilePicInMenu);
         mUsername = mNavigationView.getHeaderView(0).findViewById(R.id.username);
-
         mNickname = mNavigationView.getHeaderView(0).findViewById(R.id.nicknameInMenu);
-
         mUsername = mNavigationView.getHeaderView(0).findViewById(R.id.usernameInMenu);
         database.getUsername().addOnCompleteListener(task -> {
             if (task.isSuccessful()) {
@@ -97,31 +95,15 @@ public class MainActivity extends AppCompatActivity {
         });
 
         final FragmentManager fragmentManager = getSupportFragmentManager();
-        mProfilePic.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
+        mProfilePic.setOnClickListener(v -> {
 
-                database.getUserById(auth.getCurrentUser().getUid()).addOnCompleteListener(new OnCompleteListener<User>() {
-                    @Override
-                    public void onComplete(@NonNull Task<User> task) {
-                        if (task.isSuccessful()){
-                            mPostButton.setVisibility(View.GONE);
-                            fragmentManager.beginTransaction().replace(R.id.flContent, ProfileFragment.newInstance(task.getResult()))
-                                    .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
-                                    .addToBackStack(null)
-                                    .commit();
-                            setTitle("Your Profile");
-                            mDrawerLayout.closeDrawers();
-                        }
-                        else {
-
-                        }
-
-                    }
-                });
-
-
-            }
+            mPostButton.setVisibility(View.GONE);
+            fragmentManager.beginTransaction().replace(R.id.flContent, ProfileFragment.newInstance(LoggedInUser.getInstance()))
+                    .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
+                    .addToBackStack(null)
+                    .commit();
+            setTitle("Your Profile");
+            mDrawerLayout.closeDrawers();
         });
 
         database.getProfilePicture().addOnCompleteListener(task -> {
@@ -154,21 +136,20 @@ public class MainActivity extends AppCompatActivity {
 
     /**
      * Calls the slectDrawerItem method if one of the items in the drawer menu is selected by the user
+     *
      * @param navigationView
      */
     private void setupDrawerContent(NavigationView navigationView) {
         navigationView.setNavigationItemSelectedListener(
-                new NavigationView.OnNavigationItemSelectedListener() {
-                    @Override
-                    public boolean onNavigationItemSelected(MenuItem menuItem) {
-                        selectDrawerItem(menuItem);
-                        return true;
-                    }
+                menuItem -> {
+                    selectDrawerItem(menuItem);
+                    return true;
                 });
     }
 
     /**
      * This method allows to navigate between different fragment from the main activity
+     *
      * @param menuItem
      */
     private void selectDrawerItem(MenuItem menuItem) {

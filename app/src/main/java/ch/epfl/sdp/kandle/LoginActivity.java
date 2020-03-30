@@ -5,8 +5,6 @@ import androidx.appcompat.app.AppCompatActivity;
 import ch.epfl.sdp.kandle.dependencies.Authentication;
 import ch.epfl.sdp.kandle.dependencies.Database;
 import ch.epfl.sdp.kandle.dependencies.DependencyManager;
-import ch.epfl.sdp.kandle.dependencies.InternalStorage;
-import ch.epfl.sdp.kandle.dependencies.InternalStorageHandler;
 import io.grpc.Internal;
 
 import android.app.ProgressDialog;
@@ -31,7 +29,6 @@ public class LoginActivity extends AppCompatActivity {
     private Authentication auth;
     private Database database;
     private User currentUser;
-    private InternalStorage internalStorage;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,12 +38,13 @@ public class LoginActivity extends AppCompatActivity {
         setContentView(R.layout.activity_login);
         auth = DependencyManager.getAuthSystem();
         database = DependencyManager.getDatabaseSystem();
-        internalStorage = DependencyManager.getInternalStorageSystem(getApplicationContext());
 
-        if (auth.getCurrentUser() != null && internalStorage.getCurrentUser() != null) {
+
+        if(auth.userCurrentlyLoggedIn()) {
             startActivity(new Intent(getApplicationContext(), MainActivity.class));
             finish();
         }
+
 
         mSignIn = findViewById(R.id.signUpLink);
 
@@ -87,18 +85,18 @@ public class LoginActivity extends AppCompatActivity {
         pd.setMessage(getString(R.string.login_in_progress));
         pd.show();
 
-        auth.signInWithEmailAndPassword(email, password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+        auth.signInWithEmailAndPassword(email, password).addOnCompleteListener(new OnCompleteListener<User>() {
             @Override
-            public void onComplete(@NonNull Task<AuthResult> task) {
+            public void onComplete(@NonNull Task<User> task) {
                 if (task.isSuccessful()) {
                     pd.dismiss();
                     Toast.makeText(LoginActivity.this, getString(R.string.login_success), Toast.LENGTH_SHORT).show();
-                    storeUserLocallywithId(task.getResult().getUser().getUid());
                     startActivity(new Intent(getApplicationContext(), MainActivity.class));
                     finish();
                 } else {
                     pd.dismiss();
                     Toast.makeText(LoginActivity.this, "An error has occurred : " + task.getException().getMessage(), Toast.LENGTH_SHORT).show();
+                    task.getException().printStackTrace();
                 }
             }
         });
@@ -110,11 +108,14 @@ public class LoginActivity extends AppCompatActivity {
      * that there exists a user with this uid
      * @param id
      */
+    /*
     private void storeUserLocallywithId(String id) {
         database.getUserById(id).addOnCompleteListener(task -> {
                 User user = task.getResult();
                 internalStorage.saveUserAtLoginOrRegister(user);
         });
     }
+
+     */
 
 }

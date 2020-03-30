@@ -16,6 +16,7 @@ import androidx.test.ext.junit.runners.AndroidJUnit4;
 import androidx.test.rule.ActivityTestRule;
 
 import ch.epfl.sdp.kandle.dependencies.DependencyManager;
+import ch.epfl.sdp.kandle.dependencies.MockAuthentication;
 
 import static androidx.test.espresso.Espresso.onView;
 import static androidx.test.espresso.action.ViewActions.click;
@@ -52,10 +53,8 @@ public class LoginActivityTest {
 
     @Test
     public void emptyEmailTest() {
-
         onView(withId(R.id.loginBtn)).perform(click());
         onView(withId(R.id.email)).check(matches(hasErrorText(res.getString(R.string.login_email_required))));
-
 
     }
 
@@ -75,10 +74,8 @@ public class LoginActivityTest {
 
         onView(withId(R.id.email)).perform(typeText("zzzz@test.com"));
         onView(withId(R.id.email)).perform(closeSoftKeyboard());
-
         onView(withId(R.id.password)).perform(typeText("zzzzzzzzzz"));
         onView(withId(R.id.password)).perform(closeSoftKeyboard());
-
         onView(withId(R.id.loginBtn)).perform(click());
 
         //TODO check toast
@@ -106,7 +103,7 @@ public class LoginActivityTest {
 
         Intents.init();
 
-        onView(withId(R.id.email)).perform(typeText("user1@kandle.ch"));
+        onView(withId(R.id.email)).perform(typeText("loggedInUser@kandle.ch"));
         onView(withId(R.id.email)).perform(closeSoftKeyboard());
 
         onView(withId(R.id.password)).perform(typeText("123456789"));

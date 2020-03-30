@@ -1,13 +1,9 @@
 package ch.epfl.sdp.kandle;
 
 import androidx.appcompat.app.AppCompatActivity;
-
 import ch.epfl.sdp.kandle.dependencies.Authentication;
 import ch.epfl.sdp.kandle.dependencies.Database;
 import ch.epfl.sdp.kandle.dependencies.DependencyManager;
-import ch.epfl.sdp.kandle.dependencies.InternalStorage;
-import ch.epfl.sdp.kandle.dependencies.InternalStorageHandler;
-
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
@@ -16,11 +12,6 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.google.android.gms.tasks.Task;
-import com.google.android.gms.tasks.TaskCompletionSource;
-
-import java.util.List;
-
 public class RegisterActivity extends AppCompatActivity {
 
 
@@ -28,7 +19,7 @@ public class RegisterActivity extends AppCompatActivity {
     private Button mSignUpBtn;
     private TextView mSignInLink;
     private Authentication auth;
-    private InternalStorageHandler internalStorageHandler;
+
     private Database database;
     private String userID;
 
@@ -46,7 +37,6 @@ public class RegisterActivity extends AppCompatActivity {
         mSignInLink = findViewById(R.id.signInLink);
         database = DependencyManager.getDatabaseSystem();
         auth = DependencyManager.getAuthSystem();
-        internalStorageHandler = new InternalStorageHandler(this);
         mSignInLink.setOnClickListener(v -> {
             startActivity(new Intent(getApplicationContext(), LoginActivity.class));
             finish();
@@ -63,6 +53,7 @@ public class RegisterActivity extends AppCompatActivity {
             if (!checkFields(username, email, password, passwordConfirm)) {
                 return;
             }
+
 
             database.getUserByName(username).addOnCompleteListener(task -> {
                 if (task.isSuccessful()) {
@@ -86,21 +77,17 @@ public class RegisterActivity extends AppCompatActivity {
         ProgressDialog pd = new ProgressDialog(RegisterActivity.this);
         pd.setMessage("Your account is being created");
         pd.show();
-        auth.createUserWithEmailAndPassword(email, password).addOnCompleteListener(task -> {
+        auth.createUserWithEmailAndPassword(username,email, password).addOnCompleteListener(task -> {
             if (task.isSuccessful()) {
-                userID = auth.getCurrentUser().getUid();
-                User user = new User(userID, username, email, null, null);
-
-
-                database.createUser(user);
-                InternalStorage internalStorage = DependencyManager.getInternalStorageSystem(getApplicationContext());
-                internalStorage.saveUserAtLoginOrRegister(user);
                 pd.dismiss();
+                database.createUser(task.getResult());
+                System.out.println("Task creation was sucessfull");
                 Toast.makeText(RegisterActivity.this, "User has been created", Toast.LENGTH_LONG).show();
                 startActivity(new Intent(getApplicationContext(), CustomAccountActivity.class));
                 finishAffinity();
             } else {
                 pd.dismiss();
+                System.out.println("Task creation was sucessfull" + task.getException().getMessage());
                 Toast.makeText(RegisterActivity.this, "An error has occurred : " + task.getException().getMessage(), Toast.LENGTH_SHORT).show();
             }
         });

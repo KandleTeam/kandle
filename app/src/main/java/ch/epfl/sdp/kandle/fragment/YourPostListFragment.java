@@ -30,6 +30,7 @@ import java.util.Date;
 import java.util.List;
 
 import ch.epfl.sdp.kandle.ClickListener;
+import ch.epfl.sdp.kandle.LoggedInUser;
 import ch.epfl.sdp.kandle.Post;
 import ch.epfl.sdp.kandle.PostAdapter;
 import ch.epfl.sdp.kandle.R;
@@ -65,7 +66,7 @@ public class YourPostListFragment extends Fragment {
         auth = DependencyManager.getAuthSystem();
         database = DependencyManager.getDatabaseSystem();
 
-        userId = auth.getCurrentUser().getUid();
+        userId = LoggedInUser.getInstance().getId();
 
         database.getPostsByUserId(userId).addOnCompleteListener(new OnCompleteListener<List<Post>>() {
             @Override

@@ -2,6 +2,7 @@ package ch.epfl.sdp.kandle;
 import android.view.Gravity;
 import android.view.View;
 
+import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.test.espresso.NoMatchingViewException;
 import androidx.test.espresso.UiController;
@@ -52,6 +53,7 @@ public class YourPostsListTest {
     public void loadPostView() {
         onView(withId(R.id.drawer_layout)).check(matches(isClosed(Gravity.LEFT))).perform(DrawerActions.open());
         onView(withId(R.id.navigation_view)).perform(NavigationViewActions.navigateTo(R.id.your_posts));
+        onView(withId(R.id.drawer_layout)).perform(DrawerActions.close());
     }
 
 
@@ -109,7 +111,7 @@ public class YourPostsListTest {
 
     }
 
-    public static ViewAction clickChildViewWithId(final int id) {
+    private static ViewAction clickChildViewWithId(final int id) {
         return new ViewAction() {
             @Override
             public Matcher<View> getConstraints() {
@@ -132,7 +134,7 @@ public class YourPostsListTest {
     }
 
 
-    public class RecyclerViewItemCountAssertion implements ViewAssertion {
+    private class RecyclerViewItemCountAssertion implements ViewAssertion {
         private final int expectedCount;
 
         public RecyclerViewItemCountAssertion(int expectedCount) {

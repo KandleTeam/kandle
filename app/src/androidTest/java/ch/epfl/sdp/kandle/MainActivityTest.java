@@ -1,19 +1,18 @@
 package ch.epfl.sdp.kandle;
 
 import android.view.Gravity;
-
 import androidx.test.espresso.contrib.DrawerActions;
 import androidx.test.espresso.contrib.NavigationViewActions;
 import androidx.test.espresso.intent.Intents;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 import androidx.test.rule.ActivityTestRule;
-
 import ch.epfl.sdp.kandle.dependencies.DependencyManager;
 
+import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-
 import static androidx.test.espresso.Espresso.onView;
 import static androidx.test.espresso.action.ViewActions.click;
 import static androidx.test.espresso.assertion.ViewAssertions.matches;
@@ -25,10 +24,9 @@ import static androidx.test.espresso.matcher.ViewMatchers.withId;
 import static androidx.test.espresso.matcher.ViewMatchers.withTagValue;
 import static androidx.test.espresso.matcher.ViewMatchers.withText;
 import static org.hamcrest.Matchers.is;
-import static org.junit.Assert.assertTrue;
 
 
-@RunWith(AndroidJUnit4.class)
+//@RunWith(AndroidJUnit4.class)
 public class MainActivityTest {
 
 
@@ -40,13 +38,23 @@ public class MainActivityTest {
                 @Override
                 protected  void beforeActivityLaunched() {
                     DependencyManager.setFreshTestDependencies(true);
+
+
                 }
             };
 
 
+    @BeforeClass
+    public static void setup(){
+        try {
+            LoggedInUser.init("loggedInUserId","LoggedInUser","loggedInUser@kandle.ch","nickname",null);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 
     @Test
-    public void openMenuAndNavigateToAboutUsAndFinallyLogout()  {
+    public void openMenuAndNavigateToAboutUs()  {
         onView(withId(R.id.drawer_layout)).check(matches(isClosed(Gravity.LEFT))).perform(DrawerActions.open());
         onView(withId(R.id.navigation_view)).perform(NavigationViewActions.navigateTo(R.id.about));
         onView(withId(R.id.toolbar)).check(matches(hasDescendant(withText("About us"))));
@@ -114,14 +122,17 @@ public class MainActivityTest {
 
     @Test
     public void nicknameIsDisplayed() {
+
+
         onView(withId(R.id.drawer_layout)).check(matches(isClosed(Gravity.LEFT))).perform(DrawerActions.open());
-        onView(withId(R.id.nicknameInMenu)).check(matches(withText("Nickname")));
+        onView(withId(R.id.nicknameInMenu)).check(matches(withText("nickname")));
     }
 
     @Test
     public void usernameIsDisplayed() {
+
         onView(withId(R.id.drawer_layout)).check(matches(isClosed(Gravity.LEFT))).perform(DrawerActions.open());
-        onView(withId(R.id.usernameInMenu)).check(matches(withText("@user1")));
+        onView(withId(R.id.usernameInMenu)).check(matches(withText("@LoggedInUser")));
     }
 
     @Test

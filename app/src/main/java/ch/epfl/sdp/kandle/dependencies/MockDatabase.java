@@ -1,6 +1,5 @@
 package ch.epfl.sdp.kandle.dependencies;
 
-import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.gms.tasks.TaskCompletionSource;
 
@@ -13,9 +12,8 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
+
 import ch.epfl.sdp.kandle.Post;
-import androidx.annotation.NonNull;
 import ch.epfl.sdp.kandle.User;
 
 /**
@@ -60,37 +58,22 @@ public class MockDatabase implements Database {
 
     public MockDatabase() {
         users = new HashMap<>();
-        //String adminId = "user1Id"; // 28 zeros
-        users.put("user1Id", new User("user1Id", "user1", "user1@kandle.ch", "Nickname", "image"));
-        users.remove("user1Id");
-        users.put("user1Id", new User("user1Id", "user1", "user1@kandle.ch", null,  "image"));
-        users.remove("user1Id");
-        users.put("user1Id", new User("user1Id", "user1", "user1@kandle.ch", null,  "image"));
-        users.remove("user1Id");
-        users.put("user1Id", new User("user1Id", "user1", "user1@kandle.ch", null,  "image"));
-        users.remove("user1Id");
 
-        users.put("user1Id", new User("user1Id", "user1", "user1@kandle.ch", null,  "image"));
-        users.put("user2Id", new User("user2Id", "user2", "user2@kandle.ch", null,  "image"));
-        users.put("user3Id", new User("user3Id", "user3", "user3@kandle.ch", null,  null));
-        
-        
+
+        users.put("user1Id", new User("user1Id", "user1", "user1@kandle.ch", null,  null));
+        users.put("loggedInUserId",new User("loggedInUserId","LoggedInUser","loggedInUser@kandle.ch","nickname","image"));
+
         followMap = new HashMap<>();
-        
-        followMap.put("user1Id", new Follow( new LinkedList<>(Arrays.asList("user2Id")) , new LinkedList<>(Arrays.asList("user3Id"))));
-        followMap.put("user2Id", new Follow(new LinkedList<>(Arrays.asList("user3Id")) , new LinkedList<>(Arrays.asList("user1Id"))));
-        followMap.put("user3Id", new Follow(new LinkedList<>(Arrays.asList("user1Id")) , new LinkedList<>(Arrays.asList("user2Id"))));
+        followMap.put("user1Id", new Follow( new LinkedList<>(Arrays.asList("loggedInUserId")) , new LinkedList<>(Arrays.asList("loggedInUserId"))));
+        followMap.put("loggedInUserId", new Follow( new LinkedList<>(Arrays.asList("user1Id")) , new LinkedList<>(Arrays.asList("user1Id"))));
 
         posts = new HashMap<>();
-
-        posts.put("post1Id", new Post("text", "Hello world !", new Date(), "user1Id", "post1Id"));
-        posts.put("post2Id", new Post("text", "I'm user 1 !", new Date(), "user1Id", "post2Id"));
+        posts.put("post1Id", new Post("text", "Hello world !", new Date(), "loggedInUserId", "post1Id"));
+        posts.put("post2Id", new Post("text", "I'm user 1 !", new Date(), "loggedInUserId", "post2Id"));
         posts.get("post1Id").setImage("image");
-        users.get("user1Id").addPostId(posts.get("post1Id").getPostId());
-        users.get("user1Id").addPostId(posts.get("post2Id").getPostId());
+        users.get("loggedInUserId").addPostId(posts.get("post1Id").getPostId());
+        users.get("loggedInUserId").addPostId(posts.get("post2Id").getPostId());
 
-        posts.put("post3Id", new Post("text", "I'm user 2 :)", new Date(), "user2Id", "post3Id"));
-        users.get("user2Id").addPostId(posts.get("post3Id").getPostId());
 
 
     }
@@ -147,7 +130,7 @@ public class MockDatabase implements Database {
 
         */
             users.put(user.getId(), user);
-            task.setResult(null);
+            //task.setResult(null);
         //}
         return task.getTask();
     }
@@ -263,7 +246,7 @@ public class MockDatabase implements Database {
     @Override
     public Task<Void> updateProfilePicture(String uri) {
         TaskCompletionSource<Void> source = new TaskCompletionSource<>();
-        User user = users.get("user1Id");
+        User user = users.get("loggedInUserId");
         user.setImageURL(uri);
 
         return source.getTask();
@@ -273,7 +256,7 @@ public class MockDatabase implements Database {
     public Task<String> getProfilePicture() {
 
         TaskCompletionSource<String> source = new TaskCompletionSource<>();
-        User user = users.get("user1Id");
+        User user = users.get("loggedInUserId");
         source.setResult(user.getImageURL());
         return source.getTask();
     }
@@ -281,32 +264,32 @@ public class MockDatabase implements Database {
     @Override
     public Task<Void> updateNickname(String nickname) {
         TaskCompletionSource<Void> source = new TaskCompletionSource<>();
-        User user = users.get("user1Id");
-        user.setFullname(nickname);
+        User user = users.get("loggedInUserId");
+        user.setNickname(nickname);
         return source.getTask();
     }
 
     @Override
     public Task<String> getNickname() {
         TaskCompletionSource<String> source = new TaskCompletionSource<>();
-        User user = users.get("user1Id");
-        source.setResult(user.getFullname());
+        User user = users.get("loggedInUserId");
+        source.setResult(user.getNickname());
         return source.getTask();
     }
 
     @Override
     public Task<String> getUsername() {
         TaskCompletionSource<String> source = new TaskCompletionSource<>();
-        User user = users.get("user1Id");
+        User user = users.get("loggedInUserId");
         source.setResult(user.getUsername());
         return source.getTask();
     }
 
     @Override
-    public Task<Void> addPost(String userId, Post p) {
-        if(!users.get(userId).getPosts().contains(p.getPostId())) {
+    public Task<Void> addPost( Post p) {
+        if(!users.get(p.getUserId()).getPosts().contains(p.getPostId())) {
             posts.put(p.getPostId(), p);
-            users.get(userId).addPostId(p.getPostId());
+            users.get(p.getUserId()).addPostId(p.getPostId());
         }
         TaskCompletionSource<Void> source = new TaskCompletionSource<>();
         source.setResult(null);
@@ -314,10 +297,10 @@ public class MockDatabase implements Database {
     }
 
     @Override
-    public Task<Void> deletePost(String userId, Post p) {
-        if(users.get(userId).getPosts().contains(p.getPostId())) {
+    public Task<Void> deletePost(Post p) {
+        if(users.get(p.getUserId()).getPosts().contains(p.getPostId())) {
             posts.remove(p.getPostId());
-            users.get(userId).removePostId(p.getPostId());
+            users.get(p.getUserId()).removePostId(p.getPostId());
         }
         TaskCompletionSource<Void> source = new TaskCompletionSource<>();
         source.setResult(null);

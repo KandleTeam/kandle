@@ -61,8 +61,8 @@ public class PostActivity extends AppCompatActivity {
                 return;
             }
 
-            p = new Post("text", postText, new Date(), auth.getCurrentUser().getUid());
-            database.addPost(auth.getCurrentUser().getUid(), p).addOnCompleteListener(task -> {
+            p = new Post("text", postText, new Date(), LoggedInUser.getInstance().getId());
+            database.addPost(p).addOnCompleteListener(task -> {
                 if (task.isSuccessful()) {
                     Toast.makeText(PostActivity.this, "You have successfully posted : " + postText, Toast.LENGTH_LONG ).show();
                     finish();

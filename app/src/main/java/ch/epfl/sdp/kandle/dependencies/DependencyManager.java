@@ -2,6 +2,10 @@ package ch.epfl.sdp.kandle.dependencies;
 
 import android.content.Context;
 
+import java.util.HashMap;
+
+import ch.epfl.sdp.kandle.User;
+
 public final class DependencyManager {
 
     private static Authentication auth = FirebaseAuthentication.getInstance();

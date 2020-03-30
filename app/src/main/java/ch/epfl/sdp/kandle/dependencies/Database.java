@@ -28,8 +28,6 @@ public interface Database {
     Task<User> getUserById(String userId);
 
 
-
-
     /**
      * Asynchronously attempts to create a User in the Database. The task can fail if:
      * - the client cannot access the database
@@ -64,9 +62,9 @@ public interface Database {
 
     Task<String> getUsername();
 
-    Task<Void> addPost(String userId, Post p);
+    Task<Void> addPost(Post p);
 
-    Task<Void> deletePost(String userId, Post p);
+    Task<Void> deletePost(Post p);
 
     Task<Void> likePost(String userId, String postId);
 

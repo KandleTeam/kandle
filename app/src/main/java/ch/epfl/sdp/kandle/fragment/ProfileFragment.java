@@ -8,7 +8,6 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -24,16 +23,14 @@ import com.google.android.gms.tasks.Task;
 import com.google.android.material.navigation.NavigationView;
 import com.squareup.picasso.Picasso;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
-import ch.epfl.sdp.kandle.CustomAccountActivity;
+
 import ch.epfl.sdp.kandle.ImagePicker.ProfilePicPicker;
-import ch.epfl.sdp.kandle.MainActivity;
+import ch.epfl.sdp.kandle.LoggedInUser;
 import ch.epfl.sdp.kandle.dependencies.Authentication;
-import ch.epfl.sdp.kandle.dependencies.AuthenticationUser;
 import ch.epfl.sdp.kandle.dependencies.Database;
 import ch.epfl.sdp.kandle.dependencies.DependencyManager;
 import ch.epfl.sdp.kandle.R;
@@ -93,11 +90,11 @@ public class ProfileFragment extends Fragment {
 
         getViews(view);
 
-        final AuthenticationUser authenticationUser = auth.getCurrentUser();
+        final User currentUser = LoggedInUser.getInstance();
 
         mValidateNameButton.setVisibility(View.GONE);
 
-        if(!user.getId().equals(authenticationUser.getUid())){
+        if(!user.getId().equals(currentUser.getId())){
             mEditPicture.setVisibility(View.GONE);
             mEditName.setVisibility(View.GONE);
         }
@@ -123,6 +120,7 @@ public class ProfileFragment extends Fragment {
             if (nickname.trim().length()>0) {
                 mNicknameView.setText(nickname.trim());
                 mNickNameInMenu.setText(nickname.trim());
+                LoggedInUser.getInstance().setNickname(nickname.trim());
                 database.updateNickname(nickname.trim());
             }
             mNickname.showPrevious();
@@ -132,8 +130,8 @@ public class ProfileFragment extends Fragment {
 
         mNicknameView = mNickname.findViewById(R.id.text_view);
         mNicknameEdit = mNickname.findViewById(R.id.edit_view);
-        mNicknameView.setText(user.getFullname());
-        mNicknameEdit.setText(user.getFullname());
+        mNicknameView.setText(user.getNickname());
+        mNicknameEdit.setText(user.getNickname());
 
         mUsername.setText("@" + user.getUsername());
         if(user.getImageURL() != null) {
@@ -144,7 +142,7 @@ public class ProfileFragment extends Fragment {
         setNumberOfFollowers();
         setNumberOfFollowing();
 
-        database.userIdFollowingList(authenticationUser.getUid()).addOnCompleteListener(task -> {
+        database.userIdFollowingList(currentUser.getId()).addOnCompleteListener(task -> {
             if (task.isSuccessful()){
                 if ((task.getResult() == null) || (!task.getResult().contains(user.getId()))){
                     mFollowButton.setText(R.string.followBtnNotFollowing);
@@ -157,11 +155,11 @@ public class ProfileFragment extends Fragment {
         });
 
 
-        if (user.getId().equals(authenticationUser.getUid())){
+        if (user.getId().equals(currentUser.getId())){
             mFollowButton.setVisibility(View.GONE);
         }
         else {
-            mFollowButton.setOnClickListener(followButtonListener(authenticationUser));
+            mFollowButton.setOnClickListener(followButtonListener(currentUser));
         }
 
         final FragmentManager fragmentManager = this.getActivity().getSupportFragmentManager();
@@ -195,11 +193,11 @@ public class ProfileFragment extends Fragment {
         };
     }
 
-    private View.OnClickListener followButtonListener(AuthenticationUser currUser) {
+    private View.OnClickListener followButtonListener(User currUser) {
         return v -> {
             System.out.println(mFollowButton.getText().toString());
             if (mFollowButton.getText().toString().equals(getString(R.string.followBtnNotFollowing))) {
-                database.follow(currUser.getUid(), user.getId()).addOnCompleteListener(task -> {
+                database.follow(currUser.getId(), user.getId()).addOnCompleteListener(task -> {
                     if (task.isSuccessful()){
                         System.out.println("not following -> following");
 
@@ -209,7 +207,7 @@ public class ProfileFragment extends Fragment {
                 });
             }
             else {
-                database.unFollow(currUser.getUid(), user.getId()).addOnCompleteListener(task -> {
+                database.unFollow(currUser.getId(), user.getId()).addOnCompleteListener(task -> {
                     if (task.isSuccessful()) {
                         System.out.println("following -> not following");
 

@@ -5,29 +5,29 @@ import java.util.ArrayList;
 
 public class User implements Serializable {
     private ArrayList<String> postsIds;
-    private String id, username, email, fullname , imageURL;
+    private String id, username, email, nickname, imageURL;
 
 
     public User() {
         // Keep fields null
     }
 
-    public User(String id, String username, String email, String fullname, String imageURL) {
+    public User(String id, String username, String email, String nickname, String imageURL) {
         this.id = id;
         this.username = username;
         this.email = email;
         this.imageURL = imageURL;
         this.postsIds = new ArrayList<>();
-        this.fullname = fullname;
+        this.nickname = nickname;
 
     }
 
-    public String getFullname() {
-        return fullname;
+    public String getNickname() {
+        return nickname;
     }
 
-    public void setFullname(String fullname) {
-        this.fullname = fullname;
+    public void setNickname(String nickname) {
+        this.nickname = nickname;
     }
 
     public String getId() {

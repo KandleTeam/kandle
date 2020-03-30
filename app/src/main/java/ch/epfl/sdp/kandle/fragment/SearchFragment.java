@@ -20,7 +20,7 @@ import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import ch.epfl.sdp.kandle.dependencies.AuthenticationUser;
+import ch.epfl.sdp.kandle.LoggedInUser;
 import ch.epfl.sdp.kandle.dependencies.InternalStorageHandler;
 import ch.epfl.sdp.kandle.dependencies.Authentication;
 import ch.epfl.sdp.kandle.dependencies.Database;
@@ -39,7 +39,7 @@ public class SearchFragment extends Fragment {
     private InternalStorageHandler internalStorageHandler;
     private ArrayList<User> mUsers = new ArrayList<>(0);
     private UserAdapter userAdapter = new UserAdapter(mUsers);
-    private AuthenticationUser currentUser;
+    private User currentUser;
     EditText search_bar;
 
     public SearchFragment( ){
@@ -63,7 +63,7 @@ public class SearchFragment extends Fragment {
         mRecyclerView = view.findViewById(R.id.recycler_view);
         search_bar = view.findViewById(R.id.search_bar);
         internalStorageHandler = new InternalStorageHandler(getActivity().getApplicationContext());
-        currentUser = auth.getCurrentUser();
+        currentUser = LoggedInUser.getInstance();
 
         mRecyclerView.setAdapter(userAdapter);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(this.getContext()));
@@ -86,7 +86,7 @@ public class SearchFragment extends Fragment {
 
                             mUsers.clear();
                             for (User user : task.getResult()) {
-                                if (!user.getId().equals(currentUser.getUid())) {
+                                if (!user.getId().equals(currentUser.getId())) {
                                     mUsers.add(user);
                                 }
                             }
