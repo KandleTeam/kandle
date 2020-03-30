@@ -498,42 +498,42 @@ public class FirestoreDatabase implements Database {
                 .continueWith(task -> (List<String>) task.getResult().get("posts"));
 
         TaskCompletionSource<List<Post>> source = new TaskCompletionSource<>();
-        taskListPostId.addOnCompleteListener(new OnCompleteListener<List<String>>() {
-            @Override
-            public void onComplete(@NonNull Task<List<String>> task) {
+        taskListPostId.addOnCompleteListener(task -> {
 
-                if (task.isSuccessful()){
-                   posts.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                       @Override
-                       public void onComplete(@NonNull Task<QuerySnapshot> task2) {
-
-                           if (task2.isSuccessful()){
-                               List<Post> posts = new ArrayList<>();
-
-                               if (task2.getResult()!=null) {
-
-                                   for (QueryDocumentSnapshot documentSnapshot : task2.getResult()) {
-                                       String postId = (String) documentSnapshot.get("postId");
-                                       if (task.getResult().contains(postId)) {
-                                           posts.add(documentSnapshot.toObject(Post.class));
-                                       }
-                                   }
-                               }
-
-                               source.setResult(posts);
-                           }
-
-                           else {
-                               source.setException( new Exception(task2.getException().getMessage()));
-                           }
-
-                       }
-                   });
-
+            if (task.isSuccessful()){
+                if (task.getResult() == null) {
+                    source.setResult(new ArrayList<>());
                 }
                 else {
-                    source.setException( new Exception(task.getException().getMessage()));
+                    posts.get().addOnCompleteListener(task2 -> {
+
+                        if (task2.isSuccessful()){
+                            List<Post> posts = new ArrayList<>();
+
+                            if (task2.getResult()!=null) {
+
+                                for (QueryDocumentSnapshot documentSnapshot : task2.getResult()) {
+                                    String postId = (String) documentSnapshot.get("postId");
+                                    if (task.getResult().contains(postId)) {
+                                        posts.add(documentSnapshot.toObject(Post.class));
+                                    }
+                                }
+                            }
+
+                            source.setResult(posts);
+                        }
+
+                        else {
+                            source.setException( new Exception(task2.getException().getMessage()));
+                        }
+
+                    });
                 }
+
+
+            }
+            else {
+                source.setException( new Exception(task.getException().getMessage()));
             }
         });
 
