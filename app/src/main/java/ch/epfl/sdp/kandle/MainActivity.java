@@ -101,6 +101,12 @@ public class MainActivity extends AppCompatActivity {
 
         }));
 
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        
         database.getProfilePicture().addOnCompleteListener(task -> {
 
             if (task.isSuccessful()) {
@@ -126,7 +132,6 @@ public class MainActivity extends AppCompatActivity {
                 Log.d("testpp", "task is not successful");
             }
         });
-
     }
 
     /**
