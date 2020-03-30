@@ -12,6 +12,7 @@
         android:layout_height="wrap_content"
         android:layout_alignParentStart="true"
         android:layout_alignParentEnd="true"
+        android:layout_margin="10dp"
         android:text="This is a popup window."
         android:textSize="22sp" />
 
