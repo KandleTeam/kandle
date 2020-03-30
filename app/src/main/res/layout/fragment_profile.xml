@@ -163,4 +163,16 @@
         app:layout_constraintStart_toEndOf="@id/profileNickname"
         app:layout_constraintTop_toTopOf="@id/profileNickname" />
 
+    <Button
+        android:id="@+id/profileValidatePictureButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@drawable/button_background"
+        android:text="save"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="@id/profilePicture"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/profilePicture"
+        app:layout_constraintTop_toTopOf="@id/profilePicture" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>

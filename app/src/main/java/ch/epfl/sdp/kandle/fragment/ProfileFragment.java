@@ -1,5 +1,6 @@
 package ch.epfl.sdp.kandle.fragment;
 
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
@@ -43,7 +44,7 @@ public class ProfileFragment extends Fragment {
     TextView mNumberOfFollowers, mNumberOfFollowing, mUsername, mNicknameView, mNickNameInMenu;
     EditText mNicknameEdit;
     ViewSwitcher mNickname;
-    Button mFollowButton, mValidateNameButton;
+    Button mFollowButton, mValidateNameButton, mValidatePictureButton;
     Authentication auth;
     Database database;
 
@@ -72,6 +73,7 @@ public class ProfileFragment extends Fragment {
         mEditPicture = parent.findViewById(R.id.profileEditPictureButton);
         mEditName = parent.findViewById(R.id.profileEditNameButton);
         mValidateNameButton = parent.findViewById(R.id.profileValidateNameButton);
+        mValidatePictureButton = parent.findViewById(R.id.profileValidatePictureButton);
     }
 
 
@@ -91,6 +93,7 @@ public class ProfileFragment extends Fragment {
         final AuthenticationUser authenticationUser = auth.getCurrentUser();
 
         mValidateNameButton.setVisibility(View.GONE);
+        mValidatePictureButton.setVisibility(View.GONE);
 
         if(!user.getId().equals(authenticationUser.getUid())){
             mEditPicture.setVisibility(View.GONE);
@@ -98,7 +101,9 @@ public class ProfileFragment extends Fragment {
         }
         else {
             mEditPicture.setOnClickListener(v -> {
+                mEditPicture.setVisibility(View.GONE);
                 profilePicPicker.openImage();
+                mValidatePictureButton.setVisibility(View.VISIBLE);
             });
 
         }
@@ -123,6 +128,19 @@ public class ProfileFragment extends Fragment {
             mNickname.showPrevious();
             mValidateNameButton.setVisibility(View.GONE);
             mEditName.setVisibility(View.VISIBLE);
+        });
+
+        mValidatePictureButton.setOnClickListener(v -> {
+            ProgressDialog pd = new ProgressDialog(getContext());
+            pd.setMessage("uploading");
+            pd.show();
+            profilePicPicker.setProfilePicture().addOnCompleteListener(task -> {
+                mProfilePictureInMenu.setTag(PROFILE_PICTURE_AFTER);
+                mProfilePictureInMenu.setImageURI(profilePicPicker.getImageUri());
+                pd.dismiss();
+            });
+            mValidatePictureButton.setVisibility(View.GONE);
+            mEditPicture.setVisibility(View.VISIBLE);
         });
 
         mNicknameView = mNickname.findViewById(R.id.text_view);
@@ -245,11 +263,8 @@ public class ProfileFragment extends Fragment {
         Uri uri = profilePicPicker.getImageUri();
 
         if (uri != null) {
-            profilePicPicker.setProfilePicture();
             mProfilePicture.setTag(PROFILE_PICTURE_AFTER);
             mProfilePicture.setImageURI(uri);
-            mProfilePictureInMenu.setTag(PROFILE_PICTURE_AFTER);
-            mProfilePictureInMenu.setImageURI(uri);
         }
     }
 }

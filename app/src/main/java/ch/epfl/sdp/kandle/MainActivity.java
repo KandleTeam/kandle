@@ -106,7 +106,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public void onResume() {
         super.onResume();
-        
+
         database.getProfilePicture().addOnCompleteListener(task -> {
 
             if (task.isSuccessful()) {
