@@ -1,6 +1,5 @@
 package ch.epfl.sdp.kandle.dependencies;
 
-import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.gms.tasks.TaskCompletionSource;
 
@@ -13,9 +12,8 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
+
 import ch.epfl.sdp.kandle.Post;
-import androidx.annotation.NonNull;
 import ch.epfl.sdp.kandle.User;
 
 /**
@@ -63,14 +61,14 @@ public class MockDatabase implements Database {
         //String adminId = "user1Id"; // 28 zeros
         users.put("user1Id", new User("user1Id", "user1", "user1@kandle.ch", "Nickname", "image"));
         users.remove("user1Id");
-        users.put("user1Id", new User("user1Id", "user1", "user1@kandle.ch", null,  "image"));
+        users.put("user1Id", new User("user1Id", "user1", "user1@kandle.ch", "Nickname",  "image"));
         users.remove("user1Id");
-        users.put("user1Id", new User("user1Id", "user1", "user1@kandle.ch", null,  "image"));
+        users.put("user1Id", new User("user1Id", "user1", "user1@kandle.ch", "Nickname",  "image"));
         users.remove("user1Id");
-        users.put("user1Id", new User("user1Id", "user1", "user1@kandle.ch", null,  "image"));
+        users.put("user1Id", new User("user1Id", "user1", "user1@kandle.ch", "Nickname",  "image"));
         users.remove("user1Id");
 
-        users.put("user1Id", new User("user1Id", "user1", "user1@kandle.ch", null,  "image"));
+        users.put("user1Id", new User("user1Id", "user1", "user1@kandle.ch", "Nickname",  "image"));
         users.put("user2Id", new User("user2Id", "user2", "user2@kandle.ch", null,  "image"));
         users.put("user3Id", new User("user3Id", "user3", "user3@kandle.ch", null,  null));
         
@@ -83,13 +81,12 @@ public class MockDatabase implements Database {
 
         posts = new HashMap<>();
 
-        posts.put("post1Id", new Post("text", "Hello world !", new Date(), "user1Id", "post1Id"));
-        posts.put("post2Id", new Post("text", "I'm user 1 !", new Date(), "user1Id", "post2Id"));
-        posts.get("post1Id").setImage("image");
+        posts.put("post1Id", new Post("Hello world !", "image", new Date(), "user1Id", "post1Id"));
+        posts.put("post2Id", new Post("I'm user 1 !", null, new Date(), "user1Id", "post2Id"));
         users.get("user1Id").addPostId(posts.get("post1Id").getPostId());
         users.get("user1Id").addPostId(posts.get("post2Id").getPostId());
 
-        posts.put("post3Id", new Post("text", "I'm user 2 :)", new Date(), "user2Id", "post3Id"));
+        posts.put("post3Id", new Post("I'm user 2 :)", null, new Date(), "user2Id", "post3Id"));
         users.get("user2Id").addPostId(posts.get("post3Id").getPostId());
 
 
@@ -265,7 +262,7 @@ public class MockDatabase implements Database {
         TaskCompletionSource<Void> source = new TaskCompletionSource<>();
         User user = users.get("user1Id");
         user.setImageURL(uri);
-
+        source.setResult(null);
         return source.getTask();
     }
 
@@ -283,6 +280,7 @@ public class MockDatabase implements Database {
         TaskCompletionSource<Void> source = new TaskCompletionSource<>();
         User user = users.get("user1Id");
         user.setFullname(nickname);
+        source.setResult(null);
         return source.getTask();
     }
 

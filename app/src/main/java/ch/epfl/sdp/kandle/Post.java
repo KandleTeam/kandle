@@ -1,20 +1,17 @@
 package ch.epfl.sdp.kandle;
 
 
-import android.content.Context;
-import android.net.Uri;
-
 import com.google.android.gms.maps.model.LatLng;
 
-import java.text.DateFormat;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
+import java.util.List;
 import java.util.UUID;
 
 
 public class Post {
 
-    private String type;    //photo, texte, video
     private LatLng location;
     private ArrayList<String> likers;
     private String userId;
@@ -23,6 +20,7 @@ public class Post {
     private String description;
     private ArrayList<String> comments;
     private Date date;
+    private int likes;
 
 
    /* public Post(String type, LatLng location, int likes, String description, ArrayList<String> comments, Date date){
@@ -41,53 +39,59 @@ public class Post {
    }
 
 
-    public Post(String type, String description, Date date, String userId) {
-        this.type = type;
+    public Post(String description, String imageURL, Date date, String userId) {
         this.location = null;
         this.description = description;
         this.comments = null;
         this.date = date;
         this.likers = new ArrayList<>();
+        this.likes=0;
         this.postId = UUID.randomUUID().toString();
         this.userId = userId;
+        this.imageURL = imageURL;
 
     }
 
     //Useful for tests
-    public Post(String type, String description, Date date, String userId, String postId) {
-        this.type = type;
+    public Post(String description, String imageURL, Date date, String userId, String postId) {
         this.location = null;
         this.description = description;
         this.comments = null;
         this.date = date;
         this.likers = new ArrayList<>();
+        this.likes=0;
         this.postId = postId;
         this.userId = userId;
+        this.imageURL = imageURL;
     }
+
 
 
 
     /*
-
-    public String getType() {
-        return type;
-    }
-
     public LatLng getLocation() {
         return location;
     }
      */
 
-    public ArrayList<String> getLikers(){
-        return likers;
+    public List<String> getLikers(){
+        return Collections.unmodifiableList(likers);
     }
 
     public int getLikes() {
         return likers.size();
     }
 
+    public void setLikes(int likes) {
+        this.likes = likes;
+    }
+
     public String getPostId() {
         return postId;
+    }
+
+    public String getUserId() {
+        return userId;
     }
 
     public String getDescription() {
@@ -101,7 +105,7 @@ public class Post {
      */
 
     public Date getDate() {
-        return date;
+        return (Date) date.clone();
     }
 
     public void likePost(String userId) {
@@ -119,14 +123,13 @@ public class Post {
 
     public void setUserId(String userId) {
         this.userId = userId;
-    }
+    }*/
 
-    public String getImage(){
+    public String getImageURL(){
         return imageURL;
     }
-     */
 
-    public void setImage(String imageURL){
+    public void setImageURL(String imageURL){
         this.imageURL = imageURL;
     }
 }

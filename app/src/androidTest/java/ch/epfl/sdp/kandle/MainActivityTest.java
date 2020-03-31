@@ -7,12 +7,13 @@ import androidx.test.espresso.contrib.NavigationViewActions;
 import androidx.test.espresso.intent.Intents;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 import androidx.test.rule.ActivityTestRule;
-
-import ch.epfl.sdp.kandle.dependencies.DependencyManager;
+import androidx.test.rule.GrantPermissionRule;
 
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+
+import ch.epfl.sdp.kandle.dependencies.DependencyManager;
 
 import static androidx.test.espresso.Espresso.onView;
 import static androidx.test.espresso.action.ViewActions.click;
@@ -25,12 +26,10 @@ import static androidx.test.espresso.matcher.ViewMatchers.withId;
 import static androidx.test.espresso.matcher.ViewMatchers.withTagValue;
 import static androidx.test.espresso.matcher.ViewMatchers.withText;
 import static org.hamcrest.Matchers.is;
-import static org.junit.Assert.assertTrue;
 
 
 @RunWith(AndroidJUnit4.class)
 public class MainActivityTest {
-
 
 
     @Rule
@@ -43,6 +42,8 @@ public class MainActivityTest {
                 }
             };
 
+    @Rule
+    public GrantPermissionRule permissionRule = GrantPermissionRule.grant(android.Manifest.permission.ACCESS_FINE_LOCATION);
 
 
     @Test
@@ -81,7 +82,7 @@ public class MainActivityTest {
     public void openMenuNavigateToMap() {
 
         onView(withId(R.id.drawer_layout)).check(matches(isClosed(Gravity.LEFT))).perform(DrawerActions.open());
-        onView(withId(R.id.navigation_view)).perform(NavigationViewActions.navigateTo(R.id.map));
+        onView(withId(R.id.navigation_view)).perform(NavigationViewActions.navigateTo(R.id.map_support));
         //onView(withId(R.id.toolbar)).check(matches(hasDescendant(withText("Map"))));
 
 
@@ -127,7 +128,7 @@ public class MainActivityTest {
     @Test
     public void navigateToPost(){
         Intents.init();
-        onView(withId(R.id.postButton)).perform(click());
+        onView(withId(R.id.newPostButton)).perform(click());
         intended(hasComponent(PostActivity.class.getName()));
         Intents.release();
     }

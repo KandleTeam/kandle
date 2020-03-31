@@ -1,6 +1,15 @@
 package ch.epfl.sdp.kandle.fragment;
 
 import android.os.Bundle;
+import android.view.Gravity;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.ImageButton;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.PopupWindow;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -8,32 +17,19 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.view.Gravity;
-import android.view.LayoutInflater;
-import android.view.MotionEvent;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.ImageButton;
-import android.widget.LinearLayout;
-import android.widget.PopupWindow;
-import android.widget.TextView;
-
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.squareup.picasso.Picasso;
 
-import java.lang.reflect.Array;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Date;
 import java.util.List;
 
-import ch.epfl.sdp.kandle.ClickListener;
 import ch.epfl.sdp.kandle.Post;
 import ch.epfl.sdp.kandle.PostAdapter;
 import ch.epfl.sdp.kandle.R;
-import ch.epfl.sdp.kandle.User;
 import ch.epfl.sdp.kandle.dependencies.Authentication;
 import ch.epfl.sdp.kandle.dependencies.Database;
 import ch.epfl.sdp.kandle.dependencies.DependencyManager;
@@ -52,6 +48,8 @@ public class YourPostListFragment extends Fragment {
     private RecyclerView rvPosts;
 
     private DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+
+    public final static int POST_IMAGE = 10;
 
 
     public static YourPostListFragment newInstance() {
@@ -77,8 +75,8 @@ public class YourPostListFragment extends Fragment {
 
                     if (task.getResult()!=null){
                         posts= new ArrayList<>(task.getResult());
-                        //reverse to have the newer posts first
-                        Collections.reverse(posts);
+                        //in order to have the newer posts first, we should sort the posts with the date they were posted.
+
                     }
 
                     else {
@@ -96,7 +94,13 @@ public class YourPostListFragment extends Fragment {
                         final PopupWindow popupWindow = new PopupWindow(popupView, width, height, focusable);
                         popupWindow.showAtLocation(view, Gravity.CENTER, 0, 0);
                         TextView content = popupView.findViewById(R.id.post_content);
+                        ImageView image = popupView.findViewById(R.id.postImage);
                         content.setText(posts.get(position).getDescription());
+                        if(posts.get(position).getImageURL() != null){
+                            image.setVisibility(View.VISIBLE);
+                            image.setTag(POST_IMAGE);
+                            Picasso.get().load(posts.get(position).getImageURL()).into(image);
+                        }
 
                         popupView.setOnClickListener((popup) -> {
                             popupWindow.dismiss();
@@ -123,6 +127,8 @@ public class YourPostListFragment extends Fragment {
         rvPosts.setLayoutManager(new LinearLayoutManager(this.getContext()));
         return rootView;
     }
+
+
 
 /*
     public List<Post> getPostList() {

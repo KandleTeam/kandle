@@ -1,26 +1,23 @@
 package ch.epfl.sdp.kandle;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-import ch.epfl.sdp.kandle.dependencies.Authentication;
-import ch.epfl.sdp.kandle.dependencies.Database;
-import ch.epfl.sdp.kandle.dependencies.DependencyManager;
-import ch.epfl.sdp.kandle.dependencies.InternalStorage;
-import ch.epfl.sdp.kandle.dependencies.InternalStorageHandler;
-import io.grpc.Internal;
-
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
-import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
+
+import ch.epfl.sdp.kandle.dependencies.Authentication;
+import ch.epfl.sdp.kandle.dependencies.Database;
+import ch.epfl.sdp.kandle.dependencies.DependencyManager;
 
 public class LoginActivity extends AppCompatActivity {
 
@@ -31,7 +28,6 @@ public class LoginActivity extends AppCompatActivity {
     private Authentication auth;
     private Database database;
     private User currentUser;
-    private InternalStorage internalStorage;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,15 +37,13 @@ public class LoginActivity extends AppCompatActivity {
         setContentView(R.layout.activity_login);
         auth = DependencyManager.getAuthSystem();
         database = DependencyManager.getDatabaseSystem();
-        internalStorage = DependencyManager.getInternalStorageSystem(getApplicationContext());
 
-        if (auth.getCurrentUser() != null && internalStorage.getCurrentUser() != null) {
+        if (auth.getCurrentUser() != null) {
             startActivity(new Intent(getApplicationContext(), MainActivity.class));
             finish();
         }
 
         mSignIn = findViewById(R.id.signUpLink);
-
         mSignIn.setOnClickListener(v -> startActivity(new Intent(getApplicationContext(), RegisterActivity.class)));
 
         mEmail = findViewById(R.id.email);
@@ -62,7 +56,7 @@ public class LoginActivity extends AppCompatActivity {
             if (!checkFields(email, password)) {
                 return;
             }
-            performLoginViaFirebase(email, password);
+            attemptLogin(email, password);
         });
 
     }
@@ -82,7 +76,7 @@ public class LoginActivity extends AppCompatActivity {
 
     }
 
-    private void performLoginViaFirebase(String email, String password) {
+    private void attemptLogin(String email, String password) {
         final ProgressDialog pd = new ProgressDialog(LoginActivity.this);
         pd.setMessage(getString(R.string.login_in_progress));
         pd.show();
@@ -93,7 +87,6 @@ public class LoginActivity extends AppCompatActivity {
                 if (task.isSuccessful()) {
                     pd.dismiss();
                     Toast.makeText(LoginActivity.this, getString(R.string.login_success), Toast.LENGTH_SHORT).show();
-                    storeUserLocallywithId(task.getResult().getUser().getUid());
                     startActivity(new Intent(getApplicationContext(), MainActivity.class));
                     finish();
                 } else {
@@ -101,19 +94,6 @@ public class LoginActivity extends AppCompatActivity {
                     Toast.makeText(LoginActivity.this, "An error has occurred : " + task.getException().getMessage(), Toast.LENGTH_SHORT).show();
                 }
             }
-        });
-    }
-
-    /**
-     * @Author Marc
-     * This task can't fail as it retrieves the uid only if the signIn doesn't fail which guarantes
-     * that there exists a user with this uid
-     * @param id
-     */
-    private void storeUserLocallywithId(String id) {
-        database.getUserById(id).addOnCompleteListener(task -> {
-                User user = task.getResult();
-                internalStorage.saveUserAtLoginOrRegister(user);
         });
     }
 

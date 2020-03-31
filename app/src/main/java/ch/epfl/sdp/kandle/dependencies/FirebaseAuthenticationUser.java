@@ -15,4 +15,5 @@ public class FirebaseAuthenticationUser extends AuthenticationUser {
     public String getUid() {
         return fAuth.getCurrentUser().getUid();
     }
+
 }

@@ -2,16 +2,12 @@ package ch.epfl.sdp.kandle;
 
 import android.view.Gravity;
 
+import androidx.test.rule.ActivityTestRule;
+
 import org.junit.Rule;
 import org.junit.Test;
 
-import androidx.test.rule.ActivityTestRule;
-
 import ch.epfl.sdp.kandle.dependencies.DependencyManager;
-import ch.epfl.sdp.kandle.dependencies.MockAuthentication;
-import ch.epfl.sdp.kandle.dependencies.MockAuthenticationUser;
-import ch.epfl.sdp.kandle.dependencies.MockDatabase;
-import ch.epfl.sdp.kandle.dependencies.MockInternalStorage;
 
 import static androidx.test.espresso.Espresso.onView;
 import static androidx.test.espresso.assertion.ViewAssertions.matches;

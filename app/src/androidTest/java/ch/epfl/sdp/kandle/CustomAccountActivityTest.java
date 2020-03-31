@@ -8,6 +8,12 @@ import android.net.Uri;
 import androidx.test.espresso.intent.rule.IntentsTestRule;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 
+import org.junit.Rule;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+
+import ch.epfl.sdp.kandle.dependencies.DependencyManager;
+
 import static androidx.test.espresso.Espresso.onView;
 import static androidx.test.espresso.action.ViewActions.click;
 import static androidx.test.espresso.action.ViewActions.closeSoftKeyboard;
@@ -23,14 +29,6 @@ import static androidx.test.espresso.matcher.ViewMatchers.withTagValue;
 import static org.hamcrest.CoreMatchers.not;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.core.IsEqual.equalTo;
-import static org.junit.Assert.assertTrue;
-
-
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-
-import ch.epfl.sdp.kandle.dependencies.DependencyManager;
 
 @RunWith(AndroidJUnit4.class)
 public class CustomAccountActivityTest {
@@ -71,6 +69,8 @@ public class CustomAccountActivityTest {
         onView(withId(R.id.button)).perform(click());
 
         onView(withId(R.id.profilePic)).check(matches(withTagValue(is(CustomAccountActivity.PROFILE_PICTURE_TAG))));
+
+        onView(withId(R.id.startButton)).perform(click());
 
         DependencyManager.getDatabaseSystem().getProfilePicture().addOnCompleteListener(task -> {
             String uri = task.getResult();

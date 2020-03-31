@@ -7,28 +7,28 @@ import android.net.Uri;
 import android.view.Gravity;
 import android.view.View;
 
+import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.RecyclerView;
+import androidx.test.espresso.UiController;
+import androidx.test.espresso.ViewAction;
+import androidx.test.espresso.contrib.DrawerActions;
+import androidx.test.espresso.contrib.RecyclerViewActions;
+import androidx.test.espresso.intent.rule.IntentsTestRule;
+import androidx.test.espresso.matcher.BoundedMatcher;
+import androidx.test.espresso.matcher.ViewMatchers;
+
 import org.hamcrest.Description;
 import org.hamcrest.Matcher;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 
-import androidx.annotation.NonNull;
-import androidx.recyclerview.widget.RecyclerView;
-import androidx.test.espresso.UiController;
-import androidx.test.espresso.ViewAction;
-import androidx.test.espresso.contrib.DrawerActions;
-import androidx.test.espresso.contrib.NavigationViewActions;
-import androidx.test.espresso.contrib.RecyclerViewActions;
-import androidx.test.espresso.intent.rule.IntentsTestRule;
-import androidx.test.espresso.matcher.BoundedMatcher;
-import androidx.test.espresso.matcher.ViewMatchers;
-import androidx.test.rule.ActivityTestRule;
 import ch.epfl.sdp.kandle.dependencies.DependencyManager;
 import ch.epfl.sdp.kandle.fragment.ProfileFragment;
 
 import static androidx.test.espresso.Espresso.onView;
 import static androidx.test.espresso.action.ViewActions.click;
+import static androidx.test.espresso.action.ViewActions.replaceText;
 import static androidx.test.espresso.action.ViewActions.typeText;
 import static androidx.test.espresso.assertion.ViewAssertions.matches;
 import static androidx.test.espresso.contrib.DrawerMatchers.isClosed;
@@ -56,7 +56,6 @@ public class YourProfileFragmentTest {
     @Before
     public void loadFragment(){
         onView(withId(R.id.drawer_layout)).check(matches(isClosed(Gravity.LEFT))).perform(DrawerActions.open());
-        //onView(withId(R.id.navigation_view)).perform(NavigationViewActions.navigateTo(R.id.follow));
         onView(withId(R.id.profilePicInMenu)).perform(click());
     }
 
@@ -91,15 +90,17 @@ public class YourProfileFragmentTest {
 
         onView(withId(R.id.profileEditPictureButton)).perform(click());
         onView(withId(R.id.profilePicture)).check(matches(withTagValue(is(ProfileFragment.PROFILE_PICTURE_AFTER))));
+
+        onView(withId(R.id.profileValidatePictureButton)).perform(click());
     }
 
     @Test
     public void editNickname(){
         onView(withId(R.id.profileEditNameButton)).perform(click());
-        onView(withId(R.id.edit_view)).perform(typeText("New Nickname"));
+        onView(withId(R.id.edit_view)).perform(replaceText("New Nickname"));
         onView(withId(R.id.profileValidateNameButton)).perform(click());
 
-        onView(withId(R.id.edit_view)).check(matches(withText("New Nickname")));
+        onView(withId(R.id.text_view)).check(matches(withText("New Nickname")));
     }
 
 
