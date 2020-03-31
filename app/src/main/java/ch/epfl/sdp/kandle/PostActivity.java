@@ -88,7 +88,7 @@ public class PostActivity extends AppCompatActivity {
     private void post(Post p) {
         database.addPost(auth.getCurrentUser().getUid(), p).addOnCompleteListener(task -> {
             if (task.isSuccessful()) {
-                Toast.makeText(PostActivity.this, "You have successfully posted : " + p.getDescription(), Toast.LENGTH_LONG ).show();
+                Toast.makeText(PostActivity.this, "You have successfully posted : " , Toast.LENGTH_LONG ).show();
                 finish();
             }
         });

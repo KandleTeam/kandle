@@ -1,5 +1,6 @@
 package ch.epfl.sdp.kandle.fragment;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -65,6 +66,8 @@ public class YourPostListFragment extends Fragment {
 
         userId = auth.getCurrentUser().getUid();
 
+        Context context = this.getContext();
+
         database.getPostsByUserId(userId).addOnCompleteListener(new OnCompleteListener<List<Post>>() {
             @Override
 
@@ -83,10 +86,10 @@ public class YourPostListFragment extends Fragment {
                         posts = new ArrayList<Post>();
                     }
 
-                    PostAdapter adapter = new PostAdapter(posts);
+                    PostAdapter adapter = new PostAdapter(posts, context);
 
                     adapter.setOnItemClickListener((position, view) -> {
-                        LayoutInflater inflater1 = getLayoutInflater();
+                        /*LayoutInflater inflater1 = getLayoutInflater();
                         View popupView = inflater1.inflate(R.layout.post_content, null);
                         int width = LinearLayout.LayoutParams.WRAP_CONTENT;
                         int height = LinearLayout.LayoutParams.WRAP_CONTENT;
@@ -106,7 +109,11 @@ public class YourPostListFragment extends Fragment {
                             popupWindow.dismiss();
                         });
 
+                         */
+
                     });
+
+
 
                     // Attach the adapter to the recyclerview to populate items
                     rvPosts.setAdapter(adapter);

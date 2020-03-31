@@ -480,6 +480,57 @@ public class FirestoreDatabase implements Database {
                 });
     }
 
+    @Override
+    public Task<List<User>> getLikers(String postId) {
+
+        TaskCompletionSource<List<User>> source = new TaskCompletionSource<>();
+
+        Task<List<String>> getLikersIdTask = posts
+                                        .document(postId)
+                                        .get()
+                                        .continueWith(task -> (List<String>) task.getResult().get("likers"));
+
+        getLikersIdTask.addOnCompleteListener(new OnCompleteListener<List<String>>() {
+            @Override
+            public void onComplete(@NonNull Task<List<String>> task) {
+                if (task.isSuccessful()){
+                    users.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                        @Override
+                        public void onComplete(@NonNull Task<QuerySnapshot> task2) {
+                            if (task2.isSuccessful()){
+                                List<User> users = new ArrayList<>();
+                                for (QueryDocumentSnapshot document : task2.getResult()) {
+                                    String id =  (String) document.get("id");
+                                    if (task.getResult().contains(id)){
+                                        users.add(document.toObject(User.class));
+                                    }
+                                }
+
+                                source.setResult(users);
+
+                            }
+
+
+                            else {
+                                source.setException(task.getException());
+                            }
+                        }
+                    });
+
+                }
+
+                else {
+                    source.setException(task.getException());
+                }
+            }
+        });
+
+
+        return source.getTask();
+
+
+    }
+
     /*
     @Override
     public Task<List<String>> likers(String postId) {

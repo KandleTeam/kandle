@@ -59,14 +59,6 @@ public class MockDatabase implements Database {
     public MockDatabase() {
         users = new HashMap<>();
         //String adminId = "user1Id"; // 28 zeros
-        users.put("user1Id", new User("user1Id", "user1", "user1@kandle.ch", "Nickname", "image"));
-        users.remove("user1Id");
-        users.put("user1Id", new User("user1Id", "user1", "user1@kandle.ch", "Nickname",  "image"));
-        users.remove("user1Id");
-        users.put("user1Id", new User("user1Id", "user1", "user1@kandle.ch", "Nickname",  "image"));
-        users.remove("user1Id");
-        users.put("user1Id", new User("user1Id", "user1", "user1@kandle.ch", "Nickname",  "image"));
-        users.remove("user1Id");
 
         users.put("user1Id", new User("user1Id", "user1", "user1@kandle.ch", "Nickname",  "image"));
         users.put("user2Id", new User("user2Id", "user2", "user2@kandle.ch", null,  "image"));
@@ -340,6 +332,26 @@ public class MockDatabase implements Database {
         TaskCompletionSource<Void> source = new TaskCompletionSource<>();
         source.setResult(null);
         return source.getTask();
+    }
+
+    @Override
+    public Task<List<User>> getLikers(String postId) {
+        TaskCompletionSource<List<User>> source = new TaskCompletionSource<>();
+
+        List<String> userIds = posts.get(postId).getLikers();
+
+            List<User> usersList = new ArrayList<>();
+
+            for (Map.Entry <String,User> entry : users.entrySet() ) {
+                if (userIds.contains(entry.getKey())){
+                    usersList.add(entry.getValue());
+                }
+            }
+
+        source.setResult(usersList);
+
+        return source.getTask();
+
     }
 
     /*
