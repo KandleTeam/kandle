@@ -1,7 +1,6 @@
 package ch.epfl.sdp.kandle.dependencies;
 
 import androidx.annotation.NonNull;
-
 import ch.epfl.sdp.kandle.User;
 
 

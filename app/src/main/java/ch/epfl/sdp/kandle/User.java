@@ -54,15 +54,15 @@ public class User implements Serializable {
         return imageURL;
     }
 
-    public ArrayList<String> getPosts(){
+    public ArrayList<String> getPosts() {
         return postsIds;
     }
 
-    public void addPostId(String postId){
+    public void addPostId(String postId) {
         postsIds.add(postId);
     }
 
-    public void removePostId(String postId){
+    public void removePostId(String postId) {
         postsIds.remove(postId);
     }
 }

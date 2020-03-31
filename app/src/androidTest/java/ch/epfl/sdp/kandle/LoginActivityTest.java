@@ -2,27 +2,18 @@ package ch.epfl.sdp.kandle;
 
 
 import android.content.res.Resources;
-
 import org.junit.AfterClass;
-import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-
-
 import androidx.test.core.app.ApplicationProvider;
 import androidx.test.espresso.contrib.DrawerActions;
 import androidx.test.espresso.contrib.NavigationViewActions;
 import androidx.test.espresso.intent.Intents;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 import androidx.test.rule.ActivityTestRule;
-
 import java.util.HashMap;
-
 import ch.epfl.sdp.kandle.dependencies.DependencyManager;
-import ch.epfl.sdp.kandle.dependencies.MockAuthentication;
-
 import static androidx.test.espresso.Espresso.onView;
 import static androidx.test.espresso.action.ViewActions.click;
 import static androidx.test.espresso.action.ViewActions.closeSoftKeyboard;
@@ -60,14 +51,10 @@ public class LoginActivityTest {
                 }
             };
 
-
-
-
     @AfterClass
     public static void clearCurrentUser() {
         LoggedInUser.clear();
     }
-
 
     @Test
     public void authenticationTestWhereUserExists() {
@@ -81,62 +68,46 @@ public class LoginActivityTest {
         onView(withId(R.id.drawer_layout)).perform(DrawerActions.open());
         onView(withId(R.id.navigation_view)).perform(NavigationViewActions.navigateTo(R.id.logout));
         Intents.release();
-
     }
-
 
     @Test
     public void emptyEmailTest() {
         onView(withId(R.id.loginBtn)).perform(click());
         onView(withId(R.id.email)).check(matches(hasErrorText(res.getString(R.string.login_email_required))));
-
     }
-
 
     @Test
     public void emptyPasswordTest() {
-
         onView(withId(R.id.email)).perform(typeText("test@test.com"));
         onView(withId(R.id.email)).perform(closeSoftKeyboard());
-
         onView(withId(R.id.loginBtn)).perform(click());
         onView(withId(R.id.password)).check(matches(hasErrorText(res.getString(R.string.login_password_required))));
     }
 
     @Test
     public void wrongCredentialsTest() {
-
         onView(withId(R.id.email)).perform(typeText("zzzz@test.com"));
         onView(withId(R.id.email)).perform(closeSoftKeyboard());
         onView(withId(R.id.password)).perform(typeText("zzzzzzzzzz"));
         onView(withId(R.id.password)).perform(closeSoftKeyboard());
         onView(withId(R.id.loginBtn)).perform(click());
-
         //TODO check toast
     }
 
     @Test
     public void authenticationShouldFail() {
-
         onView(withId(R.id.email)).perform(typeText("user2@test.com"));
         onView(withId(R.id.email)).perform(closeSoftKeyboard());
-
         onView(withId(R.id.password)).perform(typeText("123456789"));
         onView(withId(R.id.password)).perform(closeSoftKeyboard());
-
         onView(withId(R.id.loginBtn)).perform(click());
-
         onView(withText("An error has occurred : You do not have an account yet")).inRoot(withDecorView(not(is(intentsRule.getActivity().getWindow().getDecorView())))).check(matches(isDisplayed()));
 
 
     }
 
-
-
-
     @Test
     public void doNotHaveAnAccount() {
-
         Intents.init();
         onView(withId(R.id.signUpLink)).perform(click());
         intended(hasComponent(RegisterActivity.class.getName()));

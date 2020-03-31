@@ -1,25 +1,19 @@
 package ch.epfl.sdp.kandle;
 
+import android.support.test.runner.AndroidJUnit4;
 import android.view.Gravity;
 import androidx.test.espresso.contrib.DrawerActions;
 import androidx.test.espresso.contrib.NavigationViewActions;
 import androidx.test.espresso.intent.Intents;
-import androidx.test.ext.junit.runners.AndroidJUnit4;
 import androidx.test.rule.ActivityTestRule;
 import ch.epfl.sdp.kandle.dependencies.DependencyManager;
 import ch.epfl.sdp.kandle.dependencies.Follow;
-import ch.epfl.sdp.kandle.dependencies.MockDatabase;
-
 import org.junit.After;
-import org.junit.AfterClass;
-import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import java.util.HashMap;
-
 import static androidx.test.espresso.Espresso.onView;
 import static androidx.test.espresso.action.ViewActions.click;
 import static androidx.test.espresso.assertion.ViewAssertions.matches;
@@ -33,10 +27,8 @@ import static androidx.test.espresso.matcher.ViewMatchers.withText;
 import static org.hamcrest.Matchers.is;
 
 
-//@RunWith(AndroidJUnit4.class)
+
 public class MainActivityTest {
-
-
 
     @Rule
     public ActivityTestRule<MainActivity> intentsRule =
@@ -53,10 +45,6 @@ public class MainActivityTest {
                 }
             };
 
-
-
-
-
     @After
     public void clearCurrentUser(){
         LoggedInUser.clear();
@@ -72,7 +60,7 @@ public class MainActivityTest {
 
 
     }
-/*
+
     @Test
     public void openMenuAndNavigateToLogout() {
 
@@ -81,7 +69,6 @@ public class MainActivityTest {
         onView(withId(R.id.navigation_view)).perform(NavigationViewActions.navigateTo(R.id.logout));
 
     }
-*/
 
     @Test
     public void openMenuNavigateToSettings() {
@@ -92,7 +79,6 @@ public class MainActivityTest {
         onView(withId(R.id.toolbar)).check(matches(hasDescendant(withText("Settings"))));
 
     }
-
 
     @Test
     public void openMenuNavigateToMap() {
@@ -113,7 +99,6 @@ public class MainActivityTest {
 
 
     }
-
 
     @Test
     public void openMenuNavigateToFollow(){

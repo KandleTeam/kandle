@@ -43,10 +43,10 @@ public class PostActivity extends AppCompatActivity {
         setContentView(R.layout.activity_post);
 
         mPostText = findViewById(R.id.postText);
-        mPostButton =findViewById(R.id.postButton);
-        mGalleryButton =findViewById(R.id.galleryButton);
-        mCameraButton =findViewById(R.id.cameraButton);
-        mPostImage =findViewById(R.id.postImage);
+        mPostButton = findViewById(R.id.postButton);
+        mGalleryButton = findViewById(R.id.galleryButton);
+        mCameraButton = findViewById(R.id.cameraButton);
+        mPostImage = findViewById(R.id.postImage);
         postImagePicker = new PostImagePicker(this);
 
         auth = DependencyManager.getAuthSystem();
@@ -54,9 +54,9 @@ public class PostActivity extends AppCompatActivity {
 
         mPostButton.setOnClickListener(v -> {
 
-            String postText  = mPostText.getText().toString().trim();
+            String postText = mPostText.getText().toString().trim();
 
-            if(postText.isEmpty()){
+            if (postText.isEmpty()) {
                 mPostText.setError("Your post is empty...");
                 return;
             }
@@ -64,15 +64,15 @@ public class PostActivity extends AppCompatActivity {
             p = new Post("text", postText, new Date(), LoggedInUser.getInstance().getId());
             database.addPost(p).addOnCompleteListener(task -> {
                 if (task.isSuccessful()) {
-                    Toast.makeText(PostActivity.this, "You have successfully posted : " + postText, Toast.LENGTH_LONG ).show();
+                    Toast.makeText(PostActivity.this, "You have successfully posted : " + postText, Toast.LENGTH_LONG).show();
                     finish();
-                }else{
+                } else {
                     System.out.println(task.getException().getMessage());
                 }
             });
         });
 
-        mCameraButton.setOnClickListener(v -> Toast.makeText(PostActivity.this, "Doesn't work for now... " , Toast.LENGTH_LONG ).show());
+        mCameraButton.setOnClickListener(v -> Toast.makeText(PostActivity.this, "Doesn't work for now... ", Toast.LENGTH_LONG).show());
 
 
         mGalleryButton.setOnClickListener(v -> postImagePicker.openImage());

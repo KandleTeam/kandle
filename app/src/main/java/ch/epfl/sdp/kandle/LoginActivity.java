@@ -2,6 +2,7 @@ package ch.epfl.sdp.kandle;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+
 import ch.epfl.sdp.kandle.dependencies.Authentication;
 import ch.epfl.sdp.kandle.dependencies.Database;
 import ch.epfl.sdp.kandle.dependencies.DependencyManager;
@@ -40,7 +41,7 @@ public class LoginActivity extends AppCompatActivity {
         database = DependencyManager.getDatabaseSystem();
 
 
-        if(auth.userCurrentlyLoggedIn()) {
+        if (auth.userCurrentlyLoggedIn()) {
             startActivity(new Intent(getApplicationContext(), MainActivity.class));
             finish();
         }

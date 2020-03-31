@@ -14,25 +14,24 @@ public class Follow {
         this.followers = followers;
     }
 
-    public Follow(){
+    public Follow() {
         this.followers = new LinkedList<String>();
         this.following = new LinkedList<String>();
     }
 
-
-    public void addFollowing ( String s){
+    public void addFollowing(String s) {
         following.add(s);
     }
 
-    public void addFollower ( String s){
+    public void addFollower(String s) {
         followers.add(s);
     }
 
-    public void removeFollowing ( String s){
+    public void removeFollowing(String s) {
         following.remove(s);
     }
 
-    public void removeFollower ( String s){
+    public void removeFollower(String s) {
         followers.remove(s);
     }
 }

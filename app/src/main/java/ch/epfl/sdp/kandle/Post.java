@@ -37,9 +37,9 @@ public class Post {
     }*/
 
 
-   public Post(){
+    public Post() {
 
-   }
+    }
 
 
     public Post(String type, String description, Date date, String userId) {
@@ -49,7 +49,7 @@ public class Post {
         this.comments = null;
         this.date = date;
         this.likers = new ArrayList<>();
-        this.likes=0;
+        this.likes = 0;
         this.postId = UUID.randomUUID().toString();
         this.userId = userId;
 
@@ -63,7 +63,7 @@ public class Post {
         this.comments = null;
         this.date = date;
         this.likers = new ArrayList<>();
-        this.likes=0;
+        this.likes = 0;
         this.postId = postId;
         this.userId = userId;
     }
@@ -85,7 +85,7 @@ public class Post {
     }
      */
 
-    public ArrayList<String> getLikers(){
+    public ArrayList<String> getLikers() {
         return likers;
     }
 
@@ -122,6 +122,7 @@ public class Post {
     public void likePost(String userId) {
         likers.add(userId);
     }
+
     public void unlikePost(String userId) {
         likers.remove(userId);
     }
@@ -141,7 +142,7 @@ public class Post {
     }
      */
 
-    public void setImage(String imageURL){
+    public void setImage(String imageURL) {
         this.imageURL = imageURL;
     }
 }

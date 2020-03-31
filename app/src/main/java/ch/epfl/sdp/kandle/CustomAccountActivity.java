@@ -38,9 +38,7 @@ public class CustomAccountActivity extends AppCompatActivity {
         leaveButton = findViewById(R.id.startButton);
         profilePic = findViewById(R.id.profilePic);
         m_nickname = findViewById(R.id.nickname);
-
         profilePicPicker = new ProfilePicPicker(this);
-
         uploadButton.setOnClickListener(v -> profilePicPicker.openImage());
 
         leaveButton.setOnClickListener(v -> {
@@ -59,7 +57,6 @@ public class CustomAccountActivity extends AppCompatActivity {
         startActivity(new Intent(getApplicationContext(), MainActivity.class));
         finish();
     }
-
 
 
     @Override

@@ -16,6 +16,7 @@ import java.util.List;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
+
 import ch.epfl.sdp.kandle.dependencies.Authentication;
 import ch.epfl.sdp.kandle.dependencies.Database;
 import ch.epfl.sdp.kandle.dependencies.DependencyManager;
@@ -29,6 +30,7 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.ViewHolder> {
     public interface ClickListener {
         void onItemClick(int position, View v);
     }
+
     private static ClickListener clickListener;
     private List<User> mUsers;
 
@@ -39,7 +41,6 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.ViewHolder> {
     public void setOnItemClickListener(ClickListener clickListener) {
         UserAdapter.clickListener = clickListener;
     }
-
 
 
     @NonNull
@@ -61,7 +62,6 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.ViewHolder> {
         final User user = mUsers.get(position);
 
 
-
         TextView mFullname = holder.mNickname;
         mFullname.setText(user.getNickname());
 
@@ -78,11 +78,9 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.ViewHolder> {
         final User currentUser = LoggedInUser.getInstance();
         final Database database = DependencyManager.getDatabaseSystem();
 
-        if (user.getId().equals(currentUser.getId())){
+        if (user.getId().equals(currentUser.getId())) {
             holder.mFollowBtn.setVisibility(View.GONE);
-        }
-
-        else {
+        } else {
 
             database.userIdFollowingList(currentUser.getId()).addOnCompleteListener(new OnCompleteListener<List<String>>() {
                 @Override
@@ -148,13 +146,12 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.ViewHolder> {
         return mUsers.size();
     }
 
-    public static class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
+    public static class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
         public TextView mNickname;
         public TextView mUsername;
         public CircleImageView image_profile;
         public Button mFollowBtn;
-
 
 
         public ViewHolder(@NonNull View itemView) {

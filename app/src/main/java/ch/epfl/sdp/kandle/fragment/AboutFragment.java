@@ -7,6 +7,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import androidx.fragment.app.Fragment;
+
 import ch.epfl.sdp.kandle.R;
 
 public class AboutFragment extends Fragment {

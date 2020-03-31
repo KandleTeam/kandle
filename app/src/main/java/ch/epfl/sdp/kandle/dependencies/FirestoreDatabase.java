@@ -81,21 +81,14 @@ public class FirestoreDatabase implements Database {
         return users
                 .document(userId)
                 .get()
-                .continueWith(new Continuation<DocumentSnapshot, User>() {
+                .continueWith(task -> {
+                    User user = Objects.requireNonNull(task.getResult()).toObject(User.class);
+                    assert (user != null);
+                    System.out.println(user.getId());
+                    if (!user.getId().equals(userId))
+                        throw new AssertionError("We done goofed somewhere! Unexpected uid");
 
-                    @Override
-
-
-                    public User then(@NonNull Task<DocumentSnapshot> task) {
-
-                        User user = Objects.requireNonNull(task.getResult()).toObject(User.class);
-                        assert (user != null);
-                        System.out.println(user.getId());
-                        if (!user.getId().equals(userId))
-                            throw new AssertionError("We done goofed somewhere! Unexpected uid");
-
-                        return user;
-                    }
+                    return user;
                 });
     }
 
@@ -317,13 +310,11 @@ public class FirestoreDatabase implements Database {
 
                             }
                         });
-                    }
-                    else {
+                    } else {
                         source.setResult(new ArrayList<User>());
                     }
-                }
-                else {
-                    source.setException( new Exception(task.getException().getMessage()));
+                } else {
+                    source.setException(new Exception(task.getException().getMessage()));
                 }
             }
         });
@@ -358,6 +349,13 @@ public class FirestoreDatabase implements Database {
         return loggedInUser().get().continueWith(task -> {
             DocumentSnapshot doc = task.getResult();
             return doc != null ? (String) doc.get("fullname") : null;
+        });
+    }
+
+    public Task<String> getUsername() {
+        return loggedInUser().get().continueWith(task -> {
+            DocumentSnapshot doc = task.getResult();
+            return doc != null ? (String) doc.get("username") : null;
         });
     }
 
@@ -517,13 +515,6 @@ public class FirestoreDatabase implements Database {
         });
 
         return source.getTask();
-    }
-
-    public Task<String> getUsername() {
-        return loggedInUser().get().continueWith(task -> {
-            DocumentSnapshot doc = task.getResult();
-            return doc != null ? (String) doc.get("username") : null;
-        });
     }
 
 

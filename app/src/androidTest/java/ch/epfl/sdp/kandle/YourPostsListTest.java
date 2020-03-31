@@ -1,9 +1,7 @@
 package ch.epfl.sdp.kandle;
-import android.util.Log;
+
 import android.view.Gravity;
 import android.view.View;
-
-import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.test.espresso.NoMatchingViewException;
 import androidx.test.espresso.UiController;
@@ -17,18 +15,13 @@ import androidx.test.rule.ActivityTestRule;
 import org.hamcrest.Matcher;
 import org.junit.After;
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-
 import java.util.Date;
 import java.util.HashMap;
-
 import ch.epfl.sdp.kandle.dependencies.DependencyManager;
 import ch.epfl.sdp.kandle.dependencies.Follow;
-import ch.epfl.sdp.kandle.fragment.YourPostListFragment;
-
 import static androidx.test.espresso.Espresso.onView;
 import static androidx.test.espresso.action.ViewActions.click;
 import static androidx.test.espresso.action.ViewActions.closeSoftKeyboard;
@@ -36,7 +29,6 @@ import static androidx.test.espresso.action.ViewActions.typeText;
 import static androidx.test.espresso.assertion.ViewAssertions.matches;
 import static androidx.test.espresso.contrib.DrawerMatchers.isClosed;
 import static androidx.test.espresso.matcher.ViewMatchers.withId;
-import static androidx.test.espresso.matcher.ViewMatchers.withText;
 import static junit.framework.TestCase.assertEquals;
 
 @RunWith(AndroidJUnit4.class)
@@ -66,10 +58,6 @@ public class YourPostsListTest {
                 }
             };
 
-
-
-
-
     @After
     public void clearCurrentUser(){
         LoggedInUser.clear();
@@ -82,16 +70,10 @@ public class YourPostsListTest {
         onView(withId(R.id.drawer_layout)).perform(DrawerActions.close());
     }
 
-
-
-
     @Test
     public void canClickOnAlreadyCreatedPostToSeeDescription() {
         onView(withId(R.id.rvPosts)).perform(RecyclerViewActions.actionOnItemAtPosition(0,click()));
         onView(withId(R.id.post_content)).perform(click());
-
-
-
     }
 
     @Test
@@ -105,8 +87,6 @@ public class YourPostsListTest {
         onView(withId(R.id.rvPosts)).perform(RecyclerViewActions.actionOnItemAtPosition(1,clickChildViewWithId(R.id.likeButton)));
         onView(withId(R.id.rvPosts)).perform(RecyclerViewActions.actionOnItemAtPosition(0,clickChildViewWithId(R.id.likeButton)));
         onView(withId(R.id.rvPosts)).perform(RecyclerViewActions.actionOnItemAtPosition(1,clickChildViewWithId(R.id.likeButton)));
-
-
     }
 
     @Test
@@ -133,9 +113,6 @@ public class YourPostsListTest {
         onView(withId(R.id.rvPosts)).perform(RecyclerViewActions.actionOnItemAtPosition(0,clickChildViewWithId(R.id.deleteButton)));
         onView(withId(R.id.drawer_layout)).check(matches(isClosed(Gravity.LEFT))).perform(DrawerActions.open());
         onView(withId(R.id.navigation_view)).perform(NavigationViewActions.navigateTo(R.id.about));
-
-
-
     }
 
     private static ViewAction clickChildViewWithId(final int id) {
@@ -154,9 +131,7 @@ public class YourPostsListTest {
             public void perform(UiController uiController, View view) {
                 View v = view.findViewById(id);
                 v.performClick();
-
             }
-
         };
     }
 
@@ -179,10 +154,4 @@ public class YourPostsListTest {
             assertEquals(adapter.getItemCount(), expectedCount);
         }
     }
-
-
-
-
-
-
 }

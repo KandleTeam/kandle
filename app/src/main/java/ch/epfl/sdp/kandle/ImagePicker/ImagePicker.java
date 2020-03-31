@@ -29,7 +29,7 @@ public abstract class ImagePicker {
         this.activity = null;
     }
 
-    public void openImage(){
+    public void openImage() {
         Intent intent = new Intent();
         intent.setType("image/*");
         intent.setAction(Intent.ACTION_GET_CONTENT);
@@ -41,12 +41,12 @@ public abstract class ImagePicker {
         }
     }
 
-    protected String getFileExtension(Uri uri){
-        ContentResolver contentResolver = activity != null? activity.getContentResolver() : fragment.getContext().getContentResolver();
+    protected String getFileExtension(Uri uri) {
+        ContentResolver contentResolver = activity != null ? activity.getContentResolver() : fragment.getContext().getContentResolver();
         return MimeTypeMap.getSingleton().getExtensionFromMimeType(contentResolver.getType(uri));
     }
 
-    public Uri handleActivityResult(int requestCode, int resultCode, Intent data){
+    public Uri handleActivityResult(int requestCode, int resultCode, Intent data) {
 
         if (requestCode == IMAGE_REQUEST && resultCode == RESULT_OK &&
                 data != null && data.getData() != null) {

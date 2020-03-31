@@ -2,52 +2,36 @@ package ch.epfl.sdp.kandle;
 
 import android.view.Gravity;
 import android.view.View;
-
 import org.hamcrest.Matcher;
 import org.junit.After;
-import org.junit.AfterClass;
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Rule;
 import org.junit.Test;
-
 import androidx.test.espresso.UiController;
 import androidx.test.espresso.ViewAction;
 import androidx.test.espresso.contrib.DrawerActions;
 import androidx.test.espresso.contrib.NavigationViewActions;
 import androidx.test.espresso.contrib.RecyclerViewActions;
-
 import androidx.test.rule.ActivityTestRule;
-
-import java.lang.invoke.MethodHandles;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.LinkedList;
-
 import ch.epfl.sdp.kandle.dependencies.DependencyManager;
 import ch.epfl.sdp.kandle.dependencies.Follow;
-import ch.epfl.sdp.kandle.dependencies.MockDatabase;
-
 import static androidx.test.espresso.action.ViewActions.clearText;
 import static androidx.test.espresso.action.ViewActions.closeSoftKeyboard;
 import static androidx.test.espresso.action.ViewActions.typeText;
 import static androidx.test.espresso.matcher.ViewMatchers.withText;
-
 import static androidx.test.espresso.Espresso.onView;
 import static androidx.test.espresso.action.ViewActions.click;
 import static androidx.test.espresso.assertion.ViewAssertions.matches;
 import static androidx.test.espresso.contrib.DrawerMatchers.isClosed;
 import static androidx.test.espresso.matcher.ViewMatchers.withId;
-import static org.hamcrest.CoreMatchers.not;
-import static org.hamcrest.Matchers.is;
 
 public class SearchFragmentTest {
 
 
-   public static User user1;
-   public static User user2;
-
+   public  User user1;
+   public  User user2;
 
     @Rule
     public ActivityTestRule<MainActivity> intentsRule =
@@ -73,23 +57,16 @@ public class SearchFragmentTest {
                 }
             };
 
-
-
-
-
     @After
     public void clearCurrentUser(){
         LoggedInUser.clear();
     }
-
-
 
     @Before
     public void loadFragment(){
         onView(withId(R.id.drawer_layout)).check(matches(isClosed(Gravity.LEFT))).perform(DrawerActions.open());
         onView(withId(R.id.navigation_view)).perform(NavigationViewActions.navigateTo(R.id.follow));
     }
-
 
     @Test
     public void followThenUnfollow() {
@@ -125,17 +102,13 @@ public class SearchFragmentTest {
         onView(withId (R.id.search_bar)).perform(closeSoftKeyboard());
         onView(withId(R.id.recycler_view)).perform(RecyclerViewActions.actionOnItemAtPosition(0, click()));
         onView(withId(R.id.profileUsername)).check(matches(withText("@" + user1.getUsername())));
-
     }
-
-
 
     @Test
     public void userWithNoProfilePic() {
         onView(withId(R.id.search_bar)).perform(typeText(user1.getUsername()));
         onView(withId (R.id.search_bar)).perform(closeSoftKeyboard());
     }
-
 
 
     public static ViewAction clickChildViewWithId(final int id) {
@@ -159,7 +132,4 @@ public class SearchFragmentTest {
 
         };
     }
-
-
-
 }

@@ -10,10 +10,10 @@ import ch.epfl.sdp.kandle.dependencies.DependencyManager;
 import ch.epfl.sdp.kandle.dependencies.Storage;
 
 
-public class PostImagePicker extends ImagePicker{
+public class PostImagePicker extends ImagePicker {
 
 
-    public PostImagePicker(Activity activity){
+    public PostImagePicker(Activity activity) {
         super(activity);
     }
 

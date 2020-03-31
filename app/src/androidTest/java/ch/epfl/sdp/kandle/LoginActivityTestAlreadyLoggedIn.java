@@ -1,21 +1,14 @@
 package ch.epfl.sdp.kandle;
 
 import android.view.Gravity;
-
 import org.junit.After;
 import org.junit.AfterClass;
-import org.junit.BeforeClass;
 import org.junit.Rule;
 import org.junit.Test;
-
 import androidx.test.rule.ActivityTestRule;
-
 import java.util.HashMap;
-
 import ch.epfl.sdp.kandle.dependencies.DependencyManager;
 import ch.epfl.sdp.kandle.dependencies.Follow;
-import ch.epfl.sdp.kandle.dependencies.MockDatabase;
-
 import static androidx.test.espresso.Espresso.onView;
 import static androidx.test.espresso.assertion.ViewAssertions.matches;
 import static androidx.test.espresso.contrib.DrawerMatchers.isClosed;
@@ -39,13 +32,10 @@ public class LoginActivityTestAlreadyLoggedIn {
                 }
             };
 
-
     @After
     public void signout() {
         DependencyManager.getAuthSystem().signOut();
     }
-
-
 
     @Test
     public void checkAutomaticLogIn(){

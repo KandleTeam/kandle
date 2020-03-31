@@ -70,15 +70,13 @@ public class YourPostListFragment extends Fragment {
 
         database.getPostsByUserId(userId).addOnCompleteListener(task -> {
 
-            if (task.isSuccessful()){
+            if (task.isSuccessful()) {
 
-                if (task.getResult()!=null){
-                    posts= new ArrayList<>(task.getResult());
+                if (task.getResult() != null) {
+                    posts = new ArrayList<>(task.getResult());
                     //reverse to have the newer posts first
                     Collections.reverse(posts);
-                }
-
-                else {
+                } else {
                     posts = new ArrayList<Post>();
                 }
 
@@ -105,9 +103,7 @@ public class YourPostListFragment extends Fragment {
                 rvPosts.setAdapter(adapter);
                 // Set layout manager to position the items
 
-            }
-
-            else {
+            } else {
                 System.out.println(task.getException().getMessage());
             }
 
@@ -143,10 +139,6 @@ public class YourPostListFragment extends Fragment {
     }
 
  */
-
-
-
-
 
 
 }

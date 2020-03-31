@@ -4,7 +4,6 @@ import com.google.android.gms.tasks.Task;
 import com.google.android.gms.tasks.TaskCompletionSource;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
-
 import ch.epfl.sdp.kandle.LoggedInUser;
 import ch.epfl.sdp.kandle.User;
 
@@ -26,17 +25,18 @@ public class FirebaseAuthentication implements Authentication {
      * In this function we consider the case where the user didn't log out from the app but closed it
      * Therefor the CurretnUser woudl be non null but the Instance of the loggedinUser would be.
      * We ther call the CachedDatabase to get the User data back to init the LoggedInUser
+     *
      * @return boolean that idicates if there is a current user logged in or not
      */
-    public boolean userCurrentlyLoggedIn(){
-        if(fAuth.getCurrentUser() != null){
-           database.getUserById(fAuth.getCurrentUser().getUid()).addOnCompleteListener(task -> {
-               if(task.isSuccessful()) {
-                   User user = task.getResult();
-                   LoggedInUser.init(user);
-               }else{
-                   task.getException().printStackTrace();
-               }
+    public boolean userCurrentlyLoggedIn() {
+        if (fAuth.getCurrentUser() != null) {
+            database.getUserById(fAuth.getCurrentUser().getUid()).addOnCompleteListener(task -> {
+                if (task.isSuccessful()) {
+                    User user = task.getResult();
+                    LoggedInUser.init(user);
+                } else {
+                    task.getException().printStackTrace();
+                }
             });
             return true;
         }
@@ -64,7 +64,6 @@ public class FirebaseAuthentication implements Authentication {
                 database.createUser(LoggedInUser.getInstance()).addOnCompleteListener(task1 -> {
                     source.setResult(LoggedInUser.getInstance());
                 });
-
             } else {
                 source.setException(authResult.getException());
             }
@@ -106,5 +105,4 @@ public class FirebaseAuthentication implements Authentication {
         LoggedInUser.clear();
         fAuth.signOut();
     }
-
 }

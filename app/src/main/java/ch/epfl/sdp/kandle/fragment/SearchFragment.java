@@ -42,7 +42,7 @@ public class SearchFragment extends Fragment {
     private User currentUser;
     EditText search_bar;
 
-    public SearchFragment( ){
+    public SearchFragment() {
 
     }
 
@@ -77,30 +77,22 @@ public class SearchFragment extends Fragment {
             @Override
             public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
 
-
                 if (!charSequence.toString().replace(" ", "").isEmpty()) {
-
                     database.searchUsers(charSequence.toString().toLowerCase().replace(" ", ""), 20).addOnCompleteListener(task -> {
-
                         if (task.isSuccessful()) {
-
                             mUsers.clear();
                             for (User user : task.getResult()) {
                                 if (!user.getId().equals(currentUser.getId())) {
                                     mUsers.add(user);
                                 }
                             }
-
                             userAdapter.notifyDataSetChanged();
                         }
                     });
-
-                }
-                else {
+                } else {
                     mUsers.clear();
                     userAdapter.notifyDataSetChanged();
                 }
-
             }
 
             @Override
@@ -113,26 +105,19 @@ public class SearchFragment extends Fragment {
 
         userAdapter.setOnItemClickListener((position, v) -> {
 
-
             //closeKeyBoard
-            InputMethodManager imm = (InputMethodManager)getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+            InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
             //if (getActivity().getCurrentFocus()!=null)
             imm.hideSoftInputFromWindow(getActivity().getCurrentFocus().getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
-
-
             final User user = mUsers.get(position);
-
-            fragmentManager.beginTransaction().replace(R.id.flContent, ProfileFragment.newInstance(user) )
+            fragmentManager.beginTransaction().replace(R.id.flContent, ProfileFragment.newInstance(user))
                     .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
                     .addToBackStack(null)
                     .commit();
-
-
         });
 
         return view;
     }
-
 
 
 }

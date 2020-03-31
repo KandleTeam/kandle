@@ -52,7 +52,7 @@ public class ProfileFragment extends Fragment {
     public final static int PROFILE_PICTURE_BEFORE = 6;
     public final static int PROFILE_PICTURE_AFTER = 7;
 
-    private ProfileFragment (User user){
+    private ProfileFragment(User user) {
         this.user = user;
     }
 
@@ -94,11 +94,10 @@ public class ProfileFragment extends Fragment {
 
         mValidateNameButton.setVisibility(View.GONE);
 
-        if(!user.getId().equals(currentUser.getId())){
+        if (!user.getId().equals(currentUser.getId())) {
             mEditPicture.setVisibility(View.GONE);
             mEditName.setVisibility(View.GONE);
-        }
-        else {
+        } else {
             mEditPicture.setOnClickListener(v -> {
                 profilePicPicker.openImage();
             });
@@ -112,12 +111,12 @@ public class ProfileFragment extends Fragment {
         });
 
         mValidateNameButton.setOnClickListener(v -> {
-            InputMethodManager imm = (InputMethodManager)getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+            InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
             //if (getActivity().getCurrentFocus()!=null)
             imm.hideSoftInputFromWindow(getActivity().getCurrentFocus().getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
 
             String nickname = mNicknameEdit.getText().toString();
-            if (nickname.trim().length()>0) {
+            if (nickname.trim().length() > 0) {
                 mNicknameView.setText(nickname.trim());
                 mNickNameInMenu.setText(nickname.trim());
                 LoggedInUser.getInstance().setNickname(nickname.trim());
@@ -134,7 +133,7 @@ public class ProfileFragment extends Fragment {
         mNicknameEdit.setText(user.getNickname());
 
         mUsername.setText("@" + user.getUsername());
-        if(user.getImageURL() != null) {
+        if (user.getImageURL() != null) {
             mProfilePicture.setTag(PROFILE_PICTURE_BEFORE);
             Picasso.get().load(user.getImageURL()).into(mProfilePicture);
         }
@@ -143,22 +142,19 @@ public class ProfileFragment extends Fragment {
         setNumberOfFollowing();
 
         database.userIdFollowingList(currentUser.getId()).addOnCompleteListener(task -> {
-            if (task.isSuccessful()){
-                if ((task.getResult() == null) || (!task.getResult().contains(user.getId()))){
+            if (task.isSuccessful()) {
+                if ((task.getResult() == null) || (!task.getResult().contains(user.getId()))) {
                     mFollowButton.setText(R.string.followBtnNotFollowing);
-                }
-
-                else {
+                } else {
                     mFollowButton.setText(R.string.followBtnAlreadyFollowing);
                 }
             }
         });
 
 
-        if (user.getId().equals(currentUser.getId())){
+        if (user.getId().equals(currentUser.getId())) {
             mFollowButton.setVisibility(View.GONE);
-        }
-        else {
+        } else {
             mFollowButton.setOnClickListener(followButtonListener(currentUser));
         }
 
@@ -173,11 +169,11 @@ public class ProfileFragment extends Fragment {
         return view;
     }
 
-    private OnCompleteListener<List<User>> numberListener (String title, final FragmentManager fragmentManager ){
+    private OnCompleteListener<List<User>> numberListener(String title, final FragmentManager fragmentManager) {
         return new OnCompleteListener<List<User>>() {
             @Override
             public void onComplete(@NonNull Task<List<User>> task) {
-                if (task.isSuccessful()){
+                if (task.isSuccessful()) {
 
                     fragmentManager.beginTransaction().replace(R.id.flContent, ListUsersFragment.newInstance(
                             task.getResult()
@@ -198,15 +194,14 @@ public class ProfileFragment extends Fragment {
             System.out.println(mFollowButton.getText().toString());
             if (mFollowButton.getText().toString().equals(getString(R.string.followBtnNotFollowing))) {
                 database.follow(currUser.getId(), user.getId()).addOnCompleteListener(task -> {
-                    if (task.isSuccessful()){
+                    if (task.isSuccessful()) {
                         System.out.println("not following -> following");
 
                         mFollowButton.setText(R.string.followBtnAlreadyFollowing);
                         setNumberOfFollowers();
                     }
                 });
-            }
-            else {
+            } else {
                 database.unFollow(currUser.getId(), user.getId()).addOnCompleteListener(task -> {
                     if (task.isSuccessful()) {
                         System.out.println("following -> not following");
@@ -230,7 +225,7 @@ public class ProfileFragment extends Fragment {
         });
     }
 
-    private void setNumberOfFollowers(){
+    private void setNumberOfFollowers() {
         database.userIdFollowersList(user.getId()).addOnCompleteListener(task -> {
             if (task.isSuccessful()) {
                 if (task.getResult() != null) {

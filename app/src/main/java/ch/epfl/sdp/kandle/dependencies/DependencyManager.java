@@ -1,10 +1,6 @@
 package ch.epfl.sdp.kandle.dependencies;
 
-import android.content.Context;
-
-import java.util.HashMap;
 import java.util.Map;
-
 import ch.epfl.sdp.kandle.Post;
 import ch.epfl.sdp.kandle.User;
 
@@ -17,8 +13,8 @@ public final class DependencyManager {
     //private static InternalStorage internalStorage = null;
 
 
-    public static void setFreshTestDependencies(boolean isConnected, Map<String,String> accounts,Map<String, User> users, Map<String,Follow > followMap, Map<String, Post > posts) {
-        setAuthSystem(new MockAuthentication(isConnected,accounts,db));
+    public static void setFreshTestDependencies(boolean isConnected, Map<String, String> accounts, Map<String, User> users, Map<String, Follow> followMap, Map<String, Post> posts) {
+        setAuthSystem(new MockAuthentication(isConnected, accounts, db));
         setDatabaseSystem(new MockDatabase(isConnected, users, followMap, posts));
         setStorageSystem(new MockStorage());
         //setInternalStorageSystem(new MockInternalStorage(isLoggedIn));
@@ -47,18 +43,19 @@ public final class DependencyManager {
     public static void setStorageSystem(Storage storage) {
         DependencyManager.storage = storage;
     }
-/*
-    public static InternalStorage getInternalStorageSystem(Context context) {
-        if(internalStorage == null) {
-            internalStorage = new InternalStorageHandler(context);
-        }
-        return internalStorage;
-    }
 
-    public static void setInternalStorageSystem(InternalStorage internalStorage) {
-        DependencyManager.internalStorage = internalStorage;
-    }
-*/
+    /*
+        public static InternalStorage getInternalStorageSystem(Context context) {
+            if(internalStorage == null) {
+                internalStorage = new InternalStorageHandler(context);
+            }
+            return internalStorage;
+        }
+
+        public static void setInternalStorageSystem(InternalStorage internalStorage) {
+            DependencyManager.internalStorage = internalStorage;
+        }
+    */
     private DependencyManager() {
     }
 
