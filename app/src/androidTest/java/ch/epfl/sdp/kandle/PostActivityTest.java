@@ -5,9 +5,11 @@ import android.app.Activity;
 import android.app.Instrumentation;
 import android.content.Intent;
 import android.net.Uri;
+import android.provider.MediaStore;
 
 import androidx.test.espresso.intent.rule.IntentsTestRule;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
+import androidx.test.rule.GrantPermissionRule;
 
 
 import org.junit.Rule;
@@ -39,6 +41,13 @@ public class PostActivityTest {
     public final IntentsTestRule<PostActivity> postActivityRule =
             new IntentsTestRule<>(PostActivity.class);
 
+    @Rule
+    public GrantPermissionRule mCameraPermissionRule =
+            GrantPermissionRule.grant(android.Manifest.permission.CAMERA);
+    @Rule
+    public GrantPermissionRule mStoragePermissionRule =
+            GrantPermissionRule.grant(android.Manifest.permission.WRITE_EXTERNAL_STORAGE);
+
 
 
     @Test
@@ -68,9 +77,16 @@ public class PostActivityTest {
     @Test
     public void clickCameraButtonLeavesToPostActivity() {
 
+        Intent resultData = new Intent();
+        resultData.setAction(Intent.ACTION_GET_CONTENT);
+        Uri imageUri = Uri.parse("android.resource://ch.epfl.sdp.kandle/drawable/ic_launcher_background.xml");
+        resultData.setData(imageUri);
+        Instrumentation.ActivityResult result = new Instrumentation.ActivityResult(Activity.RESULT_OK, resultData);
+        intending(hasAction(MediaStore.ACTION_IMAGE_CAPTURE)).respondWith(result);
+
         onView(withId(R.id.cameraButton)).perform(click());
-        //Thread.sleep(1000);
-        //intended(hasComponent(PostActivity.class.getName()));
+        onView(withId(R.id.postImage)).check(matches(withTagValue(is(PostActivity.POST_IMAGE_TAG))));
+
 
     }
 
