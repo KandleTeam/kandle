@@ -68,54 +68,49 @@ public class YourPostListFragment extends Fragment {
 
         userId = LoggedInUser.getInstance().getId();
 
-        database.getPostsByUserId(userId).addOnCompleteListener(new OnCompleteListener<List<Post>>() {
-            @Override
+        database.getPostsByUserId(userId).addOnCompleteListener(task -> {
 
+            if (task.isSuccessful()){
 
-            public void onComplete(@NonNull Task<List<Post>> task) {
-
-                if (task.isSuccessful()){
-
-                    if (task.getResult()!=null){
-                        posts= new ArrayList<>(task.getResult());
-                        //reverse to have the newer posts first
-                        Collections.reverse(posts);
-                    }
-
-                    else {
-                        posts = new ArrayList<Post>();
-                    }
-
-                    PostAdapter adapter = new PostAdapter(posts);
-
-                    adapter.setOnItemClickListener((position, view) -> {
-                        LayoutInflater inflater1 = getLayoutInflater();
-                        View popupView = inflater1.inflate(R.layout.post_content, null);
-                        int width = LinearLayout.LayoutParams.WRAP_CONTENT;
-                        int height = LinearLayout.LayoutParams.WRAP_CONTENT;
-                        boolean focusable = true; // lets taps ouside the popup also dismiss it
-                        final PopupWindow popupWindow = new PopupWindow(popupView, width, height, focusable);
-                        popupWindow.showAtLocation(view, Gravity.CENTER, 0, 0);
-                        TextView content = popupView.findViewById(R.id.post_content);
-                        content.setText(posts.get(position).getDescription());
-
-                        popupView.setOnClickListener((popup) -> {
-                            popupWindow.dismiss();
-                        });
-
-                    });
-
-                    // Attach the adapter to the recyclerview to populate items
-                    rvPosts.setAdapter(adapter);
-                    // Set layout manager to position the items
-
+                if (task.getResult()!=null){
+                    posts= new ArrayList<>(task.getResult());
+                    //reverse to have the newer posts first
+                    Collections.reverse(posts);
                 }
 
                 else {
-                    System.out.println(task.getException().getMessage());
+                    posts = new ArrayList<Post>();
                 }
 
+                PostAdapter adapter = new PostAdapter(posts);
+
+                adapter.setOnItemClickListener((position, view) -> {
+                    LayoutInflater inflater1 = getLayoutInflater();
+                    View popupView = inflater1.inflate(R.layout.post_content, null);
+                    int width = LinearLayout.LayoutParams.WRAP_CONTENT;
+                    int height = LinearLayout.LayoutParams.WRAP_CONTENT;
+                    boolean focusable = true; // lets taps ouside the popup also dismiss it
+                    final PopupWindow popupWindow = new PopupWindow(popupView, width, height, focusable);
+                    popupWindow.showAtLocation(view, Gravity.CENTER, 0, 0);
+                    TextView content = popupView.findViewById(R.id.post_content);
+                    content.setText(posts.get(position).getDescription());
+
+                    popupView.setOnClickListener((popup) -> {
+                        popupWindow.dismiss();
+                    });
+
+                });
+
+                // Attach the adapter to the recyclerview to populate items
+                rvPosts.setAdapter(adapter);
+                // Set layout manager to position the items
+
             }
+
+            else {
+                System.out.println(task.getException().getMessage());
+            }
+
         });
 
 

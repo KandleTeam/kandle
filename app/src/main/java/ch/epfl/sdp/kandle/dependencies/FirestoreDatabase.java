@@ -24,8 +24,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+
 import ch.epfl.sdp.kandle.Post;
 import ch.epfl.sdp.kandle.User;
 
@@ -40,12 +42,14 @@ public class FirestoreDatabase implements Database {
     private static final CollectionReference posts = firestore.collection("posts");
     private static final CollectionReference follow = firestore.collection("follow");
 
-    private DocumentReference loggedInUser() { return users.document(FirebaseAuth.getInstance().getCurrentUser().getUid());}
+    private DocumentReference loggedInUser() {
+        return users.document(FirebaseAuth.getInstance().getCurrentUser().getUid());
+    }
 
 
-    private  Map<String, Object> mapDeleteFollowing = (Map<String, Object>) new HashMap<>().put("following", FieldValue.delete());
+    private Map<String, Object> mapDeleteFollowing = (Map<String, Object>) new HashMap<>().put("following", FieldValue.delete());
 
-    private  Map<String, Object> mapDeleteFollowers = (Map<String, Object>) new HashMap<>().put("followers", FieldValue.delete());
+    private Map<String, Object> mapDeleteFollowers = (Map<String, Object>) new HashMap<>().put("followers", FieldValue.delete());
 
     private FirestoreDatabase() {
         // For now, disable caching
@@ -72,8 +76,6 @@ public class FirestoreDatabase implements Database {
     }
 
 
-
-
     @Override
     public Task<User> getUserById(final String userId) {
         return users
@@ -87,9 +89,10 @@ public class FirestoreDatabase implements Database {
                     public User then(@NonNull Task<DocumentSnapshot> task) {
 
                         User user = Objects.requireNonNull(task.getResult()).toObject(User.class);
-                        assert(user != null);
+                        assert (user != null);
                         System.out.println(user.getId());
-                        if (!user.getId().equals(userId)) throw new AssertionError("We done goofed somewhere! Unexpected uid");
+                        if (!user.getId().equals(userId))
+                            throw new AssertionError("We done goofed somewhere! Unexpected uid");
 
                         return user;
                     }
@@ -107,25 +110,22 @@ public class FirestoreDatabase implements Database {
         return firestore
                 .runTransaction(transaction -> {
 
-                        DocumentSnapshot usernameSnapshot = transaction.get(usernameDoc);
-                        DocumentSnapshot userSnapshot = transaction.get(userDoc);
+                    DocumentSnapshot usernameSnapshot = transaction.get(usernameDoc);
+                    DocumentSnapshot userSnapshot = transaction.get(userDoc);
 
-                        if(userSnapshot.exists()) {
-                            throw new FirebaseFirestoreException("User already exists!", FirebaseFirestoreException.Code.ALREADY_EXISTS);
-                        }
-                        else if(usernameSnapshot.exists()) {
-                            throw new FirebaseFirestoreException("Username already taken!", FirebaseFirestoreException.Code.ALREADY_EXISTS);
-                        }
+                    if (userSnapshot.exists()) {
+                        throw new FirebaseFirestoreException("User already exists!", FirebaseFirestoreException.Code.ALREADY_EXISTS);
+                    } else if (usernameSnapshot.exists()) {
+                        throw new FirebaseFirestoreException("Username already taken!", FirebaseFirestoreException.Code.ALREADY_EXISTS);
+                    } else {
 
-                         else {
-
-                            Map<String,Object> map = new HashMap<>();
-                            map.put("username", user.getUsername());
+                        Map<String, Object> map = new HashMap<>();
+                        map.put("username", user.getUsername());
 
 
-                            transaction.set(usernameDoc, map);
-                            transaction.set(userDoc, user);
-                        }
+                        transaction.set(usernameDoc, map);
+                        transaction.set(userDoc, user);
+                    }
 
                     return null;
                 });
@@ -134,8 +134,8 @@ public class FirestoreDatabase implements Database {
 
     @Override
     public Task<List<User>> searchUsers(String prefix, int maxNumber) {
-        char last = prefix.charAt(prefix.length()-1);
-        String upperBound = prefix.substring(0, prefix.length()-1) + (char)(last+1);
+        char last = prefix.charAt(prefix.length() - 1);
+        String upperBound = prefix.substring(0, prefix.length() - 1) + (char) (last + 1);
 
 
         return users
@@ -166,28 +166,26 @@ public class FirestoreDatabase implements Database {
                         if (!following.contains(userFollowed)) {
                             Map<String, Object> mapFollowing = new HashMap<>();
                             following.add(userFollowed);
-                            mapFollowing.put("following",following);
+                            mapFollowing.put("following", following);
                             transaction.set(userFollowingDoc, mapFollowing, SetOptions.merge());
                         }
-                    }
-                     else {
+                    } else {
                         Map<String, Object> mapFollowing = new HashMap<>();
                         mapFollowing.put("following", Arrays.asList(userFollowed));
                         transaction.set(userFollowingDoc, mapFollowing, SetOptions.merge());
-                     }
+                    }
 
 
-                    if (followers !=null) {
+                    if (followers != null) {
 
                         if (!followers.contains(userFollowing)) {
 
                             Map<String, Object> mapFollowed = new HashMap<>();
                             followers.add(userFollowing);
-                            mapFollowed.put("followers",followers);
+                            mapFollowed.put("followers", followers);
                             transaction.set(userFollowedDoc, mapFollowed, SetOptions.merge());
                         }
-                    }
-                    else {
+                    } else {
                         Map<String, Object> mapFollowed = new HashMap<>();
                         mapFollowed.put("followers", Arrays.asList(userFollowing));
 
@@ -240,7 +238,7 @@ public class FirestoreDatabase implements Database {
         return follow
                 .document(userId)
                 .get()
-                .continueWith(task -> (List<String>)  task.getResult().get("following"));
+                .continueWith(task -> (List<String>) task.getResult().get("following"));
     }
 
     @Override
@@ -248,53 +246,39 @@ public class FirestoreDatabase implements Database {
         return follow
                 .document(userId)
                 .get()
-                .continueWith(task -> (List<String>)  task.getResult().get("followers"));
+                .continueWith(task -> (List<String>) task.getResult().get("followers"));
     }
 
     @Override
     public Task<List<User>> userFollowingList(String userId) {
 
-       // Task<List<String>> taskUserIdFollowing = userIdFollowingList(userId);
+        // Task<List<String>> taskUserIdFollowing = userIdFollowingList(userId);
         TaskCompletionSource<List<User>> source = new TaskCompletionSource<>();
 
-        userIdFollowingList(userId).addOnCompleteListener(new OnCompleteListener<List<String>>() {
-            @Override
-            public void onComplete(@NonNull Task<List<String>> task) {
+        userIdFollowingList(userId).addOnCompleteListener(task -> {
 
-                if (task.isSuccessful()){
-
-                    if (task.getResult() != null) {
-
-                        users.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                            @Override
-                            public void onComplete(@NonNull Task<QuerySnapshot> task2) {
-                                if (task2.isSuccessful()){
-                                    List<User> users = new ArrayList<>();
-                                    for (QueryDocumentSnapshot document : task2.getResult()) {
-                                        String id =  (String) document.get("id");
-                                        if (task.getResult().contains(id)){
-                                            users.add(document.toObject(User.class));
-                                        }
-                                    }
-
-                                    source.setResult(users);
+            if (task.isSuccessful()) {
+                if (task.getResult() == null) {
+                    source.setResult(null);
+                } else {
+                    users.get().addOnCompleteListener(task2 -> {
+                        if (task2.isSuccessful()) {
+                            List<User> users = new ArrayList<>();
+                            for (QueryDocumentSnapshot document : task2.getResult()) {
+                                String id = (String) document.get("id");
+                                if (task.getResult().contains(id)) {
+                                    users.add(document.toObject(User.class));
                                 }
-
-                                else {
-                                    source.setException( new Exception(task2.getException().getMessage()));
-                                }
-
                             }
-                        });
 
-                    }
-                    else {
-                        source.setResult(null);
-                    }
+                            source.setResult(users);
+                        } else {
+                            source.setException(new Exception(task2.getException().getMessage()));
+                        }
+                    });
                 }
-                else {
-                    source.setException( new Exception(task.getException().getMessage()));
-            }
+            } else {
+                source.setException(new Exception(task.getException().getMessage()));
             }
         });
 
@@ -303,36 +287,40 @@ public class FirestoreDatabase implements Database {
 
     @Override
     public Task<List<User>> userFollowersList(String userId) {
-       // Task<List<String>> taskUserIdFollowers = userIdFollowersList(userId);
+        // Task<List<String>> taskUserIdFollowers = userIdFollowersList(userId);
         TaskCompletionSource<List<User>> source = new TaskCompletionSource<>();
 
         userIdFollowersList(userId).addOnCompleteListener(new OnCompleteListener<List<String>>() {
             @Override
             public void onComplete(@NonNull Task<List<String>> task) {
 
-                if (task.isSuccessful()){
+                if (task.isSuccessful()) {
 
-                    users.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                        @Override
-                        public void onComplete(@NonNull Task<QuerySnapshot> task2) {
-                            if (task2.isSuccessful()){
-                                List<User> users = new ArrayList<>();
-                                for (QueryDocumentSnapshot document : task2.getResult()) {
-                                    String id =  (String) document.get("id");
-                                    if (task.getResult().contains(id)){
-                                        users.add(document.toObject(User.class));
+                    if (task.getResult() != null) {
+
+                        users.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                            @Override
+                            public void onComplete(@NonNull Task<QuerySnapshot> task2) {
+                                if (task2.isSuccessful()) {
+                                    List<User> users = new ArrayList<>();
+                                    for (QueryDocumentSnapshot document : task2.getResult()) {
+                                        String id = (String) document.get("id");
+                                        if (task.getResult().contains(id)) {
+                                            users.add(document.toObject(User.class));
+                                        }
                                     }
+
+                                    source.setResult(users);
+                                } else {
+                                    source.setException(new Exception(task2.getException().getMessage()));
                                 }
 
-                                source.setResult(users);
                             }
-
-                            else {
-                                source.setException( new Exception(task2.getException().getMessage()));
-                            }
-
-                        }
-                    });
+                        });
+                    }
+                    else {
+                        source.setResult(new ArrayList<User>());
+                    }
                 }
                 else {
                     source.setException( new Exception(task.getException().getMessage()));
@@ -342,9 +330,6 @@ public class FirestoreDatabase implements Database {
 
         return source.getTask();
     }
-
-
-
 
     @Override
     public Task<Void> updateProfilePicture(String uri) {
@@ -357,7 +342,7 @@ public class FirestoreDatabase implements Database {
     public Task<String> getProfilePicture() {
         return loggedInUser().get().continueWith(task -> {
             DocumentSnapshot doc = task.getResult();
-            return doc != null? (String) doc.get("imageURL") : null;
+            return doc != null ? (String) doc.get("imageURL") : null;
         });
     }
 
@@ -372,7 +357,7 @@ public class FirestoreDatabase implements Database {
     public Task<String> getNickname() {
         return loggedInUser().get().continueWith(task -> {
             DocumentSnapshot doc = task.getResult();
-            return doc != null? (String) doc.get("fullname") : null;
+            return doc != null ? (String) doc.get("fullname") : null;
         });
     }
 
@@ -392,11 +377,10 @@ public class FirestoreDatabase implements Database {
                         if (!posts.contains(p.getPostId())) {
                             Map<String, Object> mapPosts = new HashMap<>();
                             posts.add(p.getPostId());
-                            mapPosts.put("posts",posts);
+                            mapPosts.put("posts", posts);
                             transaction.set(userAddingPostDoc, mapPosts, SetOptions.merge());
                         }
-                    }
-                    else {
+                    } else {
                         Map<String, Object> mapPosts = new HashMap<>();
                         mapPosts.put("posts", Arrays.asList(p.getPostId()));
                         transaction.set(userAddingPostDoc, mapPosts, SetOptions.merge());
@@ -423,7 +407,7 @@ public class FirestoreDatabase implements Database {
                         if (posts.contains(p.getPostId())) {
                             Map<String, Object> mapPosts = new HashMap<>();
                             posts.remove(p.getPostId());
-                            mapPosts.put("posts",posts);
+                            mapPosts.put("posts", posts);
                             transaction.set(userDeletingPostDoc, mapPosts, SetOptions.merge());
                         }
                     }
@@ -444,13 +428,13 @@ public class FirestoreDatabase implements Database {
                     DocumentSnapshot likedPostSnapchot = transaction.get(likedPostDoc);
 
                     List<String> likers = (List<String>) likedPostSnapchot.get("likers");
-                   // int numberOfLikes = (int)likedPostSnapchot.get("likes");
+                    // int numberOfLikes = (int)likedPostSnapchot.get("likes");
 
                     if (likers != null) {
                         if (!likers.contains(userId)) {
                             Map<String, Object> mapLikers = new HashMap<>();
                             likers.add(userId);
-                            mapLikers.put("likers",likers);
+                            mapLikers.put("likers", likers);
                             //numberOfLikes++;
                             //mapLikers.put("likes", numberOfLikes);
                             transaction.set(likedPostDoc, mapLikers, SetOptions.merge());
@@ -476,7 +460,7 @@ public class FirestoreDatabase implements Database {
                         if (likers.contains(userId)) {
                             Map<String, Object> mapLikers = new HashMap<>();
                             likers.remove(userId);
-                            mapLikers.put("likers",likers);
+                            mapLikers.put("likers", likers);
                             transaction.set(unlikedPostDoc, mapLikers, SetOptions.merge());
                         }
                     }
@@ -496,7 +480,7 @@ public class FirestoreDatabase implements Database {
 
     @Override
     public Task<List<Post>> getPostsByUserId(String userId) {
-        Task <List<String>> taskListPostId =  users
+        Task<List<String>> taskListPostId = users
                 .document(userId)
                 .get()
                 .continueWith(task -> (List<String>) task.getResult().get("posts"));
@@ -504,34 +488,31 @@ public class FirestoreDatabase implements Database {
         TaskCompletionSource<List<Post>> source = new TaskCompletionSource<>();
         taskListPostId.addOnCompleteListener(task -> {
 
-            if (task.isSuccessful()){
-               posts.get().addOnCompleteListener(task2 -> {
+            if (task.isSuccessful()) {
+                posts.get().addOnCompleteListener(task2 -> {
 
-                   if (task2.isSuccessful()){
-                       List<Post> posts = new ArrayList<>();
+                    if (task2.isSuccessful()) {
+                        List<Post> posts = new ArrayList<>();
 
-                       if (task2.getResult()!=null) {
+                        if (task2.getResult() != null) {
 
-                           for (QueryDocumentSnapshot documentSnapshot : task2.getResult()) {
-                               String postId = (String) documentSnapshot.get("postId");
-                               if (task.getResult().contains(postId)) {
-                                   posts.add(documentSnapshot.toObject(Post.class));
-                               }
-                           }
-                       }
+                            for (QueryDocumentSnapshot documentSnapshot : task2.getResult()) {
+                                String postId = (String) documentSnapshot.get("postId");
+                                if (task.getResult().contains(postId)) {
+                                    posts.add(documentSnapshot.toObject(Post.class));
+                                }
+                            }
+                        }
 
-                       source.setResult(posts);
-                   }
+                        source.setResult(posts);
+                    } else {
+                        source.setException(new Exception(task2.getException().getMessage()));
+                    }
 
-                   else {
-                       source.setException( new Exception(task2.getException().getMessage()));
-                   }
+                });
 
-               });
-
-            }
-            else {
-                source.setException( new Exception(task.getException().getMessage()));
+            } else {
+                source.setException(new Exception(task.getException().getMessage()));
             }
         });
 
@@ -541,10 +522,9 @@ public class FirestoreDatabase implements Database {
     public Task<String> getUsername() {
         return loggedInUser().get().continueWith(task -> {
             DocumentSnapshot doc = task.getResult();
-            return doc != null? (String) doc.get("username") : null;
+            return doc != null ? (String) doc.get("username") : null;
         });
     }
-
 
 
 }

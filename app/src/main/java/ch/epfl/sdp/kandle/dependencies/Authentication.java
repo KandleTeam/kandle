@@ -7,7 +7,7 @@ import ch.epfl.sdp.kandle.User;
 
 public interface Authentication {
 
-    Task<User> createUserWithEmailAndPassword(String username,String email, String password) ;
+    Task<User> createUserWithEmailAndPassword(String username,String email, String password);
 
     Task<User> signInWithEmailAndPassword(String email, String password);
 

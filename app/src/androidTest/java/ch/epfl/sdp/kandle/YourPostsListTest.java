@@ -1,4 +1,5 @@
 package ch.epfl.sdp.kandle;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 
@@ -14,14 +15,18 @@ import androidx.test.espresso.contrib.RecyclerViewActions;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 import androidx.test.rule.ActivityTestRule;
 import org.hamcrest.Matcher;
+import org.junit.After;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import java.util.Date;
+import java.util.HashMap;
 
 import ch.epfl.sdp.kandle.dependencies.DependencyManager;
+import ch.epfl.sdp.kandle.dependencies.Follow;
 import ch.epfl.sdp.kandle.fragment.YourPostListFragment;
 
 import static androidx.test.espresso.Espresso.onView;
@@ -37,17 +42,38 @@ import static junit.framework.TestCase.assertEquals;
 @RunWith(AndroidJUnit4.class)
 public class YourPostsListTest {
 
-
+    public static Post p1;
+    public static Post p2;
 
     @Rule
     public ActivityTestRule<MainActivity> intentsRule =
-            new ActivityTestRule<MainActivity>(MainActivity.class, true, true) {
+            new ActivityTestRule<MainActivity>(MainActivity.class, true, true){
                 @Override
                 protected void beforeActivityLaunched() {
+                    LoggedInUser.init(new User("loggedInUserId","LoggedInUser","loggedInUser@kandle.ch","nickname","image"));
+                    p1 =  new Post("text", "Hello world !", new Date(), LoggedInUser.getInstance().getId(), "post1Id");
+                    p2 = new Post("text", "I'm user 1 !", new Date(), LoggedInUser.getInstance().getId(), "post2Id");
+                    LoggedInUser.getInstance().addPostId(p1.getPostId());
+                    LoggedInUser.getInstance().addPostId(p2.getPostId());
+                    HashMap<String,String> accounts = new HashMap<>();
+                    HashMap<String,User> users = new HashMap<>();
+                    HashMap<String, Follow> followMap = new HashMap<>();
+                    HashMap<String,Post> posts = new HashMap<>();
+                    posts.put(p1.getPostId(),p1);
+                    posts.put(p2.getPostId(),p1);
+                    DependencyManager.setFreshTestDependencies(true,accounts,users,followMap,posts);
 
-                    DependencyManager.setFreshTestDependencies(true);
                 }
             };
+
+
+
+
+
+    @After
+    public void clearCurrentUser(){
+        LoggedInUser.clear();
+    }
 
     @Before
     public void loadPostView() {
@@ -60,35 +86,31 @@ public class YourPostsListTest {
 
 
     @Test
-    public void canClickOnAlreadyCreatedPostToSeeDescriptionAndRemoveDescription() throws Throwable {
+    public void canClickOnAlreadyCreatedPostToSeeDescription() {
         onView(withId(R.id.rvPosts)).perform(RecyclerViewActions.actionOnItemAtPosition(0,click()));
         onView(withId(R.id.post_content)).perform(click());
-        onView(withId(R.id.rvPosts)).perform(RecyclerViewActions.actionOnItemAtPosition(1,click()));
-        onView(withId(R.id.post_content)).perform(click());
+
+
 
     }
 
     @Test
-    public void likesThenUnlikesAlreadyCreatedPostsAndRemovesOldestPost() throws Throwable {
+    public void likesThenUnlikesAlreadyCreatedPosts(){
 
         //2 posts should be displayed
         onView(withId(R.id.rvPosts)).check(new RecyclerViewItemCountAssertion(2));
-
         //Like then unlike the oldest (already created in the mockdatabase)
+        //TODO When we like here the like counter is 2 and not 1 therefor we need to check and fix the issue
         onView(withId(R.id.rvPosts)).perform(RecyclerViewActions.actionOnItemAtPosition(0,clickChildViewWithId(R.id.likeButton)));
         onView(withId(R.id.rvPosts)).perform(RecyclerViewActions.actionOnItemAtPosition(1,clickChildViewWithId(R.id.likeButton)));
         onView(withId(R.id.rvPosts)).perform(RecyclerViewActions.actionOnItemAtPosition(0,clickChildViewWithId(R.id.likeButton)));
         onView(withId(R.id.rvPosts)).perform(RecyclerViewActions.actionOnItemAtPosition(1,clickChildViewWithId(R.id.likeButton)));
 
-        //Remove the the oldest post
-        onView(withId(R.id.rvPosts)).perform(RecyclerViewActions.actionOnItemAtPosition(1,clickChildViewWithId(R.id.deleteButton)));
 
-        //only 1 post should be displayed
-        onView(withId(R.id.rvPosts)).check(new RecyclerViewItemCountAssertion(1));
     }
 
     @Test
-    public void createTwoNewPosts() throws Throwable {
+    public void createTwoNewPostsAndRemoveThem() {
 
         //2 posts should be displayed
         onView(withId(R.id.rvPosts)).check(new RecyclerViewItemCountAssertion(2));
@@ -105,9 +127,14 @@ public class YourPostsListTest {
         onView(withId(R.id.postButton)).perform(click());
 
         loadPostView();
-
         //4 posts should be displayed
         onView(withId(R.id.rvPosts)).check(new RecyclerViewItemCountAssertion(4));
+
+        onView(withId(R.id.rvPosts)).perform(RecyclerViewActions.actionOnItemAtPosition(0,clickChildViewWithId(R.id.deleteButton)));
+        onView(withId(R.id.drawer_layout)).check(matches(isClosed(Gravity.LEFT))).perform(DrawerActions.open());
+        onView(withId(R.id.navigation_view)).perform(NavigationViewActions.navigateTo(R.id.about));
+
+
 
     }
 

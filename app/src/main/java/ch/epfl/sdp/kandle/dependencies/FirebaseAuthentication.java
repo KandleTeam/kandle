@@ -33,11 +33,7 @@ public class FirebaseAuthentication implements Authentication {
            database.getUserById(fAuth.getCurrentUser().getUid()).addOnCompleteListener(task -> {
                if(task.isSuccessful()) {
                    User user = task.getResult();
-                   try {
-                       LoggedInUser.init(user.getId(), user.getUsername(), user.getEmail(), user.getNickname(), user.getImageURL());
-                   } catch (Exception e) {
-                       e.printStackTrace();
-                   }
+                   LoggedInUser.init(user);
                }else{
                    task.getException().printStackTrace();
                }
@@ -64,9 +60,11 @@ public class FirebaseAuthentication implements Authentication {
         return authResult.continueWithTask(task -> {
             if (authResult.isSuccessful()) {
                 String userId = authResult.getResult().getUser().getUid();
-                LoggedInUser.init(userId, username, email, username, null);
-                database.createUser(LoggedInUser.getInstance());
-                source.setResult(LoggedInUser.getInstance());
+                LoggedInUser.init(new User(userId, username, email, username, null));
+                database.createUser(LoggedInUser.getInstance()).addOnCompleteListener(task1 -> {
+                    source.setResult(LoggedInUser.getInstance());
+                });
+
             } else {
                 source.setException(authResult.getException());
             }
@@ -92,7 +90,7 @@ public class FirebaseAuthentication implements Authentication {
                 String userId = authResult.getResult().getUser().getUid();
                 return database.getUserById(userId).continueWith(task1 -> {
                     User user = task1.getResult();
-                    LoggedInUser.init(user.getId(), user.getUsername(), user.getEmail(), user.getNickname(), user.getImageURL());
+                    LoggedInUser.init(user);
                     return user;
                 });
             } else {
@@ -105,7 +103,7 @@ public class FirebaseAuthentication implements Authentication {
 
     @Override
     public void signOut() {
-        LoggedInUser.getInstance().clear();
+        LoggedInUser.clear();
         fAuth.signOut();
     }
 

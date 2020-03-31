@@ -1,5 +1,7 @@
 package ch.epfl.sdp.kandle.dependencies;
 
+import android.util.Log;
+
 import com.google.android.gms.tasks.Task;
 import com.google.android.gms.tasks.TaskCompletionSource;
 
@@ -13,6 +15,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
+import ch.epfl.sdp.kandle.LoggedInUser;
 import ch.epfl.sdp.kandle.Post;
 import ch.epfl.sdp.kandle.User;
 
@@ -24,42 +27,20 @@ import ch.epfl.sdp.kandle.User;
 public class MockDatabase implements Database {
 
 
-    private class Follow {
-        public List<String> following;
+    private  Map<String, User> users;
+    private  Map<String, Follow> followMap;
+    private  Map<String, Post> posts;
 
-        public List<String> followers;
-
-        public Follow(List<String> following, List<String> followers) {
-            this.following = following;
-            this.followers = followers;
+    public MockDatabase(boolean isConnected,Map<String, User> users, Map<String, Follow> followMap, Map<String, Post> posts) {
+        this.users = users;
+        this.posts = posts;
+        this.followMap = followMap;
+        if(isConnected){
+            users.put(LoggedInUser.getInstance().getId(),LoggedInUser.getInstance());
+            followMap.put(LoggedInUser.getInstance().getId(),new Follow());
         }
 
-        public void addFollowing ( String s){
-            following.add(s);
-        }
-
-        public void addFollower ( String s){
-            followers.add(s);
-        }
-
-        public void removeFollowing ( String s){
-            following.remove(s);
-        }
-
-        public void removeFollower ( String s){
-            followers.remove(s);
-        }
-    }
-
-
-    public static Map<String, User> users;
-    private static Map<String, Follow> followMap;
-    private static Map<String, Post> posts;
-
-    public MockDatabase() {
-        users = new HashMap<>();
-
-
+/*
         users.put("user1Id", new User("user1Id", "user1", "user1@kandle.ch", null,  null));
         users.put("loggedInUserId",new User("loggedInUserId","LoggedInUser","loggedInUser@kandle.ch","nickname","image"));
 
@@ -73,7 +54,7 @@ public class MockDatabase implements Database {
         posts.get("post1Id").setImage("image");
         users.get("loggedInUserId").addPostId(posts.get("post1Id").getPostId());
         users.get("loggedInUserId").addPostId(posts.get("post2Id").getPostId());
-
+*/
 
 
     }
@@ -91,7 +72,6 @@ public class MockDatabase implements Database {
                 break;
             }
         }
-
         task.setResult(result);
         return task.getTask();
 
@@ -103,15 +83,15 @@ public class MockDatabase implements Database {
     @Override
     public Task<User> getUserById(String userId) {
 
-        TaskCompletionSource<User> task = new TaskCompletionSource<>();
+        TaskCompletionSource<User> source = new TaskCompletionSource<>();
 
         if(users.containsKey(userId)) {
-            task.setResult(users.get(userId));
+            source.setResult(users.get(userId));
+        } else {
+            source.setException(new IllegalArgumentException("No such user with id: " + userId + "with users containing"));
         }
-        //else {
-           // task.setException(new IllegalArgumentException("No such user with id: " + userId));
-        //}
-        return task.getTask();
+
+        return source.getTask();
     }
 
 
@@ -130,6 +110,7 @@ public class MockDatabase implements Database {
 
         */
             users.put(user.getId(), user);
+            followMap.put(user.getId(), new Follow());
             //task.setResult(null);
         //}
         return task.getTask();
@@ -246,7 +227,7 @@ public class MockDatabase implements Database {
     @Override
     public Task<Void> updateProfilePicture(String uri) {
         TaskCompletionSource<Void> source = new TaskCompletionSource<>();
-        User user = users.get("loggedInUserId");
+        User user = users.get(LoggedInUser.getInstance().getId());
         user.setImageURL(uri);
 
         return source.getTask();
@@ -256,7 +237,7 @@ public class MockDatabase implements Database {
     public Task<String> getProfilePicture() {
 
         TaskCompletionSource<String> source = new TaskCompletionSource<>();
-        User user = users.get("loggedInUserId");
+        User user = users.get(LoggedInUser.getInstance().getId());
         source.setResult(user.getImageURL());
         return source.getTask();
     }
@@ -264,7 +245,7 @@ public class MockDatabase implements Database {
     @Override
     public Task<Void> updateNickname(String nickname) {
         TaskCompletionSource<Void> source = new TaskCompletionSource<>();
-        User user = users.get("loggedInUserId");
+        User user = users.get(LoggedInUser.getInstance().getId());
         user.setNickname(nickname);
         return source.getTask();
     }
@@ -272,7 +253,7 @@ public class MockDatabase implements Database {
     @Override
     public Task<String> getNickname() {
         TaskCompletionSource<String> source = new TaskCompletionSource<>();
-        User user = users.get("loggedInUserId");
+        User user = users.get(LoggedInUser.getInstance().getId());
         source.setResult(user.getNickname());
         return source.getTask();
     }
@@ -280,7 +261,7 @@ public class MockDatabase implements Database {
     @Override
     public Task<String> getUsername() {
         TaskCompletionSource<String> source = new TaskCompletionSource<>();
-        User user = users.get("loggedInUserId");
+        User user = users.get(LoggedInUser.getInstance().getId());
         source.setResult(user.getUsername());
         return source.getTask();
     }

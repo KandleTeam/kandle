@@ -1,62 +1,48 @@
 package ch.epfl.sdp.kandle.dependencies;
 
-import android.net.Uri;
-import android.os.Parcel;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-
-import com.google.android.gms.internal.firebase_auth.zzff;
 import com.google.android.gms.tasks.Task;
 import com.google.android.gms.tasks.TaskCompletionSource;
-import com.google.firebase.FirebaseApp;
-import com.google.firebase.auth.AdditionalUserInfo;
-import com.google.firebase.auth.AuthCredential;
-import com.google.firebase.auth.AuthResult;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.auth.FirebaseUserMetadata;
-import com.google.firebase.auth.UserInfo;
-import com.google.firebase.auth.zzy;
-import com.google.firebase.auth.zzz;
-
-import java.util.ArrayList;
-import java.util.List;
-
+import java.util.Map;
 import ch.epfl.sdp.kandle.LoggedInUser;
+
 import ch.epfl.sdp.kandle.User;
 
 public class MockAuthentication implements Authentication {
 
 
-    private List<String> emails = new ArrayList<>();
-    private MockDatabase database;
-    private boolean isConnected;
-    private final User loggedInUser = new User("loggedInUserId","LoggedInUser","loggedInUser@kandle.ch","nickname","image");
 
-    public MockAuthentication(boolean isConnected) {
+    private Map<String,String> accounts;
+    private boolean isConnected;
+    private Database database;
+
+    public MockAuthentication(boolean isConnected, Map<String,String> accounts, Database database) {
         this.isConnected = isConnected;
-        emails.add(loggedInUser.getEmail());
-        database = new MockDatabase();
+        this.accounts = accounts;
+        this.database = database;
+        if(isConnected){
+            accounts.put(LoggedInUser.getInstance().getEmail(),LoggedInUser.getInstance().getId());
+        }
+
     }
+
+
 
     @Override
     public Task<User> createUserWithEmailAndPassword(String username, String email, String password) {
 
         TaskCompletionSource source = new TaskCompletionSource<User>();
 
-        if (emails.contains(email)){
-            isConnected = false;
-            source.setException( new Exception("You already have an account") );
-        }
-        else {
-            emails.add(email);
+        if (accounts.keySet().contains(email) ){
+            source.setException(new Exception("You already have an account") );
+        } else {
+            String newId = "newId";
+            User userToRegister = new User(newId, username, email, "nickname", null);
+            accounts.put(email, newId);
+            DependencyManager.getDatabaseSystem().createUser(userToRegister);
             isConnected = true;
-            String newId = "newUserId";
-            User userToRegister = new User(newId,"newUser","newUser@kandle.ch","newFullName",null);
+            LoggedInUser.init(userToRegister);
             source.setResult(userToRegister);
-            database.createUser(userToRegister);
-
         }
         return source.getTask();
     }
@@ -65,13 +51,13 @@ public class MockAuthentication implements Authentication {
     public Task<User> signInWithEmailAndPassword(String email, String password) {
 
         TaskCompletionSource source = new TaskCompletionSource<User>();
-        if (emails.contains(email)) {
-            isConnected = true;
-            database.getUserById("loggedInUserId");
-            source.setResult(loggedInUser);
 
+        if (accounts.keySet().contains(email)) {
+            isConnected = true;
+            User  user = DependencyManager.getDatabaseSystem().getUserById(accounts.get(email)).getResult();
+            LoggedInUser.init(user);
+            source.setResult(user);
         } else {
-            isConnected = false;
             source.setException(new Exception ("You do not have an account yet"));
         }
 
@@ -82,6 +68,7 @@ public class MockAuthentication implements Authentication {
     @Override
     public void signOut() {
         isConnected=false;
+        LoggedInUser.clear();
     }
 
     public boolean userCurrentlyLoggedIn(){

@@ -5,23 +5,33 @@ import android.app.Activity;
 import android.app.Instrumentation;
 import android.content.Intent;
 import android.net.Uri;
+import android.view.Gravity;
 
 import androidx.test.espresso.intent.rule.IntentsTestRule;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 import androidx.test.rule.ActivityTestRule;
 
 
+import org.junit.After;
+import org.junit.AfterClass;
+import org.junit.BeforeClass;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import java.util.Date;
+import java.util.HashMap;
+
 import ch.epfl.sdp.kandle.dependencies.DependencyManager;
+import ch.epfl.sdp.kandle.dependencies.Follow;
+import ch.epfl.sdp.kandle.dependencies.MockDatabase;
 
 import static androidx.test.espresso.Espresso.onView;
 import static androidx.test.espresso.action.ViewActions.click;
 import static androidx.test.espresso.action.ViewActions.closeSoftKeyboard;
 import static androidx.test.espresso.action.ViewActions.typeText;
 import static androidx.test.espresso.assertion.ViewAssertions.matches;
+import static androidx.test.espresso.contrib.DrawerMatchers.isClosed;
 import static androidx.test.espresso.intent.Intents.intended;
 import static androidx.test.espresso.intent.Intents.intending;
 import static androidx.test.espresso.intent.matcher.IntentMatchers.hasAction;
@@ -42,13 +52,26 @@ public class PostActivityTest {
 
     @Rule
     public IntentsTestRule<PostActivity> intentsRule =
-            new IntentsTestRule<PostActivity>(PostActivity.class,true,true
-            ){
+            new IntentsTestRule<PostActivity>(PostActivity.class,true,true){
                 @Override
-                protected  void beforeActivityLaunched() {
-                    DependencyManager.setFreshTestDependencies(true);
+                protected void beforeActivityLaunched() {
+                    LoggedInUser.init(new User("loggedInUserId","LoggedInUser","loggedInUser@kandle.ch","nickname","image"));
+                    HashMap<String,String> accounts = new HashMap<>();
+                    HashMap<String,User> users = new HashMap<>();
+                    HashMap<String, Follow> followMap = new HashMap<>();
+                    HashMap<String,Post> posts = new HashMap<>();
+                    DependencyManager.setFreshTestDependencies(true,accounts,users,followMap,posts);
                 }
             };
+
+
+
+
+
+    @After
+    public void clearCurrentUser(){
+        LoggedInUser.clear();
+    }
 
 
     @Test

@@ -10,8 +10,12 @@
         android:id="@+id/post_content"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_margin="45dp"
-        android:textSize="22sp"
-        android:text="This is a popup window."/>
+        android:layout_marginStart="45dp"
+        android:layout_marginTop="45dp"
+        android:layout_marginEnd="45dp"
+        android:layout_marginBottom="45dp"
+        android:editable="true"
+        android:text="This is a popup window."
+        android:textSize="22sp" />
 
 </RelativeLayout>

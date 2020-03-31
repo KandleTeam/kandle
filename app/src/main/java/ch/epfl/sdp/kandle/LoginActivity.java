@@ -10,6 +10,7 @@ import io.grpc.Internal;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -28,7 +29,6 @@ public class LoginActivity extends AppCompatActivity {
     private Button mSignUpBtn;
     private Authentication auth;
     private Database database;
-    private User currentUser;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -84,7 +84,6 @@ public class LoginActivity extends AppCompatActivity {
         final ProgressDialog pd = new ProgressDialog(LoginActivity.this);
         pd.setMessage(getString(R.string.login_in_progress));
         pd.show();
-
         auth.signInWithEmailAndPassword(email, password).addOnCompleteListener(new OnCompleteListener<User>() {
             @Override
             public void onComplete(@NonNull Task<User> task) {
