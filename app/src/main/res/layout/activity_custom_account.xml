@@ -13,12 +13,10 @@
         android:layout_height="103dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.502"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.049"
+        app:layout_constraintVertical_bias="0.114"
         app:srcCompat="@drawable/logo" />
-
 
     <TextView
         android:id="@+id/welcomeText"
@@ -30,23 +28,22 @@
         android:textSize="28sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.496"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/logo"
-        app:layout_constraintVertical_bias="0.06" />
+        app:layout_constraintVertical_bias="0.03" />
 
     <TextView
         android:id="@+id/nicknameText"
-        android:layout_width="150dp"
+        android:layout_width="180dp"
         android:layout_height="wrap_content"
         android:text="Choose a nickname :"
         android:textColor="#090909"
-        android:textSize="14sp"
+        android:textSize="18sp"
         app:layout_constraintBottom_toTopOf="@+id/ppText"
         app:layout_constraintEnd_toStartOf="@+id/nickname"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/welcomeText"
-        app:layout_constraintVertical_bias="0.352" />
+        app:layout_constraintVertical_bias="0.365" />
 
     <TextView
         android:id="@+id/nicknameInfo"
@@ -57,15 +54,16 @@
         android:textSize="11sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="@id/nicknameText"
-        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintHorizontal_bias="0.533"
         app:layout_constraintStart_toStartOf="@id/nicknameText"
 
         app:layout_constraintTop_toBottomOf="@+id/nicknameText"
         app:layout_constraintVertical_bias="0.0" />
 
+
     <EditText
         android:id="@+id/nickname"
-        android:layout_width="150dp"
+        android:layout_width="180dp"
         android:layout_height="38dp"
         android:layout_marginEnd="16dp"
         android:backgroundTint="@color/backGroundRed"
@@ -84,13 +82,12 @@
         android:layout_height="wrap_content"
         android:text="Choose a profile picture :"
         android:textColor="#090909"
-        android:textSize="14sp"
+        android:textSize="18sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="@id/nicknameText"
-        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="@id/nicknameText"
         app:layout_constraintTop_toBottomOf="@+id/nicknameInfo"
-        app:layout_constraintVertical_bias="0.471" />
+        app:layout_constraintVertical_bias="0.396" />
 
     <de.hdodenhof.circleimageview.CircleImageView
         android:id="@+id/profilePic"
@@ -106,16 +103,14 @@
 
     <Button
         android:id="@+id/button"
-        android:layout_width="136dp"
-        android:layout_height="35dp"
+        android:layout_width="150dp"
+        android:layout_height="wrap_content"
         android:background="@drawable/button_background"
         android:text="Browse"
-        app:layout_constraintBottom_toBottomOf="@+id/ppText"
+        app:layout_constraintBottom_toBottomOf ="@+id/ppText"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.555"
         app:layout_constraintStart_toEndOf="@id/ppText"
-        app:layout_constraintTop_toTopOf="@+id/ppText"
-        app:layout_constraintVertical_bias="0.0" />
+        app:layout_constraintTop_toTopOf="@+id/ppText" />
 
     <Button
         android:id="@+id/startButton"
@@ -124,7 +119,7 @@
         android:text="Continue to the app"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/logo"
-        app:layout_constraintVertical_bias="0.938" />
+        app:layout_constraintTop_toBottomOf="@+id/button" />
 </androidx.constraintlayout.widget.ConstraintLayout>
