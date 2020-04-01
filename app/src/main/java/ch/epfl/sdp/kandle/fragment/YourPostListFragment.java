@@ -89,9 +89,11 @@ public class YourPostListFragment extends Fragment {
                         TextView content = popupView.findViewById(R.id.post_content);
                         ImageView image = popupView.findViewById(R.id.postImage);
                         content.setText(posts.get(position).getDescription());
+                        System.out.println("Before "+ posts.get(position).getPostId());
                         if(posts.get(position).getImageURL() != null){
                             image.setVisibility(View.VISIBLE);
                             image.setTag(POST_IMAGE);
+                            System.out.println("In if"+image.getTag());
                             Picasso.get().load(posts.get(position).getImageURL()).into(image);
                         }
 

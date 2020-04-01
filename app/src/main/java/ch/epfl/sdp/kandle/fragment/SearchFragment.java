@@ -18,17 +18,13 @@ import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import ch.epfl.sdp.kandle.LoggedInUser;
-import ch.epfl.sdp.kandle.dependencies.InternalStorageHandler;
 import ch.epfl.sdp.kandle.dependencies.Authentication;
 import ch.epfl.sdp.kandle.dependencies.Database;
 import ch.epfl.sdp.kandle.dependencies.DependencyManager;
 import ch.epfl.sdp.kandle.R;
 import ch.epfl.sdp.kandle.User;
 import ch.epfl.sdp.kandle.UserAdapter;
-import ch.epfl.sdp.kandle.dependencies.Authentication;
-import ch.epfl.sdp.kandle.dependencies.AuthenticationUser;
-import ch.epfl.sdp.kandle.dependencies.Database;
-import ch.epfl.sdp.kandle.dependencies.DependencyManager;
+
 
 public class SearchFragment extends Fragment {
 

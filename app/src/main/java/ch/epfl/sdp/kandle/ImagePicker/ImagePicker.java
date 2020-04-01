@@ -53,7 +53,7 @@ public class ImagePicker {
         return MimeTypeMap.getSingleton().getExtensionFromMimeType(contentResolver.getType(uri));
     }
 
-    public Uri handleActivityResult(int requestCode, int resultCode, Intent data) {
+    public void handleActivityResult(int requestCode, int resultCode, Intent data) {
 
         if (requestCode == IMAGE_REQUEST && resultCode == RESULT_OK &&
                 data != null && data.getData() != null) {

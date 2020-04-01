@@ -2,7 +2,6 @@ package ch.epfl.sdp.kandle;
 
 import android.view.Gravity;
 import org.junit.After;
-import org.junit.AfterClass;
 import org.junit.Rule;
 import org.junit.Test;
 import androidx.test.rule.ActivityTestRule;

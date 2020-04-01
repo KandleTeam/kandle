@@ -13,7 +13,6 @@ import androidx.test.espresso.contrib.NavigationViewActions;
 import androidx.test.espresso.contrib.RecyclerViewActions;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 import androidx.test.rule.ActivityTestRule;
-
 import org.hamcrest.Matcher;
 import org.junit.After;
 import org.junit.Before;
@@ -24,6 +23,7 @@ import java.util.Date;
 import java.util.HashMap;
 import ch.epfl.sdp.kandle.dependencies.DependencyManager;
 import ch.epfl.sdp.kandle.dependencies.Follow;
+import ch.epfl.sdp.kandle.fragment.YourPostListFragment;
 import static androidx.test.espresso.Espresso.onView;
 import static androidx.test.espresso.action.ViewActions.click;
 import static androidx.test.espresso.action.ViewActions.closeSoftKeyboard;
@@ -48,8 +48,8 @@ public class YourPostsListTest {
                 @Override
                 protected void beforeActivityLaunched() {
                     LoggedInUser.init(new User("loggedInUserId","LoggedInUser","loggedInUser@kandle.ch","nickname","image"));
-                    p1 =  new Post("text", "Hello world !", new Date(), LoggedInUser.getInstance().getId(), "post1Id");
-                    p2 = new Post("text", "I'm user 1 !", new Date(), LoggedInUser.getInstance().getId(), "post2Id");
+                    p1 =  new Post("Hello", null, new Date(), LoggedInUser.getInstance().getId(), "post1Id");
+                    p2 = new Post("There", "image", new Date(), LoggedInUser.getInstance().getId(), "post2Id");
                     LoggedInUser.getInstance().addPostId(p1.getPostId());
                     LoggedInUser.getInstance().addPostId(p2.getPostId());
                     HashMap<String,String> accounts = new HashMap<>();
@@ -57,7 +57,7 @@ public class YourPostsListTest {
                     HashMap<String, Follow> followMap = new HashMap<>();
                     HashMap<String,Post> posts = new HashMap<>();
                     posts.put(p1.getPostId(),p1);
-                    posts.put(p2.getPostId(),p1);
+                    posts.put(p2.getPostId(),p2);
                     DependencyManager.setFreshTestDependencies(true,accounts,users,followMap,posts);
 
                 }

@@ -43,7 +43,7 @@ public class PostActivity extends AppCompatActivity {
         mGalleryButton = findViewById(R.id.galleryButton);
         mCameraButton = findViewById(R.id.cameraButton);
         mPostImage = findViewById(R.id.postImage);
-        postImagePicker = new PostImagePicker(this);
+        postImagePicker = new ImagePicker(this);
 
         auth = DependencyManager.getAuthSystem();
         database = DependencyManager.getDatabaseSystem();
@@ -66,14 +66,14 @@ public class PostActivity extends AppCompatActivity {
                             Toast.makeText(PostActivity.this, "Unable to upload image", Toast.LENGTH_LONG).show();
                         }
                         else {
-                            p = new Post(postText, downloadUri.toString(), new Date(), auth.getCurrentUser().getUid());
+                            p = new Post(postText, downloadUri.toString(), new Date(), LoggedInUser.getInstance().getId());
                             post(p);
                         }
                     }
                 });
             }
             else {
-                p = new Post(postText, null, new Date(), auth.getCurrentUser().getUid());
+                p = new Post(postText, null, new Date(), LoggedInUser.getInstance().getId());
                 post(p);
             }
 
@@ -86,7 +86,7 @@ public class PostActivity extends AppCompatActivity {
     }
 
     private void post(Post p) {
-        database.addPost(auth.getCurrentUser().getUid(), p).addOnCompleteListener(task -> {
+        database.addPost(p).addOnCompleteListener(task -> {
             if (task.isSuccessful()) {
                 Toast.makeText(PostActivity.this, "You have successfully posted : " + p.getDescription(), Toast.LENGTH_LONG ).show();
                 finish();

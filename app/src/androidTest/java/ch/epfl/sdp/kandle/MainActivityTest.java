@@ -1,18 +1,16 @@
 package ch.epfl.sdp.kandle;
 
-import android.support.test.runner.AndroidJUnit4;
 import android.view.Gravity;
 import androidx.test.espresso.contrib.DrawerActions;
 import androidx.test.espresso.contrib.NavigationViewActions;
 import androidx.test.espresso.intent.Intents;
 import androidx.test.rule.ActivityTestRule;
+import androidx.test.rule.GrantPermissionRule;
 import ch.epfl.sdp.kandle.dependencies.DependencyManager;
 import ch.epfl.sdp.kandle.dependencies.Follow;
 import org.junit.After;
 import org.junit.Rule;
 import org.junit.Test;
-import org.junit.runner.RunWith;
-
 import java.util.HashMap;
 import static androidx.test.espresso.Espresso.onView;
 import static androidx.test.espresso.action.ViewActions.click;
@@ -29,6 +27,9 @@ import static org.hamcrest.Matchers.is;
 
 
 public class MainActivityTest {
+
+    @Rule
+    public GrantPermissionRule permissionRule = GrantPermissionRule.grant(android.Manifest.permission.ACCESS_FINE_LOCATION);
 
     @Rule
     public ActivityTestRule<MainActivity> intentsRule =
@@ -49,8 +50,6 @@ public class MainActivityTest {
     public void clearCurrentUser(){
         LoggedInUser.clear();
     }
-    @Rule
-    public GrantPermissionRule permissionRule = GrantPermissionRule.grant(android.Manifest.permission.ACCESS_FINE_LOCATION);
 
 
     @Test

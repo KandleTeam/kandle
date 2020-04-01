@@ -78,7 +78,7 @@ public class MainActivity extends AppCompatActivity {
         setTitle(mNavigationView.getCheckedItem().getTitle());
 
         final FragmentManager fragmentManager = getSupportFragmentManager();
-        mProfilePic.setOnClickListener(v -> database.getUserById(auth.getCurrentUser().getUid()).addOnCompleteListener(task -> {
+        mProfilePic.setOnClickListener(v -> database.getUserById(LoggedInUser.getInstance().getId()).addOnCompleteListener(task -> {
                     if (task.isSuccessful()) {
                         fragmentManager.beginTransaction().replace(R.id.flContent, ProfileFragment.newInstance(task.getResult()))
                                 .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
