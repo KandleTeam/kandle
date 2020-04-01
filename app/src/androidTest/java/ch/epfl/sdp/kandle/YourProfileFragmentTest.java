@@ -23,11 +23,13 @@ import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 
+import androidx.test.rule.GrantPermissionRule;
 import ch.epfl.sdp.kandle.dependencies.DependencyManager;
 import ch.epfl.sdp.kandle.fragment.ProfileFragment;
 
 import static androidx.test.espresso.Espresso.onView;
 import static androidx.test.espresso.action.ViewActions.click;
+import static androidx.test.espresso.action.ViewActions.closeSoftKeyboard;
 import static androidx.test.espresso.action.ViewActions.replaceText;
 import static androidx.test.espresso.action.ViewActions.typeText;
 import static androidx.test.espresso.assertion.ViewAssertions.matches;
@@ -53,6 +55,8 @@ public class YourProfileFragmentTest {
                 }
             };
 
+    @Rule
+    public GrantPermissionRule permissionRule = GrantPermissionRule.grant(android.Manifest.permission.ACCESS_FINE_LOCATION,android.Manifest.permission.ACCESS_FINE_LOCATION);
     @Before
     public void loadFragment(){
         onView(withId(R.id.drawer_layout)).check(matches(isClosed(Gravity.LEFT))).perform(DrawerActions.open());
@@ -98,6 +102,7 @@ public class YourProfileFragmentTest {
     public void editNickname(){
         onView(withId(R.id.profileEditNameButton)).perform(click());
         onView(withId(R.id.edit_view)).perform(replaceText("New Nickname"));
+        //onView(withId (R.id.edit_view)).perform(closeSoftKeyboard());
         onView(withId(R.id.profileValidateNameButton)).perform(click());
 
         onView(withId(R.id.text_view)).check(matches(withText("New Nickname")));

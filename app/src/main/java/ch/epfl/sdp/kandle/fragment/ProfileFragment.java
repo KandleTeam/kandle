@@ -116,8 +116,9 @@ public class ProfileFragment extends Fragment {
 
         mValidateNameButton.setOnClickListener(v -> {
             InputMethodManager imm = (InputMethodManager)getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
-            //if (getActivity().getCurrentFocus()!=null)
-            imm.hideSoftInputFromWindow(getActivity().getCurrentFocus().getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
+            if (getActivity().getCurrentFocus()!=null) {
+                imm.hideSoftInputFromWindow(getActivity().getCurrentFocus().getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
+            }
 
             String nickname = mNicknameEdit.getText().toString();
             if (nickname.trim().length()>0) {

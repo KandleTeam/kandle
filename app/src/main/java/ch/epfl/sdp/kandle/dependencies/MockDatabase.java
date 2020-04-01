@@ -379,7 +379,9 @@ public class MockDatabase implements Database {
 
     @Override
     public Task<List<Post>> getNearbyPosts(double longitude, double latitude, double distance){
-        return null;
+        TaskCompletionSource<List<Post>> source = new TaskCompletionSource<>();
+        source.setResult(new ArrayList<>());
+        return source.getTask();
     }
 
 
