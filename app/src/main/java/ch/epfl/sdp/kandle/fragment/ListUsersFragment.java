@@ -47,7 +47,7 @@ public class ListUsersFragment extends Fragment {
         this.users=users;
         this.number=number;
         this.title=title;
-        this.userAdapter = new UserAdapter(users);
+        this.userAdapter = new UserAdapter(users, this.getActivity());
     }
 
     public static ListUsersFragment newInstance (List<User> users, String title, String number){

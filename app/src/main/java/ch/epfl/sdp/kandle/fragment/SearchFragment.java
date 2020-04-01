@@ -38,12 +38,11 @@ public class SearchFragment extends Fragment {
     private RecyclerView mRecyclerView;
     private InternalStorageHandler internalStorageHandler;
     private ArrayList<User> mUsers = new ArrayList<>(0);
-    private UserAdapter userAdapter = new UserAdapter(mUsers);
+    private UserAdapter userAdapter = new UserAdapter(mUsers, getActivity());
     private AuthenticationUser currentUser;
     EditText search_bar;
 
     public SearchFragment( ){
-
     }
 
     public static SearchFragment newInstance() {

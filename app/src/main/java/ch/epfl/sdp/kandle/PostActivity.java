@@ -20,6 +20,7 @@ import ch.epfl.sdp.kandle.ImagePicker.PostImagePicker;
 import ch.epfl.sdp.kandle.dependencies.Authentication;
 import ch.epfl.sdp.kandle.dependencies.Database;
 import ch.epfl.sdp.kandle.dependencies.DependencyManager;
+import ch.epfl.sdp.kandle.fragment.AchievementFragment;
 
 public class PostActivity extends AppCompatActivity {
 
@@ -62,13 +63,6 @@ public class PostActivity extends AppCompatActivity {
                 return;
             }
 
-            database.getUserById(auth.getCurrentUser().getUid()).addOnCompleteListener(task1 -> {
-                        if(task1.isSuccessful()){
-                            user = task1.getResult();
-                    }
-                        else {System.out.println("There is an error");}
-            });
-
 
             //
 
@@ -76,14 +70,18 @@ public class PostActivity extends AppCompatActivity {
             database.addPost(auth.getCurrentUser().getUid(), p).addOnCompleteListener(task -> {
                 if (task.isSuccessful()) {
                     Toast.makeText(PostActivity.this, "You have successfully posted : " + postText, Toast.LENGTH_LONG ).show();
-                        user.addPostId(p.getPostId());
-                        user.incrementNumberOfPosts();
-                        System.out.println("THE NUMBER OF POSTS IS " + user.getNumberOfPosts());
-                        if(user.getNumberOfPosts() == 10){
-                            Intent intent = new Intent(this, AchievementsActivity.class);
-                            startActivity(intent);
-                        }
-
+                        database.getNumberOfPosts(auth.getCurrentUser().getUid()).addOnCompleteListener(task1 ->{
+                            if(task1.isSuccessful()){
+                                System.out.println("THE NUMBER OF POSTS IS " + task1.getResult());
+                                if(task1.getResult() == 10){
+                                    Intent intent = new Intent(this, AchievementsActivity.class);
+                                    startActivity(intent);
+                                }
+                            }
+                            else {
+                                System.out.println(task1.getException().getMessage());
+                            }
+                        });
                     finish();
                 }else{
                     System.out.println(task.getException().getMessage());
@@ -91,7 +89,12 @@ public class PostActivity extends AppCompatActivity {
             });
         });
 
-        mCameraButton.setOnClickListener(v -> Toast.makeText(PostActivity.this, "Doesn't work for now... " , Toast.LENGTH_LONG ).show());
+        mCameraButton.setOnClickListener(v ->
+        {
+            Intent intent = new Intent(this,
+                    AchievementsActivity.class);
+            startActivity(intent);
+        });
 
 
         mGalleryButton.setOnClickListener(v -> postImagePicker.openImage());

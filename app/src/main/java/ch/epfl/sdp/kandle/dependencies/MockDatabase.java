@@ -114,6 +114,13 @@ public class MockDatabase implements Database {
 
     }
 
+    @Override
+    public Task<Integer> getNumberOfPosts(String uid) {
+        TaskCompletionSource<Integer> task = new TaskCompletionSource<>();
+        task.setResult(0);
+        return task.getTask();
+    }
+
 
 
 

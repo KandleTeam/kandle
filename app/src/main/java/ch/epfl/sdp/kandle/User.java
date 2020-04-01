@@ -62,23 +62,16 @@ public class User implements Serializable {
 
     public int getNumberOfPosts(){ return numberOfPosts; }
 
-    public void incrementNumberOfPosts(){ ++numberOfPosts; }
-
     public ArrayList<String> getPosts(){
         return postsIds;
     }
 
     public void addPostId(String postId){
-        if(postsIds == null){
-            System.out.println("the array is null");
-        }
-        else {
-            postsIds.add(postId);
-        }
+        postsIds.add(postId);
+
     }
 
     public void removePostId(String postId){
         postsIds.remove(postId);
-        numberOfPosts--;
     }
 }

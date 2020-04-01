@@ -26,6 +26,7 @@ import ch.epfl.sdp.kandle.ImagePicker.ImagePicker;
 import ch.epfl.sdp.kandle.dependencies.Database;
 import ch.epfl.sdp.kandle.dependencies.DependencyManager;
 import ch.epfl.sdp.kandle.fragment.AboutFragment;
+import ch.epfl.sdp.kandle.fragment.AchievementFragment;
 import ch.epfl.sdp.kandle.fragment.MapFragment;
 //import ch.epfl.sdp.kandle.Fragment.ProfileFragment;
 import ch.epfl.sdp.kandle.fragment.ProfileFragment;
@@ -206,6 +207,10 @@ public class MainActivity extends AppCompatActivity {
             case R.id.follow:
                 mPostButton.setVisibility(View.GONE);
                 fragmentClass = SearchFragment.class;
+                break;
+
+            case R.id.light:
+                fragmentClass = AchievementFragment.class;
                 break;
 
             default:

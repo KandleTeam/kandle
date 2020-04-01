@@ -40,6 +40,8 @@ public interface Database {
      */
     Task<Void> createUser(User user);
 
+    Task<Integer> getNumberOfPosts(final String uid);
+
     Task<List<User>> searchUsers(final String prefix, int maxNumber);
 
     Task<Void> follow(final String userFollowing, final String userFollowed);
