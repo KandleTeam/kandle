@@ -34,8 +34,8 @@
 
     <TextView
         android:id="@+id/nicknameText"
-        android:layout_width="180dp"
-        android:layout_height="wrap_content"
+        android:layout_width="174dp"
+        android:layout_height="22dp"
         android:text="Choose a nickname :"
         android:textColor="#090909"
         android:textSize="18sp"
@@ -43,7 +43,7 @@
         app:layout_constraintEnd_toStartOf="@+id/nickname"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/welcomeText"
-        app:layout_constraintVertical_bias="0.365" />
+        app:layout_constraintVertical_bias="0.166" />
 
     <TextView
         android:id="@+id/nicknameInfo"
@@ -85,9 +85,10 @@
         android:textSize="18sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="@id/nicknameText"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="@id/nicknameText"
         app:layout_constraintTop_toBottomOf="@+id/nicknameInfo"
-        app:layout_constraintVertical_bias="0.396" />
+        app:layout_constraintVertical_bias="0.471" />
 
     <de.hdodenhof.circleimageview.CircleImageView
         android:id="@+id/profilePic"
@@ -96,21 +97,22 @@
         android:src="@mipmap/ic_launcher"
         app:layout_constraintBottom_toTopOf="@id/button"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toEndOf="@id/ppText"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.974" />
+        app:layout_constraintVertical_bias="0.978" />
 
     <Button
         android:id="@+id/button"
-        android:layout_width="150dp"
-        android:layout_height="wrap_content"
+        android:layout_width="128dp"
+        android:layout_height="35dp"
         android:background="@drawable/button_background"
         android:text="Browse"
-        app:layout_constraintBottom_toBottomOf ="@+id/ppText"
+        app:layout_constraintBottom_toBottomOf="@+id/ppText"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.542"
         app:layout_constraintStart_toEndOf="@id/ppText"
-        app:layout_constraintTop_toTopOf="@+id/ppText" />
+        app:layout_constraintTop_toTopOf="@+id/ppText"
+        app:layout_constraintVertical_bias="1.0" />
 
     <Button
         android:id="@+id/startButton"
