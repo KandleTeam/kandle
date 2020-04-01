@@ -72,6 +72,8 @@ public class YourPostsListTest {
 
     }
 
+
+
     @Test
     public void likesThenUnlikesAlreadyCreatedPostsAndRemovesOldestPost() {
 
@@ -86,6 +88,7 @@ public class YourPostsListTest {
 
         //Remove the the oldest post
         onView(withId(R.id.rvPosts)).perform(RecyclerViewActions.actionOnItemAtPosition(1, clickChildViewWithId(R.id.deleteButton)));
+        onView(withId(android.R.id.button1)).perform(click());
 
         //only 1 post should be displayed
         onView(withId(R.id.rvPosts)).check(new RecyclerViewItemCountAssertion(1));

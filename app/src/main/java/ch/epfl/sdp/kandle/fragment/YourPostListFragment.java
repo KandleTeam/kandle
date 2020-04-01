@@ -89,7 +89,7 @@ public class YourPostListFragment extends Fragment {
                     PostAdapter adapter = new PostAdapter(posts, context);
 
                     adapter.setOnItemClickListener((position, view) -> {
-                        /*LayoutInflater inflater1 = getLayoutInflater();
+                        LayoutInflater inflater1 = getLayoutInflater();
                         View popupView = inflater1.inflate(R.layout.post_content, null);
                         int width = LinearLayout.LayoutParams.WRAP_CONTENT;
                         int height = LinearLayout.LayoutParams.WRAP_CONTENT;
@@ -109,7 +109,7 @@ public class YourPostListFragment extends Fragment {
                             popupWindow.dismiss();
                         });
 
-                         */
+
 
                     });
 

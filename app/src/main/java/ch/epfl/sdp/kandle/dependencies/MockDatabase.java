@@ -377,5 +377,11 @@ public class MockDatabase implements Database {
         return source.getTask();
     }
 
+    @Override
+    public Task<List<Post>> getNearbyPosts(double longitude, double latitude, double distance){
+        return null;
+    }
+
+
 
 }

@@ -80,4 +80,6 @@ public interface Database {
 
     Task<List<Post>> getPostsByUserId(String userId);
 
+    Task<List<Post>> getNearbyPosts(double longitude, double latitude, double distance);
+
 }

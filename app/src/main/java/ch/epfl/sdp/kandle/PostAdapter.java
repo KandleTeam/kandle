@@ -1,7 +1,9 @@
 package ch.epfl.sdp.kandle;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -84,11 +86,25 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder>{
             public void onClick(View v) {
 
                 if(post.getLikers().contains(userId)){
-                    database.unlikePost(userId, post.getPostId());
-                    post.unlikePost(userId);
+                    database.unlikePost(userId, post.getPostId()).addOnCompleteListener(new OnCompleteListener<Void>() {
+                        @Override
+                        public void onComplete(@NonNull Task<Void> task) {
+                            if (task.isSuccessful()) {
+                                post.unlikePost(userId);
+                            }
+                        }
+                    });
+
                 }else{
-                    database.likePost(userId, post.getPostId());
-                    post.likePost(userId);
+                    database.likePost(userId, post.getPostId()).addOnCompleteListener(new OnCompleteListener<Void>() {
+                        @Override
+                        public void onComplete(@NonNull Task<Void> task) {
+                            if (task.isSuccessful()){
+                                post.likePost(userId);
+                            }
+                        }
+                    });
+
 
                 }
                 likeView.setText(String.valueOf(post.getLikes()));
@@ -99,9 +115,32 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder>{
         holder.mDeleteButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                database.deletePost(userId, post);
-                mPosts.remove(post);
-                notifyDataSetChanged();
+
+                AlertDialog.Builder alertDialog = new AlertDialog.Builder(mContext);
+                alertDialog.setMessage("Do you really want to delete this post ?");
+                alertDialog.setCancelable(false);
+                alertDialog.setNegativeButton("No", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+
+                    }
+                });
+                alertDialog.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        database.deletePost(userId, post).addOnCompleteListener(new OnCompleteListener<Void>() {
+                            @Override
+                            public void onComplete(@NonNull Task<Void> task) {
+                                if (task.isSuccessful()){
+                                    mPosts.remove(post);
+                                    notifyDataSetChanged();
+                                }
+                            }
+                        });
+                    }
+                });
+               alertDialog.create().show();
+
             }
             ;
         });
