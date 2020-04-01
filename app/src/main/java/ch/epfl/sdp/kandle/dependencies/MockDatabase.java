@@ -197,7 +197,7 @@ public class MockDatabase implements Database {
         TaskCompletionSource<Void> source = new TaskCompletionSource<>();
         User user = users.get(LoggedInUser.getInstance().getId());
         user.setImageURL(uri);
-
+        source.setResult(null);
         return source.getTask();
     }
 

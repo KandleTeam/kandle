@@ -1,5 +1,6 @@
 package ch.epfl.sdp.kandle.fragment;
 
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
@@ -18,6 +19,11 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.ViewSwitcher;
 
+import androidx.annotation.NonNull;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
+
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.navigation.NavigationView;
@@ -29,25 +35,25 @@ import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
 import ch.epfl.sdp.kandle.ImagePicker.ProfilePicPicker;
+import ch.epfl.sdp.kandle.R;
+import ch.epfl.sdp.kandle.User;
 import ch.epfl.sdp.kandle.LoggedInUser;
 import ch.epfl.sdp.kandle.dependencies.Authentication;
 import ch.epfl.sdp.kandle.dependencies.Database;
 import ch.epfl.sdp.kandle.dependencies.DependencyManager;
-import ch.epfl.sdp.kandle.R;
-import ch.epfl.sdp.kandle.User;
 
 
 public class ProfileFragment extends Fragment {
 
-    User user;
+    private User user;
     private ProfilePicPicker profilePicPicker;
-    ImageView mProfilePicture, mEditPicture, mProfilePictureInMenu, mEditName;
-    TextView mNumberOfFollowers, mNumberOfFollowing, mUsername, mNicknameView, mNickNameInMenu;
-    EditText mNicknameEdit;
-    ViewSwitcher mNickname;
-    Button mFollowButton, mValidateNameButton;
-    Authentication auth;
-    Database database;
+    private ImageView mProfilePicture, mEditPicture, mProfilePictureInMenu, mEditName;
+    private TextView mNumberOfFollowers, mNumberOfFollowing, mUsername, mNicknameView, mNickNameInMenu;
+    private EditText mNicknameEdit;
+    private ViewSwitcher mNickname;
+    private Button mFollowButton, mValidateNameButton, mValidatePictureButton;
+    private Authentication auth;
+    private Database database;
 
     public final static int PROFILE_PICTURE_BEFORE = 6;
     public final static int PROFILE_PICTURE_AFTER = 7;
@@ -74,6 +80,7 @@ public class ProfileFragment extends Fragment {
         mEditPicture = parent.findViewById(R.id.profileEditPictureButton);
         mEditName = parent.findViewById(R.id.profileEditNameButton);
         mValidateNameButton = parent.findViewById(R.id.profileValidateNameButton);
+        mValidatePictureButton = parent.findViewById(R.id.profileValidatePictureButton);
     }
 
 
@@ -93,13 +100,16 @@ public class ProfileFragment extends Fragment {
         final User currentUser = LoggedInUser.getInstance();
 
         mValidateNameButton.setVisibility(View.GONE);
+        mValidatePictureButton.setVisibility(View.GONE);
 
         if (!user.getId().equals(currentUser.getId())) {
             mEditPicture.setVisibility(View.GONE);
             mEditName.setVisibility(View.GONE);
         } else {
             mEditPicture.setOnClickListener(v -> {
+                mEditPicture.setVisibility(View.GONE);
                 profilePicPicker.openImage();
+                mValidatePictureButton.setVisibility(View.VISIBLE);
             });
 
         }
@@ -125,6 +135,19 @@ public class ProfileFragment extends Fragment {
             mNickname.showPrevious();
             mValidateNameButton.setVisibility(View.GONE);
             mEditName.setVisibility(View.VISIBLE);
+        });
+
+        mValidatePictureButton.setOnClickListener(v -> {
+            ProgressDialog pd = new ProgressDialog(getContext());
+            pd.setMessage("uploading");
+            pd.show();
+            profilePicPicker.setProfilePicture().addOnCompleteListener(task -> {
+                mProfilePictureInMenu.setTag(PROFILE_PICTURE_AFTER);
+                mProfilePictureInMenu.setImageURI(profilePicPicker.getImageUri());
+                pd.dismiss();
+            });
+            mValidatePictureButton.setVisibility(View.GONE);
+            mEditPicture.setVisibility(View.VISIBLE);
         });
 
         mNicknameView = mNickname.findViewById(R.id.text_view);
@@ -239,13 +262,12 @@ public class ProfileFragment extends Fragment {
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        Uri uri = profilePicPicker.handleActivityResult(requestCode, resultCode, data);
+        profilePicPicker.handleActivityResult(requestCode, resultCode, data);
+        Uri uri = profilePicPicker.getImageUri();
 
         if (uri != null) {
             mProfilePicture.setTag(PROFILE_PICTURE_AFTER);
             mProfilePicture.setImageURI(uri);
-            mProfilePictureInMenu.setTag(PROFILE_PICTURE_AFTER);
-            mProfilePictureInMenu.setImageURI(uri);
         }
     }
 }

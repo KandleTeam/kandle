@@ -41,9 +41,4 @@ public class LoginActivityTestAlreadyLoggedIn {
     public void checkAutomaticLogIn(){
         onView(withId(R.id.drawer_layout)).check(matches(isClosed(Gravity.LEFT)));
     }
-
-    @AfterClass
-    public static void clearLoggedInUserForNextTest(){
-        LoggedInUser.clear();
-    }
 }

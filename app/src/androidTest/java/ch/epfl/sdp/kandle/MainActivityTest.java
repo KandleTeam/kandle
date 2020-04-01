@@ -49,6 +49,9 @@ public class MainActivityTest {
     public void clearCurrentUser(){
         LoggedInUser.clear();
     }
+    @Rule
+    public GrantPermissionRule permissionRule = GrantPermissionRule.grant(android.Manifest.permission.ACCESS_FINE_LOCATION);
+
 
     @Test
     public void openMenuAndNavigateToAboutUs()  {
@@ -84,7 +87,7 @@ public class MainActivityTest {
     public void openMenuNavigateToMap() {
 
         onView(withId(R.id.drawer_layout)).check(matches(isClosed(Gravity.LEFT))).perform(DrawerActions.open());
-        onView(withId(R.id.navigation_view)).perform(NavigationViewActions.navigateTo(R.id.map));
+        onView(withId(R.id.navigation_view)).perform(NavigationViewActions.navigateTo(R.id.map_support));
         //onView(withId(R.id.toolbar)).check(matches(hasDescendant(withText("Map"))));
 
 
@@ -132,7 +135,7 @@ public class MainActivityTest {
     @Test
     public void navigateToPost(){
         Intents.init();
-        onView(withId(R.id.postButton)).perform(click());
+        onView(withId(R.id.newPostButton)).perform(click());
         intended(hasComponent(PostActivity.class.getName()));
         Intents.release();
     }

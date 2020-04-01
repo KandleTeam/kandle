@@ -76,6 +76,7 @@ public class CustomAccountActivityTest {
         intending(hasAction(Intent.ACTION_GET_CONTENT)).respondWith(result);
         onView(withId(R.id.button)).perform(click());
         onView(withId(R.id.profilePic)).check(matches(withTagValue(is(CustomAccountActivity.PROFILE_PICTURE_TAG))));
+        onView(withId(R.id.startButton)).perform(click());
         DependencyManager.getDatabaseSystem().getProfilePicture().addOnCompleteListener(task -> {
             String uri = task.getResult();
             assertThat(uri, is(not(equalTo(null))));

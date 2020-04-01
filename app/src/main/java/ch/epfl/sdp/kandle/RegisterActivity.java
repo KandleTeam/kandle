@@ -50,8 +50,6 @@ public class RegisterActivity extends AppCompatActivity {
             final String email = mEmail.getText().toString().trim();
             String password = mPassword.getText().toString().trim();
             String passwordConfirm = mPasswordConfirm.getText().toString().trim();
-
-
             if (!checkFields(username, email, password, passwordConfirm)) {
                 return;
             }

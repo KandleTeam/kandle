@@ -25,9 +25,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-
 import ch.epfl.sdp.kandle.Post;
 import ch.epfl.sdp.kandle.User;
 
@@ -465,7 +462,7 @@ public class FirestoreDatabase implements Database {
                     return null;
                 });
     }
-    
+
     /*
     @Override
     public Task<List<String>> likers(String postId) {

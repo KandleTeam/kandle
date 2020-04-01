@@ -6,8 +6,10 @@ import android.net.Uri;
 
 import androidx.fragment.app.Fragment;
 
+import com.google.android.gms.tasks.Task;
+import com.google.android.gms.tasks.TaskCompletionSource;
+
 import ch.epfl.sdp.kandle.dependencies.DependencyManager;
-import ch.epfl.sdp.kandle.dependencies.Storage;
 
 public class ProfilePicPicker extends ImagePicker {
 
@@ -19,29 +21,21 @@ public class ProfilePicPicker extends ImagePicker {
         super(fragment);
     }
 
-    @Override
-    protected void uploadImage() {
-        final ProgressDialog pd = new ProgressDialog(activity != null ? activity : fragment.getContext());
-        pd.setMessage("Uploading");
-        pd.show();
-
-        Storage storage = DependencyManager.getStorageSystem();
-        storage.storeAndGetDownloadUrl(getFileExtension(imageUri), imageUri).addOnCompleteListener(task -> {
-            //if (task.isSuccessful() && task.getResult()!=null) {
-            Uri downloadUri = task.getResult();
-            String sUri = downloadUri.toString();
-
-            DependencyManager.getDatabaseSystem().updateProfilePicture(sUri);
-
-            /*} else {
-                Toast.makeText(activity, "Failed!", Toast.LENGTH_SHORT).show();
+    public Task<Void> setProfilePicture() {
+        DependencyManager.getDatabaseSystem().getProfilePicture().addOnCompleteListener(task -> {
+            if (task.isSuccessful() && task.getResult() != null) {
+                DependencyManager.getStorageSystem().delete(task.getResult());
             }
-            pd.dismiss();
-        }).addOnFailureListener(e -> {
-            Toast.makeText(activity, e.getMessage(), Toast.LENGTH_SHORT).show();*/
-            pd.dismiss();
         });
 
+        return uploadImage().continueWithTask(task -> {
+            String sUri = null;
+            Uri downloadUri = task.getResult();
+            if (downloadUri != null) {
+                sUri = downloadUri.toString();
+            }
 
+            return DependencyManager.getDatabaseSystem().updateProfilePicture(sUri);
+        });
     }
 }

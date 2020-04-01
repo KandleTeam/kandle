@@ -1,6 +1,7 @@
 package ch.epfl.sdp.kandle.ImagePicker;
 
 import android.app.Activity;
+import android.app.ProgressDialog;
 import android.content.ContentResolver;
 import android.content.Intent;
 import android.net.Uri;
@@ -9,15 +10,21 @@ import android.webkit.MimeTypeMap;
 
 import androidx.fragment.app.Fragment;
 
+import com.google.android.gms.tasks.Task;
+import com.google.android.gms.tasks.TaskCompletionSource;
+
+import ch.epfl.sdp.kandle.dependencies.DependencyManager;
+import ch.epfl.sdp.kandle.dependencies.Storage;
+
 import static android.app.Activity.RESULT_OK;
 
-public abstract class ImagePicker {
+public class ImagePicker {
 
-    protected Activity activity;
-    protected Fragment fragment;
-    protected Uri imageUri;
+    private Activity activity;
+    private Fragment fragment;
+    private Uri imageUri;
 
-    public static final int IMAGE_REQUEST = 1;
+    private static final int IMAGE_REQUEST = 1;
 
     public ImagePicker(Activity activity) {
         this.activity = activity;
@@ -51,10 +58,20 @@ public abstract class ImagePicker {
         if (requestCode == IMAGE_REQUEST && resultCode == RESULT_OK &&
                 data != null && data.getData() != null) {
             imageUri = data.getData();
-            uploadImage();
         }
+    }
+
+    public Uri getImageUri() {
         return imageUri;
     }
 
-    protected abstract void uploadImage();
+    public Task<Uri> uploadImage() {
+        if (imageUri != null) {
+            Storage storage = DependencyManager.getStorageSystem();
+            return storage.storeAndGetDownloadUrl(getFileExtension(imageUri), imageUri);
+        }
+        TaskCompletionSource<Uri> result = new TaskCompletionSource<>();
+        result.setResult(null);
+        return result.getTask();
+    };
 }

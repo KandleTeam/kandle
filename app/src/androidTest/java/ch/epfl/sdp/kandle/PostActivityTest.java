@@ -84,5 +84,6 @@ public class PostActivityTest {
         intending(hasAction(Intent.ACTION_GET_CONTENT)).respondWith(result);
         onView(withId(R.id.galleryButton)).perform(click());
         onView(withId(R.id.postImage)).check(matches(withTagValue(is(PostActivity.POST_IMAGE_TAG))));
+        onView(withId(R.id.postButton)).perform(click());
     }
 }

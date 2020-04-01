@@ -4,7 +4,6 @@ import java.util.Map;
 import ch.epfl.sdp.kandle.Post;
 import ch.epfl.sdp.kandle.User;
 
-
 public final class DependencyManager {
 
     private static Authentication auth = FirebaseAuthentication.getInstance();

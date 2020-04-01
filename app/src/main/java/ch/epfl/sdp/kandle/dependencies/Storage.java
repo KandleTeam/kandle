@@ -6,4 +6,6 @@ import com.google.android.gms.tasks.Task;
 public interface Storage {
 
     Task<Uri> storeAndGetDownloadUrl(String fileExtension, Uri fileUri);
+
+    Task<Void> delete(String path);
 }

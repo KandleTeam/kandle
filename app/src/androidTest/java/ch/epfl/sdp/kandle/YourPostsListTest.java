@@ -7,11 +7,13 @@ import androidx.test.espresso.NoMatchingViewException;
 import androidx.test.espresso.UiController;
 import androidx.test.espresso.ViewAction;
 import androidx.test.espresso.ViewAssertion;
+import androidx.test.espresso.action.ViewActions;
 import androidx.test.espresso.contrib.DrawerActions;
 import androidx.test.espresso.contrib.NavigationViewActions;
 import androidx.test.espresso.contrib.RecyclerViewActions;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 import androidx.test.rule.ActivityTestRule;
+
 import org.hamcrest.Matcher;
 import org.junit.After;
 import org.junit.Before;
@@ -29,7 +31,10 @@ import static androidx.test.espresso.action.ViewActions.typeText;
 import static androidx.test.espresso.assertion.ViewAssertions.matches;
 import static androidx.test.espresso.contrib.DrawerMatchers.isClosed;
 import static androidx.test.espresso.matcher.ViewMatchers.withId;
+import static androidx.test.espresso.matcher.ViewMatchers.withTagValue;
 import static junit.framework.TestCase.assertEquals;
+import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.not;
 
 @RunWith(AndroidJUnit4.class)
 public class YourPostsListTest {
@@ -56,6 +61,7 @@ public class YourPostsListTest {
                     DependencyManager.setFreshTestDependencies(true,accounts,users,followMap,posts);
 
                 }
+
             };
 
     @After
@@ -70,10 +76,14 @@ public class YourPostsListTest {
         onView(withId(R.id.drawer_layout)).perform(DrawerActions.close());
     }
 
+
     @Test
-    public void canClickOnAlreadyCreatedPostToSeeDescription() {
-        onView(withId(R.id.rvPosts)).perform(RecyclerViewActions.actionOnItemAtPosition(0,click()));
+    public void canClickOnAlreadyCreatedPostToSeeDescriptionAndRemoveDescription() {
+        onView(withId(R.id.rvPosts)).perform(RecyclerViewActions.actionOnItemAtPosition(0, click()));
         onView(withId(R.id.post_content)).perform(click());
+        onView(withId(R.id.rvPosts)).perform(RecyclerViewActions.actionOnItemAtPosition(1, click()));
+        onView(withId(R.id.post_content)).perform(click());
+
     }
 
     @Test
@@ -92,18 +102,24 @@ public class YourPostsListTest {
     @Test
     public void createTwoNewPostsAndRemoveThem() {
 
-        //2 posts should be displayed
+        // 2 posts should be displayed
         onView(withId(R.id.rvPosts)).check(new RecyclerViewItemCountAssertion(2));
 
-        //Create two new posts
-        onView(withId(R.id.postButton)).perform(click());
+
+        // Move back to map
+        onView(withId(R.id.drawer_layout)).check(matches(isClosed(Gravity.LEFT))).perform(DrawerActions.open());
+        onView(withId(R.id.navigation_view)).perform(NavigationViewActions.navigateTo(R.id.map_support));
+        onView(withId(R.id.drawer_layout)).perform(DrawerActions.close());
+
+        // Create two new posts
+        onView(withId(R.id.newPostButton)).perform(ViewActions.click());
         onView(withId(R.id.postText)).perform(typeText("Post 3"));
-        onView(withId (R.id.postText)).perform(closeSoftKeyboard());
+        onView(withId(R.id.postText)).perform(closeSoftKeyboard());
         onView(withId(R.id.postButton)).perform(click());
 
-        onView(withId(R.id.postButton)).perform(click());
+        onView(withId(R.id.newPostButton)).perform(click());
         onView(withId(R.id.postText)).perform(typeText("Post 4"));
-        onView(withId (R.id.postText)).perform(closeSoftKeyboard());
+        onView(withId(R.id.postText)).perform(closeSoftKeyboard());
         onView(withId(R.id.postButton)).perform(click());
 
         loadPostView();
@@ -113,6 +129,22 @@ public class YourPostsListTest {
         onView(withId(R.id.rvPosts)).perform(RecyclerViewActions.actionOnItemAtPosition(0,clickChildViewWithId(R.id.deleteButton)));
         onView(withId(R.id.drawer_layout)).check(matches(isClosed(Gravity.LEFT))).perform(DrawerActions.open());
         onView(withId(R.id.navigation_view)).perform(NavigationViewActions.navigateTo(R.id.about));
+
+    }
+
+    @Test
+    public void ChecksOnePostHasAnImageNotTheOther() throws Throwable {
+
+        //2 posts should be displayed
+        onView(withId(R.id.rvPosts)).check(new RecyclerViewItemCountAssertion(2));
+
+        onView(withId(R.id.rvPosts)).perform(RecyclerViewActions.actionOnItemAtPosition(1,click()));
+        onView(withId(R.id.postImage)).check(matches(withTagValue(is(YourPostListFragment.POST_IMAGE))));
+        onView(withId(R.id.post_content)).perform(click());
+
+        onView(withId(R.id.rvPosts)).perform(RecyclerViewActions.actionOnItemAtPosition(0,click()));
+        onView(withId(R.id.postImage)).check(matches(not(withTagValue(is(YourPostListFragment.POST_IMAGE)))));
+        onView(withId(R.id.post_content)).perform(click());
     }
 
     private static ViewAction clickChildViewWithId(final int id) {
@@ -139,7 +171,7 @@ public class YourPostsListTest {
     private class RecyclerViewItemCountAssertion implements ViewAssertion {
         private final int expectedCount;
 
-        public RecyclerViewItemCountAssertion(int expectedCount) {
+        RecyclerViewItemCountAssertion(int expectedCount) {
             this.expectedCount = expectedCount;
         }
 
@@ -154,4 +186,5 @@ public class YourPostsListTest {
             assertEquals(adapter.getItemCount(), expectedCount);
         }
     }
+
 }

@@ -31,8 +31,8 @@ public class RegisterActivityTest {
     User userWithSameUsername;
     public static User alreadyHasAnAccount;
     @Rule
-    public ActivityTestRule<RegisterActivity> intentsRule =
-            new ActivityTestRule<RegisterActivity>(RegisterActivity.class, true, true
+    public IntentsTestRule<RegisterActivity> intentsRule =
+            new IntentsTestRule<RegisterActivity>(RegisterActivity.class,true,true
             ){
                 @Override
                 protected void beforeActivityLaunched() {
@@ -126,10 +126,9 @@ public class RegisterActivityTest {
     @Test
     public void accountCreation() {
 
-        Intents.init();
 
-        onView(withId(R.id.username)).perform(typeText("newUsername"));
-        onView(withId(R.id.username)).perform(closeSoftKeyboard());
+        onView(withId (R.id.username)).perform(typeText ("newUserId"));
+        onView(withId (R.id.username)).perform(closeSoftKeyboard());
 
 
         onView(withId(R.id.email)).perform(typeText("newedfgfdsgdfgdf@kandle.ch"));
@@ -142,19 +141,18 @@ public class RegisterActivityTest {
         onView(withId(R.id.passwordConfirm)).perform(closeSoftKeyboard());
 
         onView(withId(R.id.loginBtn)).perform(click());
+        intended(hasComponent(CustomAccountActivity.class.getName()));
+        onView(withId(R.id.startButton)).perform(click());
+        onView(withId(R.id.drawer_layout)).perform(DrawerActions.open());
+        onView(withId(R.id.navigation_view)).perform(NavigationViewActions.navigateTo(R.id.logout));
 
-        //TODO Setup a IdleRessource counter to wait for the task completion and then launch the intent check
-       intended(hasComponent(CustomAccountActivity.class.getName()));
-       onView(withId(R.id.startButton)).perform(click());
-       onView(withId(R.id.drawer_layout)).perform(DrawerActions.open());
-       onView(withId(R.id.navigation_view)).perform(NavigationViewActions.navigateTo(R.id.logout));
-       Intents.release();
+
     }
 
 
     @Test
     public void wantToLoginInsteadToRegister() {
         onView(withId(R.id.signInLink)).perform(click());
-        //intended(hasComponent(LoginActivity.class.getName()));
+        intended(hasComponent(LoginActivity.class.getName()));
     }
 }

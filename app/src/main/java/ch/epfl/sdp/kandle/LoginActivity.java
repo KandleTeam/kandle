@@ -2,12 +2,10 @@ package ch.epfl.sdp.kandle;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-
 import ch.epfl.sdp.kandle.dependencies.Authentication;
 import ch.epfl.sdp.kandle.dependencies.Database;
 import ch.epfl.sdp.kandle.dependencies.DependencyManager;
 import io.grpc.Internal;
-
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
@@ -17,10 +15,14 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
-
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
+import ch.epfl.sdp.kandle.dependencies.Authentication;
+import ch.epfl.sdp.kandle.dependencies.Database;
+import ch.epfl.sdp.kandle.dependencies.DependencyManager;
 
 public class LoginActivity extends AppCompatActivity {
 
@@ -30,6 +32,7 @@ public class LoginActivity extends AppCompatActivity {
     private Button mSignUpBtn;
     private Authentication auth;
     private Database database;
+    private User currentUser;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -61,7 +64,7 @@ public class LoginActivity extends AppCompatActivity {
             if (!checkFields(email, password)) {
                 return;
             }
-            performLoginViaFirebase(email, password);
+            attemptLogin(email, password);
         });
 
     }
@@ -81,7 +84,7 @@ public class LoginActivity extends AppCompatActivity {
 
     }
 
-    private void performLoginViaFirebase(String email, String password) {
+    private void attemptLogin(String email, String password) {
         final ProgressDialog pd = new ProgressDialog(LoginActivity.this);
         pd.setMessage(getString(R.string.login_in_progress));
         pd.show();

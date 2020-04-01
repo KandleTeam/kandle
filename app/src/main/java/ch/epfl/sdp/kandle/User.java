@@ -2,6 +2,8 @@ package ch.epfl.sdp.kandle;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 public class User implements Serializable {
     private ArrayList<String> postsIds;
@@ -54,8 +56,8 @@ public class User implements Serializable {
         return imageURL;
     }
 
-    public ArrayList<String> getPosts() {
-        return postsIds;
+    public List<String> getPosts(){
+        return Collections.unmodifiableList(postsIds);
     }
 
     public void addPostId(String postId) {

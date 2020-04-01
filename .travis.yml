@@ -10,6 +10,7 @@ android:
     # The system image, to run an emulator during the tests
     - sys-img-armeabi-v7a-android-22
 
+
 before_script:
   - echo no | android create avd --force -n test -t android-22 --abi armeabi-v7a
   - emulator -avd test -no-audio -no-window &

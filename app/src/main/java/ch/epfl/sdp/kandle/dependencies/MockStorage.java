@@ -15,4 +15,11 @@ public class MockStorage implements Storage {
         return source.getTask();
     }
 
+    @Override
+    public Task<Void> delete(String path) {
+        TaskCompletionSource<Void> source = new TaskCompletionSource<>();
+        source.setResult(null);
+        return source.getTask();
+    }
+
 }
