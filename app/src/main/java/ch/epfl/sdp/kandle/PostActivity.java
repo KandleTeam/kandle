@@ -5,6 +5,7 @@ import androidx.camera.lifecycle.ProcessCameraProvider;
 import androidx.lifecycle.LifecycleOwner;
 
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.hardware.Camera;
 import android.net.Uri;
 import android.os.Bundle;
@@ -72,7 +73,8 @@ public class PostActivity extends AppCompatActivity implements LifecycleOwner {
         });
 
         mCameraButton.setOnClickListener(v -> {
-            postCamera.openCamera();
+                postCamera.openCamera();
+
         });
 
 
@@ -82,19 +84,17 @@ public class PostActivity extends AppCompatActivity implements LifecycleOwner {
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
+        mPostImage.setTag(POST_IMAGE_TAG);
         if (requestCode == 0) {
-            Uri uri = postCamera.handleActivityResult(requestCode, resultCode, data);
-
-            if (uri != null) {
-                mPostImage.setTag(POST_IMAGE_TAG);
-                mPostImage.setImageURI(uri);
-
+            Bitmap imageBitmap = postCamera.handleActivityResult(requestCode, resultCode, data);
+            if (imageBitmap != null) {
+                mPostImage.setImageBitmap(imageBitmap);
             }
         } else {
             Uri uri = postImagePicker.handleActivityResult(requestCode, resultCode, data);
 
             if (uri != null) {
-                mPostImage.setTag(POST_IMAGE_TAG);
+                //mPostImage.setTag(POST_IMAGE_TAG);
                 mPostImage.setImageURI(uri);
 
             }

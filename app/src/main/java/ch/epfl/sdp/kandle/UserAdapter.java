@@ -111,7 +111,6 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.ViewHolder> {
                             if (task.isSuccessful()){
                                 holder.mFollowBtn.setText("following");
                             }
-
                         }
                     });
 
