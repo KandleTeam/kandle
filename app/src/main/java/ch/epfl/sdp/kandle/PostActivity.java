@@ -84,19 +84,16 @@ public class PostActivity extends AppCompatActivity implements LifecycleOwner {
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
+        mPostImage.setTag(POST_IMAGE_TAG);
         if (requestCode == 0) {
             Bitmap imageBitmap = postCamera.handleActivityResult(requestCode, resultCode, data);
-            mPostImage.setTag(POST_IMAGE_TAG);
             if (imageBitmap != null) {
                 mPostImage.setImageBitmap(imageBitmap);
             }
         } else {
             Uri uri = postImagePicker.handleActivityResult(requestCode, resultCode, data);
-            mPostImage.setTag(POST_IMAGE_TAG);
             if (uri != null) {
-                //mPostImage.setTag(POST_IMAGE_TAG);
                 mPostImage.setImageURI(uri);
-
             }
         }
     }
