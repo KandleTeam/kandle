@@ -2,7 +2,9 @@ package ch.epfl.sdp.kandle.dependencies;
 
 import com.google.android.gms.tasks.Task;
 import com.google.android.gms.tasks.TaskCompletionSource;
+import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.AuthResult;
+import com.google.firebase.auth.EmailAuthProvider;
 import com.google.firebase.auth.FirebaseAuth;
 import ch.epfl.sdp.kandle.LoggedInUser;
 import ch.epfl.sdp.kandle.User;
@@ -97,6 +99,17 @@ public class FirebaseAuthentication implements Authentication {
                 return source.getTask();
             }
         });
+    }
+
+    @Override
+    public Task<Void> reauthenticate(String password) {
+        AuthCredential credential = EmailAuthProvider.getCredential(LoggedInUser.getInstance().getEmail(), password);
+        return fAuth.getCurrentUser().reauthenticate(credential);
+    }
+
+    @Override
+    public Task<Void> updatePassword(String password) {
+        return fAuth.getCurrentUser().updatePassword(password);
     }
 
     @Override

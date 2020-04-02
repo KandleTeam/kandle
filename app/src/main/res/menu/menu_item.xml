@@ -19,6 +19,11 @@
             android:icon="@drawable/ic_addpost"
             android:title="Follow" />
 
+        <item
+            android:id="@+id/light"
+            android:icon="@drawable/ic_light"
+            android:title="Your Achievements" />
+
 
         <item android:title="Communication">
             <menu>

@@ -3,16 +3,23 @@ package ch.epfl.sdp.kandle;
 import android.app.Activity;
 import android.app.Instrumentation;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
+
+import android.provider.MediaStore;
 import androidx.test.espresso.intent.rule.IntentsTestRule;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
+import androidx.test.rule.GrantPermissionRule;
 import org.junit.After;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import java.util.HashMap;
 import ch.epfl.sdp.kandle.dependencies.DependencyManager;
+import ch.epfl.sdp.kandle.dependencies.MockAuthentication;
 import ch.epfl.sdp.kandle.dependencies.MockDatabase;
+import ch.epfl.sdp.kandle.dependencies.MockStorage;
 
 import static androidx.test.espresso.Espresso.onView;
 import static androidx.test.espresso.action.ViewActions.click;
@@ -24,6 +31,7 @@ import static androidx.test.espresso.intent.matcher.IntentMatchers.hasAction;
 import static androidx.test.espresso.matcher.ViewMatchers.hasErrorText;
 import static androidx.test.espresso.matcher.ViewMatchers.withId;
 import static androidx.test.espresso.matcher.ViewMatchers.withTagValue;
+import static androidx.test.espresso.matcher.ViewMatchers.withText;
 import static org.hamcrest.CoreMatchers.not;
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.*;
@@ -39,13 +47,24 @@ public class PostActivityTest {
                 @Override
                 protected void beforeActivityLaunched() {
                     LoggedInUser.init(new User("loggedInUserId","LoggedInUser","loggedInUser@kandle.ch","nickname","image"));
-                    HashMap<String,String> accounts = new HashMap<>();
+                    HashMap<String, String> accounts = new HashMap<>();
                     HashMap<String,User> users = new HashMap<>();
                     HashMap<String, MockDatabase.Follow> followMap = new HashMap<>();
                     HashMap<String,Post> posts = new HashMap<>();
-                    DependencyManager.setFreshTestDependencies(true,accounts,users,followMap,posts);
+                    MockDatabase db = new MockDatabase(true, users, followMap, posts);
+                    MockAuthentication authentication = new MockAuthentication(true, accounts, "password");
+                    MockStorage storage = new MockStorage();
+                    DependencyManager.setFreshTestDependencies(authentication, db, storage);
                 }
             };
+
+    @Rule
+    public GrantPermissionRule mCameraPermissionRule =
+            GrantPermissionRule.grant(android.Manifest.permission.CAMERA);
+    @Rule
+    public GrantPermissionRule mStoragePermissionRule =
+            GrantPermissionRule.grant(android.Manifest.permission.WRITE_EXTERNAL_STORAGE);
+
 
     @After
     public void clearCurrentUser(){
@@ -64,15 +83,28 @@ public class PostActivityTest {
 
     @Test
     public void postButtonLeadsToMainActivityWhenCorrectPost() {
+
         onView(withId(R.id.postText)).perform(typeText("   Salut Salut  "));
         onView(withId (R.id.postText)).perform(closeSoftKeyboard());
+
         onView(withId(R.id.postButton)).perform(click());
         assertTrue(intentsRule.getActivity().isFinishing());
     }
 
     @Test
     public void clickCameraButtonLeavesToPostActivity() {
+
+        Intent resultData = new Intent();
+        resultData.setAction(Intent.ACTION_GET_CONTENT);
+        Uri imageUri = Uri.parse("android.resource://ch.epfl.sdp.kandle/drawable/ic_launcher_background.xml");
+        resultData.setData(imageUri);
+        Instrumentation.ActivityResult result = new Instrumentation.ActivityResult(Activity.RESULT_OK, resultData);
+        intending(hasAction(MediaStore.ACTION_IMAGE_CAPTURE)).respondWith(result);
+
         onView(withId(R.id.cameraButton)).perform(click());
+        onView(withId(R.id.postImage)).check(matches(withTagValue(is(PostActivity.POST_IMAGE_TAG))));
+
+
     }
 
     @Test

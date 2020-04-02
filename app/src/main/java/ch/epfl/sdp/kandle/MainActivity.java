@@ -1,5 +1,6 @@
 package ch.epfl.sdp.kandle;
 
+import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
@@ -10,6 +11,7 @@ import android.widget.TextView;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.core.app.ActivityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
@@ -20,6 +22,8 @@ import ch.epfl.sdp.kandle.dependencies.Authentication;
 import ch.epfl.sdp.kandle.dependencies.Database;
 import ch.epfl.sdp.kandle.dependencies.DependencyManager;
 import ch.epfl.sdp.kandle.fragment.AboutFragment;
+import ch.epfl.sdp.kandle.fragment.AchievementFragment;
+//import ch.epfl.sdp.kandle.Fragment.ProfileFragment;
 import ch.epfl.sdp.kandle.fragment.MapViewFragment;
 import ch.epfl.sdp.kandle.fragment.ProfileFragment;
 import ch.epfl.sdp.kandle.fragment.SearchFragment;
@@ -39,14 +43,15 @@ public class MainActivity extends AppCompatActivity {
     private TextView mNickname;
     private Authentication auth;
     private Database database;
-
-    // Make sure to be using androidx.appcompat.app.ActionBarDrawerToggle version.
     private ActionBarDrawerToggle drawerToggle;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 1);
+
 
         auth = DependencyManager.getAuthSystem();
         database = DependencyManager.getDatabaseSystem();
@@ -173,6 +178,10 @@ public class MainActivity extends AppCompatActivity {
 
             case R.id.follow:
                 fragmentClass = SearchFragment.class;
+                break;
+
+            case R.id.light:
+                fragmentClass = AchievementFragment.class;
                 break;
 
             default:

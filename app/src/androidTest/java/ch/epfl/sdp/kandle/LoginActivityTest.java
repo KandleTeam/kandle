@@ -1,7 +1,9 @@
 package ch.epfl.sdp.kandle;
 
 
+import android.Manifest;
 import android.content.res.Resources;
+
 import org.junit.AfterClass;
 import org.junit.Rule;
 import org.junit.Test;
@@ -12,8 +14,16 @@ import androidx.test.espresso.contrib.NavigationViewActions;
 import androidx.test.espresso.intent.Intents;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 import androidx.test.rule.ActivityTestRule;
+import androidx.test.rule.GrantPermissionRule;
+
 import java.util.HashMap;
+
+import ch.epfl.sdp.kandle.dependencies.Database;
 import ch.epfl.sdp.kandle.dependencies.DependencyManager;
+import ch.epfl.sdp.kandle.dependencies.MockAuthentication;
+import ch.epfl.sdp.kandle.dependencies.MockDatabase;
+import ch.epfl.sdp.kandle.dependencies.MockStorage;
+
 import static androidx.test.espresso.Espresso.onView;
 import static androidx.test.espresso.action.ViewActions.click;
 import static androidx.test.espresso.action.ViewActions.closeSoftKeyboard;
@@ -44,12 +54,19 @@ public class LoginActivityTest {
                 protected void beforeActivityLaunched() {
                     alreadyHasAnAccount = new User("user1Id", "username", "user1@kandle.ch", "nickname", null);
                     HashMap<String,String> accounts = new HashMap<>();
-                    accounts.put(alreadyHasAnAccount.getEmail(),alreadyHasAnAccount.getId());
+                    accounts.put(alreadyHasAnAccount.getEmail(), alreadyHasAnAccount.getId());
                     HashMap<String,User> users = new HashMap<>();
                     users.put(alreadyHasAnAccount.getId(),alreadyHasAnAccount);
-                    DependencyManager.setFreshTestDependencies(false,accounts,users,null,null);
+                    MockDatabase db = new MockDatabase(false, users, null, null);
+                    MockAuthentication authentication = new MockAuthentication(false, accounts, "password");
+                    MockStorage storage = new MockStorage();
+                    DependencyManager.setFreshTestDependencies(authentication,db,storage);
                 }
             };
+
+    @Rule
+    public GrantPermissionRule grantLocation = GrantPermissionRule.grant(Manifest.permission.ACCESS_FINE_LOCATION);
+
 
     @AfterClass
     public static void clearCurrentUser() {
