@@ -1,5 +1,6 @@
 package ch.epfl.sdp.kandle;
 
+import android.util.Pair;
 import android.view.Gravity;
 import android.view.View;
 import org.hamcrest.Matcher;
@@ -16,7 +17,9 @@ import androidx.test.rule.ActivityTestRule;
 import java.util.HashMap;
 import java.util.LinkedList;
 import ch.epfl.sdp.kandle.dependencies.DependencyManager;
+import ch.epfl.sdp.kandle.dependencies.MockAuthentication;
 import ch.epfl.sdp.kandle.dependencies.MockDatabase;
+import ch.epfl.sdp.kandle.dependencies.MockStorage;
 
 import static androidx.test.espresso.action.ViewActions.clearText;
 import static androidx.test.espresso.action.ViewActions.click;
@@ -42,15 +45,18 @@ public class SearchFragmentTest {
                     user1 = new User("user1Id", "user1", "user1@kandle.ch", null,  null);
                     user2 = new User("user2Id", "user2", "user2@kandle.ch", null,  "image");
                     LoggedInUser.init(new User("loggedInUserId","LoggedInUser","loggedInUser@kandle.ch","nickname","image"));
-                    HashMap<String,String> accounts = new HashMap<>();
-                    accounts.put(user1.getEmail(),user1.getId());
-                    accounts.put(user2.getEmail(),user2.getId());
+                    HashMap<String, String> accounts = new HashMap<>();
+                    accounts.put(user1.getEmail(), user1.getId());
+                    accounts.put(user2.getEmail(), user2.getId());
                     HashMap<String,User> users = new HashMap<>();
                     HashMap<String, MockDatabase.Follow> followMap = new HashMap<>();
                     followMap.put(user1.getId(),new MockDatabase.Follow(new LinkedList<>(),new LinkedList<>()));
                     followMap.put(user2.getId(),new MockDatabase.Follow(new LinkedList<>(),new LinkedList<>()));
                     HashMap<String,Post> posts = new HashMap<>();
-                    DependencyManager.setFreshTestDependencies(true,accounts,users,followMap,posts);
+                    MockDatabase db = new MockDatabase(true, users, followMap, posts);
+                    MockAuthentication authentication = new MockAuthentication(true, accounts, "password");
+                    MockStorage storage = new MockStorage();
+                    DependencyManager.setFreshTestDependencies(authentication, db, storage);
                     DependencyManager.getDatabaseSystem().createUser(user1);
                     DependencyManager.getDatabaseSystem().createUser(user2);
                     DependencyManager.getDatabaseSystem().follow(LoggedInUser.getInstance().getId(),user1.getId());

@@ -22,7 +22,9 @@ import org.junit.runner.RunWith;
 import java.util.Date;
 import java.util.HashMap;
 import ch.epfl.sdp.kandle.dependencies.DependencyManager;
+import ch.epfl.sdp.kandle.dependencies.MockAuthentication;
 import ch.epfl.sdp.kandle.dependencies.MockDatabase;
+import ch.epfl.sdp.kandle.dependencies.MockStorage;
 import ch.epfl.sdp.kandle.fragment.YourPostListFragment;
 import static androidx.test.espresso.Espresso.onView;
 import static androidx.test.espresso.action.ViewActions.click;
@@ -52,13 +54,16 @@ public class YourPostsListTest {
                     p2 = new Post("There", "image", new Date(), LoggedInUser.getInstance().getId(), "post2Id");
                     LoggedInUser.getInstance().addPostId(p1.getPostId());
                     LoggedInUser.getInstance().addPostId(p2.getPostId());
-                    HashMap<String,String> accounts = new HashMap<>();
+                    HashMap<String, String> accounts = new HashMap<>();
                     HashMap<String,User> users = new HashMap<>();
                     HashMap<String, MockDatabase.Follow> followMap = new HashMap<>();
                     HashMap<String,Post> posts = new HashMap<>();
                     posts.put(p1.getPostId(),p1);
                     posts.put(p2.getPostId(),p2);
-                    DependencyManager.setFreshTestDependencies(true,accounts,users,followMap,posts);
+                    MockDatabase db = new MockDatabase(true, users, followMap, posts);
+                    MockAuthentication authentication = new MockAuthentication(true, accounts, "password");
+                    MockStorage storage = new MockStorage();
+                    DependencyManager.setFreshTestDependencies(authentication, db, storage);
 
                 }
 

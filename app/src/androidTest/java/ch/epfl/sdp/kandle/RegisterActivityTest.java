@@ -8,7 +8,9 @@ import androidx.test.espresso.contrib.NavigationViewActions;
 import androidx.test.espresso.intent.rule.IntentsTestRule;
 import java.util.HashMap;
 import ch.epfl.sdp.kandle.dependencies.DependencyManager;
+import ch.epfl.sdp.kandle.dependencies.MockAuthentication;
 import ch.epfl.sdp.kandle.dependencies.MockDatabase;
+import ch.epfl.sdp.kandle.dependencies.MockStorage;
 
 import static androidx.test.espresso.Espresso.onView;
 import static androidx.test.espresso.action.ViewActions.click;
@@ -38,15 +40,18 @@ public class RegisterActivityTest {
                 protected void beforeActivityLaunched() {
                     userWithSameEmail = new User("userIdE","randomusername","sameEmail@kandle.ch","nickname",null);
                     userWithSameUsername = new User("userIdU","sameusername","randomEmail@kandle.ch","nickname",null);
-                    HashMap<String,String> accounts = new HashMap<>();
-                    accounts.put(userWithSameEmail.getEmail(),userWithSameEmail.getId());
-                    accounts.put(userWithSameUsername.getEmail(),userWithSameUsername.getId());
+                    HashMap<String, String> accounts = new HashMap<>();
+                    accounts.put(userWithSameEmail.getEmail(), userWithSameEmail.getId());
+                    accounts.put(userWithSameUsername.getEmail(), userWithSameUsername.getId());
                     HashMap<String,User> users = new HashMap<>();
                     users.put(userWithSameUsername.getId(),userWithSameUsername);
                     users.put(userWithSameEmail.getId(),userWithSameEmail);
                     HashMap<String, MockDatabase.Follow> followMap = new HashMap<>();
                     HashMap<String,Post> posts = new HashMap<>();
-                    DependencyManager.setFreshTestDependencies(false,accounts,users,followMap,posts);
+                    MockDatabase db = new MockDatabase(false, users, followMap, posts);
+                    MockAuthentication authentication = new MockAuthentication(false, accounts, "password");
+                    MockStorage storage = new MockStorage();
+                    DependencyManager.setFreshTestDependencies(authentication, db, storage);
                 }
             };
 

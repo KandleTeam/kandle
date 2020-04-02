@@ -1,5 +1,7 @@
 package ch.epfl.sdp.kandle.dependencies;
 
+import android.util.Pair;
+
 import com.google.android.gms.tasks.Task;
 import com.google.android.gms.tasks.TaskCompletionSource;
 import java.util.Map;
@@ -11,12 +13,12 @@ public class MockAuthentication implements Authentication {
 
     private Map<String, String> accounts;
     private boolean isConnected;
-    private Database database;
+    private String password;
 
-    public MockAuthentication(boolean isConnected, Map<String, String> accounts, Database database) {
+    public MockAuthentication(boolean isConnected, Map<String, String> accounts, String password) {
         this.isConnected = isConnected;
         this.accounts = accounts;
-        this.database = database;
+        this.password = password;
         if (isConnected) {
             accounts.put(LoggedInUser.getInstance().getEmail(), LoggedInUser.getInstance().getId());
         }
@@ -55,6 +57,27 @@ public class MockAuthentication implements Authentication {
         } else {
             source.setException(new Exception("You do not have an account yet"));
         }
+        return source.getTask();
+    }
+
+    @Override
+    public Task<Void> reauthenticate(String password) {
+        TaskCompletionSource source = new TaskCompletionSource<Void>();
+        if (this.password != password) {
+            source.setException(new Exception("Passwords do not match"));
+        }
+        else {
+            source.setResult(null);
+        }
+        return source.getTask();
+    }
+
+    @Override
+    public Task<Void> updatePassword(String password) {
+        TaskCompletionSource source = new TaskCompletionSource<Void>();
+        String id = accounts.get(LoggedInUser.getInstance().getEmail());
+        this.password = password;
+        source.setResult(null);
         return source.getTask();
     }
 

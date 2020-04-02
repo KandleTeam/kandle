@@ -1,5 +1,7 @@
 package ch.epfl.sdp.kandle.dependencies;
 
+import android.util.Pair;
+
 import java.util.Map;
 import ch.epfl.sdp.kandle.Post;
 import ch.epfl.sdp.kandle.User;
@@ -12,10 +14,10 @@ public final class DependencyManager {
     //private static InternalStorage internalStorage = null;
 
 
-    public static void setFreshTestDependencies(boolean isConnected, Map<String, String> accounts, Map<String, User> users, Map<String, MockDatabase.Follow> followMap, Map<String, Post> posts) {
-        setAuthSystem(new MockAuthentication(isConnected, accounts, db));
-        setDatabaseSystem(new MockDatabase(isConnected, users, followMap, posts));
-        setStorageSystem(new MockStorage());
+    public static void setFreshTestDependencies(Authentication auth, Database db, Storage storage) {
+        setAuthSystem(auth);
+        setDatabaseSystem(db);
+        setStorageSystem(storage);
         //setInternalStorageSystem(new MockInternalStorage(isLoggedIn));
     }
 
