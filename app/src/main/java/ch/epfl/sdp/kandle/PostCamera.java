@@ -25,6 +25,7 @@ public class PostCamera{
     ImageView imageView;
     protected static final int PHOTO_REQUEST = 0;
     ContentValues values;
+    private String[] permissions = {"android.permission.CAMERA", "android.permission.WRITE_EXTERNAL_STORAGE"};
 
     public PostCamera(Activity activity) {
         this.activity = activity;
@@ -33,7 +34,7 @@ public class PostCamera{
     }
 
     public  void openCamera(){
-        if(allPermissionsGranted(getRequiredPermissions())){
+        if(allPermissionsGranted(permissions)){
             values.put(MediaStore.Images.Media.TITLE, "New Picture");
             values.put(MediaStore.Images.Media.DESCRIPTION, "From your Camera");
             imageUri = activity.getContentResolver().insert(
@@ -48,11 +49,10 @@ public class PostCamera{
     }
 
     protected void uploadImage(){
-
     }
 
     private void makePermissionRequest() {
-        ActivityCompat.requestPermissions(activity, getRequiredPermissions(), PERMISSIONS_REQUEST_CODE);
+        ActivityCompat.requestPermissions(activity, permissions, PERMISSIONS_REQUEST_CODE);
     }
     /** Returns true if all the necessary permissions have been granted already. */
     private boolean allPermissionsGranted(String[] permissionsTab) {
@@ -63,35 +63,6 @@ public class PostCamera{
             }
         }
         return true;
-    }
-
-    /** Tries to acquire all the necessary permissions through a dialog. */
-    private String[] getRequiredPermissions() {
-        PackageInfo info;
-
-        try {
-            info =
-                    activity.getPackageManager()
-                            .getPackageInfo(activity.getPackageName(), PackageManager.GET_PERMISSIONS);
-        } catch (PackageManager.NameNotFoundException exception) {
-            Log.e(TAG, "Failed to obtain all required permissions.", exception);
-            return new String[0];
-        }
-        String[] finalPermissions = info.requestedPermissions;
-        String[] permissions = new String[2];
-        int j = 0;
-        for(int i = 0; i < finalPermissions.length; i++){
-            String s = finalPermissions[i];
-            if((s.equals("android.permission.CAMERA") ||  s.equals("android.permission.WRITE_EXTERNAL_STORAGE")) && j < 2){
-                permissions[j] = s;
-                j++;
-            }
-        }
-        if (permissions != null && permissions.length > 0) {
-            return permissions;
-        } else {
-            return new String[0];
-        }
     }
 
     public Bitmap handleActivityResult(int requestCode, int resultCode, Intent data){
