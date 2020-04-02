@@ -124,7 +124,7 @@ public class YourProfileFragmentTest {
 
         onView(withId(R.id.profileEditPictureButton)).perform(click());
         onView(withId(R.id.profilePicture)).check(matches(withTagValue(is(ProfileFragment.PROFILE_PICTURE_AFTER))));
-        onView(withId (R.id.profileEditNameButton)).perform(closeSoftKeyboard());
+
         onView(withId(R.id.profileValidatePictureButton)).perform(click());
     }
 
@@ -134,6 +134,7 @@ public class YourProfileFragmentTest {
         onView(withId(R.id.edit_view)).perform(clearText());
         onView(withId(R.id.edit_view)).perform(typeText("New Nickname"));
         onView(withId(R.id.profileValidateNameButton)).perform(click());
+        onView(withId (R.id.profileValidateNameButton)).perform(closeSoftKeyboard());
         onView(withId(R.id.text_view)).check(matches(withText("New Nickname")));
     }
 
