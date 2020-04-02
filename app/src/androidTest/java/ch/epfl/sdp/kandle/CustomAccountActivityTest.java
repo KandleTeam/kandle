@@ -1,11 +1,22 @@
 package ch.epfl.sdp.kandle;
 
+import android.Manifest;
 import android.app.Activity;
 import android.app.Instrumentation.ActivityResult;
 import android.content.Intent;
 import android.net.Uri;
 
 import androidx.test.espresso.intent.rule.IntentsTestRule;
+import androidx.test.rule.GrantPermissionRule;
+
+import org.junit.After;
+import org.junit.Rule;
+import org.junit.Test;
+
+import java.util.HashMap;
+
+import ch.epfl.sdp.kandle.dependencies.DependencyManager;
+import ch.epfl.sdp.kandle.dependencies.MockDatabase;
 
 import static androidx.test.espresso.Espresso.onView;
 import static androidx.test.espresso.action.ViewActions.click;
@@ -25,7 +36,6 @@ import static org.hamcrest.core.IsEqual.equalTo;
 import org.junit.After;
 import org.junit.Rule;
 import org.junit.Test;
-
 import java.util.HashMap;
 import ch.epfl.sdp.kandle.dependencies.DependencyManager;
 import ch.epfl.sdp.kandle.dependencies.MockAuthentication;
@@ -33,11 +43,12 @@ import ch.epfl.sdp.kandle.dependencies.MockDatabase;
 import ch.epfl.sdp.kandle.dependencies.MockStorage;
 
 
+
 public class CustomAccountActivityTest {
 
     @Rule
     public IntentsTestRule<CustomAccountActivity> intentsRule =
-            new IntentsTestRule<CustomAccountActivity>(CustomAccountActivity.class, true, true){
+            new IntentsTestRule<CustomAccountActivity>(CustomAccountActivity.class, true, true) {
                 @Override
                 protected void beforeActivityLaunched() {
                     LoggedInUser.init(new User("loggedInUserId","LoggedInUser","loggedInUser@kandle.ch",null,null));
@@ -49,9 +60,12 @@ public class CustomAccountActivityTest {
                     MockAuthentication authentication = new MockAuthentication(true, accounts, "password");
                     MockStorage storage = new MockStorage();
                     DependencyManager.setFreshTestDependencies(authentication, db, storage);
+
                 }
             };
 
+    @Rule
+    public GrantPermissionRule grantLocation = GrantPermissionRule.grant(Manifest.permission.ACCESS_FINE_LOCATION);
 
     @After
     public void signout() {
@@ -61,8 +75,8 @@ public class CustomAccountActivityTest {
 
     @Test
     public void enterUsername() throws InterruptedException {
-        onView(withId (R.id.nickname)).perform(typeText ("User 1"));
-        onView(withId (R.id.nickname)).perform(closeSoftKeyboard());
+        onView(withId(R.id.nickname)).perform(typeText("User 1"));
+        onView(withId(R.id.nickname)).perform(closeSoftKeyboard());
         onView(withId(R.id.startButton)).perform(click());
 
         DependencyManager.getDatabaseSystem().getNickname().addOnCompleteListener(task -> {
@@ -70,6 +84,7 @@ public class CustomAccountActivityTest {
             assertThat(nickname, is(equalTo("User 1")));
         });
     }
+
     @Test
     public void selectProfilePicture() {
 
