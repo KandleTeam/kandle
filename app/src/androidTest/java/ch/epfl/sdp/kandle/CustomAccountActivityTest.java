@@ -37,7 +37,7 @@ public class CustomAccountActivityTest {
             new IntentsTestRule<CustomAccountActivity>(CustomAccountActivity.class, true, true){
                 @Override
                 protected void beforeActivityLaunched() {
-                    LoggedInUser.init(new User("loggedInUserId","LoggedInUser","loggedInUser@kandle.ch","nickname","image"));
+                    LoggedInUser.init(new User("loggedInUserId","LoggedInUser","loggedInUser@kandle.ch",null,null));
                     HashMap<String,String> accounts = new HashMap<>();
                     HashMap<String,User> users = new HashMap<>();
                     HashMap<String, Follow> followMap = new HashMap<>();
@@ -53,11 +53,11 @@ public class CustomAccountActivityTest {
     }
 
 
-
     @Test
-    public void enterUsername() {
+    public void enterUsername() throws InterruptedException {
         onView(withId (R.id.nickname)).perform(typeText ("User 1"));
         onView(withId (R.id.nickname)).perform(closeSoftKeyboard());
+        Thread.sleep(1000);
         onView(withId(R.id.startButton)).perform(click());
 
         DependencyManager.getDatabaseSystem().getNickname().addOnCompleteListener(task -> {
