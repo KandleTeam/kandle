@@ -8,12 +8,10 @@ import com.google.firebase.storage.UploadTask;
 
 public class CloudStorage implements Storage {
 
-    private static CloudStorage instance;
-    private static final StorageReference storageReference = FirebaseStorage.getInstance().getReferenceFromUrl("gs://kandle-1b646.appspot.com");
 
+    private static final StorageReference storageReference = FirebaseStorage.getInstance().getReferenceFromUrl("gs://kandle-1b646.appspot.com");
+    private static final CloudStorage instance = new CloudStorage();
     public static CloudStorage getInstance() {
-        if (instance == null)
-            instance = new CloudStorage();
         return instance;
     }
 

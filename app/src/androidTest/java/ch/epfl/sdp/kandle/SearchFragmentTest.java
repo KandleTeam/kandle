@@ -16,7 +16,8 @@ import androidx.test.rule.ActivityTestRule;
 import java.util.HashMap;
 import java.util.LinkedList;
 import ch.epfl.sdp.kandle.dependencies.DependencyManager;
-import ch.epfl.sdp.kandle.dependencies.Follow;
+import ch.epfl.sdp.kandle.dependencies.MockDatabase;
+
 import static androidx.test.espresso.action.ViewActions.clearText;
 import static androidx.test.espresso.action.ViewActions.click;
 import static androidx.test.espresso.action.ViewActions.closeSoftKeyboard;
@@ -45,9 +46,9 @@ public class SearchFragmentTest {
                     accounts.put(user1.getEmail(),user1.getId());
                     accounts.put(user2.getEmail(),user2.getId());
                     HashMap<String,User> users = new HashMap<>();
-                    HashMap<String,Follow> followMap = new HashMap<>();
-                    followMap.put(user1.getId(),new Follow(new LinkedList<>(),new LinkedList<>()));
-                    followMap.put(user2.getId(),new Follow(new LinkedList<>(),new LinkedList<>()));
+                    HashMap<String, MockDatabase.Follow> followMap = new HashMap<>();
+                    followMap.put(user1.getId(),new MockDatabase.Follow(new LinkedList<>(),new LinkedList<>()));
+                    followMap.put(user2.getId(),new MockDatabase.Follow(new LinkedList<>(),new LinkedList<>()));
                     HashMap<String,Post> posts = new HashMap<>();
                     DependencyManager.setFreshTestDependencies(true,accounts,users,followMap,posts);
                     DependencyManager.getDatabaseSystem().createUser(user1);

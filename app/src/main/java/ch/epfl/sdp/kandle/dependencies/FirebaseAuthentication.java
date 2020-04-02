@@ -9,8 +9,8 @@ import ch.epfl.sdp.kandle.User;
 
 public class FirebaseAuthentication implements Authentication {
 
-    private static FirebaseAuth fAuth = FirebaseAuth.getInstance();
-    private static FirebaseAuthentication auth = new FirebaseAuthentication();
+    private static final FirebaseAuth fAuth = FirebaseAuth.getInstance();
+    private static final FirebaseAuthentication auth = new FirebaseAuthentication();
     private FirestoreDatabase database = FirestoreDatabase.getInstance();
 
     private FirebaseAuthentication() {

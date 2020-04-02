@@ -12,7 +12,8 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import java.util.HashMap;
 import ch.epfl.sdp.kandle.dependencies.DependencyManager;
-import ch.epfl.sdp.kandle.dependencies.Follow;
+import ch.epfl.sdp.kandle.dependencies.MockDatabase;
+
 import static androidx.test.espresso.Espresso.onView;
 import static androidx.test.espresso.action.ViewActions.click;
 import static androidx.test.espresso.action.ViewActions.closeSoftKeyboard;
@@ -40,7 +41,7 @@ public class PostActivityTest {
                     LoggedInUser.init(new User("loggedInUserId","LoggedInUser","loggedInUser@kandle.ch","nickname","image"));
                     HashMap<String,String> accounts = new HashMap<>();
                     HashMap<String,User> users = new HashMap<>();
-                    HashMap<String, Follow> followMap = new HashMap<>();
+                    HashMap<String, MockDatabase.Follow> followMap = new HashMap<>();
                     HashMap<String,Post> posts = new HashMap<>();
                     DependencyManager.setFreshTestDependencies(true,accounts,users,followMap,posts);
                 }

@@ -7,7 +7,8 @@ import org.junit.Test;
 import androidx.test.rule.ActivityTestRule;
 import java.util.HashMap;
 import ch.epfl.sdp.kandle.dependencies.DependencyManager;
-import ch.epfl.sdp.kandle.dependencies.Follow;
+import ch.epfl.sdp.kandle.dependencies.MockDatabase;
+
 import static androidx.test.espresso.Espresso.onView;
 import static androidx.test.espresso.assertion.ViewAssertions.matches;
 import static androidx.test.espresso.contrib.DrawerMatchers.isClosed;
@@ -25,7 +26,7 @@ public class LoginActivityTestAlreadyLoggedIn {
                     HashMap<String,String> accounts = new HashMap<>();
                     HashMap<String,User> users = new HashMap<>();
                     users.put(LoggedInUser.getInstance().getId(),LoggedInUser.getInstance());
-                    HashMap<String, Follow> followMap = new HashMap<>();
+                    HashMap<String, MockDatabase.Follow> followMap = new HashMap<>();
                     HashMap<String, Post> posts = new HashMap<>();
                     DependencyManager.setFreshTestDependencies(true,accounts,users,followMap,posts);
                 }

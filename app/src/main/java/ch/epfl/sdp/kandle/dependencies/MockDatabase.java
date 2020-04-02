@@ -5,6 +5,7 @@ import com.google.android.gms.tasks.TaskCompletionSource;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import ch.epfl.sdp.kandle.LoggedInUser;
@@ -16,7 +17,10 @@ import ch.epfl.sdp.kandle.User;
  * - a single user `admin`, with all-zero userID.
  * - to be extended for posts, etc...
  */
+
 public class MockDatabase implements Database {
+
+
 
 
     private Map<String, User> users;
@@ -300,5 +304,38 @@ public class MockDatabase implements Database {
         return source.getTask();
     }
 
+
+    public static class Follow {
+        public List<String> following;
+
+        public List<String> followers;
+
+
+        public Follow(List<String> following, List<String> followers) {
+            this.following = following;
+            this.followers = followers;
+        }
+
+        public Follow() {
+            this.followers = new LinkedList<String>();
+            this.following = new LinkedList<String>();
+        }
+
+        public void addFollowing(String s) {
+            following.add(s);
+        }
+
+        public void addFollower(String s) {
+            followers.add(s);
+        }
+
+        public void removeFollowing(String s) {
+            following.remove(s);
+        }
+
+        public void removeFollower(String s) {
+            followers.remove(s);
+        }
+    }
 
 }

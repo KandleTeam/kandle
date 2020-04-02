@@ -31,9 +31,7 @@ import ch.epfl.sdp.kandle.User;
 public class FirestoreDatabase implements Database {
 
     private static final FirebaseFirestore firestore = FirebaseFirestore.getInstance();
-
     private static final FirestoreDatabase instance = new FirestoreDatabase();
-
     private static final CollectionReference users = firestore.collection("users");
     private static final CollectionReference usernames = firestore.collection("usernames");
     private static final CollectionReference posts = firestore.collection("posts");

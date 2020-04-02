@@ -12,7 +12,7 @@ public final class DependencyManager {
     //private static InternalStorage internalStorage = null;
 
 
-    public static void setFreshTestDependencies(boolean isConnected, Map<String, String> accounts, Map<String, User> users, Map<String, Follow> followMap, Map<String, Post> posts) {
+    public static void setFreshTestDependencies(boolean isConnected, Map<String, String> accounts, Map<String, User> users, Map<String, MockDatabase.Follow> followMap, Map<String, Post> posts) {
         setAuthSystem(new MockAuthentication(isConnected, accounts, db));
         setDatabaseSystem(new MockDatabase(isConnected, users, followMap, posts));
         setStorageSystem(new MockStorage());

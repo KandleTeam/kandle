@@ -8,7 +8,8 @@ import androidx.test.espresso.contrib.NavigationViewActions;
 import androidx.test.espresso.intent.rule.IntentsTestRule;
 import java.util.HashMap;
 import ch.epfl.sdp.kandle.dependencies.DependencyManager;
-import ch.epfl.sdp.kandle.dependencies.Follow;
+import ch.epfl.sdp.kandle.dependencies.MockDatabase;
+
 import static androidx.test.espresso.Espresso.onView;
 import static androidx.test.espresso.action.ViewActions.click;
 import static androidx.test.espresso.action.ViewActions.closeSoftKeyboard;
@@ -43,7 +44,7 @@ public class RegisterActivityTest {
                     HashMap<String,User> users = new HashMap<>();
                     users.put(userWithSameUsername.getId(),userWithSameUsername);
                     users.put(userWithSameEmail.getId(),userWithSameEmail);
-                    HashMap<String, Follow> followMap = new HashMap<>();
+                    HashMap<String, MockDatabase.Follow> followMap = new HashMap<>();
                     HashMap<String,Post> posts = new HashMap<>();
                     DependencyManager.setFreshTestDependencies(false,accounts,users,followMap,posts);
                 }
