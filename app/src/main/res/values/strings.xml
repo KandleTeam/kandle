@@ -18,6 +18,12 @@
     <string name="login_fail_password_error">Wrong credentials</string>
     <string name="login_fail_email_error">Wrong credentials</string>
     <string name="login_in_progress">Logging in</string>
+    <string name="achievement">Achievement Completed</string>
+    <string name="achievement_nb_posts">You have done 10 posts !!</string>
+    <string name="achievement_congratulations">Congratulations</string>
+    <string name="achievement_posts">Do 10 posts </string>
+    <string name="achievement_following">Follow 3 persons </string>
+    <string name="achievement_followers">Have 3 followers </string>
 
 
     <!-- TODO: Remove or change this placeholder text -->
