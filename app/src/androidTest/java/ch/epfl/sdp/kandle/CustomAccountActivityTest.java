@@ -59,6 +59,10 @@ public class CustomAccountActivityTest {
         onView(withId (R.id.nickname)).perform(closeSoftKeyboard());
         onView(withId(R.id.startButton)).perform(click());
 
+        DependencyManager.getDatabaseSystem().getNickname().addOnCompleteListener(task -> {
+            String nickname = task.getResult();
+            assertThat(nickname, is(equalTo("User 1")));
+        });
     }
     @Test
     public void selectProfilePicture() {
