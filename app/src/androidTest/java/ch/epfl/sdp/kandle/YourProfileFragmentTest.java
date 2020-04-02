@@ -133,8 +133,8 @@ public class YourProfileFragmentTest {
         onView(withId(R.id.profileEditNameButton)).perform(click());
         onView(withId(R.id.edit_view)).perform(clearText());
         onView(withId(R.id.edit_view)).perform(typeText("New Nickname"));
+        onView(withId (R.id.edit_view)).perform(closeSoftKeyboard());
         onView(withId(R.id.profileValidateNameButton)).perform(click());
-        onView(withId (R.id.profileValidateNameButton)).perform(closeSoftKeyboard());
         onView(withId(R.id.text_view)).check(matches(withText("New Nickname")));
     }
 
