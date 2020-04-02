@@ -35,4 +35,8 @@
     <string name="followBtnNotFollowing">follow</string>
     <string name="followBtnAlreadyFollowing">unfollow</string>
 
+
+    <string name="camera_alert">Device has only one camera!</string>
+    <string name="switch_cam">Switch Camera</string>
+
 </resources>
