@@ -29,6 +29,7 @@ import ch.epfl.sdp.kandle.fragment.ProfileFragment;
 import static androidx.test.espresso.Espresso.onView;
 import static androidx.test.espresso.action.ViewActions.clearText;
 import static androidx.test.espresso.action.ViewActions.click;
+import static androidx.test.espresso.action.ViewActions.closeSoftKeyboard;
 import static androidx.test.espresso.action.ViewActions.typeText;
 import static androidx.test.espresso.assertion.ViewAssertions.matches;
 import static androidx.test.espresso.contrib.DrawerMatchers.isClosed;
@@ -133,6 +134,7 @@ public class YourProfileFragmentTest {
         onView(withId(R.id.edit_view)).perform(clearText());
         onView(withId(R.id.edit_view)).perform(typeText("New Nickname"));
         onView(withId(R.id.profileValidateNameButton)).perform(click());
+        onView(withId (R.id.profileValidateNameButton)).perform(closeSoftKeyboard());
         onView(withId(R.id.text_view)).check(matches(withText("New Nickname")));
     }
 

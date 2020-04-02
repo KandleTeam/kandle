@@ -29,7 +29,7 @@ import java.util.HashMap;
 import ch.epfl.sdp.kandle.dependencies.DependencyManager;
 import ch.epfl.sdp.kandle.dependencies.Follow;
 
-@RunWith(AndroidJUnit4.class)
+
 public class CustomAccountActivityTest {
 
     @Rule
@@ -37,7 +37,7 @@ public class CustomAccountActivityTest {
             new IntentsTestRule<CustomAccountActivity>(CustomAccountActivity.class, true, true){
                 @Override
                 protected void beforeActivityLaunched() {
-                    LoggedInUser.init(new User("loggedInUserId","LoggedInUser","loggedInUser@kandle.ch","nickname","image"));
+                    LoggedInUser.init(new User("loggedInUserId","LoggedInUser","loggedInUser@kandle.ch",null,null));
                     HashMap<String,String> accounts = new HashMap<>();
                     HashMap<String,User> users = new HashMap<>();
                     HashMap<String, Follow> followMap = new HashMap<>();
@@ -53,9 +53,8 @@ public class CustomAccountActivityTest {
     }
 
 
-
     @Test
-    public void enterUsername() {
+    public void enterUsername() throws InterruptedException {
         onView(withId (R.id.nickname)).perform(typeText ("User 1"));
         onView(withId (R.id.nickname)).perform(closeSoftKeyboard());
         onView(withId(R.id.startButton)).perform(click());
