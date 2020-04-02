@@ -22,6 +22,8 @@ import ch.epfl.sdp.kandle.dependencies.Authentication;
 import ch.epfl.sdp.kandle.dependencies.Database;
 import ch.epfl.sdp.kandle.dependencies.DependencyManager;
 import ch.epfl.sdp.kandle.fragment.AboutFragment;
+import ch.epfl.sdp.kandle.fragment.AchievementFragment;
+//import ch.epfl.sdp.kandle.Fragment.ProfileFragment;
 import ch.epfl.sdp.kandle.fragment.MapViewFragment;
 import ch.epfl.sdp.kandle.fragment.ProfileFragment;
 import ch.epfl.sdp.kandle.fragment.SearchFragment;
@@ -41,8 +43,6 @@ public class MainActivity extends AppCompatActivity {
     private TextView mNickname;
     private Authentication auth;
     private Database database;
-
-    // Make sure to be using androidx.appcompat.app.ActionBarDrawerToggle version.
     private ActionBarDrawerToggle drawerToggle;
 
     @Override
@@ -178,6 +178,10 @@ public class MainActivity extends AppCompatActivity {
 
             case R.id.follow:
                 fragmentClass = SearchFragment.class;
+                break;
+
+            case R.id.light:
+                fragmentClass = AchievementFragment.class;
                 break;
 
             default:

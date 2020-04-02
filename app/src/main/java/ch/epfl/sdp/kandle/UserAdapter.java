@@ -1,6 +1,8 @@
 package ch.epfl.sdp.kandle;
 
+import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -113,8 +115,8 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.ViewHolder> {
                                 if (task.isSuccessful()) {
                                     holder.mFollowBtn.setText("following");
                                 }
-
                             }
+
                         });
 
                     } else {
