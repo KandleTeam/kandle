@@ -77,9 +77,7 @@ public class PostActivity extends AppCompatActivity {
             });
         });
 
-        mCameraButton.setOnClickListener(v ->
-        {
-        });
+        mCameraButton.setOnClickListener(v -> Toast.makeText(this, "This does not work for now", Toast.LENGTH_SHORT).show());
 
 
         mGalleryButton.setOnClickListener(v -> postImagePicker.openImage());

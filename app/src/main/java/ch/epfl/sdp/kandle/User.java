@@ -11,7 +11,6 @@ import java.util.Date;
 public class User implements Serializable {
     private ArrayList<String> postsIds;
     private String id, username, email, fullname , imageURL;
-    private int numberOfPosts = 0;
     private Date date;
 
 
@@ -64,8 +63,6 @@ public class User implements Serializable {
     public String getImageURL() {
         return imageURL;
     }
-
-    public int getNumberOfPosts(){ return numberOfPosts; }
 
     public ArrayList<String> getPosts(){
         return postsIds;

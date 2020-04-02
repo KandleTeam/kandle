@@ -139,24 +139,6 @@ public class FirestoreDatabase implements Database {
 
     }
 
-    @Override
-    public Task<Integer> getNumberOfPosts(final String uid) {
-        final DocumentReference userDoc = users.document(uid);
-
-
-        return firestore
-                .runTransaction(transaction -> {
-                    DocumentSnapshot userAddingPostSnapshot = transaction.get(userDoc);
-                    List<String> posts = (List<String>) userAddingPostSnapshot.get("posts");
-                    if(posts != null){
-                        return posts.size();
-                    }
-                    else {
-                        //It means there are no posts
-                        return 0;
-                    }
-                });
-    }
 
     @Override
     public Task<List<User>> searchUsers(String prefix, int maxNumber) {
@@ -510,17 +492,6 @@ public class FirestoreDatabase implements Database {
                 });
     }
 
-    @Override
-    public Task<Date> getDateUserCreationUid(String userId) {
-        final DocumentReference userDoc = users.document(userId);
-
-//A changer
-        return firestore
-                .runTransaction(transaction -> {
-                    DocumentSnapshot userAddingPostSnapshot = transaction.get(userDoc);
-                    return new Date();
-                });
-    }
     
     /*
     @Override

@@ -211,6 +211,7 @@ public class MainActivity extends AppCompatActivity {
                 break;
 
             case R.id.light:
+                mPostButton.setVisibility(View.GONE);
                 fragmentClass = AchievementFragment.class;
                 break;
 

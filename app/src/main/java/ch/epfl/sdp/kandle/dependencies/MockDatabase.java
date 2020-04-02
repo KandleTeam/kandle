@@ -117,16 +117,6 @@ public class MockDatabase implements Database {
 
     }
 
-    @Override
-    public Task<Integer> getNumberOfPosts(String uid) {
-        TaskCompletionSource<Integer> task = new TaskCompletionSource<>();
-        User user = users.get("user1Id");
-        task.setResult(user.getNumberOfPosts());
-        return task.getTask();
-    }
-
-
-
 
     @Override
     public Task<User> getUserById(String userId) {
@@ -355,13 +345,7 @@ public class MockDatabase implements Database {
         return source.getTask();
     }
 
-    @Override
-    public Task<Date> getDateUserCreationUid(String userId) {
-        TaskCompletionSource<Date> source = new TaskCompletionSource<>();
-        User user = users.get("user1Id");
-        source.setResult(user.getDate());
-        return source.getTask();
-    }
+
 
     /*
     @Override

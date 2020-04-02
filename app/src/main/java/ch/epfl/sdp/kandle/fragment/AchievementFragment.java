@@ -37,23 +37,24 @@ public class AchievementFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view =  inflater.inflate(R.layout.fragment_achievement, container, false);
         TextView tv1 = (TextView)view.findViewById(R.id.is_posts);
-        tv1.setText("NOT DONE");
         TextView tv2 = (TextView)view.findViewById(R.id.is_following);
-        tv2.setText("NOT DONE");
         TextView tv3 = (TextView)view.findViewById(R.id.is_followers);
-        tv3.setText("NOT DONE");
 
         auth = DependencyManager.getAuthSystem();
         database = DependencyManager.getDatabaseSystem();
 
-        database.getNumberOfPosts(auth.getCurrentUser().getUid()).addOnCompleteListener(task1 ->{
+        database.getPostsByUserId(auth.getCurrentUser().getUid()).addOnCompleteListener(task1 ->{
             if(task1.isSuccessful()){
-                if(task1.getResult() >= 10){
+                if(task1.getResult().size() >= 10){
                     tv1.setText("DONE");
+                }
+                else {
+                    tv1.setText("NOT DONE");
                 }
             }
             else {
                 System.out.println(task1.getException().getMessage());
+                tv1.setText("NOT DONE");
             }
         });
 
@@ -62,8 +63,12 @@ public class AchievementFragment extends Fragment {
                if(task.getResult().size() >= 3){
                    tv2.setText("DONE");
                }
+               else {
+                   tv2.setText("NOT DONE");
+               }
            }
            else {
+               tv2.setText("NOT DONE");
                System.out.println(task.getException().getMessage());
            }
         });
@@ -73,8 +78,12 @@ public class AchievementFragment extends Fragment {
                 if(task.getResult().size() >= 3){
                     tv3.setText("DONE");
                 }
+                else {
+                    tv3.setText("NOT DONE");
+                }
             }
             else {
+                tv3.setText("NOT DONE");
                 System.out.println(task.getException().getMessage());
             }
         });

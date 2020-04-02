@@ -41,8 +41,6 @@ public interface Database {
      */
     Task<Void> createUser(User user);
 
-    Task<Integer> getNumberOfPosts(final String uid);
-
     Task<List<User>> searchUsers(final String prefix, int maxNumber);
 
     Task<Void> follow(final String userFollowing, final String userFollowed);
@@ -74,12 +72,6 @@ public interface Database {
     Task<Void> likePost(String userId, String postId);
 
     Task<Void> unlikePost(String userId, String postId);
-
-    Task<Date> getDateUserCreationUid(String userId);
-
-    //Task<List<String>> likers(String postId);
-
-    //Task<Void> editPost(Post p);
 
     Task<List<Post>> getPostsByUserId(String userId);
 
