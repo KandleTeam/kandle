@@ -45,6 +45,8 @@ import ch.epfl.sdp.kandle.dependencies.DependencyManager;
 
 public class ProfileFragment extends Fragment {
 
+    public final static int PROFILE_PICTURE_BEFORE = 6;
+    public final static int PROFILE_PICTURE_AFTER = 7;
     private User user;
     private ProfilePicPicker profilePicPicker;
     private ImageView mProfilePicture, mEditPicture, mProfilePictureInMenu, mEditName;
@@ -54,9 +56,6 @@ public class ProfileFragment extends Fragment {
     private Button mFollowButton, mValidateNameButton, mValidatePictureButton;
     private Authentication auth;
     private Database database;
-
-    public final static int PROFILE_PICTURE_BEFORE = 6;
-    public final static int PROFILE_PICTURE_AFTER = 7;
 
     private ProfileFragment(User user) {
         this.user = user;
@@ -122,8 +121,9 @@ public class ProfileFragment extends Fragment {
 
         mValidateNameButton.setOnClickListener(v -> {
             InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
-            //if (getActivity().getCurrentFocus()!=null)
-            imm.hideSoftInputFromWindow(getActivity().getCurrentFocus().getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
+            if (getActivity().getCurrentFocus() != null) {
+                imm.hideSoftInputFromWindow(getActivity().getCurrentFocus().getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
+            }
 
             String nickname = mNicknameEdit.getText().toString();
             if (nickname.trim().length() > 0) {

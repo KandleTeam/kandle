@@ -1,10 +1,22 @@
 package ch.epfl.sdp.kandle;
 
+import android.Manifest;
 import android.app.Activity;
 import android.app.Instrumentation.ActivityResult;
 import android.content.Intent;
 import android.net.Uri;
+
 import androidx.test.espresso.intent.rule.IntentsTestRule;
+import androidx.test.rule.GrantPermissionRule;
+
+import org.junit.After;
+import org.junit.Rule;
+import org.junit.Test;
+
+import java.util.HashMap;
+
+import ch.epfl.sdp.kandle.dependencies.DependencyManager;
+import ch.epfl.sdp.kandle.dependencies.MockDatabase;
 
 import static androidx.test.espresso.Espresso.onView;
 import static androidx.test.espresso.action.ViewActions.click;
@@ -21,31 +33,26 @@ import static androidx.test.espresso.matcher.ViewMatchers.withTagValue;
 import static org.hamcrest.CoreMatchers.not;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.core.IsEqual.equalTo;
-import org.junit.After;
-import org.junit.Rule;
-import org.junit.Test;
-
-import java.util.HashMap;
-import ch.epfl.sdp.kandle.dependencies.DependencyManager;
-import ch.epfl.sdp.kandle.dependencies.MockDatabase;
 
 
 public class CustomAccountActivityTest {
 
     @Rule
     public IntentsTestRule<CustomAccountActivity> intentsRule =
-            new IntentsTestRule<CustomAccountActivity>(CustomAccountActivity.class, true, true){
+            new IntentsTestRule<CustomAccountActivity>(CustomAccountActivity.class, true, true) {
                 @Override
                 protected void beforeActivityLaunched() {
-                    LoggedInUser.init(new User("loggedInUserId","LoggedInUser","loggedInUser@kandle.ch",null,null));
-                    HashMap<String,String> accounts = new HashMap<>();
-                    HashMap<String,User> users = new HashMap<>();
+                    LoggedInUser.init(new User("loggedInUserId", "LoggedInUser", "loggedInUser@kandle.ch", null, null));
+                    HashMap<String, String> accounts = new HashMap<>();
+                    HashMap<String, User> users = new HashMap<>();
                     HashMap<String, MockDatabase.Follow> followMap = new HashMap<>();
                     HashMap<String, Post> posts = new HashMap<>();
-                    DependencyManager.setFreshTestDependencies(true,accounts,users,followMap,posts);
+                    DependencyManager.setFreshTestDependencies(true, accounts, users, followMap, posts);
                 }
             };
 
+    @Rule
+    public GrantPermissionRule grantLocation = GrantPermissionRule.grant(Manifest.permission.ACCESS_FINE_LOCATION);
 
     @After
     public void signout() {
@@ -55,8 +62,8 @@ public class CustomAccountActivityTest {
 
     @Test
     public void enterUsername() throws InterruptedException {
-        onView(withId (R.id.nickname)).perform(typeText ("User 1"));
-        onView(withId (R.id.nickname)).perform(closeSoftKeyboard());
+        onView(withId(R.id.nickname)).perform(typeText("User 1"));
+        onView(withId(R.id.nickname)).perform(closeSoftKeyboard());
         onView(withId(R.id.startButton)).perform(click());
 
         DependencyManager.getDatabaseSystem().getNickname().addOnCompleteListener(task -> {
@@ -64,6 +71,7 @@ public class CustomAccountActivityTest {
             assertThat(nickname, is(equalTo("User 1")));
         });
     }
+
     @Test
     public void selectProfilePicture() {
 

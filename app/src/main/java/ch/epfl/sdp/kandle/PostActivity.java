@@ -1,7 +1,5 @@
 package ch.epfl.sdp.kandle;
 
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.content.ContentResolver;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -18,7 +16,6 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.android.gms.tasks.Task;
-import com.google.android.gms.tasks.TaskCompletionSource;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.FirebaseFirestore;
 
@@ -32,28 +29,24 @@ import ch.epfl.sdp.kandle.dependencies.Storage;
 
 public class PostActivity extends AppCompatActivity {
 
-
-    EditText mPostText;
-    private ImageView imageView;
+    public final static int POST_IMAGE_TAG = 42;
+    private static final int TAKE_PICTURE = 1;
     final int CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE = 1024;
-    Button mPostButton;
-    ImageButton mGalleryButton, mCameraButton;
-    ImageView mPostImage;
+    private EditText mPostText;
+    private ImageView imageView;
+    private Button mPostButton;
+    private ImageButton mGalleryButton, mCameraButton;
+    private ImageView mPostImage;
     private ImagePicker postImagePicker;
     private Post p;
-
     private Authentication auth;
     private Database database;
-
-    public final static int POST_IMAGE_TAG = 42;
-    FirebaseAuth fAuth;
-    FirebaseFirestore fStore;
+    private FirebaseAuth fAuth;
+    private FirebaseFirestore fStore;
     private PostCamera postCamera;
-    String userID;
+    private String userID;
     private Camera mCamera;
     private Uri imageUri;
-    private static final int TAKE_PICTURE = 1;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -73,13 +66,13 @@ public class PostActivity extends AppCompatActivity {
 
         mPostButton.setOnClickListener(v -> {
 
-            String postText  = mPostText.getText().toString().trim();
+            String postText = mPostText.getText().toString().trim();
             Uri imageUri = postImagePicker.getImageUri();
-            if(imageUri == null){
+            if (imageUri == null) {
                 imageUri = postCamera.getImageUri();
             }
 
-            if(postText.isEmpty() && imageUri == null){
+            if (postText.isEmpty() && imageUri == null) {
                 mPostText.setError("Your post is empty...");
                 return;
             }
@@ -90,22 +83,20 @@ public class PostActivity extends AppCompatActivity {
                         Uri downloadUri = task.getResult();
                         if (downloadUri == null) {
                             Toast.makeText(PostActivity.this, "Unable to upload image", Toast.LENGTH_LONG).show();
-                        }
-                        else {
+                        } else {
                             p = new Post(postText, downloadUri.toString(), new Date(), LoggedInUser.getInstance().getId());
                             post(p);
                         }
                     }
                 });
-            }
-            else {
+            } else {
                 p = new Post(postText, null, new Date(), LoggedInUser.getInstance().getId());
                 post(p);
             }
 
         });
 
-        mCameraButton.setOnClickListener(v ->  postCamera.openCamera());
+        mCameraButton.setOnClickListener(v -> postCamera.openCamera());
 
 
         mGalleryButton.setOnClickListener(v -> postImagePicker.openImage());
@@ -114,11 +105,11 @@ public class PostActivity extends AppCompatActivity {
     private void post(Post p) {
         database.addPost(p).addOnCompleteListener(task -> {
             if (task.isSuccessful()) {
-                Toast.makeText(PostActivity.this, "You have successfully posted : " + p.getDescription(), Toast.LENGTH_LONG ).show();
+                Toast.makeText(PostActivity.this, "You have successfully posted : " + p.getDescription(), Toast.LENGTH_LONG).show();
                 finish();
             }
         });
-        
+
     }
 
     @Override

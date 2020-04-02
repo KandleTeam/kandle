@@ -1,6 +1,7 @@
 package ch.epfl.sdp.kandle;
 
 
+import android.Manifest;
 import android.content.res.Resources;
 import org.junit.AfterClass;
 import org.junit.Rule;
@@ -12,6 +13,8 @@ import androidx.test.espresso.contrib.NavigationViewActions;
 import androidx.test.espresso.intent.Intents;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 import androidx.test.rule.ActivityTestRule;
+import androidx.test.rule.GrantPermissionRule;
+
 import java.util.HashMap;
 import ch.epfl.sdp.kandle.dependencies.DependencyManager;
 import static androidx.test.espresso.Espresso.onView;
@@ -50,6 +53,10 @@ public class LoginActivityTest {
                     DependencyManager.setFreshTestDependencies(false,accounts,users,null,null);
                 }
             };
+
+    @Rule
+    public GrantPermissionRule grantLocation = GrantPermissionRule.grant(Manifest.permission.ACCESS_FINE_LOCATION);
+
 
     @AfterClass
     public static void clearCurrentUser() {
