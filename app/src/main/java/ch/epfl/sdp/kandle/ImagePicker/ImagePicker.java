@@ -5,6 +5,7 @@ import android.app.ProgressDialog;
 import android.content.ContentResolver;
 import android.content.Intent;
 import android.net.Uri;
+import android.util.Log;
 import android.webkit.MimeTypeMap;
 
 import androidx.fragment.app.Fragment;
@@ -35,7 +36,7 @@ public class ImagePicker {
         this.activity = null;
     }
 
-    public void openImage(){
+    public void openImage() {
         Intent intent = new Intent();
         intent.setType("image/*");
         intent.setAction(Intent.ACTION_GET_CONTENT);
@@ -47,12 +48,12 @@ public class ImagePicker {
         }
     }
 
-    private String getFileExtension(Uri uri){
-        ContentResolver contentResolver = activity != null? activity.getContentResolver() : fragment.getContext().getContentResolver();
+    protected String getFileExtension(Uri uri) {
+        ContentResolver contentResolver = activity != null ? activity.getContentResolver() : fragment.getContext().getContentResolver();
         return MimeTypeMap.getSingleton().getExtensionFromMimeType(contentResolver.getType(uri));
     }
 
-    public void handleActivityResult(int requestCode, int resultCode, Intent data){
+    public void handleActivityResult(int requestCode, int resultCode, Intent data) {
 
         if (requestCode == IMAGE_REQUEST && resultCode == RESULT_OK &&
                 data != null && data.getData() != null) {
