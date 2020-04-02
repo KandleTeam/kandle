@@ -3,10 +3,14 @@ package ch.epfl.sdp.kandle;
 import android.app.Activity;
 import android.app.Instrumentation;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 
+import android.provider.MediaStore;
 import androidx.test.espresso.intent.rule.IntentsTestRule;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
+import androidx.test.rule.GrantPermissionRule;
 import org.junit.After;
 import org.junit.Rule;
 import org.junit.Test;
@@ -27,6 +31,7 @@ import static androidx.test.espresso.intent.matcher.IntentMatchers.hasAction;
 import static androidx.test.espresso.matcher.ViewMatchers.hasErrorText;
 import static androidx.test.espresso.matcher.ViewMatchers.withId;
 import static androidx.test.espresso.matcher.ViewMatchers.withTagValue;
+import static androidx.test.espresso.matcher.ViewMatchers.withText;
 import static org.hamcrest.CoreMatchers.not;
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.*;
@@ -53,6 +58,14 @@ public class PostActivityTest {
                 }
             };
 
+    @Rule
+    public GrantPermissionRule mCameraPermissionRule =
+            GrantPermissionRule.grant(android.Manifest.permission.CAMERA);
+    @Rule
+    public GrantPermissionRule mStoragePermissionRule =
+            GrantPermissionRule.grant(android.Manifest.permission.WRITE_EXTERNAL_STORAGE);
+
+
     @After
     public void clearCurrentUser(){
         LoggedInUser.clear();
@@ -70,15 +83,28 @@ public class PostActivityTest {
 
     @Test
     public void postButtonLeadsToMainActivityWhenCorrectPost() {
+
         onView(withId(R.id.postText)).perform(typeText("   Salut Salut  "));
         onView(withId (R.id.postText)).perform(closeSoftKeyboard());
+
         onView(withId(R.id.postButton)).perform(click());
         assertTrue(intentsRule.getActivity().isFinishing());
     }
 
     @Test
     public void clickCameraButtonLeavesToPostActivity() {
+
+        Intent resultData = new Intent();
+        resultData.setAction(Intent.ACTION_GET_CONTENT);
+        Uri imageUri = Uri.parse("android.resource://ch.epfl.sdp.kandle/drawable/ic_launcher_background.xml");
+        resultData.setData(imageUri);
+        Instrumentation.ActivityResult result = new Instrumentation.ActivityResult(Activity.RESULT_OK, resultData);
+        intending(hasAction(MediaStore.ACTION_IMAGE_CAPTURE)).respondWith(result);
+
         onView(withId(R.id.cameraButton)).perform(click());
+        onView(withId(R.id.postImage)).check(matches(withTagValue(is(PostActivity.POST_IMAGE_TAG))));
+
+
     }
 
     @Test
