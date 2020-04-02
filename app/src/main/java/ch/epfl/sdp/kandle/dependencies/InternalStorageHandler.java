@@ -2,11 +2,14 @@ package ch.epfl.sdp.kandle.dependencies;
 
 import android.content.Context;
 import androidx.annotation.NonNull;
+
+
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.PrintWriter;
+
 import ch.epfl.sdp.kandle.User;
 
 /**
@@ -28,9 +31,10 @@ public class InternalStorageHandler implements InternalStorage {
     /**
      * Stores the user locally
      * This is a private method and can only be used by this class to ensure good behavior
-     * @Author Marc Egli
+     *
      * @param user
      * @throws IllegalArgumentException
+     * @Author Marc Egli
      */
     private void storeUser(@NonNull User user) {
 
@@ -47,8 +51,9 @@ public class InternalStorageHandler implements InternalStorage {
 
     /**
      * Retrieves the user instance from the internal storage
-     * @Author Marc Egli
+     *
      * @return user
+     * @Author Marc Egli
      */
     @Override
     public User getCurrentUser() {
@@ -69,9 +74,10 @@ public class InternalStorageHandler implements InternalStorage {
     /**
      * Stores the user only if there is another user stored already or if there isn't one
      * The condition to save the user relies on short circuit evaluation
-     * @Author Marc Egli
+     *
      * @param user
      * @throws IllegalArgumentException
+     * @Author Marc Egli
      */
     @Override
     public void saveUserAtLoginOrRegister(@NonNull User user) throws IllegalArgumentException {
@@ -81,9 +87,9 @@ public class InternalStorageHandler implements InternalStorage {
         }
 
         User storedUser = getCurrentUser();
-        if(storedUser == null){
+        if (storedUser == null) {
             storeUser(user);
-        } else if(!storedUser.getId().equals(user.getId())){
+        } else if (!storedUser.getId().equals(user.getId())) {
             deleteUser();
             storeUser(user);
         }
@@ -112,14 +118,15 @@ public class InternalStorageHandler implements InternalStorage {
     /**
      * Deletes the user entry saved locally by writing an empty string to the file without append mode
      * Therefor the file is cleared, this is done in case many user login on the same app instance.
+     *
      * @Author Marc Egli
      */
     @Override
-    public void deleteUser(){
+    public void deleteUser() {
         try {
             PrintWriter writer = new PrintWriter(userDataPath);
             writer.close();
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }

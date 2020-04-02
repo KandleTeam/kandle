@@ -3,17 +3,13 @@ package ch.epfl.sdp.kandle.fragment;
 import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
-
 import androidx.fragment.app.Fragment;
-
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.TextView;
-
 import java.util.List;
-
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -42,17 +38,15 @@ public class ListUsersFragment extends Fragment {
     Database database;
 
 
-
-
-    private ListUsersFragment(List<User> users, String title, String number){
-        this.users=users;
-        this.number=number;
-        this.title=title;
+    private ListUsersFragment(List<User> users, String title, String number) {
+        this.users = users;
+        this.number = number;
+        this.title = title;
         this.userAdapter = new UserAdapter(users);
 
     }
 
-    public static ListUsersFragment newInstance (List<User> users, String title, String number){
+    public static ListUsersFragment newInstance(List<User> users, String title, String number) {
         return new ListUsersFragment(users, title, number);
     }
 
@@ -65,8 +59,8 @@ public class ListUsersFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        View view= inflater.inflate(R.layout.fragment_list_users, container, false);
+
+        View view = inflater.inflate(R.layout.fragment_list_users, container, false);
 
         getViews(view);
         auth = DependencyManager.getAuthSystem();
@@ -85,7 +79,7 @@ public class ListUsersFragment extends Fragment {
 
             final User user = users.get(position);
 
-            fragmentManager.beginTransaction().replace(R.id.flContent, ProfileFragment.newInstance(user) )
+            fragmentManager.beginTransaction().replace(R.id.flContent, ProfileFragment.newInstance(user))
                     .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
                     .addToBackStack(null)
                     .commit();

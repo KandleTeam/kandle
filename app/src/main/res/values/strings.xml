@@ -4,6 +4,8 @@
     <string name="drawer_close">drawerClose</string>
     <string name="title_activity_maps">Map</string>
 
+    <string name="google_maps_api_key">AIzaSyDFMUOQDRXbnJJbl1QEz0N1MYNcQJ5OlUA</string>
+
 
     <string name="login_email_hint">E-mail address</string>
     <string name="login_password_hint">Password</string>
@@ -23,8 +25,6 @@
     <string name="achievement_following">Follow 3 persons </string>
     <string name="achievement_followers">Have 3 followers </string>
 
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_map_fragment">Map</string>
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_addPost_fragment">Add a Post</string>
@@ -32,7 +32,6 @@
     <string name="hello_profile_fragment">Profile</string>
 
     <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="followBtnNotFollowing">follow</string>
     <string name="followBtnAlreadyFollowing">unfollow</string>
 

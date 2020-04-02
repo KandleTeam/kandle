@@ -18,10 +18,10 @@ import ch.epfl.sdp.kandle.dependencies.Authentication;
 import ch.epfl.sdp.kandle.dependencies.Database;
 import ch.epfl.sdp.kandle.dependencies.DependencyManager;
 
-public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder>{
+public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder> {
     private static ClickListener clickListener;
     private List<Post> mPosts;
-    private  ViewHolder viewHolder;
+    private ViewHolder viewHolder;
 
     private String userId;
 
@@ -58,7 +58,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder>{
         auth = DependencyManager.getAuthSystem();
         database = DependencyManager.getDatabaseSystem();
 
-        userId = auth.getCurrentUser().getUid();
+        userId = LoggedInUser.getInstance().getId();
         DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
 
         // Set item views based on your views and data model
@@ -73,26 +73,28 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder>{
             @Override
             public void onClick(View v) {
 
-                if(post.getLikers().contains(userId)){
+                if (post.getLikers().contains(userId)) {
                     database.unlikePost(userId, post.getPostId());
                     post.unlikePost(userId);
-                }else{
+                } else {
                     database.likePost(userId, post.getPostId());
                     post.likePost(userId);
 
                 }
                 likeView.setText(String.valueOf(post.getLikes()));
             }
+
             ;
         });
 
         holder.mDeleteButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                database.deletePost(userId, post);
+                database.deletePost(post);
                 mPosts.remove(post);
                 notifyDataSetChanged();
             }
+
             ;
         });
     }
@@ -125,7 +127,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder>{
 
         @Override
         public void onClick(View v) {
-            clickListener.onItemClick(getAdapterPosition(),v);
+            clickListener.onItemClick(getAdapterPosition(), v);
         }
 
     }

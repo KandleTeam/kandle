@@ -1,14 +1,14 @@
 package ch.epfl.sdp.kandle;
 
-import androidx.appcompat.app.AppCompatActivity;
-
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+
+import androidx.appcompat.app.AppCompatActivity;
 
 import ch.epfl.sdp.kandle.ImagePicker.ProfilePicPicker;
 import ch.epfl.sdp.kandle.dependencies.Database;
@@ -38,20 +38,26 @@ public class CustomAccountActivity extends AppCompatActivity {
         leaveButton = findViewById(R.id.startButton);
         profilePic = findViewById(R.id.profilePic);
         m_nickname = findViewById(R.id.nickname);
-
         profilePicPicker = new ProfilePicPicker(this);
-
         uploadButton.setOnClickListener(v -> profilePicPicker.openImage());
 
         leaveButton.setOnClickListener(v -> {
-            String nickname = m_nickname.getText().toString();
-            if (nickname.trim().length() > 0) {
-                database.updateNickname(nickname.trim()).addOnCompleteListener(task -> {
+            ProgressDialog pd = new ProgressDialog(CustomAccountActivity.this);
+            pd.setMessage("Finalizing your account");
+            pd.show();
+            profilePicPicker.setProfilePicture().addOnCompleteListener(task -> {
+                String nickname = m_nickname.getText().toString().trim();
+                if (nickname.length() > 0) {
+                    database.updateNickname(nickname).addOnCompleteListener(task1 -> {
+                        pd.dismiss();
+                        startMainActivity();;
+                    });
+                }
+                else {
+                    pd.dismiss();
                     startMainActivity();
-                });
-            } else {
-                startMainActivity();
-            }
+                }
+            });
         });
     }
 
@@ -61,11 +67,11 @@ public class CustomAccountActivity extends AppCompatActivity {
     }
 
 
-
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        Uri uri = profilePicPicker.handleActivityResult(requestCode, resultCode, data);
+        profilePicPicker.handleActivityResult(requestCode, resultCode, data);
+        Uri uri = profilePicPicker.getImageUri();
 
         if (uri != null) {
             profilePic.setTag(PROFILE_PICTURE_TAG);

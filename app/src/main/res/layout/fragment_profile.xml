@@ -16,6 +16,7 @@
         android:src="@mipmap/ic_launcher"
         app:layout_constraintBottom_toTopOf="@+id/profileFollowers"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.502"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/profileNickname" />
 
@@ -137,7 +138,7 @@
         app:layout_constraintHorizontal_bias="0.807"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/profileUsername"
-        app:layout_constraintVertical_bias="0.858" />
+        app:layout_constraintVertical_bias="1.0" />
 
     <ImageView
         android:id="@+id/profileEditNameButton"
@@ -145,16 +146,17 @@
         android:layout_height="wrap_content"
         android:clickable="true"
         android:src="@android:drawable/ic_menu_edit"
-        app:layout_constraintBottom_toTopOf="@+id/profileNickname"
+        app:layout_constraintBottom_toTopOf="@+id/profileUsername"
         app:layout_constraintEnd_toEndOf="@id/profileEditPictureButton"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="@id/profileEditPictureButton"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="1.0" />
+        app:layout_constraintVertical_bias="0.39" />
 
     <Button
         android:id="@+id/profileValidateNameButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="80dp"
+        android:layout_height="45dp"
         android:background="@drawable/button_background"
         android:text="save"
         android:textStyle="bold"
@@ -162,5 +164,18 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@id/profileNickname"
         app:layout_constraintTop_toTopOf="@id/profileNickname" />
+
+
+    <Button
+        android:id="@+id/profileValidatePictureButton"
+        android:layout_width="80dp"
+        android:layout_height="45dp"
+        android:background="@drawable/button_background"
+        android:text="save"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="@id/profilePicture"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/profilePicture"
+        app:layout_constraintTop_toTopOf="@id/profilePicture" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
