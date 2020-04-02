@@ -10,6 +10,7 @@ import android.widget.ImageView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
+
 import java.util.Date;
 
 import ch.epfl.sdp.kandle.ImagePicker.ImagePicker;
@@ -31,7 +32,6 @@ public class PostActivity extends AppCompatActivity {
     private ImageButton mGalleryButton, mCameraButton;
     private ImageView mPostImage;
     private ImagePicker postImagePicker;
-    public final static int POST_IMAGE_TAG = 42;
 
 
     @Override
