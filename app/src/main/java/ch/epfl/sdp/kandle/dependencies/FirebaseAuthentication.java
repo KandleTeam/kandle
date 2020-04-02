@@ -20,7 +20,6 @@ public class FirebaseAuthentication implements Authentication {
         return auth;
     }
 
-
     /**
      * In this function we consider the case where the user didn't log out from the app but closed it
      * Therefor the CurretnUser woudl be non null but the Instance of the loggedinUser would be.

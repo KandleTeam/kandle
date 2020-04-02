@@ -335,7 +335,7 @@ public class FirestoreDatabase implements Database {
     @Override
     public Task<Void> updateNickname(String nickname) {
         HashMap<String, Object> map = new HashMap<>();
-        map.put("fullname", nickname);
+        map.put("nickname", nickname);
         return loggedInUser().update(map);
     }
 
@@ -343,7 +343,7 @@ public class FirestoreDatabase implements Database {
     public Task<String> getNickname() {
         return loggedInUser().get().continueWith(task -> {
             DocumentSnapshot doc = task.getResult();
-            return doc != null ? (String) doc.get("fullname") : null;
+            return doc != null ? (String) doc.get("nickname") : null;
         });
     }
 
