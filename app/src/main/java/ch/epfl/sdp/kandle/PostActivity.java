@@ -118,14 +118,7 @@ public class PostActivity extends AppCompatActivity {
                 finish();
             }
         });
-
-        mCameraButton.setOnClickListener(v -> {
-            postCamera.openCamera();
-
-        });
-
-
-        mGalleryButton.setOnClickListener(v -> postImagePicker.openImage());
+        
     }
 
     @Override
