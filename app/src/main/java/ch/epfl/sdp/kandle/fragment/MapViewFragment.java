@@ -90,12 +90,14 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback {
 
     private void getLocation() {
 
-        if (ActivityCompat.checkSelfPermission(this.getContext(), Manifest.permission.ACCESS_FINE_LOCATION) !=
+        /*if (ActivityCompat.checkSelfPermission(this.getContext(), Manifest.permission.ACCESS_FINE_LOCATION) !=
                 PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_COARSE_LOCATION)
                 != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(this.getActivity(), new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION}, REQUEST_CODE);
             return;
         }
+
+         */
         fusedLocationProviderClient.getLastLocation().addOnCompleteListener(new OnCompleteListener<Location>() {
             @Override
             public void onComplete(@NonNull Task<Location> task) {
@@ -195,7 +197,7 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback {
             });
         }
     }
-
+/*
     @Override
     public void onRequestPermissionsResult (int requestCode, @NonNull String [] permissions, @NonNull int [] grantResults){
         switch (requestCode){
@@ -208,4 +210,6 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback {
                 break;
         }
     }
+
+ */
 }
