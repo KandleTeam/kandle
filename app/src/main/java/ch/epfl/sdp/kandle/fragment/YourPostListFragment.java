@@ -3,6 +3,7 @@ package ch.epfl.sdp.kandle.fragment;
 import android.os.Bundle;
 import android.view.Gravity;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
@@ -10,23 +11,21 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.PopupWindow;
 import android.widget.TextView;
-
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.squareup.picasso.Picasso;
-
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-
+import ch.epfl.sdp.kandle.ClickListener;
+import ch.epfl.sdp.kandle.LoggedInUser;
 import ch.epfl.sdp.kandle.Post;
 import ch.epfl.sdp.kandle.PostAdapter;
 import ch.epfl.sdp.kandle.R;
@@ -63,27 +62,21 @@ public class YourPostListFragment extends Fragment {
         auth = DependencyManager.getAuthSystem();
         database = DependencyManager.getDatabaseSystem();
 
-        userId = auth.getCurrentUser().getUid();
+        userId = LoggedInUser.getInstance().getId();
 
-        database.getPostsByUserId(userId).addOnCompleteListener(new OnCompleteListener<List<Post>>() {
-            @Override
+        database.getPostsByUserId(userId).addOnCompleteListener(task -> {
 
+            if (task.isSuccessful()) {
 
-            public void onComplete(@NonNull Task<List<Post>> task) {
+                if (task.getResult() != null) {
+                    posts = new ArrayList<>(task.getResult());
+                    //reverse to have the newer posts first
+                    Collections.reverse(posts);
+                } else {
+                    posts = new ArrayList<Post>();
+                }
 
-                if (task.isSuccessful()){
-
-                    if (task.getResult()!=null){
-                        posts= new ArrayList<>(task.getResult());
-                        //in order to have the newer posts first, we should sort the posts with the date they were posted.
-
-                    }
-
-                    else {
-                        posts = new ArrayList<Post>();
-                    }
-
-                    PostAdapter adapter = new PostAdapter(posts);
+                PostAdapter adapter = new PostAdapter(posts);
 
                     adapter.setOnItemClickListener((position, view) -> {
                         LayoutInflater inflater1 = getLayoutInflater();
@@ -96,29 +89,28 @@ public class YourPostListFragment extends Fragment {
                         TextView content = popupView.findViewById(R.id.post_content);
                         ImageView image = popupView.findViewById(R.id.postImage);
                         content.setText(posts.get(position).getDescription());
+                        System.out.println("Before "+ posts.get(position).getPostId());
                         if(posts.get(position).getImageURL() != null){
                             image.setVisibility(View.VISIBLE);
                             image.setTag(POST_IMAGE);
+                            System.out.println("In if"+image.getTag());
                             Picasso.get().load(posts.get(position).getImageURL()).into(image);
                         }
 
-                        popupView.setOnClickListener((popup) -> {
-                            popupWindow.dismiss();
-                        });
-
+                    popupView.setOnClickListener((popup) -> {
+                        popupWindow.dismiss();
                     });
 
-                    // Attach the adapter to the recyclerview to populate items
-                    rvPosts.setAdapter(adapter);
-                    // Set layout manager to position the items
+                });
 
-                }
+                // Attach the adapter to the recyclerview to populate items
+                rvPosts.setAdapter(adapter);
+                // Set layout manager to position the items
 
-                else {
-                    System.out.println(task.getException().getMessage());
-                }
-
+            } else {
+                System.out.println(task.getException().getMessage());
             }
+
         });
 
 
@@ -151,10 +143,6 @@ public class YourPostListFragment extends Fragment {
     }
 
  */
-
-
-
-
 
 
 }

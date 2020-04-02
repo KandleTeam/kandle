@@ -10,7 +10,6 @@ import android.widget.ImageView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
-
 import java.util.Date;
 
 import ch.epfl.sdp.kandle.ImagePicker.ImagePicker;
@@ -23,13 +22,17 @@ public class PostActivity extends AppCompatActivity {
 
     public final static int POST_IMAGE_TAG = 42;
     private Post p;
+
     private Authentication auth;
     private Database database;
+
     private EditText mPostText;
     private Button mPostButton;
     private ImageButton mGalleryButton, mCameraButton;
     private ImageView mPostImage;
     private ImagePicker postImagePicker;
+    public final static int POST_IMAGE_TAG = 42;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -63,13 +66,13 @@ public class PostActivity extends AppCompatActivity {
                         if (downloadUri == null) {
                             Toast.makeText(PostActivity.this, "Unable to upload image", Toast.LENGTH_LONG).show();
                         } else {
-                            p = new Post(postText, downloadUri.toString(), new Date(), auth.getCurrentUser().getUid());
+                            p = new Post(postText, downloadUri.toString(), new Date(), LoggedInUser.getInstance().getId());
                             post(p);
                         }
                     }
                 });
             } else {
-                p = new Post(postText, null, new Date(), auth.getCurrentUser().getUid());
+                p = new Post(postText, null, new Date(), LoggedInUser.getInstance().getId());
                 post(p);
             }
 
@@ -82,12 +85,17 @@ public class PostActivity extends AppCompatActivity {
     }
 
     private void post(Post p) {
-        database.addPost(auth.getCurrentUser().getUid(), p).addOnCompleteListener(task -> {
+        database.addPost(p).addOnCompleteListener(task -> {
             if (task.isSuccessful()) {
                 Toast.makeText(PostActivity.this, "You have successfully posted : " + p.getDescription(), Toast.LENGTH_LONG).show();
                 finish();
             }
         });
+
+        mCameraButton.setOnClickListener(v -> Toast.makeText(PostActivity.this, "Doesn't work for now... ", Toast.LENGTH_LONG).show());
+
+
+        mGalleryButton.setOnClickListener(v -> postImagePicker.openImage());
     }
 
     @Override
