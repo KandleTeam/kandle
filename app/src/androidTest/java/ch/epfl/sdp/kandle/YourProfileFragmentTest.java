@@ -29,6 +29,7 @@ import ch.epfl.sdp.kandle.fragment.ProfileFragment;
 import static androidx.test.espresso.Espresso.onView;
 import static androidx.test.espresso.action.ViewActions.clearText;
 import static androidx.test.espresso.action.ViewActions.click;
+import static androidx.test.espresso.action.ViewActions.closeSoftKeyboard;
 import static androidx.test.espresso.action.ViewActions.typeText;
 import static androidx.test.espresso.assertion.ViewAssertions.matches;
 import static androidx.test.espresso.contrib.DrawerMatchers.isClosed;
@@ -123,7 +124,7 @@ public class YourProfileFragmentTest {
 
         onView(withId(R.id.profileEditPictureButton)).perform(click());
         onView(withId(R.id.profilePicture)).check(matches(withTagValue(is(ProfileFragment.PROFILE_PICTURE_AFTER))));
-
+        onView(withId (R.id.profileEditNameButton)).perform(closeSoftKeyboard());
         onView(withId(R.id.profileValidatePictureButton)).perform(click());
     }
 
