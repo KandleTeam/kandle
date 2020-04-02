@@ -29,7 +29,8 @@ public class AchievementFragment extends Fragment {
     private Database database;
 
     public AchievementFragment(){
-
+        auth = DependencyManager.getAuthSystem();
+        database = DependencyManager.getDatabaseSystem();
     }
 
     @Nullable
@@ -39,56 +40,64 @@ public class AchievementFragment extends Fragment {
         TextView tv1 = (TextView)view.findViewById(R.id.is_posts);
         TextView tv2 = (TextView)view.findViewById(R.id.is_following);
         TextView tv3 = (TextView)view.findViewById(R.id.is_followers);
+        checkPosts(tv1);
+        checkFollowing(tv2);
+        checkFollowers(tv3);
+        return view;
+    }
 
-        auth = DependencyManager.getAuthSystem();
-        database = DependencyManager.getDatabaseSystem();
-
+    private void checkPosts(TextView tv){
         database.getPostsByUserId(auth.getCurrentUser().getUid()).addOnCompleteListener(task1 ->{
             if(task1.isSuccessful()){
                 if(task1.getResult().size() >= 10){
-                    tv1.setText("DONE");
+                    tv.setText("DONE");
                 }
                 else {
-                    tv1.setText("NOT DONE");
+                    tv.setText("NOT DONE");
                 }
             }
             else {
                 System.out.println(task1.getException().getMessage());
-                tv1.setText("NOT DONE");
+                tv.setText("NOT DONE");
             }
         });
+    }
 
-        database.userIdFollowingList(auth.getCurrentUser().getUid()).addOnCompleteListener(task -> {
-           if(task.isSuccessful()){
-               if(task.getResult().size() >= 3){
-                   tv2.setText("DONE");
-               }
-               else {
-                   tv2.setText("NOT DONE");
-               }
-           }
-           else {
-               tv2.setText("NOT DONE");
-               System.out.println(task.getException().getMessage());
-           }
-        });
-
-        database.userIdFollowersList(auth.getCurrentUser().getUid()).addOnCompleteListener(task -> {
-            if(task.isSuccessful()){
-                if(task.getResult().size() >= 3){
-                    tv3.setText("DONE");
+    private void checkFollowing(TextView tv){
+        database.userIdFollowingList(auth.getCurrentUser().getUid()).addOnCompleteListener(task2 -> {
+            if(task2.isSuccessful()){
+                if(task2.getResult().size() >= 3){
+                    tv.setText("DONE");
                 }
                 else {
-                    tv3.setText("NOT DONE");
+                    tv.setText("NOT DONE");
                 }
             }
             else {
-                tv3.setText("NOT DONE");
+                tv.setText("NOT DONE");
+                System.out.println(task2.getException().getMessage());
+            }
+        });
+    }
+
+    private void checkFollowers(TextView tv){
+        database.userIdFollowersList(auth.getCurrentUser().getUid()).addOnCompleteListener(task -> {
+            if(task.isSuccessful()){
+                if(task.getResult().size() >= 3){
+                    tv.setText("DONE");
+                }
+                else {
+                    tv.setText("NOT DONE");
+                }
+            }
+            else {
+                tv.setText("NOT DONE");
                 System.out.println(task.getException().getMessage());
             }
         });
-        return view;
     }
+
+
 
 
 }
