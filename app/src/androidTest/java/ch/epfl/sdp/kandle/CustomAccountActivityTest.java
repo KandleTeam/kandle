@@ -29,7 +29,7 @@ import java.util.HashMap;
 import ch.epfl.sdp.kandle.dependencies.DependencyManager;
 import ch.epfl.sdp.kandle.dependencies.Follow;
 
-@RunWith(AndroidJUnit4.class)
+
 public class CustomAccountActivityTest {
 
     @Rule
