@@ -81,7 +81,7 @@ public class MainActivity extends AppCompatActivity {
         drawerToggle.syncState();
         mDrawerLayout.addDrawerListener(drawerToggle);
 
-        createNewFragmentInstance(MapViewFragment.class);
+        createNewFragmentInstance(ProfileFragment.class);
         fragmentManager = getSupportFragmentManager();
         fragmentManager.beginTransaction().replace(R.id.flContent, fragment).commit();
         setTitle(mNavigationView.getCheckedItem().getTitle());
