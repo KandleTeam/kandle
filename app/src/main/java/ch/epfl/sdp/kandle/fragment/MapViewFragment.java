@@ -46,7 +46,8 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback {
     public void onMapReady(GoogleMap googleMap) {
 
         gmap = googleMap;
-
+        gmap.setMyLocationEnabled(true);
+        gmap.getUiSettings().setMapToolbarEnabled(false);
 
         gmap.addMarker(new MarkerOptions()
                 .position(new LatLng(46.522636, 6.635391))

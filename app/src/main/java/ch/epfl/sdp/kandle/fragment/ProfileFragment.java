@@ -38,6 +38,8 @@ import ch.epfl.sdp.kandle.dependencies.DependencyManager;
 
 public class ProfileFragment extends Fragment {
 
+    public final static int PROFILE_PICTURE_BEFORE = 6;
+    public final static int PROFILE_PICTURE_AFTER = 7;
     private User user;
     private ProfilePicPicker profilePicPicker;
     private ImageView mProfilePicture, mEditPicture, mProfilePictureInMenu, mEditName;
@@ -48,10 +50,7 @@ public class ProfileFragment extends Fragment {
     private Authentication auth;
     private Database database;
 
-    public final static int PROFILE_PICTURE_BEFORE = 6;
-    public final static int PROFILE_PICTURE_AFTER = 7;
-
-    private ProfileFragment (User user){
+    private ProfileFragment(User user) {
         this.user = user;
     }
 
@@ -95,11 +94,10 @@ public class ProfileFragment extends Fragment {
         mValidateNameButton.setVisibility(View.GONE);
         mValidatePictureButton.setVisibility(View.GONE);
 
-        if(!user.getId().equals(authenticationUser.getUid())){
+        if (!user.getId().equals(authenticationUser.getUid())) {
             mEditPicture.setVisibility(View.GONE);
             mEditName.setVisibility(View.GONE);
-        }
-        else {
+        } else {
             mEditPicture.setOnClickListener(v -> {
                 mEditPicture.setVisibility(View.GONE);
                 profilePicPicker.openImage();
@@ -115,12 +113,13 @@ public class ProfileFragment extends Fragment {
         });
 
         mValidateNameButton.setOnClickListener(v -> {
-            InputMethodManager imm = (InputMethodManager)getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
-            //if (getActivity().getCurrentFocus()!=null)
-            imm.hideSoftInputFromWindow(getActivity().getCurrentFocus().getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
+            InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+            if (getActivity().getCurrentFocus() != null) {
+                imm.hideSoftInputFromWindow(getActivity().getCurrentFocus().getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
+            }
 
             String nickname = mNicknameEdit.getText().toString();
-            if (nickname.trim().length()>0) {
+            if (nickname.trim().length() > 0) {
                 mNicknameView.setText(nickname.trim());
                 mNickNameInMenu.setText(nickname.trim());
                 database.updateNickname(nickname.trim());
@@ -149,7 +148,7 @@ public class ProfileFragment extends Fragment {
         mNicknameEdit.setText(user.getFullname());
 
         mUsername.setText("@" + user.getUsername());
-        if(user.getImageURL() != null) {
+        if (user.getImageURL() != null) {
             mProfilePicture.setTag(PROFILE_PICTURE_BEFORE);
             Picasso.get().load(user.getImageURL()).into(mProfilePicture);
         }
@@ -158,22 +157,19 @@ public class ProfileFragment extends Fragment {
         setNumberOfFollowing();
 
         database.userIdFollowingList(authenticationUser.getUid()).addOnCompleteListener(task -> {
-            if (task.isSuccessful()){
-                if ((task.getResult() == null) || (!task.getResult().contains(user.getId()))){
+            if (task.isSuccessful()) {
+                if ((task.getResult() == null) || (!task.getResult().contains(user.getId()))) {
                     mFollowButton.setText(R.string.followBtnNotFollowing);
-                }
-
-                else {
+                } else {
                     mFollowButton.setText(R.string.followBtnAlreadyFollowing);
                 }
             }
         });
 
 
-        if (user.getId().equals(authenticationUser.getUid())){
+        if (user.getId().equals(authenticationUser.getUid())) {
             mFollowButton.setVisibility(View.GONE);
-        }
-        else {
+        } else {
             mFollowButton.setOnClickListener(followButtonListener(authenticationUser));
         }
 
@@ -188,11 +184,11 @@ public class ProfileFragment extends Fragment {
         return view;
     }
 
-    private OnCompleteListener<List<User>> numberListener (String title, final FragmentManager fragmentManager ){
+    private OnCompleteListener<List<User>> numberListener(String title, final FragmentManager fragmentManager) {
         return new OnCompleteListener<List<User>>() {
             @Override
             public void onComplete(@NonNull Task<List<User>> task) {
-                if (task.isSuccessful()){
+                if (task.isSuccessful()) {
 
                     fragmentManager.beginTransaction().replace(R.id.flContent, ListUsersFragment.newInstance(
                             task.getResult()
@@ -213,15 +209,14 @@ public class ProfileFragment extends Fragment {
             System.out.println(mFollowButton.getText().toString());
             if (mFollowButton.getText().toString().equals(getString(R.string.followBtnNotFollowing))) {
                 database.follow(currUser.getUid(), user.getId()).addOnCompleteListener(task -> {
-                    if (task.isSuccessful()){
+                    if (task.isSuccessful()) {
                         System.out.println("not following -> following");
 
                         mFollowButton.setText(R.string.followBtnAlreadyFollowing);
                         setNumberOfFollowers();
                     }
                 });
-            }
-            else {
+            } else {
                 database.unFollow(currUser.getUid(), user.getId()).addOnCompleteListener(task -> {
                     if (task.isSuccessful()) {
                         System.out.println("following -> not following");
@@ -245,7 +240,7 @@ public class ProfileFragment extends Fragment {
         });
     }
 
-    private void setNumberOfFollowers(){
+    private void setNumberOfFollowers() {
         database.userIdFollowersList(user.getId()).addOnCompleteListener(task -> {
             if (task.isSuccessful()) {
                 if (task.getResult() != null) {
