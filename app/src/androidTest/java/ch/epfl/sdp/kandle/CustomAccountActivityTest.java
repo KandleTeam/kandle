@@ -57,9 +57,8 @@ public class CustomAccountActivityTest {
     public void enterUsername() throws InterruptedException {
         onView(withId (R.id.nickname)).perform(typeText ("User 1"));
         onView(withId (R.id.nickname)).perform(closeSoftKeyboard());
-        Thread.sleep(1000);
         onView(withId(R.id.startButton)).perform(click());
-        
+
     }
     @Test
     public void selectProfilePicture() {
