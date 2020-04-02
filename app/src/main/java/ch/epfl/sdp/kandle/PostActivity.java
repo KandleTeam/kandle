@@ -1,7 +1,5 @@
 package ch.epfl.sdp.kandle;
 
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.content.ContentResolver;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -18,10 +16,8 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.android.gms.tasks.Task;
-import com.google.android.gms.tasks.TaskCompletionSource;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.FirebaseFirestore;
-
 
 import java.util.Date;
 
@@ -33,10 +29,9 @@ import ch.epfl.sdp.kandle.dependencies.Storage;
 
 public class PostActivity extends AppCompatActivity {
 
-    final int CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE = 1024;
     public final static int POST_IMAGE_TAG = 42;
-
-
+    private static final int TAKE_PICTURE = 1;
+    final int CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE = 1024;
     private EditText mPostText;
     private ImageView imageView;
     private Button mPostButton;
@@ -44,18 +39,14 @@ public class PostActivity extends AppCompatActivity {
     private ImageView mPostImage;
     private ImagePicker postImagePicker;
     private Post p;
-
     private Authentication auth;
     private Database database;
-
     private FirebaseAuth fAuth;
     private FirebaseFirestore fStore;
     private PostCamera postCamera;
     private String userID;
     private Camera mCamera;
     private Uri imageUri;
-    private static final int TAKE_PICTURE = 1;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -77,7 +68,7 @@ public class PostActivity extends AppCompatActivity {
 
             String postText = mPostText.getText().toString().trim();
             Uri imageUri = postImagePicker.getImageUri();
-            if(imageUri == null){
+            if (imageUri == null) {
                 imageUri = postCamera.getImageUri();
             }
 
@@ -105,7 +96,7 @@ public class PostActivity extends AppCompatActivity {
 
         });
 
-        mCameraButton.setOnClickListener(v ->  postCamera.openCamera());
+        mCameraButton.setOnClickListener(v -> postCamera.openCamera());
 
 
         mGalleryButton.setOnClickListener(v -> postImagePicker.openImage());
