@@ -54,7 +54,6 @@
         android:id="@+id/is_posts"
         android:layout_width="0dp"
         android:layout_height="25dp"
-        android:layout_marginLeft="168dp"
         android:layout_marginTop="236dp"
         android:layout_marginEnd="84dp"
         android:clickable="true"
@@ -62,6 +61,7 @@
         app:layout_constraintBottom_toBottomOf="@+id/is_following"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintLeft_toRightOf="@+id/achievement_posts"
+        app:layout_constraintStart_toStartOf="@+id/is_following"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.0" />
 
@@ -84,12 +84,41 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginLeft="168dp"
-        android:layout_marginTop="284dp"
         android:layout_marginEnd="84dp"
         android:clickable="true"
         android:src="@android:drawable/ic_menu_edit"
+        app:layout_constraintBottom_toBottomOf="@+id/achievement_following"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintLeft_toRightOf="@+id/achievement_following"
+        app:layout_constraintTop_toTopOf="@+id/achievement_following" />
+
+    <TextView
+        android:id="@+id/achievement_followers"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="24dp"
+        android:text="@string/achievement_followers"
+        android:textAlignment="center"
+        android:textColor="#090909"
+        android:textSize="18sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/achievement_following" />
+
+    <TextView
+        android:id="@+id/is_followers"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="332dp"
+        android:layout_marginEnd="84dp"
+        android:clickable="true"
+        android:src="@android:drawable/ic_menu_edit"
+        app:layout_constraintBottom_toBottomOf="@+id/achievement_followers"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintLeft_toRightOf="@+id/achievement_followers"
+        app:layout_constraintStart_toStartOf="@+id/is_following"
+        app:layout_constraintTop_toBottomOf="@+id/is_following"
         app:layout_constraintTop_toTopOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

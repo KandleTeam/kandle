@@ -14,7 +14,6 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
 
-import ch.epfl.sdp.kandle.AchievementsActivity;
 import ch.epfl.sdp.kandle.R;
 import ch.epfl.sdp.kandle.User;
 import ch.epfl.sdp.kandle.UserAdapter;
@@ -41,6 +40,8 @@ public class AchievementFragment extends Fragment {
         tv1.setText("NOT DONE");
         TextView tv2 = (TextView)view.findViewById(R.id.is_following);
         tv2.setText("NOT DONE");
+        TextView tv3 = (TextView)view.findViewById(R.id.is_followers);
+        tv3.setText("NOT DONE");
 
         auth = DependencyManager.getAuthSystem();
         database = DependencyManager.getDatabaseSystem();
@@ -65,6 +66,17 @@ public class AchievementFragment extends Fragment {
            else {
                System.out.println(task.getException().getMessage());
            }
+        });
+
+        database.userIdFollowersList(auth.getCurrentUser().getUid()).addOnCompleteListener(task -> {
+            if(task.isSuccessful()){
+                if(task.getResult().size() >= 3){
+                    tv3.setText("DONE");
+                }
+            }
+            else {
+                System.out.println(task.getException().getMessage());
+            }
         });
         return view;
     }

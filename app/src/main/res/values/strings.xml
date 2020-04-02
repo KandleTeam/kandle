@@ -20,7 +20,8 @@
     <string name="achievement_nb_posts">You have done 10 posts !!</string>
     <string name="achievement_congratulations">Congratulations</string>
     <string name="achievement_posts">Do 10 posts </string>
-    <string name="achievement_following">Follow 10 persons </string>
+    <string name="achievement_following">Follow 3 persons </string>
+    <string name="achievement_followers">Have 3 followers </string>
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_map_fragment">Map</string>

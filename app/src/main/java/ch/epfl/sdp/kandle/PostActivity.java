@@ -70,18 +70,6 @@ public class PostActivity extends AppCompatActivity {
             database.addPost(auth.getCurrentUser().getUid(), p).addOnCompleteListener(task -> {
                 if (task.isSuccessful()) {
                     Toast.makeText(PostActivity.this, "You have successfully posted : " + postText, Toast.LENGTH_LONG ).show();
-                        database.getNumberOfPosts(auth.getCurrentUser().getUid()).addOnCompleteListener(task1 ->{
-                            if(task1.isSuccessful()){
-                                System.out.println("THE NUMBER OF POSTS IS " + task1.getResult());
-                                if(task1.getResult() == 10){
-                                    Intent intent = new Intent(this, AchievementsActivity.class);
-                                    startActivity(intent);
-                                }
-                            }
-                            else {
-                                System.out.println(task1.getException().getMessage());
-                            }
-                        });
                     finish();
                 }else{
                     System.out.println(task.getException().getMessage());
@@ -91,9 +79,6 @@ public class PostActivity extends AppCompatActivity {
 
         mCameraButton.setOnClickListener(v ->
         {
-            Intent intent = new Intent(this,
-                    AchievementsActivity.class);
-            startActivity(intent);
         });
 
 

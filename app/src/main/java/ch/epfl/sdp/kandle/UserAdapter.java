@@ -27,7 +27,6 @@ import de.hdodenhof.circleimageview.CircleImageView;
 public class UserAdapter extends RecyclerView.Adapter<UserAdapter.ViewHolder> {
 
     public final static int PROFILE_PICTURE_TAG = 9;
-    private Activity activity;
 
 
     public interface ClickListener {
@@ -36,9 +35,8 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.ViewHolder> {
     private static ClickListener clickListener;
     private List<User> mUsers;
 
-    public UserAdapter(List<User> mUsers, Activity activity) {
+    public UserAdapter(List<User> mUsers) {
         this.mUsers = mUsers;
-        this.activity = activity;
     }
 
     public void setOnItemClickListener(ClickListener clickListener) {
@@ -121,14 +119,6 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.ViewHolder> {
                             public void onComplete(@NonNull Task<Void> task) {
                                 if (task.isSuccessful()) {
                                     holder.mFollowBtn.setText("following");
-                                    /*database.userIdFollowingList(authenticationUser.getUid()).addOnCompleteListener( task1 ->{
-                                        if(task1.isSuccessful()){
-                                            if(task1.getResult().size() == 3){
-                                                Intent intent = new Intent(activity, AchievementsActivity.class);
-                                                activity.startActivity(intent);
-                                            }
-                                        }
-                                    });*/
                                 }
                             }
 

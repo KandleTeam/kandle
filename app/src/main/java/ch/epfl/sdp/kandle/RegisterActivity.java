@@ -19,6 +19,7 @@ import android.widget.Toast;
 import com.google.android.gms.tasks.Task;
 import com.google.android.gms.tasks.TaskCompletionSource;
 
+import java.util.Date;
 import java.util.List;
 
 public class RegisterActivity extends AppCompatActivity {
@@ -89,7 +90,7 @@ public class RegisterActivity extends AppCompatActivity {
         auth.createUserWithEmailAndPassword(email, password).addOnCompleteListener(task -> {
             if (task.isSuccessful()) {
                 userID = auth.getCurrentUser().getUid();
-                User user = new User(userID, username, email, null, null);
+                User user = new User(userID, username, email, null, null, new Date());
 
 
                 database.createUser(user);

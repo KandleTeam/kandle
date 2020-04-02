@@ -6,24 +6,27 @@ import android.widget.Toast;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Date;
 
 public class User implements Serializable {
     private ArrayList<String> postsIds;
     private String id, username, email, fullname , imageURL;
     private int numberOfPosts = 0;
+    private Date date;
 
 
     public User() {
         // Keep fields null
     }
 
-    public User(String id, String username, String email, String fullname, String imageURL) {
+    public User(String id, String username, String email, String fullname, String imageURL, Date date) {
         this.id = id;
         this.username = username;
         this.email = email;
         this.imageURL = imageURL;
         this.postsIds = new ArrayList<>();
         this.fullname = fullname;
+        this.date = date;
 
 
     }
@@ -31,6 +34,8 @@ public class User implements Serializable {
     public String getFullname() {
         return fullname;
     }
+
+    public Date getDate(){return date;}
 
     public void setFullname(String fullname) {
         this.fullname = fullname;

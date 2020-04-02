@@ -1,5 +1,6 @@
 package ch.epfl.sdp.kandle.fragment;
 
+import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
 
@@ -47,7 +48,8 @@ public class ListUsersFragment extends Fragment {
         this.users=users;
         this.number=number;
         this.title=title;
-        this.userAdapter = new UserAdapter(users, this.getActivity());
+        this.userAdapter = new UserAdapter(users);
+
     }
 
     public static ListUsersFragment newInstance (List<User> users, String title, String number){

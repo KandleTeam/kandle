@@ -20,6 +20,7 @@ import com.google.firebase.firestore.SetOptions;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -506,6 +507,18 @@ public class FirestoreDatabase implements Database {
                         }
                     }
                     return null;
+                });
+    }
+
+    @Override
+    public Task<Date> getDateUserCreationUid(String userId) {
+        final DocumentReference userDoc = users.document(userId);
+
+//A changer
+        return firestore
+                .runTransaction(transaction -> {
+                    DocumentSnapshot userAddingPostSnapshot = transaction.get(userDoc);
+                    return new Date();
                 });
     }
     

@@ -1,5 +1,6 @@
 package ch.epfl.sdp.kandle.fragment;
 
+import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
 import android.text.Editable;
@@ -38,11 +39,11 @@ public class SearchFragment extends Fragment {
     private RecyclerView mRecyclerView;
     private InternalStorageHandler internalStorageHandler;
     private ArrayList<User> mUsers = new ArrayList<>(0);
-    private UserAdapter userAdapter = new UserAdapter(mUsers, getActivity());
+    private UserAdapter userAdapter = new UserAdapter(mUsers);
     private AuthenticationUser currentUser;
     EditText search_bar;
 
-    public SearchFragment( ){
+    public SearchFragment(){
     }
 
     public static SearchFragment newInstance() {
@@ -121,7 +122,7 @@ public class SearchFragment extends Fragment {
 
             final User user = mUsers.get(position);
 
-            fragmentManager.beginTransaction().replace(R.id.flContent, ProfileFragment.newInstance(user) )
+            fragmentManager.beginTransaction().replace(R.id.flContent, ProfileFragment.newInstance(user))
                     .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
                     .addToBackStack(null)
                     .commit();

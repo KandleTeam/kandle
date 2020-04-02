@@ -4,6 +4,8 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.gms.tasks.TaskCompletionSource;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -61,18 +63,19 @@ public class MockDatabase implements Database {
     public MockDatabase() {
         users = new HashMap<>();
         //String adminId = "user1Id"; // 28 zeros
-        users.put("user1Id", new User("user1Id", "user1", "user1@kandle.ch", "Nickname", "image"));
+        Date date = new Date();
+        users.put("user1Id", new User("user1Id", "user1", "user1@kandle.ch", "Nickname", "image", date));
         users.remove("user1Id");
-        users.put("user1Id", new User("user1Id", "user1", "user1@kandle.ch", null,  "image"));
+        users.put("user1Id", new User("user1Id", "user1", "user1@kandle.ch", null,  "image", date));
         users.remove("user1Id");
-        users.put("user1Id", new User("user1Id", "user1", "user1@kandle.ch", null,  "image"));
+        users.put("user1Id", new User("user1Id", "user1", "user1@kandle.ch", null,  "image", date));
         users.remove("user1Id");
-        users.put("user1Id", new User("user1Id", "user1", "user1@kandle.ch", null,  "image"));
+        users.put("user1Id", new User("user1Id", "user1", "user1@kandle.ch", null,  "image", date));
         users.remove("user1Id");
 
-        users.put("user1Id", new User("user1Id", "user1", "user1@kandle.ch", null,  "image"));
-        users.put("user2Id", new User("user2Id", "user2", "user2@kandle.ch", null,  "image"));
-        users.put("user3Id", new User("user3Id", "user3", "user3@kandle.ch", null,  null));
+        users.put("user1Id", new User("user1Id", "user1", "user1@kandle.ch", null,  "image", date));
+        users.put("user2Id", new User("user2Id", "user2", "user2@kandle.ch", null,  "image", date));
+        users.put("user3Id", new User("user3Id", "user3", "user3@kandle.ch", null,  null, date));
         
         
         followMap = new HashMap<>();
@@ -117,7 +120,8 @@ public class MockDatabase implements Database {
     @Override
     public Task<Integer> getNumberOfPosts(String uid) {
         TaskCompletionSource<Integer> task = new TaskCompletionSource<>();
-        task.setResult(0);
+        User user = users.get("user1Id");
+        task.setResult(user.getNumberOfPosts());
         return task.getTask();
     }
 
@@ -348,6 +352,14 @@ public class MockDatabase implements Database {
         }
         TaskCompletionSource<Void> source = new TaskCompletionSource<>();
         source.setResult(null);
+        return source.getTask();
+    }
+
+    @Override
+    public Task<Date> getDateUserCreationUid(String userId) {
+        TaskCompletionSource<Date> source = new TaskCompletionSource<>();
+        User user = users.get("user1Id");
+        source.setResult(user.getDate());
         return source.getTask();
     }
 

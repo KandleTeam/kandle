@@ -21,6 +21,7 @@ import com.google.firebase.auth.zzy;
 import com.google.firebase.auth.zzz;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import ch.epfl.sdp.kandle.User;
@@ -52,7 +53,7 @@ public class MockAuthentication implements Authentication {
             isConnected = true;
             String newId = "newUserId";
             source.setResult(getAuthResultWithUser(newId,email));
-            database.users.put(newId,new User(newId,"newUser","newUser@kandle.ch","newFullName",null));
+            database.users.put(newId,new User(newId,"newUser","newUser@kandle.ch","newFullName",null, new Date()));
 
         }
         return source.getTask();

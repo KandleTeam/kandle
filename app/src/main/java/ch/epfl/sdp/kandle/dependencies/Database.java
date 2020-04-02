@@ -2,6 +2,7 @@ package ch.epfl.sdp.kandle.dependencies;
 
 import com.google.android.gms.tasks.Task;
 
+import java.util.Date;
 import java.util.List;
 
 import ch.epfl.sdp.kandle.Post;
@@ -73,6 +74,8 @@ public interface Database {
     Task<Void> likePost(String userId, String postId);
 
     Task<Void> unlikePost(String userId, String postId);
+
+    Task<Date> getDateUserCreationUid(String userId);
 
     //Task<List<String>> likers(String postId);
 
