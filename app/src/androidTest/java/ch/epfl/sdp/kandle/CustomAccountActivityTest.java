@@ -33,6 +33,15 @@ import static androidx.test.espresso.matcher.ViewMatchers.withTagValue;
 import static org.hamcrest.CoreMatchers.not;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.core.IsEqual.equalTo;
+import org.junit.After;
+import org.junit.Rule;
+import org.junit.Test;
+import java.util.HashMap;
+import ch.epfl.sdp.kandle.dependencies.DependencyManager;
+import ch.epfl.sdp.kandle.dependencies.MockAuthentication;
+import ch.epfl.sdp.kandle.dependencies.MockDatabase;
+import ch.epfl.sdp.kandle.dependencies.MockStorage;
+
 
 
 public class CustomAccountActivityTest {
@@ -42,12 +51,16 @@ public class CustomAccountActivityTest {
             new IntentsTestRule<CustomAccountActivity>(CustomAccountActivity.class, true, true) {
                 @Override
                 protected void beforeActivityLaunched() {
-                    LoggedInUser.init(new User("loggedInUserId", "LoggedInUser", "loggedInUser@kandle.ch", null, null));
+                    LoggedInUser.init(new User("loggedInUserId","LoggedInUser","loggedInUser@kandle.ch",null,null));
                     HashMap<String, String> accounts = new HashMap<>();
-                    HashMap<String, User> users = new HashMap<>();
+                    HashMap<String,User> users = new HashMap<>();
                     HashMap<String, MockDatabase.Follow> followMap = new HashMap<>();
                     HashMap<String, Post> posts = new HashMap<>();
-                    DependencyManager.setFreshTestDependencies(true, accounts, users, followMap, posts);
+                    MockDatabase db = new MockDatabase(true, users, followMap, posts);
+                    MockAuthentication authentication = new MockAuthentication(true, accounts, "password");
+                    MockStorage storage = new MockStorage();
+                    DependencyManager.setFreshTestDependencies(authentication, db, storage);
+
                 }
             };
 

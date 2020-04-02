@@ -24,7 +24,9 @@ import java.util.HashMap;
 import java.util.LinkedList;
 
 import ch.epfl.sdp.kandle.dependencies.DependencyManager;
+import ch.epfl.sdp.kandle.dependencies.MockAuthentication;
 import ch.epfl.sdp.kandle.dependencies.MockDatabase;
+import ch.epfl.sdp.kandle.dependencies.MockStorage;
 
 @RunWith(AndroidJUnit4.class)
 public class AchievementTest {
@@ -47,7 +49,10 @@ public class AchievementTest {
                     followMap.put(user1.getId(),new MockDatabase.Follow(new LinkedList<>(),new LinkedList<>()));
                     followMap.put(user2.getId(),new MockDatabase.Follow(new LinkedList<>(),new LinkedList<>()));
                     HashMap<String,Post> posts = new HashMap<>();
-                    DependencyManager.setFreshTestDependencies(true,accounts,users,followMap,posts);
+                    MockDatabase db = new MockDatabase(true, users, followMap, posts);
+                    MockAuthentication authentication = new MockAuthentication(true, accounts, "password");
+                    MockStorage storage = new MockStorage();
+                    DependencyManager.setFreshTestDependencies(authentication, db, storage);
                     DependencyManager.getDatabaseSystem().createUser(user1);
                     DependencyManager.getDatabaseSystem().createUser(user2);
                     DependencyManager.getDatabaseSystem().follow(LoggedInUser.getInstance().getId(),user1.getId());
