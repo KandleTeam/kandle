@@ -2,116 +2,74 @@ package ch.epfl.sdp.kandle.dependencies;
 
 import com.google.android.gms.tasks.Task;
 import com.google.android.gms.tasks.TaskCompletionSource;
-
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-
+import ch.epfl.sdp.kandle.LoggedInUser;
+import ch.epfl.sdp.kandle.Post;
 import ch.epfl.sdp.kandle.User;
 
 /**
- *  A mocked database. Upon creation, it contains:
- *  - a single user `admin`, with all-zero userID.
- *  - to be extended for posts, etc...
+ * A mocked database. Upon creation, it contains:
+ * - a single user `admin`, with all-zero userID.
+ * - to be extended for posts, etc...
  */
+
 public class MockDatabase implements Database {
 
 
-    private class Follow {
-        public List<String> following;
 
-        public List<String> followers;
 
-        public Follow(List<String> following, List<String> followers) {
-            this.following = following;
-            this.followers = followers;
-        }
+    private Map<String, User> users;
+    private Map<String, Follow> followMap;
+    private Map<String, Post> posts;
 
-        public void addFollowing ( String s){
-            following.add(s);
-        }
-
-        public void addFollower ( String s){
-            followers.add(s);
-        }
-
-        public void removeFollowing ( String s){
-            following.remove(s);
-        }
-
-        public void removeFollower ( String s){
-            followers.remove(s);
+    public MockDatabase(boolean isConnected, Map<String, User> users, Map<String, Follow> followMap, Map<String, Post> posts) {
+        this.users = users;
+        this.posts = posts;
+        this.followMap = followMap;
+        if (isConnected) {
+            users.put(LoggedInUser.getInstance().getId(), LoggedInUser.getInstance());
+            followMap.put(LoggedInUser.getInstance().getId(), new Follow());
         }
     }
 
-
-    private static Map<String, User> users;
-    private static Map<String, Follow> followMap;
-
-    public MockDatabase() {
-        users = new HashMap<>();
-        //String adminId = "user1Id"; // 28 zeros
-        users.put("user1Id", new User("user1Id", "user1", "user1@kandle.ch", "image"));
-        users.put("user2Id", new User("user2Id", "user2", "user2@kandle.ch", "image"));
-        users.put("user3Id", new User("user3Id", "user3", "user3@kandle.ch", null));
-        
-        
-        followMap = new HashMap<>();
-        
-        followMap.put("user1Id", new Follow( new LinkedList<>(Arrays.asList("user2Id")) , new LinkedList<>(Arrays.asList("user3Id"))));
-        followMap.put("user2Id", new Follow(new LinkedList<>(Arrays.asList("user3Id")) , new LinkedList<>(Arrays.asList("user1Id"))));
-        followMap.put("user3Id", new Follow(new LinkedList<>(Arrays.asList("user1Id")) , new LinkedList<>(Arrays.asList("user2Id"))));
-
-    }
-
-
-    /*
-    private Optional<User> findUserByName(String username) {
-        for(User user : users.values()) {
-            if(user.getUsername().equals(username)) {
-                return Optional.of(user);
-            }
-        }
-        return Optional.empty();
-    }
 
     @Override
     public Task<User> getUserByName(String username) {
 
         TaskCompletionSource<User> task = new TaskCompletionSource<>();
+        User result = null;
 
-        Optional<User> opt = findUserByName(username);
-
-        if(opt.isPresent()) task.setResult(opt.get());
-        else task.setException(new IllegalArgumentException("No such user with username: " + username));
-
+        for (User user : users.values()) {
+            if (user.getUsername().equals(username)) {
+                result = user;
+                break;
+            }
+        }
+        task.setResult(result);
         return task.getTask();
 
     }
 
-     */
 
-
-    /*
     @Override
     public Task<User> getUserById(String userId) {
 
-        TaskCompletionSource<User> task = new TaskCompletionSource<>();
+        TaskCompletionSource<User> source = new TaskCompletionSource<>();
 
-        if(users.containsKey(userId)) {
-            task.setResult(users.get(userId));
+        if (users.containsKey(userId)) {
+            source.setResult(users.get(userId));
         } else {
-            task.setException(new IllegalArgumentException("No such user with id: " + userId));
+            source.setException(new IllegalArgumentException("No such user with id: " + userId + "with users containing"));
         }
-        return task.getTask();
+
+        return source.getTask();
     }
 
-     */
 
     @Override
     public Task<Void> createUser(User user) {
@@ -126,8 +84,9 @@ public class MockDatabase implements Database {
 
 
         */
-            users.put(user.getId(), user);
-            task.setResult(null);
+        users.put(user.getId(), user);
+        followMap.put(user.getId(), new Follow());
+        //task.setResult(null);
         //}
         return task.getTask();
     }
@@ -136,8 +95,8 @@ public class MockDatabase implements Database {
     public Task<List<User>> searchUsers(String prefix, int maxNumber) {
         List<User> results = new ArrayList<>();
 
-        for(User u : users.values()) {
-            if(u.getNormalizedUsername().startsWith(prefix)) {
+        for (User u : users.values()) {
+            if (u.getUsername().startsWith(prefix)) {
                 results.add(u);
             }
         }
@@ -169,12 +128,11 @@ public class MockDatabase implements Database {
         Follow follow = followMap.get(userFollowing);
         Follow follow2 = followMap.get(userFollowed);
 
-        if ( !follow.following.contains(userFollowed)) {
+        if (!follow.following.contains(userFollowed)) {
             follow.addFollowing(userFollowed);
             follow2.addFollower(userFollowing);
             followMap.put(userFollowing, follow);
             followMap.put(userFollowed, follow2);
-
         }
 
         TaskCompletionSource<Void> source = new TaskCompletionSource<>();
@@ -188,21 +146,19 @@ public class MockDatabase implements Database {
         Follow follow = followMap.get(userUnFollowing);
         Follow follow2 = followMap.get(userUnFollowed);
 
-        if ( follow.following.contains(userUnFollowed)) {
+        if (follow.following.contains(userUnFollowed)) {
             follow.removeFollowing(userUnFollowed);
             follow2.removeFollower(userUnFollowing);
             followMap.put(userUnFollowing, follow);
             followMap.put(userUnFollowed, follow2);
-
         }
-
         TaskCompletionSource<Void> source = new TaskCompletionSource<>();
         source.setResult(null);
         return source.getTask();
     }
 
     @Override
-    public Task<List<String>> followingList(String userId) {
+    public Task<List<String>> userIdFollowingList(String userId) {
         TaskCompletionSource<List<String>> source = new TaskCompletionSource<>();
         source.setResult(new ArrayList<String>(followMap.get(userId).following));
         return source.getTask();
@@ -210,18 +166,42 @@ public class MockDatabase implements Database {
     }
 
     @Override
-    public Task<List<String>> followersList(String userId) {
+    public Task<List<String>> userIdFollowersList(String userId) {
         TaskCompletionSource<List<String>> source = new TaskCompletionSource<>();
         source.setResult(new ArrayList<String>(followMap.get(userId).followers));
         return source.getTask();
     }
 
     @Override
+    public Task<List<User>> userFollowingList(String userId) {
+        TaskCompletionSource<List<User>> source = new TaskCompletionSource<>();
+        ArrayList<User> following = new ArrayList<>();
+
+        for (String id : followMap.get(userId).following) {
+            following.add(users.get(id));
+        }
+        source.setResult(following);
+        return source.getTask();
+    }
+
+    @Override
+    public Task<List<User>> userFollowersList(String userId) {
+        TaskCompletionSource<List<User>> source = new TaskCompletionSource<>();
+        ArrayList<User> followers = new ArrayList<>();
+
+        for (String id : followMap.get(userId).followers) {
+            followers.add(users.get(id));
+        }
+        source.setResult(followers);
+        return source.getTask();
+    }
+
+    @Override
     public Task<Void> updateProfilePicture(String uri) {
         TaskCompletionSource<Void> source = new TaskCompletionSource<>();
-        User user = users.get("user1Id");
+        User user = users.get(LoggedInUser.getInstance().getId());
         user.setImageURL(uri);
-
+        source.setResult(null);
         return source.getTask();
     }
 
@@ -229,17 +209,133 @@ public class MockDatabase implements Database {
     public Task<String> getProfilePicture() {
 
         TaskCompletionSource<String> source = new TaskCompletionSource<>();
-        User user = users.get("user1Id");
+        User user = users.get(LoggedInUser.getInstance().getId());
         source.setResult(user.getImageURL());
+        return source.getTask();
+    }
+
+    @Override
+    public Task<Void> updateNickname(String nickname) {
+        TaskCompletionSource<Void> source = new TaskCompletionSource<>();
+        User user = users.get(LoggedInUser.getInstance().getId());
+        user.setNickname(nickname);
+        source.setResult(null);
+        return source.getTask();
+    }
+
+    @Override
+    public Task<String> getNickname() {
+        TaskCompletionSource<String> source = new TaskCompletionSource<>();
+        User user = users.get(LoggedInUser.getInstance().getId());
+        source.setResult(user.getNickname());
         return source.getTask();
     }
 
     @Override
     public Task<String> getUsername() {
         TaskCompletionSource<String> source = new TaskCompletionSource<>();
-        source.setResult("userFullName");
+        User user = users.get(LoggedInUser.getInstance().getId());
+        source.setResult(user.getUsername());
         return source.getTask();
     }
 
+    @Override
+    public Task<Void> addPost(Post p) {
+        if (!users.get(p.getUserId()).getPosts().contains(p.getPostId())) {
+            posts.put(p.getPostId(), p);
+            users.get(p.getUserId()).addPostId(p.getPostId());
+        }
+        TaskCompletionSource<Void> source = new TaskCompletionSource<>();
+        source.setResult(null);
+        return source.getTask();
+    }
+
+    @Override
+    public Task<Void> deletePost(Post p) {
+        if (users.get(p.getUserId()).getPosts().contains(p.getPostId())) {
+            posts.remove(p.getPostId());
+            users.get(p.getUserId()).removePostId(p.getPostId());
+        }
+        TaskCompletionSource<Void> source = new TaskCompletionSource<>();
+        source.setResult(null);
+        return source.getTask();
+    }
+
+    @Override
+    public Task<Void> likePost(String userId, String postId) {
+        if (!posts.get(postId).getLikers().contains(userId)) {
+            posts.get(postId).likePost(userId);
+        }
+        TaskCompletionSource<Void> source = new TaskCompletionSource<>();
+        source.setResult(null);
+        return source.getTask();
+    }
+
+    @Override
+    public Task<Void> unlikePost(String userId, String postId) {
+        if (posts.get(postId).getLikers().contains(userId)) {
+            posts.get(postId).unlikePost(userId);
+        }
+        TaskCompletionSource<Void> source = new TaskCompletionSource<>();
+        source.setResult(null);
+        return source.getTask();
+    }
+
+    /*
+    @Override
+    public Task<List<String>> likers(String postId) {
+        TaskCompletionSource<List<String>> source = new TaskCompletionSource<>();
+        source.setResult(new ArrayList<String>(posts.get(postId).getLikers()));
+        return source.getTask();
+    }
+     */
+
+    @Override
+    public Task<List<Post>> getPostsByUserId(String userId) {
+        List<String> userPostsIds = users.get(userId).getPosts();
+        List<Post> postsList = new ArrayList<Post>();
+        for (Map.Entry<String, Post> entry : posts.entrySet()) {
+            if (userPostsIds.contains(entry.getValue().getPostId())) {
+                postsList.add(entry.getValue());
+            }
+        }
+        TaskCompletionSource<List<Post>> source = new TaskCompletionSource<>();
+        source.setResult(postsList);
+        return source.getTask();
+    }
+
+
+    public static class Follow {
+        public List<String> following;
+
+        public List<String> followers;
+
+
+        public Follow(List<String> following, List<String> followers) {
+            this.following = following;
+            this.followers = followers;
+        }
+
+        public Follow() {
+            this.followers = new LinkedList<String>();
+            this.following = new LinkedList<String>();
+        }
+
+        public void addFollowing(String s) {
+            following.add(s);
+        }
+
+        public void addFollower(String s) {
+            followers.add(s);
+        }
+
+        public void removeFollowing(String s) {
+            following.remove(s);
+        }
+
+        public void removeFollower(String s) {
+            followers.remove(s);
+        }
+    }
 
 }

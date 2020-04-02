@@ -1,10 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:padding="8dp"
-    android:layout_height="wrap_content"
-    >
+    android:layout_height="wrap_content">
 
     <de.hdodenhof.circleimageview.CircleImageView
         android:layout_width="50dp"
@@ -31,6 +29,14 @@
             android:text="fullName"
             android:textColor="#000000"
             android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/search_username"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:maxLines="1"
+            android:text="\@username"
+            android:textColor="#000000"/>
 
     </LinearLayout>
 

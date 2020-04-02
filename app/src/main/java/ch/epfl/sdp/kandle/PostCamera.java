@@ -65,6 +65,10 @@ public class PostCamera{
         return true;
     }
 
+    public Uri getImageUri(){
+        return imageUri;
+    }
+
     public Bitmap handleActivityResult(int requestCode, int resultCode, Intent data){
         Bitmap imageBitmap = null;
         if (requestCode == PHOTO_REQUEST && resultCode == RESULT_OK) {

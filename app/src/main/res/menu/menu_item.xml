@@ -4,7 +4,7 @@
 
     <group android:checkableBehavior="single">
         <item
-            android:id="@+id/map"
+            android:id="@+id/map_support"
             android:checked="true"
             android:icon="@drawable/ic_map_24dp"
             android:title="Map" />
