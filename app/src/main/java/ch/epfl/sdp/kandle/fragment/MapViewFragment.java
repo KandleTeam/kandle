@@ -80,8 +80,10 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent( getContext(), PostActivity.class);
-                intent.putExtra("latitude", latLng.latitude);
-                intent.putExtra("longitude", latLng.longitude);
+                if (latLng!=null) {
+                    intent.putExtra("latitude", latLng.latitude);
+                    intent.putExtra("longitude", latLng.longitude);
+                }
                 startActivity(intent);
             }
         });
