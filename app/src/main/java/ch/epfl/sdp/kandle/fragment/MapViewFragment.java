@@ -30,6 +30,7 @@ import com.google.maps.android.clustering.ClusterManager;
 
 import java.util.List;
 
+import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 import ch.epfl.sdp.kandle.CustomMarker.ClusterManagerRenderer;
 import ch.epfl.sdp.kandle.CustomMarker.CustomMarkerItem;
@@ -92,14 +93,16 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback {
 
     private void getLocation() {
 
-        /*if (ActivityCompat.checkSelfPermission(this.getContext(), Manifest.permission.ACCESS_FINE_LOCATION) !=
+        if (ActivityCompat.checkSelfPermission(this.getContext(), Manifest.permission.ACCESS_FINE_LOCATION) !=
                 PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_COARSE_LOCATION)
                 != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(this.getActivity(), new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION}, REQUEST_CODE);
             return;
         }
 
-         */
+
+
+        final FragmentManager fragmentManager = this.getActivity().getSupportFragmentManager();
         fusedLocationProviderClient.getLastLocation().addOnCompleteListener(new OnCompleteListener<Location>() {
             @Override
             public void onComplete(@NonNull Task<Location> task) {
@@ -108,6 +111,13 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback {
                     innerMapFragment = (SupportMapFragment) getChildFragmentManager().findFragmentById(R.id.inner_map_fragment);
                     innerMapFragment.getMapAsync(MapViewFragment.this::onMapReady);
                 }
+                else {
+                    fragmentManager.beginTransaction().replace(R.id.flContent, SearchFragment.newInstance() )
+                            .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
+                            .addToBackStack(null)
+                            .commit();
+                }
+
             }
         });
     }
@@ -199,7 +209,7 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback {
             });
         }
     }
-/*
+
     @Override
     public void onRequestPermissionsResult (int requestCode, @NonNull String [] permissions, @NonNull int [] grantResults){
         switch (requestCode){
@@ -213,5 +223,5 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback {
         }
     }
 
- */
+
 }
