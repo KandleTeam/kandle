@@ -112,6 +112,12 @@ public class SettingsFragmentTest {
         onView(withText("Your password has been succesfully updated")).inRoot(withDecorView(not(is(intentsRule.getActivity().getWindow().getDecorView())))).check(matches(isDisplayed()));
     }
 
+    @Test
+    public void viewsCanBeExpanded() {
+        onView(withId(R.id.otherSettings)).perform(click());
+        onView(withId(R.id.otherSettings)).perform(click());
+    }
+
 
 
 }
