@@ -10,6 +10,7 @@ import android.widget.ImageView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
+
 import java.util.Date;
 
 import ch.epfl.sdp.kandle.ImagePicker.ImagePicker;
@@ -20,18 +21,15 @@ import ch.epfl.sdp.kandle.dependencies.DependencyManager;
 public class PostActivity extends AppCompatActivity {
 
 
+    public final static int POST_IMAGE_TAG = 42;
     private Post p;
-
     private Authentication auth;
     private Database database;
-
     private EditText mPostText;
     private Button mPostButton;
     private ImageButton mGalleryButton, mCameraButton;
     private ImageView mPostImage;
     private ImagePicker postImagePicker;
-    public final static int POST_IMAGE_TAG = 42;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,10 +37,10 @@ public class PostActivity extends AppCompatActivity {
         setContentView(R.layout.activity_post);
 
         mPostText = findViewById(R.id.postText);
-        mPostButton =findViewById(R.id.postButton);
-        mGalleryButton =findViewById(R.id.galleryButton);
-        mCameraButton =findViewById(R.id.cameraButton);
-        mPostImage =findViewById(R.id.postImage);
+        mPostButton = findViewById(R.id.postButton);
+        mGalleryButton = findViewById(R.id.galleryButton);
+        mCameraButton = findViewById(R.id.cameraButton);
+        mPostImage = findViewById(R.id.postImage);
         postImagePicker = new ImagePicker(this);
 
         auth = DependencyManager.getAuthSystem();
@@ -50,10 +48,10 @@ public class PostActivity extends AppCompatActivity {
 
         mPostButton.setOnClickListener(v -> {
 
-            String postText  = mPostText.getText().toString().trim();
+            String postText = mPostText.getText().toString().trim();
             Uri imageUri = postImagePicker.getImageUri();
 
-            if(postText.isEmpty() && imageUri == null){
+            if (postText.isEmpty() && imageUri == null) {
                 mPostText.setError("Your post is empty...");
                 return;
             }
@@ -64,22 +62,20 @@ public class PostActivity extends AppCompatActivity {
                         Uri downloadUri = task.getResult();
                         if (downloadUri == null) {
                             Toast.makeText(PostActivity.this, "Unable to upload image", Toast.LENGTH_LONG).show();
-                        }
-                        else {
+                        } else {
                             p = new Post(postText, downloadUri.toString(), new Date(), auth.getCurrentUser().getUid());
                             post(p);
                         }
                     }
                 });
-            }
-            else {
+            } else {
                 p = new Post(postText, null, new Date(), auth.getCurrentUser().getUid());
                 post(p);
             }
 
         });
 
-        mCameraButton.setOnClickListener(v -> Toast.makeText(PostActivity.this, "Doesn't work for now... " , Toast.LENGTH_LONG ).show());
+        mCameraButton.setOnClickListener(v -> Toast.makeText(PostActivity.this, "Doesn't work for now... ", Toast.LENGTH_LONG).show());
 
 
         mGalleryButton.setOnClickListener(v -> postImagePicker.openImage());
@@ -88,7 +84,7 @@ public class PostActivity extends AppCompatActivity {
     private void post(Post p) {
         database.addPost(auth.getCurrentUser().getUid(), p).addOnCompleteListener(task -> {
             if (task.isSuccessful()) {
-                Toast.makeText(PostActivity.this, "You have successfully posted : " + p.getDescription(), Toast.LENGTH_LONG ).show();
+                Toast.makeText(PostActivity.this, "You have successfully posted : " + p.getDescription(), Toast.LENGTH_LONG).show();
                 finish();
             }
         });
