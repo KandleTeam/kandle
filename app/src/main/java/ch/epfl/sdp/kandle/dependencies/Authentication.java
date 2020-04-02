@@ -11,6 +11,10 @@ public interface Authentication {
 
     Task<User> signInWithEmailAndPassword(String email, String password);
 
+    Task<Void> reauthenticate(String password);
+
+    Task<Void> updatePassword(String password);
+
     void signOut();
 
     boolean userCurrentlyLoggedIn();

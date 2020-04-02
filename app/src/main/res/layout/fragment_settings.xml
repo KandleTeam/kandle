@@ -70,6 +70,17 @@
                 android:hint="New Password"
                 android:inputType="textPassword" />
 
+            <EditText
+                android:id="@+id/newPasswordConfirm"
+                android:layout_width="341dp"
+                android:layout_height="38dp"
+                android:layout_marginStart="20dp"
+                android:layout_marginVertical="5dp"
+                android:backgroundTint="@color/backGroundRed"
+                android:ems="10"
+                android:hint="Confirm your new password"
+                android:inputType="textPassword" />
+
             <Button
                 android:id="@+id/validatePasswordButton"
                 android:layout_width="80dp"
