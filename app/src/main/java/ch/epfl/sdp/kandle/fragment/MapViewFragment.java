@@ -8,6 +8,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
 
+import androidx.annotation.NonNull;
+import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.Fragment;
 
 import com.google.android.gms.maps.GoogleMap;
@@ -19,11 +21,17 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import ch.epfl.sdp.kandle.PostActivity;
 import ch.epfl.sdp.kandle.R;
 
+import static android.Manifest.permission.ACCESS_FINE_LOCATION;
+import static android.content.pm.PackageManager.PERMISSION_GRANTED;
+
 
 public class MapViewFragment extends Fragment implements OnMapReadyCallback {
 
     private GoogleMap gmap;
     private SupportMapFragment innerMapFragment;
+
+    private boolean isLocationGranted = false;
+    private static final int LOCATION_PERMISSION_REQUEST_CODE = 1;
 
 
     @Override
@@ -32,6 +40,8 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback {
 
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_map, container, false);
+
+        askForLocationPermission();
 
         innerMapFragment = (SupportMapFragment) getChildFragmentManager().findFragmentById(R.id.inner_map_fragment);
         innerMapFragment.getMapAsync(this);
@@ -52,5 +62,27 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback {
         gmap.addMarker(new MarkerOptions()
                 .position(new LatLng(46.522636, 6.635391))
                 .title("Lausanne Cathedral")).setTag(0);
+    }
+
+    private void askForLocationPermission() {
+
+        if (ActivityCompat.checkSelfPermission(getContext(), ACCESS_FINE_LOCATION) != PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(getActivity(), new String[]{ACCESS_FINE_LOCATION}, LOCATION_PERMISSION_REQUEST_CODE);
+            isLocationGranted = false;
+        } else {
+            isLocationGranted = true;
+        }
+
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        switch(requestCode) {
+            case LOCATION_PERMISSION_REQUEST_CODE:
+                if (grantResults.length > 0 && grantResults[0] == PERMISSION_GRANTED) {
+                    isLocationGranted = true;
+                }
+                break;
+        }
     }
 }
