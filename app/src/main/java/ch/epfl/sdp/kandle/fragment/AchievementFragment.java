@@ -49,16 +49,11 @@ public class AchievementFragment extends Fragment {
     private void checkPosts(TextView tv){
         database.getPostsByUserId(auth.getCurrentUser().getUid()).addOnCompleteListener(task1 ->{
             if(task1.isSuccessful()){
-                if(task1.getResult().size() >= 10){
-                    tv.setText("DONE");
-                }
-                else {
-                    tv.setText("NOT DONE");
-                }
+                setText(tv, task1.getResult().size() >= 10);
             }
             else {
+                setText(tv, false);
                 System.out.println(task1.getException().getMessage());
-                tv.setText("NOT DONE");
             }
         });
     }
@@ -66,12 +61,7 @@ public class AchievementFragment extends Fragment {
     private void checkFollowing(TextView tv){
         database.userIdFollowingList(auth.getCurrentUser().getUid()).addOnCompleteListener(task2 -> {
             if(task2.isSuccessful()){
-                if(task2.getResult().size() >= 3){
-                    tv.setText("DONE");
-                }
-                else {
-                    tv.setText("NOT DONE");
-                }
+                setText(tv, task2.getResult().size() >= 3);
             }
             else {
                 tv.setText("NOT DONE");
@@ -83,18 +73,22 @@ public class AchievementFragment extends Fragment {
     private void checkFollowers(TextView tv){
         database.userIdFollowersList(auth.getCurrentUser().getUid()).addOnCompleteListener(task -> {
             if(task.isSuccessful()){
-                if(task.getResult().size() >= 3){
-                    tv.setText("DONE");
-                }
-                else {
-                    tv.setText("NOT DONE");
-                }
+                setText(tv, task.getResult().size() >= 3);
             }
             else {
-                tv.setText("NOT DONE");
+                setText(tv, false);
                 System.out.println(task.getException().getMessage());
             }
         });
+    }
+
+    private void setText(TextView tv, boolean condition){
+        if(condition){
+            tv.setText("DONE");
+        }
+        else {
+            tv.setText("NOT DONE");
+        }
     }
 
 
