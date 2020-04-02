@@ -160,9 +160,7 @@ public class FirestoreDatabase implements Database {
 
                     if (following != null) {
                         if (!following.contains(userFollowed)) {
-                            Map<String, Object> mapFollowing = new HashMap<>();
-                            following.add(userFollowed);
-                            mapFollowing.put("following",following);
+                            Map<String, Object> mapFollowing = updateMap(new HashMap<>(), following, userFollowed, "following", true);
                             transaction.set(userFollowingDoc, mapFollowing, SetOptions.merge());
                         }
                     }
@@ -176,17 +174,13 @@ public class FirestoreDatabase implements Database {
                     if (followers !=null) {
 
                         if (!followers.contains(userFollowing)) {
-
-                            Map<String, Object> mapFollowed = new HashMap<>();
-                            followers.add(userFollowing);
-                            mapFollowed.put("followers",followers);
+                            Map<String, Object> mapFollowed = updateMap(new HashMap<>(), followers, userFollowing, "followers", true);
                             transaction.set(userFollowedDoc, mapFollowed, SetOptions.merge());
                         }
                     }
                     else {
                         Map<String, Object> mapFollowed = new HashMap<>();
                         mapFollowed.put("followers", Arrays.asList(userFollowing));
-
                         transaction.set(userFollowedDoc, mapFollowed, SetOptions.merge());
                     }
 
@@ -210,9 +204,7 @@ public class FirestoreDatabase implements Database {
 
                     if (following != null) {
                         if (following.contains(userUnFollowed)) {
-                            Map<String, Object> mapFollowing = new HashMap<>();
-                            following.remove(userUnFollowed);
-                            mapFollowing.put("following", following);
+                            Map<String, Object> mapFollowing = updateMap(new HashMap<>(), following, userUnFollowed, "following", false);
                             transaction.set(userUnFollowingDoc, mapFollowing, SetOptions.merge());
                         }
                     }
@@ -220,10 +212,7 @@ public class FirestoreDatabase implements Database {
                     if (followers != null) {
 
                         if (followers.contains(userUnFollowing)) {
-
-                            Map<String, Object> mapFollowed = new HashMap<>();
-                            followers.remove(userUnFollowing);
-                            mapFollowed.put("followers", followers);
+                            Map<String, Object> mapFollowed = updateMap(new HashMap<>(), followers, userUnFollowing, "followers", false);
                             transaction.set(userUnFollowedDoc, mapFollowed, SetOptions.merge());
                         }
                     }
@@ -386,9 +375,7 @@ public class FirestoreDatabase implements Database {
 
                     if (posts != null) {
                         if (!posts.contains(p.getPostId())) {
-                            Map<String, Object> mapPosts = new HashMap<>();
-                            posts.add(p.getPostId());
-                            mapPosts.put("posts",posts);
+                            Map<String, Object> mapPosts = updateMap(new HashMap<>(), posts, p.getPostId(), "posts", true);
                             transaction.set(userAddingPostDoc, mapPosts, SetOptions.merge());
                         }
                     }
@@ -417,9 +404,7 @@ public class FirestoreDatabase implements Database {
 
                     if (posts != null) {
                         if (posts.contains(p.getPostId())) {
-                            Map<String, Object> mapPosts = new HashMap<>();
-                            posts.remove(p.getPostId());
-                            mapPosts.put("posts",posts);
+                            Map<String, Object> mapPosts = updateMap(new HashMap<>(), posts, p.getPostId(), "posts", false);
                             transaction.set(userDeletingPostDoc, mapPosts, SetOptions.merge());
                         }
                     }
@@ -444,9 +429,7 @@ public class FirestoreDatabase implements Database {
 
                     if (likers != null) {
                         if (!likers.contains(userId)) {
-                            Map<String, Object> mapLikers = new HashMap<>();
-                            likers.add(userId);
-                            mapLikers.put("likers",likers);
+                            Map<String, Object> mapLikers = updateMap(new HashMap<>(), likers, userId, "likers", true);
                             //numberOfLikes++;
                             //mapLikers.put("likes", numberOfLikes);
                             transaction.set(likedPostDoc, mapLikers, SetOptions.merge());
@@ -470,9 +453,7 @@ public class FirestoreDatabase implements Database {
                     List<String> likers = (List<String>) unlikedPostSnapchot.get("likers");
                     if (likers != null) {
                         if (likers.contains(userId)) {
-                            Map<String, Object> mapLikers = new HashMap<>();
-                            likers.remove(userId);
-                            mapLikers.put("likers",likers);
+                            Map<String, Object> mapLikers = updateMap(new HashMap<>(), likers, userId, "likers", false);
                             transaction.set(unlikedPostDoc, mapLikers, SetOptions.merge());
                         }
                     }
@@ -480,6 +461,15 @@ public class FirestoreDatabase implements Database {
                 });
     }
 
+    private Map<String, Object> updateMap(Map<String, Object> map, List<String> l, String id, String s, Boolean doUndo){
+        if(doUndo){
+            l.add(id);
+        }else{
+            l.remove(id);
+        }
+        map.put(s,l);
+        return map;
+    }
     /*
     @Override
     public Task<List<String>> likers(String postId) {
