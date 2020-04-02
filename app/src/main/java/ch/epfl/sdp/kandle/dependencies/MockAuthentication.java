@@ -63,7 +63,7 @@ public class MockAuthentication implements Authentication {
     @Override
     public Task<Void> reauthenticate(String password) {
         TaskCompletionSource source = new TaskCompletionSource<Void>();
-        if (this.password != password) {
+        if (!this.password.equals(password)) {
             source.setException(new Exception("Passwords do not match"));
         }
         else {
@@ -75,7 +75,6 @@ public class MockAuthentication implements Authentication {
     @Override
     public Task<Void> updatePassword(String password) {
         TaskCompletionSource source = new TaskCompletionSource<Void>();
-        String id = accounts.get(LoggedInUser.getInstance().getEmail());
         this.password = password;
         source.setResult(null);
         return source.getTask();
