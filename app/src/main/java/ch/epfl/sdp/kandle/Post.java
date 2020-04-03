@@ -50,9 +50,9 @@ public class Post {
     }*/
 
 
-   public Post(){
+    public Post() {
 
-   }
+    }
 
 
     public Post(String description, String imageURL, Date date, String userId, double longitude, double latitude) {
@@ -62,7 +62,7 @@ public class Post {
         this.comments = null;
         this.date = date;
         this.likers = new ArrayList<>();
-        this.likes=0;
+        this.likes = 0;
         this.postId = UUID.randomUUID().toString();
         this.userId = userId;
         this.imageURL = imageURL;
@@ -76,7 +76,7 @@ public class Post {
         this.comments = null;
         this.date = date;
         this.likers = new ArrayList<>();
-        this.likes=0;
+        this.likes = 0;
         this.postId = postId;
         this.userId = userId;
         this.imageURL = imageURL;
@@ -128,6 +128,7 @@ public class Post {
     public void likePost(String userId) {
         likers.add(userId);
     }
+
     public void unlikePost(String userId) {
         likers.remove(userId);
     }

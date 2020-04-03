@@ -39,6 +39,9 @@ import ch.epfl.sdp.kandle.dependencies.MyLocationProvider;
 import static android.Manifest.permission.ACCESS_FINE_LOCATION;
 import static android.content.pm.PackageManager.PERMISSION_GRANTED;
 
+import static android.Manifest.permission.ACCESS_FINE_LOCATION;
+import static android.content.pm.PackageManager.PERMISSION_GRANTED;
+
 
 public class MapViewFragment extends Fragment implements OnMapReadyCallback {
 
@@ -60,6 +63,7 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback {
     private Location currentLocation;
 
 
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              final Bundle savedInstanceState) {
@@ -79,7 +83,17 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback {
         innerMapFragment.getMapAsync(this);
 
         ImageButton mNewPostButton = view.findViewById(R.id.newPostButton);
-        mNewPostButton.setOnClickListener(v -> startActivity(new Intent(getContext(), PostActivity.class)));
+        mNewPostButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent( getContext(), PostActivity.class);
+                if (latLng!=null) {
+                    intent.putExtra("latitude", latLng.latitude);
+                    intent.putExtra("longitude", latLng.longitude);
+                }
+                startActivity(intent);
+            }
+        });
 
         return view;
     }
@@ -88,7 +102,7 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback {
     public void onMapReady(GoogleMap googleMap) {
 
         gmap = googleMap;
-        //gmap.setMyLocationEnabled(true);
+
         gmap.getUiSettings().setMapToolbarEnabled(false);
 
         fusedLocationProviderClient.getLastLocation().addOnCompleteListener(new OnCompleteListener<Location>() {
@@ -104,6 +118,10 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback {
                 }
             }
         });
+
+        //gmap.setMyLocationEnabled(true);
+        gmap.getUiSettings().setMapToolbarEnabled(false);
+
 
         gmap.addMarker(new MarkerOptions()
                 .position(new LatLng(46.522636, 6.635391))
@@ -204,4 +222,5 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback {
                 break;
         }
     }
+
 }

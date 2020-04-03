@@ -1,7 +1,6 @@
 package ch.epfl.sdp.kandle.dependencies;
 
 import android.net.Uri;
-
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
@@ -9,9 +8,9 @@ import com.google.firebase.storage.UploadTask;
 
 public class CloudStorage implements Storage {
 
-    private static final CloudStorage instance = new CloudStorage();
-    private static final StorageReference storageReference = FirebaseStorage.getInstance().getReferenceFromUrl("gs://kandle-1b646.appspot.com");
 
+    private static final StorageReference storageReference = FirebaseStorage.getInstance().getReferenceFromUrl("gs://kandle-1b646.appspot.com");
+    private static final CloudStorage instance = new CloudStorage();
     public static CloudStorage getInstance() {
         return instance;
     }
@@ -23,7 +22,7 @@ public class CloudStorage implements Storage {
         UploadTask uploadTask = fileReference.putFile(fileUri);
         return uploadTask.continueWithTask(task -> {
             if (!task.isSuccessful()) {
-                throw task.getException() != null? task.getException() : new Exception("Unknown error");
+                throw task.getException() != null ? task.getException() : new Exception("Unknown error");
             }
             return fileReference.getDownloadUrl();
         });

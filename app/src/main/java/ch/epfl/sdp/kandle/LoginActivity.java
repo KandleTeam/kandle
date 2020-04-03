@@ -1,20 +1,25 @@
 package ch.epfl.sdp.kandle;
 
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+import ch.epfl.sdp.kandle.dependencies.Authentication;
+import ch.epfl.sdp.kandle.dependencies.Database;
+import ch.epfl.sdp.kandle.dependencies.DependencyManager;
+import io.grpc.Internal;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
+import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
-
 import ch.epfl.sdp.kandle.dependencies.Authentication;
 import ch.epfl.sdp.kandle.dependencies.Database;
 import ch.epfl.sdp.kandle.dependencies.DependencyManager;
@@ -38,12 +43,15 @@ public class LoginActivity extends AppCompatActivity {
         auth = DependencyManager.getAuthSystem();
         database = DependencyManager.getDatabaseSystem();
 
-        if (auth.getCurrentUser() != null) {
+
+        if (auth.userCurrentlyLoggedIn()) {
             startActivity(new Intent(getApplicationContext(), MainActivity.class));
             finish();
         }
 
+
         mSignIn = findViewById(R.id.signUpLink);
+
         mSignIn.setOnClickListener(v -> startActivity(new Intent(getApplicationContext(), RegisterActivity.class)));
 
         mEmail = findViewById(R.id.email);
@@ -80,10 +88,9 @@ public class LoginActivity extends AppCompatActivity {
         final ProgressDialog pd = new ProgressDialog(LoginActivity.this);
         pd.setMessage(getString(R.string.login_in_progress));
         pd.show();
-
-        auth.signInWithEmailAndPassword(email, password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+        auth.signInWithEmailAndPassword(email, password).addOnCompleteListener(new OnCompleteListener<User>() {
             @Override
-            public void onComplete(@NonNull Task<AuthResult> task) {
+            public void onComplete(@NonNull Task<User> task) {
                 if (task.isSuccessful()) {
                     pd.dismiss();
                     Toast.makeText(LoginActivity.this, getString(R.string.login_success), Toast.LENGTH_SHORT).show();
@@ -92,9 +99,26 @@ public class LoginActivity extends AppCompatActivity {
                 } else {
                     pd.dismiss();
                     Toast.makeText(LoginActivity.this, "An error has occurred : " + task.getException().getMessage(), Toast.LENGTH_SHORT).show();
+                    task.getException().printStackTrace();
                 }
             }
         });
     }
+
+    /**
+     * @Author Marc
+     * This task can't fail as it retrieves the uid only if the signIn doesn't fail which guarantes
+     * that there exists a user with this uid
+     * @param id
+     */
+    /*
+    private void storeUserLocallywithId(String id) {
+        database.getUserById(id).addOnCompleteListener(task -> {
+                User user = task.getResult();
+                internalStorage.saveUserAtLoginOrRegister(user);
+        });
+    }
+
+     */
 
 }
