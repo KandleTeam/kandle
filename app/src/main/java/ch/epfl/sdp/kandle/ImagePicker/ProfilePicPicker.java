@@ -16,7 +16,10 @@ public class ProfilePicPicker extends ImagePicker {
     public ProfilePicPicker(Activity activity) {
         super(activity);
     }
-    public ProfilePicPicker(Fragment fragment) {super(fragment); }
+
+    public ProfilePicPicker(Fragment fragment) {
+        super(fragment);
+    }
 
     public Task<Void> setProfilePicture() {
         DependencyManager.getDatabaseSystem().getProfilePicture().addOnCompleteListener(task -> {
