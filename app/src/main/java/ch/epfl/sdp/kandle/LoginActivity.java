@@ -3,6 +3,7 @@ package ch.epfl.sdp.kandle;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import ch.epfl.sdp.kandle.dependencies.Authentication;
+import ch.epfl.sdp.kandle.dependencies.CachedDatabase;
 import ch.epfl.sdp.kandle.dependencies.Database;
 import ch.epfl.sdp.kandle.dependencies.DependencyManager;
 import io.grpc.Internal;
@@ -41,10 +42,10 @@ public class LoginActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
         auth = DependencyManager.getAuthSystem();
-        database = DependencyManager.getDatabaseSystem();
+        database = new CachedDatabase();
 
 
-        if (auth.userCurrentlyLoggedIn()) {
+        if (auth.getCurrentUserAtApplicationRestart()) {
             startActivity(new Intent(getApplicationContext(), MainActivity.class));
             finish();
         }

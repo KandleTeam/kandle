@@ -19,6 +19,7 @@ import androidx.fragment.app.FragmentTransaction;
 import com.google.android.material.navigation.NavigationView;
 import com.squareup.picasso.Picasso;
 import ch.epfl.sdp.kandle.dependencies.Authentication;
+import ch.epfl.sdp.kandle.dependencies.CachedDatabase;
 import ch.epfl.sdp.kandle.dependencies.Database;
 import ch.epfl.sdp.kandle.dependencies.DependencyManager;
 import ch.epfl.sdp.kandle.fragment.AboutFragment;
@@ -54,7 +55,7 @@ public class MainActivity extends AppCompatActivity {
 
 
         auth = DependencyManager.getAuthSystem();
-        database = DependencyManager.getDatabaseSystem();
+        database = new CachedDatabase();
         // Set a Toolbar to replace the ActionBar.
         toolbar = findViewById(R.id.toolbar);
         mDrawerLayout = findViewById(R.id.drawer_layout);

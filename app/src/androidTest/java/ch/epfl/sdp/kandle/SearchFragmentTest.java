@@ -57,8 +57,8 @@ public class SearchFragmentTest {
                     MockAuthentication authentication = new MockAuthentication(true, accounts, "password");
                     MockStorage storage = new MockStorage();
                     DependencyManager.setFreshTestDependencies(authentication, db, storage);
-                    DependencyManager.getDatabaseSystem().createUser(user1);
-                    DependencyManager.getDatabaseSystem().createUser(user2);
+                    //DependencyManager.getDatabaseSystem().createUser(user1);
+                    //DependencyManager.getDatabaseSystem().createUser(user2);
                     DependencyManager.getDatabaseSystem().follow(LoggedInUser.getInstance().getId(),user1.getId());
                     DependencyManager.getDatabaseSystem().follow(user1.getId(),LoggedInUser.getInstance().getId());
                 }

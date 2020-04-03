@@ -1,24 +1,18 @@
 package ch.epfl.sdp.kandle.dependencies;
 
-import android.util.Pair;
-
-import java.util.Map;
-import ch.epfl.sdp.kandle.Post;
-import ch.epfl.sdp.kandle.User;
 
 public final class DependencyManager {
 
+    private static InternalStorage internalStorage = InternalStorageHandler.getInstance();
     private static Authentication auth = FirebaseAuthentication.getInstance();
     private static Database db = FirestoreDatabase.getInstance();
     private static Storage storage = CloudStorage.getInstance();
-    //private static InternalStorage internalStorage = null;
 
-
-    public static void setFreshTestDependencies(Authentication auth, Database db, Storage storage) {
+    public static void setFreshTestDependencies(Authentication auth, Database db, Storage storage, InternalStorage internalStorage) {
         setAuthSystem(auth);
         setDatabaseSystem(db);
         setStorageSystem(storage);
-        //setInternalStorageSystem(new MockInternalStorage(isLoggedIn));
+        setInternalStorageSystem(internalStorage);
     }
 
     public static Authentication getAuthSystem() {
@@ -45,20 +39,17 @@ public final class DependencyManager {
         DependencyManager.storage = storage;
     }
 
-    /*
-        public static InternalStorage getInternalStorageSystem(Context context) {
-            if(internalStorage == null) {
-                internalStorage = new InternalStorageHandler(context);
-            }
-            return internalStorage;
-        }
-
-        public static void setInternalStorageSystem(InternalStorage internalStorage) {
-            DependencyManager.internalStorage = internalStorage;
-        }
-    */
-    private DependencyManager() {
+    public static InternalStorage getInternalStorageSystem() {
+        return internalStorage;
     }
 
+    public static void setInternalStorageSystem(InternalStorage internalStorage) {
+        DependencyManager.internalStorage = internalStorage;
+    }
+
+
+    private DependencyManager() {
+
+    }
 
 }

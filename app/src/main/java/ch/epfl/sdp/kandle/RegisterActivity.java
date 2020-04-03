@@ -3,6 +3,7 @@ package ch.epfl.sdp.kandle;
 import androidx.appcompat.app.AppCompatActivity;
 
 import ch.epfl.sdp.kandle.dependencies.Authentication;
+import ch.epfl.sdp.kandle.dependencies.CachedDatabase;
 import ch.epfl.sdp.kandle.dependencies.Database;
 import ch.epfl.sdp.kandle.dependencies.DependencyManager;
 
@@ -37,7 +38,7 @@ public class RegisterActivity extends AppCompatActivity {
         mPasswordConfirm = findViewById(R.id.passwordConfirm);
         mSignUpBtn = findViewById(R.id.loginBtn);
         mSignInLink = findViewById(R.id.signInLink);
-        database = DependencyManager.getDatabaseSystem();
+        database = new CachedDatabase();
         auth = DependencyManager.getAuthSystem();
         mSignInLink.setOnClickListener(v -> {
             startActivity(new Intent(getApplicationContext(), LoginActivity.class));

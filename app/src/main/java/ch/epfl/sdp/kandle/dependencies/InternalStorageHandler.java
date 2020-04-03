@@ -10,6 +10,7 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.PrintWriter;
 
+import ch.epfl.sdp.kandle.Kandle;
 import ch.epfl.sdp.kandle.User;
 
 /**
@@ -20,12 +21,13 @@ public class InternalStorageHandler implements InternalStorage {
 
     private final String userDataPath = "userData";
     private Context context;
+    private static final InternalStorageHandler instance = new InternalStorageHandler();
+    public InternalStorageHandler() {
+        this.context = Kandle.getContext();
+    }
 
-    public InternalStorageHandler(Context context) {
-        if (context == null) {
-            throw new IllegalArgumentException("Context was null");
-        }
-        this.context = context;
+    public static InternalStorage getInstance(){
+        return instance;
     }
 
     /**
@@ -103,7 +105,7 @@ public class InternalStorageHandler implements InternalStorage {
      * @param
      * @throws IllegalArgumentException
      */
-/*
+
     @Override
     public void updateUser(@NonNull User user) throws IllegalArgumentException {
         if (user == null) {
@@ -113,7 +115,7 @@ public class InternalStorageHandler implements InternalStorage {
         storeUser(user);
 
     }
-    */
+
 
     /**
      * Deletes the user entry saved locally by writing an empty string to the file without append mode

@@ -10,7 +10,7 @@ public interface InternalStorage {
 
     void saveUserAtLoginOrRegister(@NonNull User user);
 
-    //void updateUser(User user);
+    void updateUser(User user);
 
     void deleteUser();
 

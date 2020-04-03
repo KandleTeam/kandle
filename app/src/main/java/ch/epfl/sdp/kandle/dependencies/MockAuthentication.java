@@ -1,7 +1,5 @@
 package ch.epfl.sdp.kandle.dependencies;
 
-import android.util.Pair;
-
 import com.google.android.gms.tasks.Task;
 import com.google.android.gms.tasks.TaskCompletionSource;
 import java.util.Map;
@@ -61,7 +59,7 @@ public class MockAuthentication implements Authentication {
     }
 
     @Override
-    public Task<Void> reauthenticate(String password) {
+    public Task<Void> reAuthenticate(String password) {
         TaskCompletionSource source = new TaskCompletionSource<Void>();
         if (!this.password.equals(password)) {
             source.setException(new Exception("Passwords do not match"));
@@ -86,8 +84,17 @@ public class MockAuthentication implements Authentication {
         LoggedInUser.clear();
     }
 
-    public boolean userCurrentlyLoggedIn() {
+    @Override
+    public User getCurrentUser() {
+        return LoggedInUser.getInstance();
+    }
+
+    @Override
+    public boolean getCurrentUserAtApplicationRestart() {
         return isConnected;
     }
+
+
+
 
 }

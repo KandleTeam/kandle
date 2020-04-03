@@ -54,7 +54,7 @@ public class SettingsFragment extends Fragment {
             ProgressDialog pd = new ProgressDialog(getContext());
             pd.setMessage("Updating password");
             pd.show();
-            auth.reauthenticate(oldPassword).addOnCompleteListener(task -> {
+            auth.reAuthenticate(oldPassword).addOnCompleteListener(task -> {
                 if (task.isSuccessful()) {
                     String newPassword = mNewPassword.getText().toString();
                     String newPasswordConfirm = mNewPasswordConfirm.getText().toString();

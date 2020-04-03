@@ -39,7 +39,7 @@ public class MockInternalStorage implements InternalStorage {
             userSavedLocally = !userSavedLocally;
         }
     }
-/*
+
     @Override
     public void updateUser(User user) throws IllegalArgumentException{
         if(user == null) {
@@ -49,7 +49,6 @@ public class MockInternalStorage implements InternalStorage {
 
     }
 
- */
 
     @Override
     public void deleteUser() {

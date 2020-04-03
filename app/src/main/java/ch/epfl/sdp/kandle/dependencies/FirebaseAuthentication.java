@@ -6,6 +6,7 @@ import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.EmailAuthProvider;
 import com.google.firebase.auth.FirebaseAuth;
+
 import ch.epfl.sdp.kandle.LoggedInUser;
 import ch.epfl.sdp.kandle.User;
 
@@ -29,7 +30,7 @@ public class FirebaseAuthentication implements Authentication {
      *
      * @return boolean that idicates if there is a current user logged in or not
      */
-    public boolean userCurrentlyLoggedIn() {
+    public boolean getCurrentUserAtApplicationRestart() {
         if (fAuth.getCurrentUser() != null) {
             database.getUserById(fAuth.getCurrentUser().getUid()).addOnCompleteListener(task -> {
                 if (task.isSuccessful()) {
@@ -102,7 +103,7 @@ public class FirebaseAuthentication implements Authentication {
     }
 
     @Override
-    public Task<Void> reauthenticate(String password) {
+    public Task<Void> reAuthenticate(String password) {
         AuthCredential credential = EmailAuthProvider.getCredential(LoggedInUser.getInstance().getEmail(), password);
         return fAuth.getCurrentUser().reauthenticate(credential);
     }
@@ -117,4 +118,16 @@ public class FirebaseAuthentication implements Authentication {
         LoggedInUser.clear();
         fAuth.signOut();
     }
+
+    @Override
+    public User getCurrentUser() {
+        if(fAuth.getCurrentUser() != null){
+            return LoggedInUser.getInstance();
+        }else{
+            return null;
+        }
+    }
+
+
+
 }
