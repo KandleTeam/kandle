@@ -45,7 +45,7 @@ public class LoginActivity extends AppCompatActivity {
         database = new CachedDatabase();
 
 
-        if (auth.getCurrentUserAtApplicationRestart()) {
+        if (auth.getCurrentUserAtApplicationStart()) {
             startActivity(new Intent(getApplicationContext(), MainActivity.class));
             finish();
         }

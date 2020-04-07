@@ -75,7 +75,7 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.ViewHolder> {
         }
 
         final Authentication authentication = DependencyManager.getAuthSystem();
-        final User currentUser = LoggedInUser.getInstance();
+        final User currentUser = authentication.getCurrentUser();
         final Database database = DependencyManager.getDatabaseSystem();
 
         if (user.getId().equals(currentUser.getId())) {

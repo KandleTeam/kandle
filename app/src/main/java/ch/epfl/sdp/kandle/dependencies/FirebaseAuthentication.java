@@ -1,5 +1,7 @@
 package ch.epfl.sdp.kandle.dependencies;
 
+import android.net.NetworkCapabilities;
+
 import com.google.android.gms.tasks.Task;
 import com.google.android.gms.tasks.TaskCompletionSource;
 import com.google.firebase.auth.AuthCredential;
@@ -8,6 +10,7 @@ import com.google.firebase.auth.EmailAuthProvider;
 import com.google.firebase.auth.FirebaseAuth;
 
 import ch.epfl.sdp.kandle.LoggedInUser;
+import ch.epfl.sdp.kandle.NetworkStatus;
 import ch.epfl.sdp.kandle.User;
 
 public class FirebaseAuthentication implements Authentication {
@@ -25,25 +28,24 @@ public class FirebaseAuthentication implements Authentication {
 
     /**
      * In this function we consider the case where the user didn't log out from the app but closed it
-     * Therefor the CurretnUser woudl be non null but the Instance of the loggedinUser would be.
-     * We ther call the CachedDatabase to get the User data back to init the LoggedInUser
+     * Therefor the CurretnUser woudl be non null but the Instance of the loggedinUser would be wiped.
+     * We then call the CachedDatabase to get the User data back to init the LoggedInUser
      *
      * @return boolean that idicates if there is a current user logged in or not
      */
-    public boolean getCurrentUserAtApplicationRestart() {
-        if (fAuth.getCurrentUser() != null) {
-            database.getUserById(fAuth.getCurrentUser().getUid()).addOnCompleteListener(task -> {
-                if (task.isSuccessful()) {
-                    User user = task.getResult();
-                    LoggedInUser.init(user);
-                } else {
-                    task.getException().printStackTrace();
-                }
-            });
+    public boolean getCurrentUserAtApplicationStart() {
+        User localUser = DependencyManager.getInternalStorageSystem().getCurrentUser();
+        if (localUser != null && fAuth.getCurrentUser() != null) {
+            System.out.println("Local user is not null when login at start");
+            LoggedInUser.init(localUser);
             return true;
         }
         return false;
+
+
     }
+
+
 
 
     /**
@@ -53,7 +55,7 @@ public class FirebaseAuthentication implements Authentication {
      * @param username
      * @param email
      * @param password
-     * @return a task that contains a kandle User
+     * @return a task that contains a kandle user
      */
     @Override
     public Task<User> createUserWithEmailAndPassword(final String username, final String email, final String password) {
@@ -62,9 +64,15 @@ public class FirebaseAuthentication implements Authentication {
         return authResult.continueWithTask(task -> {
             if (authResult.isSuccessful()) {
                 String userId = authResult.getResult().getUser().getUid();
-                LoggedInUser.init(new User(userId, username, email, username, null));
-                database.createUser(LoggedInUser.getInstance()).addOnCompleteListener(task1 -> {
-                    source.setResult(LoggedInUser.getInstance());
+                User newUser = new User(userId, username, email, username, null);
+                database.createUser(newUser).addOnCompleteListener(task1 -> {
+                    if (task1.isSuccessful()) {
+                        LoggedInUser.init(newUser);
+                        DependencyManager.getInternalStorageSystem().saveUserAtLoginOrRegister(newUser);
+                        source.setResult(newUser);
+                    } else {
+                        source.setException(task1.getException());
+                    }
                 });
             } else {
                 source.setException(authResult.getException());
@@ -75,8 +83,9 @@ public class FirebaseAuthentication implements Authentication {
 
     /**
      * This method checks if the user already has an account or not.
-     * If he does we look for the User in the database and return it throught a task
-     * If it's not the case we return a task that contains the excpetion of the authentification task
+     * If he does we look for the user in the database and return it through a task.
+     * Note that there should always be an entry for the user in the database if he has an account
+     * If it's not the case we return a task that contains the exception of the authentication task
      *
      * @param email
      * @param password
@@ -92,6 +101,7 @@ public class FirebaseAuthentication implements Authentication {
                 return database.getUserById(userId).continueWith(task1 -> {
                     User user = task1.getResult();
                     LoggedInUser.init(user);
+                    DependencyManager.getInternalStorageSystem().saveUserAtLoginOrRegister(user);
                     return user;
                 });
             } else {
@@ -102,9 +112,15 @@ public class FirebaseAuthentication implements Authentication {
         });
     }
 
+    /**
+     * This function allows to change the current password of the user logged in
+     * Note that this function doesn't has to update the current user instance in the app
+     * @param password
+     * @return
+     */
     @Override
     public Task<Void> reAuthenticate(String password) {
-        AuthCredential credential = EmailAuthProvider.getCredential(LoggedInUser.getInstance().getEmail(), password);
+        AuthCredential credential = EmailAuthProvider.getCredential(getCurrentUser().getEmail(), password);
         return fAuth.getCurrentUser().reauthenticate(credential);
     }
 
@@ -116,18 +132,15 @@ public class FirebaseAuthentication implements Authentication {
     @Override
     public void signOut() {
         LoggedInUser.clear();
+        DependencyManager.getInternalStorageSystem().deleteUser();
+        System.out.println(DependencyManager.getInternalStorageSystem().getCurrentUser() == null);
         fAuth.signOut();
     }
 
     @Override
     public User getCurrentUser() {
-        if(fAuth.getCurrentUser() != null){
-            return LoggedInUser.getInstance();
-        }else{
-            return null;
-        }
+        return LoggedInUser.getInstance();
     }
-
 
 
 }

@@ -5,10 +5,13 @@ import org.junit.After;
 import org.junit.Rule;
 import org.junit.Test;
 import androidx.test.rule.ActivityTestRule;
+import androidx.test.rule.GrantPermissionRule;
+
 import java.util.HashMap;
 import ch.epfl.sdp.kandle.dependencies.DependencyManager;
 import ch.epfl.sdp.kandle.dependencies.MockAuthentication;
 import ch.epfl.sdp.kandle.dependencies.MockDatabase;
+import ch.epfl.sdp.kandle.dependencies.MockInternalStorage;
 import ch.epfl.sdp.kandle.dependencies.MockStorage;
 
 import static androidx.test.espresso.Espresso.onView;
@@ -17,6 +20,9 @@ import static androidx.test.espresso.contrib.DrawerMatchers.isClosed;
 import static androidx.test.espresso.matcher.ViewMatchers.withId;
 
 public class LoginActivityTestAlreadyLoggedIn {
+
+    @Rule
+    public GrantPermissionRule permissionRule = GrantPermissionRule.grant(android.Manifest.permission.ACCESS_FINE_LOCATION);
 
     @Rule
     public ActivityTestRule<LoginActivity> intentsRule =
@@ -33,7 +39,8 @@ public class LoginActivityTestAlreadyLoggedIn {
                     MockDatabase db = new MockDatabase(true, users, followMap, posts);
                     MockAuthentication authentication = new MockAuthentication(true, accounts, "password");
                     MockStorage storage = new MockStorage();
-                    DependencyManager.setFreshTestDependencies(authentication, db, storage);
+                    MockInternalStorage internalStorage = new MockInternalStorage();
+                    DependencyManager.setFreshTestDependencies(authentication, db, storage,internalStorage);
                 }
             };
 

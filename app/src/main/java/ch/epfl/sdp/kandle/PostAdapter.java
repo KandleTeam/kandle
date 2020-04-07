@@ -58,7 +58,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder> {
         auth = DependencyManager.getAuthSystem();
         database = DependencyManager.getDatabaseSystem();
 
-        userId = LoggedInUser.getInstance().getId();
+        userId = auth.getCurrentUser().getId();
         DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
 
         // Set item views based on your views and data model

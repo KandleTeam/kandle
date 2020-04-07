@@ -8,6 +8,8 @@ public final class DependencyManager {
     private static Database db = FirestoreDatabase.getInstance();
     private static Storage storage = CloudStorage.getInstance();
 
+
+
     public static void setFreshTestDependencies(Authentication auth, Database db, Storage storage, InternalStorage internalStorage) {
         setAuthSystem(auth);
         setDatabaseSystem(db);

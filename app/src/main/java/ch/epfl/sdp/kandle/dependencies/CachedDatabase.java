@@ -14,6 +14,7 @@ public class CachedDatabase implements Database {
 
     private Database database;
     private InternalStorage internalStorage;
+
     public CachedDatabase() {
         this.database = DependencyManager.getDatabaseSystem();
         this.internalStorage = DependencyManager.getInternalStorageSystem();
@@ -27,25 +28,11 @@ public class CachedDatabase implements Database {
     //TODO implement a getUserbyId for the local cache only
     @Override
     public Task<User> getUserById(String userId) {
-        TaskCompletionSource<User> source = new TaskCompletionSource<>();
-        User user = LoggedInUser.getInstance();
-        if(user != null){
-            source.setResult(user);
-        }else{
-            user = internalStorage.getCurrentUser();
-            if(user != null) {
-                source.setResult(user);
-            } else {
-                return database.getUserById(userId);
-            }
-        }
-        return source.getTask();
-
+            return database.getUserById(userId);
     }
 
     @Override
     public Task<Void> createUser(User user) {
-        internalStorage.saveUserAtLoginOrRegister(user);
         return database.createUser(user);
     }
 
@@ -97,12 +84,12 @@ public class CachedDatabase implements Database {
 
     @Override
     public Task<Void> likePost(String userId, String postId) {
-        return database.likePost(userId,postId);
+        return database.likePost(userId, postId);
     }
 
     @Override
     public Task<Void> unlikePost(String userId, String postId) {
-        return database.unlikePost(userId,postId);
+        return database.unlikePost(userId, postId);
     }
 
     @Override
@@ -111,6 +98,7 @@ public class CachedDatabase implements Database {
     }
 
     //-----------------This part handles the local user-----------------------
+    //TODO do the databse operation async such that we dont wait for the update in the database to progress
     @Override
     public Task<Void> updateProfilePicture(String uri) {
         LoggedInUser.getInstance().setImageURL(uri);
@@ -124,13 +112,13 @@ public class CachedDatabase implements Database {
     public Task<String> getProfilePicture() {
         User user = LoggedInUser.getInstance();
         TaskCompletionSource<String> source = new TaskCompletionSource<>();
-        if(user != null){
+        if (user != null) {
             source.setResult(user.getImageURL());
-        } else{
+        } else {
             user = internalStorage.getCurrentUser();
-            if(user != null) {
+            if (user != null) {
                 source.setResult(user.getImageURL());
-            }else{
+            } else {
                 return database.getProfilePicture();
             }
         }
@@ -150,13 +138,13 @@ public class CachedDatabase implements Database {
     public Task<String> getNickname() {
         User user = LoggedInUser.getInstance();
         TaskCompletionSource<String> source = new TaskCompletionSource<>();
-        if(user != null){
+        if (user != null) {
             source.setResult(user.getNickname());
-        } else{
+        } else {
             user = internalStorage.getCurrentUser();
-            if(user != null) {
+            if (user != null) {
                 source.setResult(user.getNickname());
-            }else{
+            } else {
                 return database.getNickname();
             }
         }
@@ -167,13 +155,13 @@ public class CachedDatabase implements Database {
     public Task<String> getUsername() {
         User user = LoggedInUser.getInstance();
         TaskCompletionSource<String> source = new TaskCompletionSource<>();
-        if(user != null){
+        if (user != null) {
             source.setResult(user.getUsername());
-        } else{
+        } else {
             user = internalStorage.getCurrentUser();
-            if(user != null) {
+            if (user != null) {
                 source.setResult(user.getUsername());
-            }else{
+            } else {
                 return database.getUsername();
             }
         }

@@ -8,12 +8,14 @@ import org.junit.Test;
 import androidx.test.espresso.contrib.DrawerActions;
 import androidx.test.espresso.contrib.NavigationViewActions;
 import androidx.test.rule.ActivityTestRule;
+import androidx.test.rule.GrantPermissionRule;
 
 import java.util.HashMap;
 import java.util.LinkedList;
 import ch.epfl.sdp.kandle.dependencies.DependencyManager;
 import ch.epfl.sdp.kandle.dependencies.MockAuthentication;
 import ch.epfl.sdp.kandle.dependencies.MockDatabase;
+import ch.epfl.sdp.kandle.dependencies.MockInternalStorage;
 import ch.epfl.sdp.kandle.dependencies.MockStorage;
 import static androidx.test.espresso.Espresso.onView;
 import static androidx.test.espresso.action.ViewActions.click;
@@ -32,6 +34,9 @@ import static org.hamcrest.Matchers.not;
 
 public class SettingsFragmentTest {
 
+
+    @Rule
+    public GrantPermissionRule permissionRule = GrantPermissionRule.grant(android.Manifest.permission.ACCESS_FINE_LOCATION);
     @Rule
     public ActivityTestRule<MainActivity> intentsRule =
             new ActivityTestRule<MainActivity>(MainActivity.class,true,true
@@ -46,7 +51,8 @@ public class SettingsFragmentTest {
                     MockDatabase db = new MockDatabase(true, users, followMap, posts);
                     MockAuthentication authentication = new MockAuthentication(true, accounts, "password");
                     MockStorage storage = new MockStorage();
-                    DependencyManager.setFreshTestDependencies(authentication, db, storage);
+                    MockInternalStorage internalStorage = new MockInternalStorage();
+                    DependencyManager.setFreshTestDependencies(authentication, db, storage,internalStorage);
 
 
                 }
@@ -95,6 +101,7 @@ public class SettingsFragmentTest {
         onView(withId(R.id.modifyPassword)).perform(click());
         onView(withId(R.id.oldPassword)).perform(typeText("password"));
         onView(withId(R.id.newPassword)).perform(typeText("HoldTheDoor"));
+        onView(withId(R.id.newPassword)).perform(closeSoftKeyboard());
         onView(withId(R.id.newPasswordConfirm)).perform(typeText("PasAuDehors"));
         onView(withId(R.id.newPasswordConfirm)).perform(closeSoftKeyboard());
         onView(withId(R.id.validatePasswordButton)).perform(click());
@@ -106,6 +113,7 @@ public class SettingsFragmentTest {
         onView(withId(R.id.modifyPassword)).perform(click());
         onView(withId(R.id.oldPassword)).perform(typeText("password"));
         onView(withId(R.id.newPassword)).perform(typeText("newpassword"));
+        onView(withId(R.id.newPassword)).perform(closeSoftKeyboard());
         onView(withId(R.id.newPasswordConfirm)).perform(typeText("newpassword"));
         onView(withId(R.id.newPasswordConfirm)).perform(closeSoftKeyboard());
         onView(withId(R.id.validatePasswordButton)).perform(click());

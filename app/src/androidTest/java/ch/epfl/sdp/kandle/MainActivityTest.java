@@ -9,6 +9,7 @@ import androidx.test.rule.GrantPermissionRule;
 import ch.epfl.sdp.kandle.dependencies.DependencyManager;
 import ch.epfl.sdp.kandle.dependencies.MockAuthentication;
 import ch.epfl.sdp.kandle.dependencies.MockDatabase;
+import ch.epfl.sdp.kandle.dependencies.MockInternalStorage;
 import ch.epfl.sdp.kandle.dependencies.MockStorage;
 
 import org.junit.After;
@@ -48,7 +49,8 @@ public class MainActivityTest {
                     MockDatabase db = new MockDatabase(true, users, followMap, posts);
                     MockAuthentication authentication = new MockAuthentication(true, accounts, "password");
                     MockStorage storage = new MockStorage();
-                    DependencyManager.setFreshTestDependencies(authentication, db, storage);
+                    MockInternalStorage internalStorage = new MockInternalStorage();
+                    DependencyManager.setFreshTestDependencies(authentication, db, storage,internalStorage);
                 }
             };
 

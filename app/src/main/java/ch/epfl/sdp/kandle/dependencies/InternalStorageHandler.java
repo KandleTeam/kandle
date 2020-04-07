@@ -4,6 +4,7 @@ import android.content.Context;
 import androidx.annotation.NonNull;
 
 
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.ObjectInputStream;
@@ -125,12 +126,9 @@ public class InternalStorageHandler implements InternalStorage {
      */
     @Override
     public void deleteUser() {
-        try {
-            PrintWriter writer = new PrintWriter(userDataPath);
-            writer.close();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        File user = context.getFileStreamPath(userDataPath);
+        user.delete();
+
     }
 
 }

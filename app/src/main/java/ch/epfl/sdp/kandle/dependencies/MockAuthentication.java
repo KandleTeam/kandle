@@ -81,6 +81,7 @@ public class MockAuthentication implements Authentication {
     @Override
     public void signOut() {
         isConnected = false;
+        DependencyManager.getInternalStorageSystem().deleteUser();
         LoggedInUser.clear();
     }
 
@@ -90,8 +91,16 @@ public class MockAuthentication implements Authentication {
     }
 
     @Override
-    public boolean getCurrentUserAtApplicationRestart() {
-        return isConnected;
+    public boolean getCurrentUserAtApplicationStart() {
+        User localUser = DependencyManager.getInternalStorageSystem().getCurrentUser();
+        if (isConnected) {
+            System.out.println("Local user is not null when login at start");
+            //LoggedInUser.init(localUser);
+            return true;
+        }
+
+        return false;
+
     }
 
 

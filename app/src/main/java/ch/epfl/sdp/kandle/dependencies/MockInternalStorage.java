@@ -23,7 +23,7 @@ public class MockInternalStorage implements InternalStorage {
     @Override
     public User getCurrentUser() {
         if (userSavedLocally) {
-            return new User();
+            return storedUser;
         } else {
             return null;
         }

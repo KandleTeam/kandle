@@ -19,6 +19,6 @@ public interface Authentication {
 
     User getCurrentUser();
 
-    boolean getCurrentUserAtApplicationRestart();
+    boolean getCurrentUserAtApplicationStart();
 
 }

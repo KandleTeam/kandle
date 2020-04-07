@@ -19,6 +19,7 @@ import java.util.HashMap;
 import ch.epfl.sdp.kandle.dependencies.DependencyManager;
 import ch.epfl.sdp.kandle.dependencies.MockAuthentication;
 import ch.epfl.sdp.kandle.dependencies.MockDatabase;
+import ch.epfl.sdp.kandle.dependencies.MockInternalStorage;
 import ch.epfl.sdp.kandle.dependencies.MockStorage;
 
 import static androidx.test.espresso.Espresso.onView;
@@ -54,7 +55,8 @@ public class PostActivityTest {
                     MockDatabase db = new MockDatabase(true, users, followMap, posts);
                     MockAuthentication authentication = new MockAuthentication(true, accounts, "password");
                     MockStorage storage = new MockStorage();
-                    DependencyManager.setFreshTestDependencies(authentication, db, storage);
+                    MockInternalStorage internalStorage = new MockInternalStorage();
+                    DependencyManager.setFreshTestDependencies(authentication, db, storage,internalStorage);
                 }
             };
 
