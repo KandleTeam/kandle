@@ -68,6 +68,7 @@ public class AchievementTest {
     public void loadFragment(){
         onView(withId(R.id.drawer_layout)).check(matches(isClosed(Gravity.LEFT))).perform(DrawerActions.open());
         onView(withId(R.id.navigation_view)).perform(NavigationViewActions.navigateTo(R.id.light));
+        onView(withId(R.id.drawer_layout)).perform(DrawerActions.close());
     }
 
     @Test
