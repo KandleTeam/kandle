@@ -12,7 +12,7 @@
 
 [![Build Status](https://api.cirrus-ci.com/github/KandleTeam/kandle.svg)](https://cirrus-ci.com/github/KandleTeam/kandle)
 
-### Travis build::
+### Travis build:
 
 [![Build Status](https://travis-ci.org/KandleTeam/kandle.svg?branch=master)](https://travis-ci.org/KandleTeam/kandle)
 
