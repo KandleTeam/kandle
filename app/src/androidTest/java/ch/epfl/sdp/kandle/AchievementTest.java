@@ -70,6 +70,8 @@ public class AchievementTest {
     public void clearCurrentUser(){
         LoggedInUser.clear();
     }
+
+
     @Before
     public void loadFragment(){
         onView(withId(R.id.drawer_layout)).check(matches(isClosed(Gravity.LEFT))).perform(DrawerActions.open());
