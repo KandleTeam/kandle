@@ -282,41 +282,35 @@ public class FirestoreDatabase implements Database {
         // Task<List<String>> taskUserIdFollowers = userIdFollowersList(userId);
         TaskCompletionSource<List<User>> source = new TaskCompletionSource<>();
 
-        userIdFollowersList(userId).addOnCompleteListener(new OnCompleteListener<List<String>>() {
-            @Override
-            public void onComplete(@NonNull Task<List<String>> task) {
+        userIdFollowersList(userId).addOnCompleteListener(task -> {
 
-                if (task.isSuccessful()) {
+            if (task.isSuccessful()) {
 
-                    if (task.getResult() != null) {
+                if (task.getResult() != null) {
 
-                        users.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                            @Override
-                            public void onComplete(@NonNull Task<QuerySnapshot> task2) {
-                                if (task2.isSuccessful()) {
-                                    List<User> users = new ArrayList<>();
-                                    for (QueryDocumentSnapshot document : task2.getResult()) {
-                                        String id = (String) document.get("id");
-                                        if (task.getResult().contains(id)) {
-                                            users.add(document.toObject(User.class));
-                                        }
-                                    }
-
-                                    source.setResult(users);
-                                } else {
-                                    source.setException(new Exception(task2.getException().getMessage()));
+                    users.get().addOnCompleteListener(task2 -> {
+                        if (task2.isSuccessful()) {
+                            List<User> users = new ArrayList<>();
+                            for (QueryDocumentSnapshot document : task2.getResult()) {
+                                String id = (String) document.get("id");
+                                if (task.getResult().contains(id)) {
+                                    users.add(document.toObject(User.class));
                                 }
-
                             }
-                        });
-                    }
-                    else {
-                        source.setResult(new ArrayList<User>());
-                    }
+
+                            source.setResult(users);
+                        } else {
+                            source.setException(new Exception(task2.getException().getMessage()));
+                        }
+
+                    });
                 }
                 else {
-                    source.setException( new Exception(task.getException().getMessage()));
+                    source.setResult(new ArrayList<User>());
                 }
+            }
+            else {
+                source.setException( new Exception(task.getException().getMessage()));
             }
         });
 
@@ -471,38 +465,32 @@ public class FirestoreDatabase implements Database {
                                         .get()
                                         .continueWith(task -> (List<String>) task.getResult().get("likers"));
 
-        getLikersIdTask.addOnCompleteListener(new OnCompleteListener<List<String>>() {
-            @Override
-            public void onComplete(@NonNull Task<List<String>> task) {
-                if (task.isSuccessful()){
-                    users.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                        @Override
-                        public void onComplete(@NonNull Task<QuerySnapshot> task2) {
-                            if (task2.isSuccessful()){
-                                List<User> users = new ArrayList<>();
-                                for (QueryDocumentSnapshot document : task2.getResult()) {
-                                    String id =  (String) document.get("id");
-                                    if (task.getResult().contains(id)){
-                                        users.add(document.toObject(User.class));
-                                    }
-                                }
-
-                                source.setResult(users);
-
-                            }
-
-
-                            else {
-                                source.setException(task.getException());
+        getLikersIdTask.addOnCompleteListener(task -> {
+            if (task.isSuccessful()){
+                users.get().addOnCompleteListener(task2 -> {
+                    if (task2.isSuccessful()){
+                        List<User> users = new ArrayList<>();
+                        for (QueryDocumentSnapshot document : task2.getResult()) {
+                            String id =  (String) document.get("id");
+                            if (task.getResult().contains(id)){
+                                users.add(document.toObject(User.class));
                             }
                         }
-                    });
 
-                }
+                        source.setResult(users);
 
-                else {
-                    source.setException(task.getException());
-                }
+                    }
+
+
+                    else {
+                        source.setException(task.getException());
+                    }
+                });
+
+            }
+
+            else {
+                source.setException(task.getException());
             }
         });
 
@@ -576,30 +564,27 @@ public class FirestoreDatabase implements Database {
     public Task<List<Post>> getNearbyPosts(double longitude, double latitude, double distance){
         TaskCompletionSource<List<Post>> source = new TaskCompletionSource<>();
 
-        posts.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-            @Override
-            public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                if (task.isSuccessful()){
-                    List<Post> posts = new ArrayList<>();
+        posts.get().addOnCompleteListener(task -> {
+            if (task.isSuccessful()){
+                List<Post> posts = new ArrayList<>();
 
-                    for (QueryDocumentSnapshot documentSnapshot : task.getResult()) {
+                for (QueryDocumentSnapshot documentSnapshot : task.getResult()) {
 
-                        if ((documentSnapshot.get("latitude") != null) && (documentSnapshot.get("longitude") !=null)){
-                            double postLatitude = (double) documentSnapshot.get("latitude");
-                            double postLongitude = (double) documentSnapshot.get("longitude");
-                            if  ( (nearby (latitude, longitude, postLatitude, postLongitude, distance))){
-                                posts.add(documentSnapshot.toObject(Post.class));
-                            }
+                    if ((documentSnapshot.get("latitude") != null) && (documentSnapshot.get("longitude") !=null)){
+                        double postLatitude = (double) documentSnapshot.get("latitude");
+                        double postLongitude = (double) documentSnapshot.get("longitude");
+                        if  ( (nearby (latitude, longitude, postLatitude, postLongitude, distance))){
+                            posts.add(documentSnapshot.toObject(Post.class));
                         }
-
                     }
 
-                    source.setResult(posts);
+                }
 
-                }
-                else {
-                    source.setException(task.getException());
-                }
+                source.setResult(posts);
+
+            }
+            else {
+                source.setException(task.getException());
             }
         });
         return source.getTask();

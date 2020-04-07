@@ -81,8 +81,8 @@ public class PostActivity extends AppCompatActivity {
         Random rand = new Random();
 
         Intent intent = getIntent();
-        Double latitude = intent.getDoubleExtra("latitude", 0.0) + 0.01;
-        Double longitude = intent.getDoubleExtra("longitude", 0.0) + 0.01;
+        Double latitude = intent.getDoubleExtra("latitude", 0.0) - 0.0015;
+        Double longitude = intent.getDoubleExtra("longitude", 0.0) - 0.0015;
 
 
         System.out.println(latitude);

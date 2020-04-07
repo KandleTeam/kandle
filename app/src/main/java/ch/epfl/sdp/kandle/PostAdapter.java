@@ -344,13 +344,10 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder>{
                 alertDialog.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        database.deletePost(post).addOnCompleteListener(new OnCompleteListener<Void>() {
-                            @Override
-                            public void onComplete(@NonNull Task<Void> task) {
-                                if (task.isSuccessful()){
-                                    mPosts.remove(post);
-                                    notifyDataSetChanged();
-                                }
+                        database.deletePost(post).addOnCompleteListener(task -> {
+                            if (task.isSuccessful()){
+                                mPosts.remove(post);
+                                notifyDataSetChanged();
                             }
                         });
                     }
@@ -365,23 +362,20 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder>{
         holder.mlikes.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                database.getLikers(post.getPostId()).addOnCompleteListener(new OnCompleteListener<List<User>>() {
-                    @Override
-                    public void onComplete(@NonNull Task<List<User>> task) {
-                        if (task.isSuccessful()){
-                            fragmentManager.beginTransaction().replace( R.id.flContent, ListUsersFragment.newInstance(
-                                    task.getResult(),
-                                    "Likes",
-                                    Integer.toString(task.getResult().size())
-                            )).setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
-                                    .addToBackStack(null)
-                                    .commit();
+                database.getLikers(post.getPostId()).addOnCompleteListener(task -> {
+                    if (task.isSuccessful()){
+                        fragmentManager.beginTransaction().replace( R.id.flContent, ListUsersFragment.newInstance(
+                                task.getResult(),
+                                "Likes",
+                                Integer.toString(task.getResult().size())
+                        )).setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
+                                .addToBackStack(null)
+                                .commit();
 
-                        }
+                    }
 
-                        else {
-                            System.out.println(task.getException().getMessage());
-                        }
+                    else {
+                        System.out.println(task.getException().getMessage());
                     }
                 });
             }

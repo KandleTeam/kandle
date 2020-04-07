@@ -185,7 +185,7 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback {
                 if (task.isSuccessful()){
                     for (Post post : task.getResult()){
                         CustomMarkerItem customMarkerItem = new CustomMarkerItem( new LatLng(post.getLatitude(), post.getLongitude()),
-                                "A post", post.getDate().toString(), null, CustomMarkerItem.Type.POST);
+                                post.getDescription(), post.getDate().toString(), null, CustomMarkerItem.Type.POST);
                         clusterManager.addItem(customMarkerItem);
 
 

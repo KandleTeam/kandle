@@ -82,24 +82,21 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.ViewHolder> {
             holder.mFollowBtn.setVisibility(View.GONE);
         } else {
 
-            database.userIdFollowingList(currentUser.getId()).addOnCompleteListener(new OnCompleteListener<List<String>>() {
-                @Override
-                public void onComplete(@NonNull Task<List<String>> task) {
+            database.userIdFollowingList(currentUser.getId()).addOnCompleteListener(task -> {
 
-                    if (task.isSuccessful()) {
+                if (task.isSuccessful()) {
 
-                        if ((task.getResult() == null) || (!task.getResult().contains(user.getId()))) {
-                            holder.mFollowBtn.setText("follow");
-                        } else {
-                            holder.mFollowBtn.setText("following");
-                        }
-
+                    if ((task.getResult() == null) || (!task.getResult().contains(user.getId()))) {
+                        holder.mFollowBtn.setText("follow");
+                    } else {
+                        holder.mFollowBtn.setText("following");
                     }
-                /*else {
-                    System.out.println(task.getException().getMessage());
-                }*/
 
                 }
+            /*else {
+                System.out.println(task.getException().getMessage());
+            }*/
+
             });
 
 
@@ -109,27 +106,20 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.ViewHolder> {
                     System.out.println("clickButton");
                     if (holder.mFollowBtn.getText().toString().equals("follow")) {
 
-                        database.follow(currentUser.getId(), user.getId()).addOnCompleteListener(new OnCompleteListener<Void>() {
-                            @Override
-                            public void onComplete(@NonNull Task<Void> task) {
-                                if (task.isSuccessful()) {
-                                    holder.mFollowBtn.setText("following");
-                                }
+                        database.follow(currentUser.getId(), user.getId()).addOnCompleteListener(task -> {
+                            if (task.isSuccessful()) {
+                                holder.mFollowBtn.setText("following");
                             }
-
                         });
 
                     } else {
 
-                        database.unFollow(currentUser.getId(), user.getId()).addOnCompleteListener(new OnCompleteListener<Void>() {
-                            @Override
-                            public void onComplete(@NonNull Task<Void> task) {
-                                if (task.isSuccessful()) {
+                        database.unFollow(currentUser.getId(), user.getId()).addOnCompleteListener(task -> {
+                            if (task.isSuccessful()) {
 
-                                    holder.mFollowBtn.setText("follow");
-                                }
-
+                                holder.mFollowBtn.setText("follow");
                             }
+
                         });
 
                     }

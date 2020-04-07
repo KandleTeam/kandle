@@ -14,6 +14,7 @@ import ch.epfl.sdp.kandle.ImagePicker.ProfilePicPicker;
 import ch.epfl.sdp.kandle.dependencies.Database;
 import ch.epfl.sdp.kandle.dependencies.DependencyManager;
 
+//todo : handle case when user leaves activity before saving
 
 public class CustomAccountActivity extends AppCompatActivity {
 
