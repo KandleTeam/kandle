@@ -71,7 +71,7 @@ public class AchievementTest {
     }
 
     @Test
-    public void allAchivementsNotDone(){
+    public void allAchievementsNotDone(){
         onView(withId(R.id.is_following)).check(matches(withText("NOT DONE"))  ) ;
         onView(withId(R.id.is_posts)).check(matches(withText("NOT DONE")));
         onView(withId(R.id.is_followers)).check(matches(withText("NOT DONE")));
