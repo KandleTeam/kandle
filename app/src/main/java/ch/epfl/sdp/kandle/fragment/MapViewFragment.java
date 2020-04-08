@@ -91,6 +91,7 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback {
     @Override
     public void onMapReady(GoogleMap googleMap) {
 
+        System.out.println("map");
         gmap = googleMap;
 
         gmap.getUiSettings().setMapToolbarEnabled(false);
@@ -109,13 +110,8 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback {
         //gmap.setMyLocationEnabled(true);
         gmap.getUiSettings().setMapToolbarEnabled(false);
 
-
-        gmap.addMarker(new MarkerOptions()
-                .position(new LatLng(46.522636, 6.635391))
-                .title("Lausanne Cathedral")).setTag(0);
-
-
     }
+
     private void addUserMarker() {
         if(gmap!=null){
 
