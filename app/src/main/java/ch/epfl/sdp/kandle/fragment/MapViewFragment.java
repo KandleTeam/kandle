@@ -9,23 +9,17 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
 
-import androidx.annotation.NonNull;
-import androidx.core.app.ActivityCompat;
-import androidx.fragment.app.Fragment;
-
-import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
 import com.google.maps.android.clustering.ClusterManager;
 
-import java.util.List;
-
+import androidx.annotation.NonNull;
+import androidx.core.app.ActivityCompat;
+import androidx.fragment.app.Fragment;
 import ch.epfl.sdp.kandle.CustomMarker.ClusterManagerRenderer;
 import ch.epfl.sdp.kandle.CustomMarker.CustomMarkerItem;
 import ch.epfl.sdp.kandle.Post;
@@ -35,9 +29,6 @@ import ch.epfl.sdp.kandle.dependencies.Authentication;
 import ch.epfl.sdp.kandle.dependencies.Database;
 import ch.epfl.sdp.kandle.dependencies.DependencyManager;
 import ch.epfl.sdp.kandle.dependencies.MyLocationProvider;
-
-import static android.Manifest.permission.ACCESS_FINE_LOCATION;
-import static android.content.pm.PackageManager.PERMISSION_GRANTED;
 
 import static android.Manifest.permission.ACCESS_FINE_LOCATION;
 import static android.content.pm.PackageManager.PERMISSION_GRANTED;
@@ -60,7 +51,6 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback {
     private Authentication authentication;
 
     private MyLocationProvider locationProvider;
-    private FusedLocationProviderClient fusedLocationProviderClient;
     private Location currentLocation;
 
 
@@ -77,7 +67,6 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback {
         locationProvider = DependencyManager.getLocationProvider();
         database = DependencyManager.getDatabaseSystem();
         authentication = DependencyManager.getAuthSystem();
-        fusedLocationProviderClient = locationProvider.getFusedLocationProviderClient(this.getActivity());
 
 
         innerMapFragment = (SupportMapFragment) getChildFragmentManager().findFragmentById(R.id.inner_map_fragment);
@@ -106,7 +95,7 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback {
 
         gmap.getUiSettings().setMapToolbarEnabled(false);
 
-        fusedLocationProviderClient.getLastLocation().addOnCompleteListener(task -> {
+        locationProvider.getLocation(this.getActivity()).addOnCompleteListener(task -> {
 
             if (task.isSuccessful()){
                 currentLocation = task.getResult();

@@ -1,8 +1,6 @@
 package ch.epfl.sdp.kandle;
 
 
-import com.google.android.gms.maps.model.LatLng;
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
