@@ -5,6 +5,7 @@ import com.google.android.gms.tasks.TaskCompletionSource;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -330,7 +331,9 @@ public class MockDatabase implements Database {
     @Override
     public Task<List<Post>> getNearbyPosts(double longitude, double latitude, double distance){
         TaskCompletionSource<List<Post>> source = new TaskCompletionSource<>();
-        source.setResult(new ArrayList<>());
+        List<Post> posts = new ArrayList<>();
+        posts.add(new Post("mock post",null, new Date(), "mock user id", 0.0001, 0.0001));
+        source.setResult(posts);
         return source.getTask();
     }
 

@@ -1,4 +1,4 @@
-package ch.epfl.sdp.kandle.CustomMarker;
+/*package ch.epfl.sdp.kandle.CustomMarker;
 
 import com.google.android.gms.maps.model.LatLng;
 import com.google.maps.android.clustering.ClusterItem;
@@ -70,3 +70,6 @@ public class CustomMarkerItem implements ClusterItem {
         this.profilePictureUrl = profilePictureUrl;
     }
 }
+
+
+ */

@@ -1,4 +1,4 @@
-package ch.epfl.sdp.kandle.CustomMarker;
+/*package ch.epfl.sdp.kandle.CustomMarker;
 
 import android.content.Context;
 import android.graphics.Bitmap;
@@ -70,3 +70,5 @@ public class ClusterManagerRenderer extends DefaultClusterRenderer<CustomMarkerI
 
 
 }
+
+ */
