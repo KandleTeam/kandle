@@ -49,6 +49,7 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback {
     private SupportMapFragment innerMapFragment;
     private LatLng latLng;
 
+    private static final int radius = 2000;
     private boolean isLocationGranted = false;
     private static final int LOCATION_PERMISSION_REQUEST_CODE = 1;
 
@@ -105,17 +106,14 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback {
 
         gmap.getUiSettings().setMapToolbarEnabled(false);
 
-        fusedLocationProviderClient.getLastLocation().addOnCompleteListener(new OnCompleteListener<Location>() {
-            @Override
-            public void onComplete(@NonNull Task<Location> task) {
+        fusedLocationProviderClient.getLastLocation().addOnCompleteListener(task -> {
 
-                if (task.isSuccessful()){
-                    currentLocation = task.getResult();
-                    latLng = new LatLng(currentLocation.getLatitude(), currentLocation.getLongitude());
-                    addUserMarker();
-                    addPostsMarkers();
-                    gmap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 14));
-                }
+            if (task.isSuccessful()){
+                currentLocation = task.getResult();
+                latLng = new LatLng(currentLocation.getLatitude(), currentLocation.getLongitude());
+                addUserMarker();
+                addPostsMarkers();
+                gmap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 14));
             }
         });
 
@@ -144,32 +142,25 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback {
             String snippet = "You !";
 
 
-            database.getProfilePicture().addOnCompleteListener(new OnCompleteListener<String>() {
-                @Override
-                public void onComplete(@NonNull Task<String> task) {
-                    if (task.isSuccessful()){
-                        String imageUrl = task.getResult();
+            database.getProfilePicture().addOnCompleteListener(task -> {
+                if (task.isSuccessful()){
+                    String imageUrl = task.getResult();
 
-                        database.getNickname().addOnCompleteListener(new OnCompleteListener<String>() {
-                            @Override
-                            public void onComplete(@NonNull Task<String> task) {
-                                if (task.isSuccessful()){
-                                    String title = task.getResult();
-                                    CustomMarkerItem customMarker = new CustomMarkerItem( latLng, title, snippet, imageUrl, CustomMarkerItem.Type.USER );
-                                    System.out.println("item");
-                                    clusterManager.addItem(customMarker);
-                                    clusterManager.cluster();
-                                }
-                                else {
-                                    //TODO handle case when user is offline (get nickname from cache)
-                                }
-                            }
-                        });
+                    database.getNickname().addOnCompleteListener(task1 -> {
+                        if (task1.isSuccessful()){
+                            String title = task1.getResult();
+                            CustomMarkerItem customMarker = new CustomMarkerItem( latLng, title, snippet, imageUrl, CustomMarkerItem.Type.USER );
+                            clusterManager.addItem(customMarker);
+                            clusterManager.cluster();
+                        }
+                        else {
+                            //TODO handle case when user is offline (get nickname from cache)
+                        }
+                    });
 
-                    }
-                    else {
-                        //TODO handle case when user is offline (get picture from cache)
-                    }
+                }
+                else {
+                    //TODO handle case when user is offline (get picture from cache)
                 }
             });
         }
@@ -179,22 +170,19 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback {
 
     private void addPostsMarkers() {
 
-        database.getNearbyPosts(latLng.longitude, latLng.latitude, 2000).addOnCompleteListener(new OnCompleteListener<List<Post>>() {
-            @Override
-            public void onComplete(@NonNull Task<List<Post>> task) {
-                if (task.isSuccessful()){
-                    for (Post post : task.getResult()){
-                        CustomMarkerItem customMarkerItem = new CustomMarkerItem( new LatLng(post.getLatitude(), post.getLongitude()),
-                                post.getDescription(), post.getDate().toString(), null, CustomMarkerItem.Type.POST);
-                        clusterManager.addItem(customMarkerItem);
+        database.getNearbyPosts(latLng.longitude, latLng.latitude, radius).addOnCompleteListener(task -> {
+            if (task.isSuccessful()){
+                for (Post post : task.getResult()){
+                    CustomMarkerItem customMarkerItem = new CustomMarkerItem( new LatLng(post.getLatitude(), post.getLongitude()),
+                            post.getDescription(), post.getDate().toString(), null, CustomMarkerItem.Type.POST);
+                    clusterManager.addItem(customMarkerItem);
 
 
-                    }
-                    clusterManager.cluster();
                 }
-                else {
-                    //TODO handle case when user is offline (get posts from cache)
-                }
+                clusterManager.cluster();
+            }
+            else {
+                //TODO handle case when user is offline (get posts from cache)
             }
         });
 

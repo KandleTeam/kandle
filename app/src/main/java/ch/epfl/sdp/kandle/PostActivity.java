@@ -16,6 +16,7 @@ import android.hardware.Camera;
 
 import android.net.Uri;
 import android.os.Bundle;
+import android.util.Log;
 import android.webkit.MimeTypeMap;
 import android.widget.Button;
 import android.widget.EditText;
@@ -78,15 +79,10 @@ public class PostActivity extends AppCompatActivity {
 
         //Permission();
 
-        Random rand = new Random();
 
         Intent intent = getIntent();
         Double latitude = intent.getDoubleExtra("latitude", 0.0) - 0.0015;
         Double longitude = intent.getDoubleExtra("longitude", 0.0) - 0.0015;
-
-
-        System.out.println(latitude);
-        System.out.println(longitude);
 
         mPostText = findViewById(R.id.postText);
         mPostButton = findViewById(R.id.postButton);
