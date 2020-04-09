@@ -1,6 +1,8 @@
 package ch.epfl.sdp.kandle;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.coordinatorlayout.widget.CoordinatorLayout;
+import androidx.core.content.ContextCompat;
 
 import ch.epfl.sdp.kandle.dependencies.Authentication;
 import ch.epfl.sdp.kandle.dependencies.CachedDatabase;
@@ -15,6 +17,8 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.material.snackbar.Snackbar;
+
 public class RegisterActivity extends AppCompatActivity {
 
 
@@ -22,7 +26,7 @@ public class RegisterActivity extends AppCompatActivity {
     private Button mSignUpBtn;
     private TextView mSignInLink;
     private Authentication auth;
-
+    private CoordinatorLayout CNetworkBar;
     private Database database;
 
 
@@ -51,21 +55,17 @@ public class RegisterActivity extends AppCompatActivity {
             final String email = mEmail.getText().toString().trim();
             String password = mPassword.getText().toString().trim();
             String passwordConfirm = mPasswordConfirm.getText().toString().trim();
-            if (!checkFields(username, email, password, passwordConfirm)) {
-                return;
-            }
-
-
-            database.getUserByName(username).addOnCompleteListener(task -> {
-                if (task.isSuccessful()) {
-                    if (task.getResult() != null) {
-                        mUsername.setError(("This username is already used !"));
-                    } else {
-                        performRegisterViaFirebase(username, email, password);
+            if (checkFields(username, email, password, passwordConfirm) && checkForInternetConnection()) {
+                database.getUserByName(username).addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
+                        if (task.getResult() != null) {
+                            mUsername.setError(("This username is already used !"));
+                        } else {
+                            performRegisterViaFirebase(username, email, password);
+                        }
                     }
-                }
-            });
-
+                });
+            }
         });
 
 
@@ -115,6 +115,20 @@ public class RegisterActivity extends AppCompatActivity {
         }
 
         return bool;
+
+    }
+
+    private boolean checkForInternetConnection(){
+        if (!NetworkStatus.isConnected()) {
+            CNetworkBar = (CoordinatorLayout) findViewById(R.id.connectionBar);
+            Snackbar snackbar = Snackbar.make(CNetworkBar, "Check your internet connection", Snackbar.LENGTH_SHORT);
+            snackbar.setTextColor(ContextCompat.getColor(this, R.color.white));
+            CNetworkBar.setBackgroundColor(ContextCompat.getColor(this, R.color.colorAccent));
+            snackbar.show();
+            CNetworkBar.bringToFront();
+            return false;
+        }
+        return true;
 
     }
 

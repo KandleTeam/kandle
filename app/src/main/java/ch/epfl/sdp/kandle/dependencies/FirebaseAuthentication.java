@@ -1,6 +1,6 @@
 package ch.epfl.sdp.kandle.dependencies;
 
-import android.net.NetworkCapabilities;
+import android.provider.ContactsContract;
 
 import com.google.android.gms.tasks.Task;
 import com.google.android.gms.tasks.TaskCompletionSource;
@@ -8,7 +8,6 @@ import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.EmailAuthProvider;
 import com.google.firebase.auth.FirebaseAuth;
-
 import ch.epfl.sdp.kandle.LoggedInUser;
 import ch.epfl.sdp.kandle.NetworkStatus;
 import ch.epfl.sdp.kandle.User;
@@ -16,14 +15,14 @@ import ch.epfl.sdp.kandle.User;
 public class FirebaseAuthentication implements Authentication {
 
     private static final FirebaseAuth fAuth = FirebaseAuth.getInstance();
-    private static final FirebaseAuthentication auth = new FirebaseAuthentication();
-    private FirestoreDatabase database = FirestoreDatabase.getInstance();
+    private static final FirebaseAuthentication instance = new FirebaseAuthentication();
+    private Database database = DependencyManager.getDatabaseSystem();
 
     private FirebaseAuthentication() {
     }
 
     public static FirebaseAuthentication getInstance() {
-        return auth;
+        return instance;
     }
 
     /**
@@ -35,14 +34,19 @@ public class FirebaseAuthentication implements Authentication {
      */
     public boolean getCurrentUserAtApplicationStart() {
         User localUser = DependencyManager.getInternalStorageSystem().getCurrentUser();
-        if (localUser != null && fAuth.getCurrentUser() != null) {
-            System.out.println("Local user is not null when login at start");
-            LoggedInUser.init(localUser);
-            return true;
+        if(NetworkStatus.isConnected()) {
+            if (localUser != null && fAuth.getCurrentUser() != null) {
+                System.out.println("Local user is not null when login at start");
+                LoggedInUser.init(localUser);
+                return true;
+            }
+        }else{
+            if(localUser !=null){
+                LoggedInUser.init(localUser);
+                return true;
+            }
         }
         return false;
-
-
     }
 
 

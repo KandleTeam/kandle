@@ -4,8 +4,8 @@ package ch.epfl.sdp.kandle.dependencies;
 public final class DependencyManager {
 
     private static InternalStorage internalStorage = InternalStorageHandler.getInstance();
-    private static Authentication auth = FirebaseAuthentication.getInstance();
     private static Database db = FirestoreDatabase.getInstance();
+    private static Authentication auth = FirebaseAuthentication.getInstance();
     private static Storage storage = CloudStorage.getInstance();
 
 

@@ -39,4 +39,7 @@
     <string name="camera_alert">Device has only one camera!</string>
     <string name="switch_cam">Switch Camera</string>
 
+    <!-- Exceptions -->
+    <string name="no_connexion">Please check your internet connexion</string>
+
 </resources>

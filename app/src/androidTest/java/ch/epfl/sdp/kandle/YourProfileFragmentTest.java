@@ -78,10 +78,8 @@ public class YourProfileFragmentTest {
                     DependencyManager.getDatabaseSystem().follow(LoggedInUser.getInstance().getId(),user1.getId());
                     DependencyManager.getDatabaseSystem().follow(user2.getId(),LoggedInUser.getInstance().getId());
 
-
                 }
             };
-
 
 
 

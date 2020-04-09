@@ -1,10 +1,15 @@
 package ch.epfl.sdp.kandle.dependencies;
 
 
+import android.os.Build;
+
+import androidx.annotation.RequiresApi;
+
 import com.google.android.gms.tasks.Task;
 import com.google.android.gms.tasks.TaskCompletionSource;
 
 import java.util.List;
+import java.util.Objects;
 
 import ch.epfl.sdp.kandle.LoggedInUser;
 import ch.epfl.sdp.kandle.Post;
@@ -12,12 +17,11 @@ import ch.epfl.sdp.kandle.User;
 
 public class CachedDatabase implements Database {
 
-    private Database database;
-    private InternalStorage internalStorage;
+    private Database database = DependencyManager.getDatabaseSystem();
+    private InternalStorage internalStorage = DependencyManager.getInternalStorageSystem();
 
     public CachedDatabase() {
-        this.database = DependencyManager.getDatabaseSystem();
-        this.internalStorage = DependencyManager.getInternalStorageSystem();
+
     }
 
     @Override
@@ -26,9 +30,20 @@ public class CachedDatabase implements Database {
     }
 
     //TODO implement a getUserbyId for the local cache only
+
     @Override
     public Task<User> getUserById(String userId) {
+        /* To put into Firestoredatabase such that mocking is easier
+        TaskCompletionSource<User> source = new TaskCompletionSource();
+        if(NetworkStatus.isConnected()) {
             return database.getUserById(userId);
+        } else {
+            System.out.println("Throw no internet exception");
+            source.setException(new NoInternetException());
+            return source.getTask();
+        }
+        */
+        return database.getUserById(userId);
     }
 
     @Override
@@ -170,3 +185,4 @@ public class CachedDatabase implements Database {
 
 
 }
+
