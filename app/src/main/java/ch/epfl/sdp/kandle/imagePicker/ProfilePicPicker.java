@@ -1,13 +1,11 @@
-package ch.epfl.sdp.kandle.ImagePicker;
+package ch.epfl.sdp.kandle.imagePicker;
 
 import android.app.Activity;
-import android.app.ProgressDialog;
 import android.net.Uri;
 
 import androidx.fragment.app.Fragment;
 
 import com.google.android.gms.tasks.Task;
-import com.google.android.gms.tasks.TaskCompletionSource;
 
 import ch.epfl.sdp.kandle.dependencies.DependencyManager;
 

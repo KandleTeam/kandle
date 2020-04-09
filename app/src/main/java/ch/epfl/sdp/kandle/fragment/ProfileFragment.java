@@ -26,12 +26,12 @@ import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
-import ch.epfl.sdp.kandle.ImagePicker.ProfilePicPicker;
+import ch.epfl.sdp.kandle.imagePicker.ProfilePicPicker;
 import ch.epfl.sdp.kandle.LoggedInUser;
 import ch.epfl.sdp.kandle.R;
 import ch.epfl.sdp.kandle.User;
 import ch.epfl.sdp.kandle.dependencies.Authentication;
-import ch.epfl.sdp.kandle.dependencies.CachedDatabase;
+import ch.epfl.sdp.kandle.caching.CachedDatabase;
 import ch.epfl.sdp.kandle.dependencies.Database;
 import ch.epfl.sdp.kandle.dependencies.DependencyManager;
 
@@ -124,7 +124,7 @@ public class ProfileFragment extends Fragment {
             if (nickname.trim().length() > 0) {
                 mNicknameView.setText(nickname.trim());
                 mNickNameInMenu.setText(nickname.trim());
-                LoggedInUser.getInstance().setNickname(nickname.trim());
+                auth.getCurrentUser().setNickname(nickname.trim());
                 database.updateNickname(nickname.trim());
             }
             mNickname.showPrevious();

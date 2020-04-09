@@ -7,9 +7,10 @@ import org.junit.Test;
 
 import androidx.test.rule.GrantPermissionRule;
 import androidx.test.rule.ActivityTestRule;
-import androidx.test.rule.GrantPermissionRule;
 
 import java.util.HashMap;
+
+import ch.epfl.sdp.kandle.activity.LoginActivity;
 import ch.epfl.sdp.kandle.dependencies.DependencyManager;
 import ch.epfl.sdp.kandle.dependencies.MockAuthentication;
 import ch.epfl.sdp.kandle.dependencies.MockDatabase;
@@ -53,8 +54,6 @@ public class LoginActivityTestAlreadyLoggedIn {
             };
 
 
-    @Rule
-    public GrantPermissionRule permissionRule = GrantPermissionRule.grant(android.Manifest.permission.ACCESS_FINE_LOCATION);
 
     @After
     public void signout() {

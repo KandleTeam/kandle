@@ -19,7 +19,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import ch.epfl.sdp.kandle.LoggedInUser;
 import ch.epfl.sdp.kandle.dependencies.Authentication;
-import ch.epfl.sdp.kandle.dependencies.CachedDatabase;
+import ch.epfl.sdp.kandle.caching.CachedDatabase;
 import ch.epfl.sdp.kandle.dependencies.Database;
 import ch.epfl.sdp.kandle.dependencies.DependencyManager;
 import ch.epfl.sdp.kandle.R;
@@ -58,7 +58,7 @@ public class SearchFragment extends Fragment {
 
         mRecyclerView = view.findViewById(R.id.recycler_view);
         search_bar = view.findViewById(R.id.search_bar);
-        currentUser = LoggedInUser.getInstance();
+        currentUser = auth.getCurrentUser();
 
         mRecyclerView.setAdapter(userAdapter);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(this.getContext()));

@@ -15,7 +15,7 @@ import org.junit.Test;
 
 import java.util.HashMap;
 
-import androidx.test.rule.GrantPermissionRule;
+import ch.epfl.sdp.kandle.activity.CustomAccountActivity;
 import ch.epfl.sdp.kandle.dependencies.DependencyManager;
 import ch.epfl.sdp.kandle.dependencies.MockDatabase;
 

@@ -9,16 +9,16 @@ import com.google.firebase.storage.UploadTask;
 public class CloudStorage implements Storage {
 
 
-    private static final StorageReference storageReference = FirebaseStorage.getInstance().getReferenceFromUrl("gs://kandle-1b646.appspot.com");
-    private static final CloudStorage instance = new CloudStorage();
+    private static final StorageReference STORAGE_REFERENCE = FirebaseStorage.getInstance().getReferenceFromUrl("gs://kandle-1b646.appspot.com");
+    private static final CloudStorage INSTANCE = new CloudStorage();
     public static CloudStorage getInstance() {
-        return instance;
+        return INSTANCE;
     }
 
     @Override
     public Task<Uri> storeAndGetDownloadUrl(String fileExtension, Uri fileUri) {
         String path = System.currentTimeMillis() + "." + fileExtension;
-        final StorageReference fileReference = storageReference.child(path);
+        final StorageReference fileReference = STORAGE_REFERENCE.child(path);
         UploadTask uploadTask = fileReference.putFile(fileUri);
         return uploadTask.continueWithTask(task -> {
             if (!task.isSuccessful()) {

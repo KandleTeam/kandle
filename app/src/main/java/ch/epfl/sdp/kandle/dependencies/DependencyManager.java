@@ -1,9 +1,9 @@
 package ch.epfl.sdp.kandle.dependencies;
 
-import com.google.android.gms.location.LocationServices;
-import android.util.Pair;
-
-import ch.epfl.sdp.kandle.NetworkState;
+import ch.epfl.sdp.kandle.network.NetworkState;
+import ch.epfl.sdp.kandle.network.UserNetworkStatus;
+import ch.epfl.sdp.kandle.caching.InternalStorage;
+import ch.epfl.sdp.kandle.caching.InternalStorageHandler;
 
 public final class DependencyManager {
 
@@ -13,9 +13,7 @@ public final class DependencyManager {
     private static Authentication auth = FirebaseAuthentication.getInstance();
     private static MyLocationProvider locationProvider = new GoogleLocationServices();
     private static NetworkState networkState = UserNetworkStatus.getInstance();
-    //private static InternalStorage internalStorage = null;
-    public static void setFreshTestDependencies(Authentication auth, Database db, Storage storage) {
-    private static NetworkState networkState = UserNetworkStatus.getInstance();
+    private static InternalStorage internalStorage = InternalStorageHandler.getInstance();
 
 
 

@@ -7,11 +7,12 @@ import androidx.test.espresso.contrib.DrawerActions;
 import androidx.test.espresso.contrib.NavigationViewActions;
 import androidx.test.espresso.intent.rule.IntentsTestRule;
 
-import org.junit.Rule;
-import org.junit.Test;
-
 import androidx.test.rule.GrantPermissionRule;
 import java.util.HashMap;
+
+import ch.epfl.sdp.kandle.activity.CustomAccountActivity;
+import ch.epfl.sdp.kandle.activity.LoginActivity;
+import ch.epfl.sdp.kandle.activity.RegisterActivity;
 import ch.epfl.sdp.kandle.dependencies.DependencyManager;
 import ch.epfl.sdp.kandle.dependencies.MockAuthentication;
 import ch.epfl.sdp.kandle.dependencies.MockDatabase;
@@ -190,4 +191,6 @@ public class RegisterActivityTest {
                 .check(matches(withText(R.string.no_connexion)));
 
     }
+
+
 }

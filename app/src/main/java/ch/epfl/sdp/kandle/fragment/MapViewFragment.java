@@ -43,13 +43,13 @@ import java.util.List;
 import androidx.annotation.NonNull;
 import androidx.core.content.res.ResourcesCompat;
 import androidx.fragment.app.Fragment;
-import ch.epfl.sdp.kandle.Post;
-import ch.epfl.sdp.kandle.PostActivity;
+import ch.epfl.sdp.kandle.activity.PostActivity;
 import ch.epfl.sdp.kandle.R;
 import ch.epfl.sdp.kandle.dependencies.Authentication;
 import ch.epfl.sdp.kandle.dependencies.Database;
 import ch.epfl.sdp.kandle.dependencies.DependencyManager;
 import ch.epfl.sdp.kandle.dependencies.MyLocationProvider;
+import ch.epfl.sdp.kandle.dependencies.Post;
 
 public class MapViewFragment extends Fragment implements OnMapReadyCallback, PermissionsListener {
 

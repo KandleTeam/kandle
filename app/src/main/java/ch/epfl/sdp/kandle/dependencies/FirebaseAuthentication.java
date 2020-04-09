@@ -11,15 +11,15 @@ import ch.epfl.sdp.kandle.User;
 
 public class FirebaseAuthentication implements Authentication {
 
-    private static final FirebaseAuth fAuth = FirebaseAuth.getInstance();
-    private static final FirebaseAuthentication instance = new FirebaseAuthentication();
+    private static final FirebaseAuth FAUTH = FirebaseAuth.getInstance();
+    private static final FirebaseAuthentication INSTANCE = new FirebaseAuthentication();
     private Database database = DependencyManager.getDatabaseSystem();
 
     private FirebaseAuthentication() {
     }
 
     public static FirebaseAuthentication getInstance() {
-        return instance;
+        return INSTANCE;
     }
 
     /**
@@ -32,7 +32,7 @@ public class FirebaseAuthentication implements Authentication {
     public boolean getCurrentUserAtApplicationStart() {
         User localUser = DependencyManager.getInternalStorageSystem().getCurrentUser();
         if(DependencyManager.getNetworkStateSystem().isConnected()) {
-            if (localUser != null && fAuth.getCurrentUser() != null) {
+            if (localUser != null && FAUTH.getCurrentUser() != null) {
                 System.out.println("Local user is not null when login at start");
                 LoggedInUser.init(localUser);
                 return true;
@@ -60,7 +60,7 @@ public class FirebaseAuthentication implements Authentication {
      */
     @Override
     public Task<User> createUserWithEmailAndPassword(final String username, final String email, final String password) {
-        Task<AuthResult> authResult = fAuth.createUserWithEmailAndPassword(email, password);
+        Task<AuthResult> authResult = FAUTH.createUserWithEmailAndPassword(email, password);
         TaskCompletionSource<User> source = new TaskCompletionSource<User>();
         return authResult.continueWithTask(task -> {
             if (authResult.isSuccessful()) {
@@ -95,7 +95,7 @@ public class FirebaseAuthentication implements Authentication {
     @Override
     public Task<User> signInWithEmailAndPassword(String email, String password) {
 
-        Task<AuthResult> authResult = fAuth.signInWithEmailAndPassword(email, password);
+        Task<AuthResult> authResult = FAUTH.signInWithEmailAndPassword(email, password);
         return authResult.continueWithTask(task -> {
             if (authResult.isSuccessful()) {
                 String userId = authResult.getResult().getUser().getUid();
@@ -122,12 +122,12 @@ public class FirebaseAuthentication implements Authentication {
     @Override
     public Task<Void> reAuthenticate(String password) {
         AuthCredential credential = EmailAuthProvider.getCredential(getCurrentUser().getEmail(), password);
-        return fAuth.getCurrentUser().reauthenticate(credential);
+        return FAUTH.getCurrentUser().reauthenticate(credential);
     }
 
     @Override
     public Task<Void> updatePassword(String password) {
-        return fAuth.getCurrentUser().updatePassword(password);
+        return FAUTH.getCurrentUser().updatePassword(password);
     }
 
     @Override
@@ -135,7 +135,7 @@ public class FirebaseAuthentication implements Authentication {
         LoggedInUser.clear();
         DependencyManager.getInternalStorageSystem().deleteUser();
         System.out.println(DependencyManager.getInternalStorageSystem().getCurrentUser() == null);
-        fAuth.signOut();
+        FAUTH.signOut();
     }
 
     @Override

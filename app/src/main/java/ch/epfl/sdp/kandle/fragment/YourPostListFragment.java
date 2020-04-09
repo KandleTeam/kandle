@@ -27,13 +27,8 @@ import java.util.Collections;
 import java.util.List;
 
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 import ch.epfl.sdp.kandle.LoggedInUser;
-import ch.epfl.sdp.kandle.dependencies.CachedDatabase;
+import ch.epfl.sdp.kandle.caching.CachedDatabase;
 import ch.epfl.sdp.kandle.dependencies.Post;
 import ch.epfl.sdp.kandle.PostAdapter;
 import ch.epfl.sdp.kandle.R;
@@ -54,7 +49,7 @@ public class YourPostListFragment extends Fragment {
 
     private RecyclerView rvPosts;
 
-    private DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+    //private DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
 
     public final static int POST_IMAGE = 10;
 
@@ -71,7 +66,7 @@ public class YourPostListFragment extends Fragment {
         database = new CachedDatabase();
 
 
-        userId = LoggedInUser.getInstance().getId();
+        userId = auth.getCurrentUser().getId();
 
         Context context = this.getContext();
 

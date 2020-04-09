@@ -1,4 +1,4 @@
-package ch.epfl.sdp.kandle.dependencies;
+package ch.epfl.sdp.kandle.caching;
 
 
 import com.google.android.gms.tasks.Task;
@@ -8,6 +8,10 @@ import java.util.List;
 
 import ch.epfl.sdp.kandle.LoggedInUser;
 import ch.epfl.sdp.kandle.User;
+import ch.epfl.sdp.kandle.caching.InternalStorage;
+import ch.epfl.sdp.kandle.dependencies.Database;
+import ch.epfl.sdp.kandle.dependencies.DependencyManager;
+import ch.epfl.sdp.kandle.dependencies.Post;
 
 public class CachedDatabase implements Database {
 
@@ -102,8 +106,18 @@ public class CachedDatabase implements Database {
     }
 
     @Override
+    public Task<List<User>> getLikers(String postId) {
+        return database.getLikers(postId);
+    }
+
+    @Override
     public Task<List<Post>> getPostsByUserId(String userId) {
         return database.getPostsByUserId(userId);
+    }
+
+    @Override
+    public Task<List<Post>> getNearbyPosts(double longitude, double latitude, double distance) {
+        return database.getNearbyPosts(longitude,latitude,distance);
     }
 
     //-----------------This part handles the local user-----------------------

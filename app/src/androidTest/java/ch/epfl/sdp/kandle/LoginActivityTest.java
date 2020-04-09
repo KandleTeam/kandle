@@ -19,10 +19,9 @@ import androidx.test.rule.GrantPermissionRule;
 import java.util.HashMap;
 
 
-import androidx.test.rule.GrantPermissionRule;
+import ch.epfl.sdp.kandle.activity.LoginActivity;
 
-import ch.epfl.sdp.kandle.dependencies.Database;
-
+import ch.epfl.sdp.kandle.activity.RegisterActivity;
 import ch.epfl.sdp.kandle.dependencies.DependencyManager;
 import ch.epfl.sdp.kandle.dependencies.MockAuthentication;
 import ch.epfl.sdp.kandle.dependencies.MockDatabase;

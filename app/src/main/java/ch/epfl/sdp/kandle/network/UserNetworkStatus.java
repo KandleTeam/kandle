@@ -1,4 +1,4 @@
-package ch.epfl.sdp.kandle.dependencies;
+package ch.epfl.sdp.kandle.network;
 
 import android.content.Context;
 import android.net.ConnectivityManager;
@@ -6,9 +6,7 @@ import android.net.NetworkCapabilities;
 import android.net.NetworkInfo;
 import android.os.Build;
 
-import ch.epfl.sdp.kandle.ConnexionStatus;
 import ch.epfl.sdp.kandle.Kandle;
-import ch.epfl.sdp.kandle.NetworkState;
 
 
 public class UserNetworkStatus implements NetworkState {

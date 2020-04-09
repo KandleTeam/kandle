@@ -34,8 +34,8 @@ import ch.epfl.sdp.kandle.dependencies.Post;
 
 @RunWith(AndroidJUnit4.class)
 public class AchievementTest {
-    public  User user1;
-    public  User user2;
+    private  User user1;
+    private  User user2;
 
     @Rule
     public GrantPermissionRule permissionRule = GrantPermissionRule.grant(android.Manifest.permission.ACCESS_FINE_LOCATION);

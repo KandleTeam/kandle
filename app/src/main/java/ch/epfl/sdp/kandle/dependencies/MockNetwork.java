@@ -1,7 +1,7 @@
 package ch.epfl.sdp.kandle.dependencies;
 
 
-import ch.epfl.sdp.kandle.NetworkState;
+import ch.epfl.sdp.kandle.network.NetworkState;
 
 public class MockNetwork implements NetworkState {
     private static boolean isOnline;
