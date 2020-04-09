@@ -3,9 +3,7 @@ package ch.epfl.sdp.kandle.fragment;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
-import android.content.res.Resources;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.location.Location;
@@ -14,15 +12,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
+import android.widget.Toast;
 
-//import com.google.android.gms.maps.CameraUpdateFactory;
-//import com.google.android.gms.maps.GoogleMap;
-//import com.google.android.gms.maps.SupportMapFragment;
-//import com.google.android.gms.maps.model.LatLng;
-//import com.google.maps.android.clustering.ClusterManager;
-import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.gms.tasks.Task;
 import com.mapbox.android.core.location.LocationEngine;
 import com.mapbox.android.core.location.LocationEngineCallback;
 import com.mapbox.android.core.location.LocationEngineProvider;
@@ -30,15 +22,10 @@ import com.mapbox.android.core.location.LocationEngineRequest;
 import com.mapbox.android.core.location.LocationEngineResult;
 import com.mapbox.android.core.permissions.PermissionsListener;
 import com.mapbox.android.core.permissions.PermissionsManager;
-import com.mapbox.geojson.Feature;
-import com.mapbox.geojson.FeatureCollection;
-import com.mapbox.geojson.Point;
 import com.mapbox.mapboxsdk.Mapbox;
 import com.mapbox.mapboxsdk.annotations.Icon;
 import com.mapbox.mapboxsdk.annotations.IconFactory;
-import com.mapbox.mapboxsdk.annotations.Marker;
 import com.mapbox.mapboxsdk.annotations.MarkerOptions;
-import com.mapbox.mapboxsdk.camera.CameraUpdateFactory;
 import com.mapbox.mapboxsdk.geometry.LatLng;
 import com.mapbox.mapboxsdk.location.LocationComponent;
 import com.mapbox.mapboxsdk.location.LocationComponentActivationOptions;
@@ -49,24 +36,13 @@ import com.mapbox.mapboxsdk.maps.MapView;
 import com.mapbox.mapboxsdk.maps.MapboxMap;
 import com.mapbox.mapboxsdk.maps.OnMapReadyCallback;
 import com.mapbox.mapboxsdk.maps.Style;
-import com.mapbox.mapboxsdk.plugins.locationlayer.LocationLayerPlugin;
-import com.mapbox.mapboxsdk.style.layers.PropertyFactory;
-import com.mapbox.mapboxsdk.style.layers.SymbolLayer;
-import com.mapbox.mapboxsdk.style.sources.GeoJsonSource;
 import com.mapbox.mapboxsdk.utils.BitmapUtils;
-//import com.mapbox.mapboxsdk.maps.Style;
 
-import java.lang.ref.WeakReference;
-import java.util.ArrayList;
 import java.util.List;
 
 import androidx.annotation.NonNull;
-import androidx.core.app.ActivityCompat;
 import androidx.core.content.res.ResourcesCompat;
 import androidx.fragment.app.Fragment;
-//import ch.epfl.sdp.kandle.CustomMarker.ClusterManagerRenderer;
-//import ch.epfl.sdp.kandle.CustomMarker.CustomMarkerItem;
-import ch.epfl.sdp.kandle.MainActivity;
 import ch.epfl.sdp.kandle.Post;
 import ch.epfl.sdp.kandle.PostActivity;
 import ch.epfl.sdp.kandle.R;
@@ -74,10 +50,6 @@ import ch.epfl.sdp.kandle.dependencies.Authentication;
 import ch.epfl.sdp.kandle.dependencies.Database;
 import ch.epfl.sdp.kandle.dependencies.DependencyManager;
 import ch.epfl.sdp.kandle.dependencies.MyLocationProvider;
-
-import static android.Manifest.permission.ACCESS_FINE_LOCATION;
-import static android.content.pm.PackageManager.PERMISSION_GRANTED;
-
 
 public class MapViewFragment extends Fragment implements OnMapReadyCallback, PermissionsListener {
 
@@ -87,17 +59,10 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback, Per
 
     private static final long DEFAULT_INTERVAL_IN_MILLISECONDS = 1000L;
     private static final long DEFAULT_MAX_WAIT_TIME = DEFAULT_INTERVAL_IN_MILLISECONDS * 5;
-    //private GoogleMap gmap;
-   // private SupportMapFragment innerMapFragment;
-   // private LatLng latLng;
 
     private static final int RADIUS = 2000;
-    private boolean isLocationGranted = false;
     private static final int LOCATION_PERMISSION_REQUEST_CODE = 1;
 
-   // private ClusterManager clusterManager;
-    //private ClusterManagerRenderer clusterManagerRenderer;
-    //private CustomMarker customMarker;
     private Database database;
     private Authentication authentication;
 
@@ -134,8 +99,6 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback, Per
         Mapbox.getInstance(this.getContext(), getString(R.string.mapbox_access_token));
         View view = inflater.inflate(R.layout.fragment_map, container, false);
 
-        askForLocationPermission();
-
         locationProvider = DependencyManager.getLocationProvider();
         database = DependencyManager.getDatabaseSystem();
         authentication = DependencyManager.getAuthSystem();
@@ -149,10 +112,6 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback, Per
             }
             startActivity(intent);
         });
-
-
-        //innerMapFragment = (SupportMapFragment) getChildFragmentManager().findFragmentById(R.id.inner_map_fragment);
-        //innerMapFragment.getMapAsync(this);
 
         mapView = view.findViewById(R.id.mapView);
         mapView.onCreate(savedInstanceState);
@@ -168,38 +127,31 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback, Per
         this.mapboxMap=mapboxMap;
 
 
-        locationProvider.getLocation(this.getActivity()).addOnSuccessListener(new OnSuccessListener<Location>() {
-            @Override
-            public void onSuccess(Location location) {
-                currentLocation=location;
-                mapboxMap.setStyle(Style.MAPBOX_STREETS, new Style.OnStyleLoaded() {
-                    @Override
-                    public void onStyleLoaded(@NonNull Style style) {
+        locationProvider.getLocation(this.getActivity()).addOnSuccessListener(location -> {
+            currentLocation=location;
+            mapboxMap.setStyle(Style.MAPBOX_STREETS, style -> {
 
-                            Drawable drawable = ResourcesCompat.getDrawable(MapViewFragment.this.getResources(), R.drawable.ic_whatshot_24dp, null);
-                            Bitmap mBitmap = BitmapUtils.getBitmapFromDrawable(drawable);
-                            //style.addImage(MARKER_IMAGE, mBitmap);
-                            IconFactory iconFactory = IconFactory.getInstance(MapViewFragment.this.getActivity());
-                            Icon icon = iconFactory.fromBitmap(mBitmap);
-                            enableLocationComponent(style);
-                            //addPostMarkers(style);
-                            database.getNearbyPosts(currentLocation.getLongitude(), currentLocation.getLatitude(), RADIUS).addOnSuccessListener(new OnSuccessListener<List<Post>>() {
-                                @Override
-                                public void onSuccess(List<Post> posts) {
-                                    for (Post p : posts){
-                                        mapboxMap.addMarker(new MarkerOptions()
-                                                .position(new LatLng(p.getLatitude(), p.getLongitude()))
-                                                .title ("A post !")
-                                                .icon(icon));
-                                    }
-                                }
-                            });
-
-                    }
-                });
-            }
+                    Drawable drawable = ResourcesCompat.getDrawable(MapViewFragment.this.getResources(), R.drawable.ic_whatshot_24dp, null);
+                    Bitmap mBitmap = BitmapUtils.getBitmapFromDrawable(drawable);
+                    //style.addImage(MARKER_IMAGE, mBitmap);
+                    IconFactory iconFactory = IconFactory.getInstance(MapViewFragment.this.getActivity());
+                    Icon icon = iconFactory.fromBitmap(mBitmap);
+                    enableLocationComponent(style);
+                    //addPostMarkers(style);
+                    database.getNearbyPosts(currentLocation.getLongitude(), currentLocation.getLatitude(), RADIUS).addOnSuccessListener(new OnSuccessListener<List<Post>>() {
+                        @Override
+                        public void onSuccess(List<Post> posts) {
+                            for (Post p : posts){
+                                mapboxMap.addMarker(new MarkerOptions()
+                                        .position(new LatLng(p.getLatitude(), p.getLongitude()))
+                                        .title ("A post !")
+                                        .icon(icon))
+                                        .setSnippet(p.getPostId());
+                            }
+                        }
+                    });
+            });
         });
-
 
     }
 
@@ -234,7 +186,6 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback, Per
 
      */
 
-
     /**
      * Initialize the Maps SDK's LocationComponent
      */
@@ -252,6 +203,7 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback, Per
                     .accuracyColor(Color.RED)
                     .foregroundDrawable(R.drawable.ic_profil_24dp)
                     .build();
+
             // Set the LocationComponent activation options
             LocationComponentActivationOptions locationComponentActivationOptions =
                     LocationComponentActivationOptions.builder(this.getContext(), loadedMapStyle)
@@ -271,7 +223,6 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback, Per
             // Set the component's render mode
             locationComponent.setRenderMode(RenderMode.COMPASS);
 
-
             initLocationEngine();
         } else {
             permissionsManager = new PermissionsManager(this);
@@ -290,30 +241,8 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback, Per
         locationEngine.getLastLocation(callback);
     }
 
-
-
-    private void askForLocationPermission() {
-
-        if (ActivityCompat.checkSelfPermission(getContext(), ACCESS_FINE_LOCATION) != PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(getActivity(), new String[]{ACCESS_FINE_LOCATION}, LOCATION_PERMISSION_REQUEST_CODE);
-            isLocationGranted = false;
-        } else {
-            isLocationGranted = true;
-        }
-
-    }
-
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        /*switch(requestCode) {
-            case LOCATION_PERMISSION_REQUEST_CODE:
-                if (grantResults.length > 0 && grantResults[0] == PERMISSION_GRANTED) {
-                    isLocationGranted = true;
-                }
-                break;
-        }
-
-         */
         permissionsManager.onRequestPermissionsResult(requestCode, permissions, grantResults);
     }
 
@@ -321,7 +250,7 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback, Per
 
     @Override
     public void onExplanationNeeded(List<String> permissionsToExplain) {
-        //toast to explain permision
+        Toast.makeText(this.getActivity(), "You have to grant location permission to see nearby posts", Toast.LENGTH_LONG).show();
     }
 
     @Override
