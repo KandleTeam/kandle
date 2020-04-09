@@ -76,6 +76,7 @@ dependencies {
     implementation "androidx.camera:camera-extensions:1.0.0-alpha08"
     // If you want to use the CameraX Lifecycle library
     implementation "androidx.camera:camera-lifecycle:${camerax_version}"
+    //noinspection GradleCompatible
     implementation 'com.android.support:design:28.0.0'
 
 
