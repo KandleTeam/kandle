@@ -4,6 +4,8 @@ import android.view.Gravity;
 import org.junit.After;
 import org.junit.Rule;
 import org.junit.Test;
+
+import androidx.test.rule.GrantPermissionRule;
 import androidx.test.rule.ActivityTestRule;
 import java.util.HashMap;
 import ch.epfl.sdp.kandle.dependencies.DependencyManager;
@@ -37,10 +39,15 @@ public class LoginActivityTestAlreadyLoggedIn {
                 }
             };
 
+
+    @Rule
+    public GrantPermissionRule permissionRule = GrantPermissionRule.grant(android.Manifest.permission.ACCESS_FINE_LOCATION);
+
     @After
     public void signout() {
         DependencyManager.getAuthSystem().signOut();
     }
+
 
     @Test
     public void checkAutomaticLogIn(){

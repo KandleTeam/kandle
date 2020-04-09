@@ -22,6 +22,9 @@ import androidx.test.espresso.contrib.RecyclerViewActions;
 import androidx.test.espresso.intent.rule.IntentsTestRule;
 import androidx.test.espresso.matcher.BoundedMatcher;
 import androidx.test.espresso.matcher.ViewMatchers;
+
+
+import androidx.test.rule.GrantPermissionRule;
 import java.util.HashMap;
 import java.util.LinkedList;
 import ch.epfl.sdp.kandle.dependencies.DependencyManager;
@@ -33,6 +36,7 @@ import static androidx.test.espresso.Espresso.onView;
 import static androidx.test.espresso.action.ViewActions.clearText;
 import static androidx.test.espresso.action.ViewActions.click;
 import static androidx.test.espresso.action.ViewActions.closeSoftKeyboard;
+import static androidx.test.espresso.action.ViewActions.replaceText;
 import static androidx.test.espresso.action.ViewActions.typeText;
 import static androidx.test.espresso.assertion.ViewAssertions.matches;
 import static androidx.test.espresso.contrib.DrawerMatchers.isClosed;
@@ -82,16 +86,13 @@ public class YourProfileFragmentTest {
                 }
             };
 
-
-
-
-
+    @Rule
+    public GrantPermissionRule permissionRule = GrantPermissionRule.grant(android.Manifest.permission.ACCESS_FINE_LOCATION,android.Manifest.permission.ACCESS_FINE_LOCATION);
 
     @After
     public void clearCurrentUser(){
         LoggedInUser.clear();
     }
-
 
     @Before
     public void loadFragment(){
@@ -137,6 +138,7 @@ public class YourProfileFragmentTest {
     @Test
     public void editNickname(){
         onView(withId(R.id.profileEditNameButton)).perform(click());
+
         onView(withId(R.id.edit_view)).perform(clearText());
         onView(withId(R.id.edit_view)).perform(typeText("New Nickname"));
         onView(withId (R.id.edit_view)).perform(closeSoftKeyboard());

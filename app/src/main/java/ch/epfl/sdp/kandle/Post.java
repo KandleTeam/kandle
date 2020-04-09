@@ -1,8 +1,6 @@
 package ch.epfl.sdp.kandle;
 
 
-import com.google.android.gms.maps.model.LatLng;
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
@@ -12,7 +10,8 @@ import java.util.UUID;
 
 public class Post {
 
-    private LatLng location;
+    private double longitude;
+    private double latitude;
     private ArrayList<String> likers;
     private String userId;
     private String postId;
@@ -22,8 +21,23 @@ public class Post {
     private Date date;
     private int likes;
 
+    public double getLongitude() {
+        return longitude;
+    }
 
-   /* public Post(String type, LatLng location, int likes, String description, ArrayList<String> comments, Date date){
+    public void setLongitude(double longitude) {
+        this.longitude = longitude;
+    }
+
+    public double getLatitude() {
+        return latitude;
+    }
+
+    public void setLatitude(double latitude) {
+        this.latitude = latitude;
+    }
+
+/* public Post(String type, LatLng location, int likes, String description, ArrayList<String> comments, Date date){
         this.type = type;
         this.location = location;
         this.likes = likes;
@@ -39,8 +53,9 @@ public class Post {
     }
 
 
-    public Post(String description, String imageURL, Date date, String userId) {
-        this.location = null;
+    public Post(String description, String imageURL, Date date, String userId, double longitude, double latitude) {
+        this.latitude = latitude ;
+        this.longitude = longitude;
         this.description = description;
         this.comments = null;
         this.date = date;
@@ -54,7 +69,7 @@ public class Post {
 
     //Useful for tests
     public Post(String description, String imageURL, Date date, String userId, String postId) {
-        this.location = null;
+       // this.location = null;
         this.description = description;
         this.comments = null;
         this.date = date;

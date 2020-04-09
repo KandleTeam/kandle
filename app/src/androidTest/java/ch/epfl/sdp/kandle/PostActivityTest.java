@@ -15,6 +15,8 @@ import org.junit.After;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+
+import androidx.test.rule.GrantPermissionRule;
 import java.util.HashMap;
 import ch.epfl.sdp.kandle.dependencies.DependencyManager;
 import ch.epfl.sdp.kandle.dependencies.MockAuthentication;
@@ -57,6 +59,8 @@ public class PostActivityTest {
                     DependencyManager.setFreshTestDependencies(authentication, db, storage);
                 }
             };
+    @Rule
+    public GrantPermissionRule permissionRule = GrantPermissionRule.grant(android.Manifest.permission.ACCESS_FINE_LOCATION);
 
     @Rule
     public GrantPermissionRule mCameraPermissionRule =

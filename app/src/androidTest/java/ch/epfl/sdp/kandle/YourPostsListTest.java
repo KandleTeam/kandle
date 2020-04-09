@@ -3,6 +3,7 @@ package ch.epfl.sdp.kandle;
 import android.view.Gravity;
 import android.view.View;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.test.espresso.Espresso;
 import androidx.test.espresso.NoMatchingViewException;
 import androidx.test.espresso.UiController;
 import androidx.test.espresso.ViewAction;
@@ -19,6 +20,8 @@ import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+
+import androidx.test.rule.GrantPermissionRule;
 import java.util.Date;
 import java.util.HashMap;
 import ch.epfl.sdp.kandle.dependencies.DependencyManager;
@@ -32,8 +35,10 @@ import static androidx.test.espresso.action.ViewActions.closeSoftKeyboard;
 import static androidx.test.espresso.action.ViewActions.typeText;
 import static androidx.test.espresso.assertion.ViewAssertions.matches;
 import static androidx.test.espresso.contrib.DrawerMatchers.isClosed;
+import static androidx.test.espresso.matcher.ViewMatchers.hasDescendant;
 import static androidx.test.espresso.matcher.ViewMatchers.withId;
 import static androidx.test.espresso.matcher.ViewMatchers.withTagValue;
+import static androidx.test.espresso.matcher.ViewMatchers.withText;
 import static junit.framework.TestCase.assertEquals;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.not;
@@ -69,6 +74,9 @@ public class YourPostsListTest {
 
             };
 
+    @Rule
+    public GrantPermissionRule permissionRule = GrantPermissionRule.grant(android.Manifest.permission.ACCESS_FINE_LOCATION);
+
     @After
     public void clearCurrentUser(){
         LoggedInUser.clear();
@@ -91,6 +99,8 @@ public class YourPostsListTest {
 
     }
 
+
+
     @Test
     public void likesThenUnlikesAlreadyCreatedPosts(){
 
@@ -98,10 +108,21 @@ public class YourPostsListTest {
         onView(withId(R.id.rvPosts)).check(new RecyclerViewItemCountAssertion(2));
         //Like then unlike the oldest (already created in the mockdatabase)
         //TODO When we like here the like counter is 2 and not 1 therefor we need to check and fix the issue
-        onView(withId(R.id.rvPosts)).perform(RecyclerViewActions.actionOnItemAtPosition(0,clickChildViewWithId(R.id.likeButton)));
-        onView(withId(R.id.rvPosts)).perform(RecyclerViewActions.actionOnItemAtPosition(1,clickChildViewWithId(R.id.likeButton)));
-        onView(withId(R.id.rvPosts)).perform(RecyclerViewActions.actionOnItemAtPosition(0,clickChildViewWithId(R.id.likeButton)));
-        onView(withId(R.id.rvPosts)).perform(RecyclerViewActions.actionOnItemAtPosition(1,clickChildViewWithId(R.id.likeButton)));
+        onView(withId(R.id.rvPosts)).perform(RecyclerViewActions.actionOnItemAtPosition(0, clickChildViewWithId(R.id.likeButton)));
+        onView(withId(R.id.rvPosts)).perform(RecyclerViewActions.actionOnItemAtPosition(1, clickChildViewWithId(R.id.likeButton)));
+        onView(withId(R.id.rvPosts)).perform(RecyclerViewActions.actionOnItemAtPosition(0, clickChildViewWithId(R.id.likeButton)));
+        onView(withId(R.id.rvPosts)).perform(RecyclerViewActions.actionOnItemAtPosition(1, clickChildViewWithId(R.id.likeButton)));
+
+        //Remove the the oldest post
+        //onView(withId(R.id.rvPosts)).perform(RecyclerViewActions.actionOnItemAtPosition(1, clickChildViewWithId(R.id.deleteButton)));
+        //onView(withId(android.R.id.button1)).perform(click());
+
+        //only 1 post should be displayed
+        //onView(withId(R.id.rvPosts)).check(new RecyclerViewItemCountAssertion(1));
+
+
+
+
     }
 
     @Test
@@ -132,6 +153,7 @@ public class YourPostsListTest {
         onView(withId(R.id.rvPosts)).check(new RecyclerViewItemCountAssertion(4));
 
         onView(withId(R.id.rvPosts)).perform(RecyclerViewActions.actionOnItemAtPosition(0,clickChildViewWithId(R.id.deleteButton)));
+        onView(withId(android.R.id.button1)).perform(click());
         onView(withId(R.id.drawer_layout)).check(matches(isClosed(Gravity.LEFT))).perform(DrawerActions.open());
         onView(withId(R.id.navigation_view)).perform(NavigationViewActions.navigateTo(R.id.about));
 
@@ -152,7 +174,21 @@ public class YourPostsListTest {
         onView(withId(R.id.post_content)).perform(click());
     }
 
+
+    @Test
+    public void LikesListInteractionTest(){
+
+        onView(withId(R.id.rvPosts)).perform(RecyclerViewActions.actionOnItemAtPosition(1, clickChildViewWithId(R.id.flames)));
+        onView(withId(R.id.list_user_number)).check(matches(withText("0")));
+        Espresso.pressBack();
+        onView(withId(R.id.rvPosts)).perform(RecyclerViewActions.actionOnItemAtPosition(1, clickChildViewWithId(R.id.likeButton)));
+        onView(withId(R.id.rvPosts)).perform(RecyclerViewActions.actionOnItemAtPosition(1, clickChildViewWithId(R.id.flames)));
+        onView(withId(R.id.list_user_number)).check(matches(withText("1")));
+    }
+
+
     private static ViewAction clickChildViewWithId(final int id) {
+
         return new ViewAction() {
             @Override
             public Matcher<View> getConstraints() {
