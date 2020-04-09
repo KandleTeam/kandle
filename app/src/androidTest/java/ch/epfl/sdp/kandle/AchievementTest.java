@@ -1,5 +1,6 @@
 package ch.epfl.sdp.kandle;
 
+import android.Manifest;
 import android.view.Gravity;
 
 import androidx.test.espresso.contrib.DrawerActions;
@@ -66,18 +67,25 @@ public class AchievementTest {
                 }
             };
 
+    @Rule
+    public GrantPermissionRule grantLocation = GrantPermissionRule.grant(Manifest.permission.ACCESS_FINE_LOCATION);
+
+
     @After
     public void clearCurrentUser(){
         LoggedInUser.clear();
     }
+
+
     @Before
     public void loadFragment(){
         onView(withId(R.id.drawer_layout)).check(matches(isClosed(Gravity.LEFT))).perform(DrawerActions.open());
         onView(withId(R.id.navigation_view)).perform(NavigationViewActions.navigateTo(R.id.light));
+        onView(withId(R.id.drawer_layout)).perform(DrawerActions.close());
     }
 
     @Test
-    public void allAchivementsNotDone(){
+    public void allAchievementsNotDone(){
         onView(withId(R.id.is_following)).check(matches(withText("NOT DONE"))  ) ;
         onView(withId(R.id.is_posts)).check(matches(withText("NOT DONE")));
         onView(withId(R.id.is_followers)).check(matches(withText("NOT DONE")));

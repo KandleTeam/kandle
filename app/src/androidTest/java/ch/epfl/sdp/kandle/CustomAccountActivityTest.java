@@ -15,6 +15,7 @@ import org.junit.Test;
 
 import java.util.HashMap;
 
+import androidx.test.rule.GrantPermissionRule;
 import ch.epfl.sdp.kandle.dependencies.DependencyManager;
 import ch.epfl.sdp.kandle.dependencies.MockDatabase;
 
@@ -64,12 +65,14 @@ public class CustomAccountActivityTest {
             };
 
     @Rule
+
     public GrantPermissionRule grantLocation = GrantPermissionRule.grant(Manifest.permission.ACCESS_FINE_LOCATION);
 
     @After
     public void signout() {
         DependencyManager.getAuthSystem().signOut();
     }
+
 
 
     @Test

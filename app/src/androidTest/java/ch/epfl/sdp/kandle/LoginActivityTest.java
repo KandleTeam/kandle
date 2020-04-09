@@ -18,7 +18,11 @@ import androidx.test.rule.GrantPermissionRule;
 
 import java.util.HashMap;
 
+
+import androidx.test.rule.GrantPermissionRule;
+
 import ch.epfl.sdp.kandle.dependencies.Database;
+
 import ch.epfl.sdp.kandle.dependencies.DependencyManager;
 import ch.epfl.sdp.kandle.dependencies.MockAuthentication;
 import ch.epfl.sdp.kandle.dependencies.MockDatabase;
@@ -77,6 +81,7 @@ public class LoginActivityTest {
     public static void clearCurrentUser() {
         LoggedInUser.clear();
     }
+
 
     @Test
     public void authenticationTestWhereUserExists() {

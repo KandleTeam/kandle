@@ -1,5 +1,6 @@
 package ch.epfl.sdp.kandle.fragment;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -16,13 +17,21 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+
 import com.squareup.picasso.Picasso;
+
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 import ch.epfl.sdp.kandle.LoggedInUser;
 import ch.epfl.sdp.kandle.dependencies.CachedDatabase;
 import ch.epfl.sdp.kandle.dependencies.Post;
@@ -61,7 +70,10 @@ public class YourPostListFragment extends Fragment {
         auth = DependencyManager.getAuthSystem();
         database = new CachedDatabase();
 
+
         userId = LoggedInUser.getInstance().getId();
+
+        Context context = this.getContext();
 
         database.getPostsByUserId(userId).addOnCompleteListener(task -> {
 
@@ -75,26 +87,27 @@ public class YourPostListFragment extends Fragment {
                     posts = new ArrayList<Post>();
                 }
 
-                PostAdapter adapter = new PostAdapter(posts);
+                PostAdapter adapter = new PostAdapter(posts, context);
 
-                    adapter.setOnItemClickListener((position, view) -> {
-                        LayoutInflater inflater1 = getLayoutInflater();
-                        View popupView = inflater1.inflate(R.layout.post_content, null);
-                        int width = LinearLayout.LayoutParams.WRAP_CONTENT;
-                        int height = LinearLayout.LayoutParams.WRAP_CONTENT;
-                        boolean focusable = true; // lets taps ouside the popup also dismiss it
-                        final PopupWindow popupWindow = new PopupWindow(popupView, width, height, focusable);
-                        popupWindow.showAtLocation(view, Gravity.CENTER, 0, 0);
-                        TextView content = popupView.findViewById(R.id.post_content);
-                        ImageView image = popupView.findViewById(R.id.postImage);
-                        content.setText(posts.get(position).getDescription());
-                        System.out.println("Before "+ posts.get(position).getPostId());
-                        if(posts.get(position).getImageURL() != null){
-                            image.setVisibility(View.VISIBLE);
-                            image.setTag(POST_IMAGE);
-                            System.out.println("In if"+image.getTag());
-                            Picasso.get().load(posts.get(position).getImageURL()).into(image);
-                        }
+
+                adapter.setOnItemClickListener((position, view) -> {
+                    LayoutInflater inflater1 = getLayoutInflater();
+                    View popupView = inflater1.inflate(R.layout.post_content, null);
+                    int width = LinearLayout.LayoutParams.WRAP_CONTENT;
+                    int height = LinearLayout.LayoutParams.WRAP_CONTENT;
+                    boolean focusable = true; // lets taps ouside the popup also dismiss it
+                    final PopupWindow popupWindow = new PopupWindow(popupView, width, height, focusable);
+                    popupWindow.showAtLocation(view, Gravity.CENTER, 0, 0);
+                    TextView content = popupView.findViewById(R.id.post_content);
+                    ImageView image = popupView.findViewById(R.id.postImage);
+                    content.setText(posts.get(position).getDescription());
+                    System.out.println("Before " + posts.get(position).getPostId());
+                    if (posts.get(position).getImageURL() != null) {
+                        image.setVisibility(View.VISIBLE);
+                        image.setTag(POST_IMAGE);
+                        System.out.println("In if" + image.getTag());
+                        Picasso.get().load(posts.get(position).getImageURL()).into(image);
+                    }
 
                     popupView.setOnClickListener((popup) -> {
                         popupWindow.dismiss();
@@ -102,14 +115,11 @@ public class YourPostListFragment extends Fragment {
 
                 });
 
-                // Attach the adapter to the recyclerview to populate items
                 rvPosts.setAdapter(adapter);
-                // Set layout manager to position the items
 
             } else {
                 System.out.println(task.getException().getMessage());
             }
-
         });
 
 

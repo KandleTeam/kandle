@@ -1,5 +1,6 @@
 package ch.epfl.sdp.kandle;
 
+
 import android.content.ContentResolver;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -13,14 +14,13 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.Toast;
 
-import androidx.appcompat.app.AppCompatActivity;
-
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.Date;
 
+import androidx.appcompat.app.AppCompatActivity;
 import ch.epfl.sdp.kandle.ImagePicker.ImagePicker;
 import ch.epfl.sdp.kandle.dependencies.Authentication;
 import ch.epfl.sdp.kandle.dependencies.CachedDatabase;
@@ -51,9 +51,21 @@ public class PostActivity extends AppCompatActivity {
     private Uri imageUri;
 
     @Override
+    public void onResume(){
+        super.onResume();
+    }
+
+    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_post);
+
+        //Permission();
+
+
+        Intent intent = getIntent();
+        Double latitude = intent.getDoubleExtra("latitude", 0.0) - 0.0015;
+        Double longitude = intent.getDoubleExtra("longitude", 0.0) - 0.0015;
 
         mPostText = findViewById(R.id.postText);
         mPostButton = findViewById(R.id.postButton);
@@ -68,7 +80,9 @@ public class PostActivity extends AppCompatActivity {
 
         mPostButton.setOnClickListener(v -> {
 
+
             String postText = mPostText.getText().toString().trim();
+
             Uri imageUri = postImagePicker.getImageUri();
             if (imageUri == null) {
                 imageUri = postCamera.getImageUri();
@@ -85,14 +99,19 @@ public class PostActivity extends AppCompatActivity {
                         Uri downloadUri = task.getResult();
                         if (downloadUri == null) {
                             Toast.makeText(PostActivity.this, "Unable to upload image", Toast.LENGTH_LONG).show();
+
                         } else {
-                            p = new Post(postText, downloadUri.toString(), new Date(), auth.getCurrentUser().getId());
+                            p = new Post(postText, downloadUri.toString(), new Date(), LoggedInUser.getInstance().getId(), longitude, latitude);
+
                             post(p);
                         }
                     }
                 });
-            } else {
-                p = new Post(postText, null, new Date(), auth.getCurrentUser().getId());
+
+            }
+            else {
+                p = new Post(postText, null, new Date(), LoggedInUser.getInstance().getId(), longitude, latitude);
+
                 post(p);
             }
 
@@ -107,12 +126,15 @@ public class PostActivity extends AppCompatActivity {
     private void post(Post p) {
         database.addPost(p).addOnCompleteListener(task -> {
             if (task.isSuccessful()) {
-                Toast.makeText(PostActivity.this, "You have successfully posted : " + p.getDescription(), Toast.LENGTH_LONG).show();
+
+                Toast.makeText(PostActivity.this, "You have successfully posted " , Toast.LENGTH_LONG ).show();
+
                 finish();
             }
         });
 
     }
+
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -131,6 +153,7 @@ public class PostActivity extends AppCompatActivity {
             }
         }
     }
+
 
     public Task<Uri> uploadImage(Uri imageUri) {
         Storage storage = DependencyManager.getStorageSystem();

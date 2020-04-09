@@ -6,6 +6,11 @@ import org.junit.Test;
 import androidx.test.espresso.contrib.DrawerActions;
 import androidx.test.espresso.contrib.NavigationViewActions;
 import androidx.test.espresso.intent.rule.IntentsTestRule;
+
+import org.junit.Rule;
+import org.junit.Test;
+
+import androidx.test.rule.GrantPermissionRule;
 import java.util.HashMap;
 import ch.epfl.sdp.kandle.dependencies.DependencyManager;
 import ch.epfl.sdp.kandle.dependencies.MockAuthentication;
@@ -59,6 +64,9 @@ public class RegisterActivityTest {
                     DependencyManager.setFreshTestDependencies(authentication, db, storage,internalStorage,network);
                 }
             };
+
+    @Rule
+    public GrantPermissionRule permissionRule = GrantPermissionRule.grant(android.Manifest.permission.ACCESS_FINE_LOCATION);
 
     @After
     public void clearCurrentUser(){

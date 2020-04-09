@@ -1,14 +1,20 @@
 package ch.epfl.sdp.kandle.dependencies;
 
+import com.google.android.gms.location.LocationServices;
+import android.util.Pair;
 
 import ch.epfl.sdp.kandle.NetworkState;
 
 public final class DependencyManager {
 
-    private static InternalStorage internalStorage = InternalStorageHandler.getInstance();
+
     private static Database db = FirestoreDatabase.getInstance();
-    private static Authentication auth = FirebaseAuthentication.getInstance();
     private static Storage storage = CloudStorage.getInstance();
+    private static Authentication auth = FirebaseAuthentication.getInstance();
+    private static MyLocationProvider locationProvider = new GoogleLocationServices();
+    private static NetworkState networkState = UserNetworkStatus.getInstance();
+    //private static InternalStorage internalStorage = null;
+    public static void setFreshTestDependencies(Authentication auth, Database db, Storage storage) {
     private static NetworkState networkState = UserNetworkStatus.getInstance();
 
 
@@ -17,9 +23,19 @@ public final class DependencyManager {
         setAuthSystem(auth);
         setDatabaseSystem(db);
         setStorageSystem(storage);
+        setLocationProvider( new MockLocation());
+        //setInternalStorageSystem(new MockInternalStorage(isLoggedIn));
         setInternalStorageSystem(internalStorage);
         setNetworkStateSystem(networkState);
 
+    }
+
+    public static MyLocationProvider getLocationProvider() {
+        return locationProvider;
+    }
+
+    public static void setLocationProvider(MyLocationProvider locationProvider) {
+        DependencyManager.locationProvider = locationProvider;
     }
 
     public static Authentication getAuthSystem() {
