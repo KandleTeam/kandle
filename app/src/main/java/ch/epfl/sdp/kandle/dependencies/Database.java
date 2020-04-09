@@ -70,10 +70,14 @@ public interface Database {
 
     Task<Void> unlikePost(String userId, String postId);
 
+    Task<List<User>> getLikers(String postId);
+
     //Task<List<String>> likers(String postId);
 
     //Task<Void> editPost(Post p);
 
     Task<List<Post>> getPostsByUserId(String userId);
+
+    Task<List<Post>> getNearbyPosts(double longitude, double latitude, double distance);
 
 }

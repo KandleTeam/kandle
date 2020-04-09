@@ -39,4 +39,6 @@
     <string name="camera_alert">Device has only one camera!</string>
     <string name="switch_cam">Switch Camera</string>
 
+    <string name="mapbox_access_token">pk.eyJ1IjoiYS1pYm0iLCJhIjoiY2s4cmpoamd6MGEyeTNlbXNyaXZmcXNveiJ9.B5j1E7U4A_Pon-mHaRKrnQ</string>
+
 </resources>

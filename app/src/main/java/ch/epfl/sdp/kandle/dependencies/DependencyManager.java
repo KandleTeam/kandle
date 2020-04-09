@@ -1,5 +1,6 @@
 package ch.epfl.sdp.kandle.dependencies;
 
+import com.google.android.gms.location.LocationServices;
 import android.util.Pair;
 
 import java.util.Map;
@@ -11,14 +12,24 @@ public final class DependencyManager {
     private static Authentication auth = FirebaseAuthentication.getInstance();
     private static Database db = FirestoreDatabase.getInstance();
     private static Storage storage = CloudStorage.getInstance();
+
+    private static MyLocationProvider locationProvider = new GoogleLocationServices();
+
     //private static InternalStorage internalStorage = null;
-
-
     public static void setFreshTestDependencies(Authentication auth, Database db, Storage storage) {
         setAuthSystem(auth);
         setDatabaseSystem(db);
         setStorageSystem(storage);
+        setLocationProvider( new MockLocation());
         //setInternalStorageSystem(new MockInternalStorage(isLoggedIn));
+    }
+
+    public static MyLocationProvider getLocationProvider() {
+        return locationProvider;
+    }
+
+    public static void setLocationProvider(MyLocationProvider locationProvider) {
+        DependencyManager.locationProvider = locationProvider;
     }
 
     public static Authentication getAuthSystem() {
