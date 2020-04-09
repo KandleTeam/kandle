@@ -13,6 +13,7 @@ import androidx.fragment.app.Fragment;
 import ch.epfl.sdp.kandle.LoggedInUser;
 import ch.epfl.sdp.kandle.R;
 import ch.epfl.sdp.kandle.dependencies.Authentication;
+import ch.epfl.sdp.kandle.dependencies.CachedDatabase;
 import ch.epfl.sdp.kandle.dependencies.Database;
 import ch.epfl.sdp.kandle.dependencies.DependencyManager;
 
@@ -23,7 +24,7 @@ public class AchievementFragment extends Fragment {
 
     public AchievementFragment() {
         auth = DependencyManager.getAuthSystem();
-        database = DependencyManager.getDatabaseSystem();
+        database = new CachedDatabase();
     }
 
     @Nullable

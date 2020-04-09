@@ -23,8 +23,10 @@ import java.util.Date;
 
 import ch.epfl.sdp.kandle.ImagePicker.ImagePicker;
 import ch.epfl.sdp.kandle.dependencies.Authentication;
+import ch.epfl.sdp.kandle.dependencies.CachedDatabase;
 import ch.epfl.sdp.kandle.dependencies.Database;
 import ch.epfl.sdp.kandle.dependencies.DependencyManager;
+import ch.epfl.sdp.kandle.dependencies.Post;
 import ch.epfl.sdp.kandle.dependencies.Storage;
 
 public class PostActivity extends AppCompatActivity {
@@ -62,7 +64,7 @@ public class PostActivity extends AppCompatActivity {
         postCamera = new PostCamera(this);
 
         auth = DependencyManager.getAuthSystem();
-        database = DependencyManager.getDatabaseSystem();
+        database = new CachedDatabase();
 
         mPostButton.setOnClickListener(v -> {
 

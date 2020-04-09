@@ -17,10 +17,25 @@ public class MockAuthentication implements Authentication {
         this.isConnected = isConnected;
         this.accounts = accounts;
         this.password = password;
-        if (isConnected) {
-            accounts.put(LoggedInUser.getInstance().getEmail(), LoggedInUser.getInstance().getId());
-        }
 
+
+    }
+
+    @Override
+    public boolean getCurrentUserAtApplicationStart() {
+        User localUser = DependencyManager.getInternalStorageSystem().getCurrentUser();
+        if(DependencyManager.getNetworkStateSystem().isConnected()) {
+            if (localUser != null && isConnected) {
+                LoggedInUser.init(localUser);
+                return true;
+            }
+        }else{
+            if(localUser !=null){
+                LoggedInUser.init(localUser);
+                return true;
+            }
+        }
+        return false;
     }
 
     @Override
@@ -34,6 +49,7 @@ public class MockAuthentication implements Authentication {
             String newId = "newId";
             User userToRegister = new User(newId, username, email, "nickname", null);
             accounts.put(email, newId);
+            DependencyManager.getInternalStorageSystem().saveUserAtLoginOrRegister(userToRegister);
             DependencyManager.getDatabaseSystem().createUser(userToRegister);
             isConnected = true;
             LoggedInUser.init(userToRegister);
@@ -51,6 +67,7 @@ public class MockAuthentication implements Authentication {
             isConnected = true;
             User user = DependencyManager.getDatabaseSystem().getUserById(accounts.get(email)).getResult();
             LoggedInUser.init(user);
+            DependencyManager.getInternalStorageSystem().saveUserAtLoginOrRegister(user);
             source.setResult(user);
         } else {
             source.setException(new Exception("You do not have an account yet"));
@@ -90,18 +107,7 @@ public class MockAuthentication implements Authentication {
         return LoggedInUser.getInstance();
     }
 
-    @Override
-    public boolean getCurrentUserAtApplicationStart() {
-        User localUser = DependencyManager.getInternalStorageSystem().getCurrentUser();
-        if (isConnected) {
-            System.out.println("Local user is not null when login at start");
-            //LoggedInUser.init(localUser);
-            return true;
-        }
 
-        return false;
-
-    }
 
 
 

@@ -2,7 +2,6 @@ package ch.epfl.sdp.kandle.dependencies;
 
 import androidx.annotation.NonNull;
 
-import com.google.android.gms.tasks.Continuation;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.gms.tasks.TaskCompletionSource;
@@ -24,7 +23,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
-import ch.epfl.sdp.kandle.Post;
 import ch.epfl.sdp.kandle.User;
 
 public class FirestoreDatabase implements Database {

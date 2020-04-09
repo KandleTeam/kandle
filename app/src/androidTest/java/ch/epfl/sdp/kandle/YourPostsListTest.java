@@ -25,7 +25,9 @@ import ch.epfl.sdp.kandle.dependencies.DependencyManager;
 import ch.epfl.sdp.kandle.dependencies.MockAuthentication;
 import ch.epfl.sdp.kandle.dependencies.MockDatabase;
 import ch.epfl.sdp.kandle.dependencies.MockInternalStorage;
+import ch.epfl.sdp.kandle.dependencies.MockNetwork;
 import ch.epfl.sdp.kandle.dependencies.MockStorage;
+import ch.epfl.sdp.kandle.dependencies.Post;
 import ch.epfl.sdp.kandle.fragment.YourPostListFragment;
 import static androidx.test.espresso.Espresso.onView;
 import static androidx.test.espresso.action.ViewActions.click;
@@ -65,7 +67,8 @@ public class YourPostsListTest {
                     MockAuthentication authentication = new MockAuthentication(true, accounts, "password");
                     MockStorage storage = new MockStorage();
                     MockInternalStorage internalStorage = new MockInternalStorage();
-                    DependencyManager.setFreshTestDependencies(authentication, db, storage,internalStorage);
+                    MockNetwork network = new MockNetwork(true);
+                    DependencyManager.setFreshTestDependencies(authentication, db, storage,internalStorage,network);
 
                 }
 

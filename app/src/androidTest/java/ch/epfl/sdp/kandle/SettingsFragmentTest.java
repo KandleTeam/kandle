@@ -11,16 +11,18 @@ import androidx.test.rule.ActivityTestRule;
 import androidx.test.rule.GrantPermissionRule;
 
 import java.util.HashMap;
-import java.util.LinkedList;
+
 import ch.epfl.sdp.kandle.dependencies.DependencyManager;
 import ch.epfl.sdp.kandle.dependencies.MockAuthentication;
 import ch.epfl.sdp.kandle.dependencies.MockDatabase;
 import ch.epfl.sdp.kandle.dependencies.MockInternalStorage;
+import ch.epfl.sdp.kandle.dependencies.MockNetwork;
 import ch.epfl.sdp.kandle.dependencies.MockStorage;
+import ch.epfl.sdp.kandle.dependencies.Post;
+
 import static androidx.test.espresso.Espresso.onView;
 import static androidx.test.espresso.action.ViewActions.click;
 import static androidx.test.espresso.action.ViewActions.closeSoftKeyboard;
-import static androidx.test.espresso.action.ViewActions.longClick;
 import static androidx.test.espresso.action.ViewActions.typeText;
 import static androidx.test.espresso.assertion.ViewAssertions.matches;
 import static androidx.test.espresso.contrib.DrawerMatchers.isClosed;
@@ -47,12 +49,13 @@ public class SettingsFragmentTest {
                     HashMap<String, String> accounts = new HashMap<>();
                     HashMap<String,User> users = new HashMap<>();
                     HashMap<String, MockDatabase.Follow> followMap = new HashMap<>();
-                    HashMap<String,Post> posts = new HashMap<>();
+                    HashMap<String, Post> posts = new HashMap<>();
                     MockDatabase db = new MockDatabase(true, users, followMap, posts);
                     MockAuthentication authentication = new MockAuthentication(true, accounts, "password");
                     MockStorage storage = new MockStorage();
                     MockInternalStorage internalStorage = new MockInternalStorage();
-                    DependencyManager.setFreshTestDependencies(authentication, db, storage,internalStorage);
+                    MockNetwork network = new MockNetwork(true);
+                    DependencyManager.setFreshTestDependencies(authentication, db, storage,internalStorage,network);
 
 
                 }

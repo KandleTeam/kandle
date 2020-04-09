@@ -1,7 +1,5 @@
 package ch.epfl.sdp.kandle.dependencies;
 
-import android.provider.ContactsContract;
-
 import com.google.android.gms.tasks.Task;
 import com.google.android.gms.tasks.TaskCompletionSource;
 import com.google.firebase.auth.AuthCredential;
@@ -9,7 +7,6 @@ import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.EmailAuthProvider;
 import com.google.firebase.auth.FirebaseAuth;
 import ch.epfl.sdp.kandle.LoggedInUser;
-import ch.epfl.sdp.kandle.NetworkStatus;
 import ch.epfl.sdp.kandle.User;
 
 public class FirebaseAuthentication implements Authentication {
@@ -34,7 +31,7 @@ public class FirebaseAuthentication implements Authentication {
      */
     public boolean getCurrentUserAtApplicationStart() {
         User localUser = DependencyManager.getInternalStorageSystem().getCurrentUser();
-        if(NetworkStatus.isConnected()) {
+        if(DependencyManager.getNetworkStateSystem().isConnected()) {
             if (localUser != null && fAuth.getCurrentUser() != null) {
                 System.out.println("Local user is not null when login at start");
                 LoggedInUser.init(localUser);

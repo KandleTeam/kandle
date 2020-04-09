@@ -6,8 +6,6 @@ import androidx.coordinatorlayout.widget.CoordinatorLayout;
 import androidx.core.content.ContextCompat;
 
 import ch.epfl.sdp.kandle.dependencies.Authentication;
-import ch.epfl.sdp.kandle.dependencies.CachedDatabase;
-import ch.epfl.sdp.kandle.dependencies.Database;
 import ch.epfl.sdp.kandle.dependencies.DependencyManager;
 
 import android.app.ProgressDialog;
@@ -81,9 +79,9 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     private boolean checkForInternetConnection(){
-        if (!NetworkStatus.isConnected()) {
+        if (!DependencyManager.getNetworkStateSystem().isConnected()) {
             CNetworkBar = (CoordinatorLayout) findViewById(R.id.connectionBar);
-            Snackbar snackbar = Snackbar.make(CNetworkBar, "Check your internet connection", Snackbar.LENGTH_SHORT);
+            Snackbar snackbar = Snackbar.make(CNetworkBar, R.string.no_connexion, Snackbar.LENGTH_SHORT);
             snackbar.setTextColor(ContextCompat.getColor(this, R.color.white));
             CNetworkBar.setBackgroundColor(ContextCompat.getColor(this, R.color.colorAccent));
             snackbar.show();

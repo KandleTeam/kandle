@@ -119,9 +119,9 @@ public class RegisterActivity extends AppCompatActivity {
     }
 
     private boolean checkForInternetConnection(){
-        if (!NetworkStatus.isConnected()) {
+        if (!DependencyManager.getNetworkStateSystem().isConnected()) {
             CNetworkBar = (CoordinatorLayout) findViewById(R.id.connectionBar);
-            Snackbar snackbar = Snackbar.make(CNetworkBar, "Check your internet connection", Snackbar.LENGTH_SHORT);
+            Snackbar snackbar = Snackbar.make(CNetworkBar,  R.string.no_connexion, Snackbar.LENGTH_SHORT);
             snackbar.setTextColor(ContextCompat.getColor(this, R.color.white));
             CNetworkBar.setBackgroundColor(ContextCompat.getColor(this, R.color.colorAccent));
             snackbar.show();

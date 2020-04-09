@@ -1,6 +1,5 @@
 package ch.epfl.sdp.kandle;
 
-import android.util.Pair;
 import android.view.Gravity;
 import android.view.View;
 import org.hamcrest.Matcher;
@@ -20,7 +19,9 @@ import ch.epfl.sdp.kandle.dependencies.DependencyManager;
 import ch.epfl.sdp.kandle.dependencies.MockAuthentication;
 import ch.epfl.sdp.kandle.dependencies.MockDatabase;
 import ch.epfl.sdp.kandle.dependencies.MockInternalStorage;
+import ch.epfl.sdp.kandle.dependencies.MockNetwork;
 import ch.epfl.sdp.kandle.dependencies.MockStorage;
+import ch.epfl.sdp.kandle.dependencies.Post;
 
 import static androidx.test.espresso.action.ViewActions.clearText;
 import static androidx.test.espresso.action.ViewActions.click;
@@ -53,12 +54,13 @@ public class SearchFragmentTest {
                     HashMap<String, MockDatabase.Follow> followMap = new HashMap<>();
                     followMap.put(user1.getId(),new MockDatabase.Follow(new LinkedList<>(),new LinkedList<>()));
                     followMap.put(user2.getId(),new MockDatabase.Follow(new LinkedList<>(),new LinkedList<>()));
-                    HashMap<String,Post> posts = new HashMap<>();
+                    HashMap<String, Post> posts = new HashMap<>();
                     MockDatabase db = new MockDatabase(true, users, followMap, posts);
                     MockAuthentication authentication = new MockAuthentication(true, accounts, "password");
                     MockStorage storage = new MockStorage();
                     MockInternalStorage internalStorage = new MockInternalStorage();
-                    DependencyManager.setFreshTestDependencies(authentication, db, storage,internalStorage);
+                    MockNetwork network = new MockNetwork(true);
+                    DependencyManager.setFreshTestDependencies(authentication, db, storage,internalStorage,network);
                     DependencyManager.getDatabaseSystem().createUser(user1);
                     DependencyManager.getDatabaseSystem().createUser(user2);
                     DependencyManager.getDatabaseSystem().follow(LoggedInUser.getInstance().getId(),user1.getId());

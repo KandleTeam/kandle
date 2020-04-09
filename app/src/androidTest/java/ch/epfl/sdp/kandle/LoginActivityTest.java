@@ -23,6 +23,7 @@ import ch.epfl.sdp.kandle.dependencies.DependencyManager;
 import ch.epfl.sdp.kandle.dependencies.MockAuthentication;
 import ch.epfl.sdp.kandle.dependencies.MockDatabase;
 import ch.epfl.sdp.kandle.dependencies.MockInternalStorage;
+import ch.epfl.sdp.kandle.dependencies.MockNetwork;
 import ch.epfl.sdp.kandle.dependencies.MockStorage;
 
 import static androidx.test.espresso.Espresso.onView;
@@ -48,6 +49,7 @@ public class LoginActivityTest {
 
     Resources res = ApplicationProvider.getApplicationContext().getResources();
     User alreadyHasAnAccount;
+    MockNetwork network;
     @Rule
     public ActivityTestRule<LoginActivity> intentsRule =
             new ActivityTestRule<LoginActivity>(LoginActivity.class, true, true){
@@ -62,7 +64,8 @@ public class LoginActivityTest {
                     MockAuthentication authentication = new MockAuthentication(false, accounts, "password");
                     MockStorage storage = new MockStorage();
                     MockInternalStorage internalStorage = new MockInternalStorage();
-                    DependencyManager.setFreshTestDependencies(authentication, db, storage,internalStorage);
+                    network = new MockNetwork(true);
+                    DependencyManager.setFreshTestDependencies(authentication, db, storage,internalStorage,network);
                 }
             };
 
@@ -133,6 +136,7 @@ public class LoginActivityTest {
         Intents.release();
 
     }
+
 
 
 }

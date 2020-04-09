@@ -6,6 +6,7 @@ import androidx.test.espresso.contrib.DrawerActions;
 import androidx.test.espresso.contrib.NavigationViewActions;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 import androidx.test.rule.ActivityTestRule;
+import androidx.test.rule.GrantPermissionRule;
 
 import static androidx.test.espresso.Espresso.onView;
 import static androidx.test.espresso.assertion.ViewAssertions.matches;
@@ -21,19 +22,22 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import java.util.HashMap;
-import java.util.LinkedList;
 
 import ch.epfl.sdp.kandle.dependencies.DependencyManager;
 import ch.epfl.sdp.kandle.dependencies.MockAuthentication;
 import ch.epfl.sdp.kandle.dependencies.MockDatabase;
 import ch.epfl.sdp.kandle.dependencies.MockInternalStorage;
+import ch.epfl.sdp.kandle.dependencies.MockNetwork;
 import ch.epfl.sdp.kandle.dependencies.MockStorage;
+import ch.epfl.sdp.kandle.dependencies.Post;
 
 @RunWith(AndroidJUnit4.class)
 public class AchievementTest {
     public  User user1;
     public  User user2;
 
+    @Rule
+    public GrantPermissionRule permissionRule = GrantPermissionRule.grant(android.Manifest.permission.ACCESS_FINE_LOCATION);
     @Rule
     public ActivityTestRule<MainActivity> intentsRule =
             new ActivityTestRule<MainActivity>(MainActivity.class,true,true){
@@ -48,12 +52,13 @@ public class AchievementTest {
                     HashMap<String,User> users = new HashMap<>();
                     HashMap<String, MockDatabase.Follow> followMap = new HashMap<>();
 
-                    HashMap<String,Post> posts = new HashMap<>();
+                    HashMap<String, Post> posts = new HashMap<>();
                     MockDatabase db = new MockDatabase(true, users, followMap, posts);
                     MockAuthentication authentication = new MockAuthentication(true, accounts, "password");
                     MockStorage storage = new MockStorage();
                     MockInternalStorage internalStorage = new MockInternalStorage();
-                    DependencyManager.setFreshTestDependencies(authentication, db, storage,internalStorage);
+                    MockNetwork network = new MockNetwork(true);
+                    DependencyManager.setFreshTestDependencies(authentication, db, storage,internalStorage,network);
                     DependencyManager.getDatabaseSystem().createUser(user1);
                     DependencyManager.getDatabaseSystem().createUser(user2);
                     DependencyManager.getDatabaseSystem().follow(LoggedInUser.getInstance().getId(),user1.getId());

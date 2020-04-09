@@ -33,16 +33,12 @@ import static androidx.test.espresso.matcher.ViewMatchers.withTagValue;
 import static org.hamcrest.CoreMatchers.not;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.core.IsEqual.equalTo;
-import org.junit.After;
-import org.junit.Rule;
-import org.junit.Test;
-import java.util.HashMap;
-import ch.epfl.sdp.kandle.dependencies.DependencyManager;
-import ch.epfl.sdp.kandle.dependencies.MockAuthentication;
-import ch.epfl.sdp.kandle.dependencies.MockDatabase;
-import ch.epfl.sdp.kandle.dependencies.MockInternalStorage;
-import ch.epfl.sdp.kandle.dependencies.MockStorage;
 
+import ch.epfl.sdp.kandle.dependencies.MockAuthentication;
+import ch.epfl.sdp.kandle.dependencies.MockInternalStorage;
+import ch.epfl.sdp.kandle.dependencies.MockNetwork;
+import ch.epfl.sdp.kandle.dependencies.MockStorage;
+import ch.epfl.sdp.kandle.dependencies.Post;
 
 
 public class CustomAccountActivityTest {
@@ -61,7 +57,8 @@ public class CustomAccountActivityTest {
                     MockAuthentication authentication = new MockAuthentication(true, accounts, "password");
                     MockStorage storage = new MockStorage();
                     MockInternalStorage internalStorage = new MockInternalStorage();
-                    DependencyManager.setFreshTestDependencies(authentication, db, storage,internalStorage);
+                    MockNetwork network = new MockNetwork(true);
+                    DependencyManager.setFreshTestDependencies(authentication, db, storage,internalStorage,network);
 
                 }
             };

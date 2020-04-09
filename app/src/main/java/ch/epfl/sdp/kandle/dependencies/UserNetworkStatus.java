@@ -1,4 +1,4 @@
-package ch.epfl.sdp.kandle;
+package ch.epfl.sdp.kandle.dependencies;
 
 import android.content.Context;
 import android.net.ConnectivityManager;
@@ -6,14 +6,23 @@ import android.net.NetworkCapabilities;
 import android.net.NetworkInfo;
 import android.os.Build;
 
+import ch.epfl.sdp.kandle.ConnexionStatus;
+import ch.epfl.sdp.kandle.Kandle;
+import ch.epfl.sdp.kandle.NetworkState;
 
-public class NetworkStatus {
-    private static ConnexionStatus connexionStatus;
-    public NetworkStatus() {
+
+public class UserNetworkStatus implements NetworkState {
+    private ConnexionStatus connexionStatus;
+    private static final UserNetworkStatus INSTANCE = new UserNetworkStatus();
+    private UserNetworkStatus() {
 
     }
 
-    public static boolean isConnected() {
+    public static UserNetworkStatus getInstance() {
+        return INSTANCE;
+    }
+
+    public boolean isConnected() {
         Boolean connected;
         ConnectivityManager cm = (ConnectivityManager) Kandle.getContext().getSystemService(Context.CONNECTIVITY_SERVICE);
         //For Api 29
@@ -34,8 +43,4 @@ public class NetworkStatus {
         return connected;
     }
 
-
-    public static ConnexionStatus getUpdatedConnexionStatus(){
-       return connexionStatus;
-    }
 }

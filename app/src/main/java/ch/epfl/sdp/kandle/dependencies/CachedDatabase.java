@@ -1,18 +1,12 @@
 package ch.epfl.sdp.kandle.dependencies;
 
 
-import android.os.Build;
-
-import androidx.annotation.RequiresApi;
-
 import com.google.android.gms.tasks.Task;
 import com.google.android.gms.tasks.TaskCompletionSource;
 
 import java.util.List;
-import java.util.Objects;
 
 import ch.epfl.sdp.kandle.LoggedInUser;
-import ch.epfl.sdp.kandle.Post;
 import ch.epfl.sdp.kandle.User;
 
 public class CachedDatabase implements Database {
@@ -64,7 +58,7 @@ public class CachedDatabase implements Database {
 
     @Override
     public Task<Void> unFollow(String userUnFollowing, String userUnFollowed) {
-        return unFollow(userUnFollowing, userUnFollowed);
+        return database.unFollow(userUnFollowing, userUnFollowed);
     }
 
     @Override
