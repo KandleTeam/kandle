@@ -83,6 +83,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder>{
                 database.unlikePost(userId, post.getPostId()).addOnCompleteListener(task -> {
                     if (task.isSuccessful()) {
                         post.unlikePost(userId);
+                        likeView.setText(String.valueOf(post.getLikes()));
                     }
                 });
 
@@ -90,12 +91,13 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder>{
                 database.likePost(userId, post.getPostId()).addOnCompleteListener(task -> {
                     if (task.isSuccessful()){
                         post.likePost(userId);
+                        likeView.setText(String.valueOf(post.getLikes()));
                     }
                 });
 
 
             }
-            likeView.setText(String.valueOf(post.getLikes()));
+            //likeView.setText(String.valueOf(post.getLikes()));
         });
 
         holder.mDeleteButton.setOnClickListener(v -> {

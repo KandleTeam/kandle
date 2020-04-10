@@ -124,7 +124,9 @@ public class Post {
     }
 
     public void likePost(String userId) {
-        likers.add(userId);
+        if (!likers.contains(userId)) {
+            likers.add(userId);
+        }
     }
 
     public void unlikePost(String userId) {
