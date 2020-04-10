@@ -24,6 +24,7 @@ import ch.epfl.sdp.kandle.dependencies.DependencyManager;
 import ch.epfl.sdp.kandle.fragment.AboutFragment;
 import ch.epfl.sdp.kandle.fragment.AchievementFragment;
 //import ch.epfl.sdp.kandle.Fragment.ProfileFragment;
+import ch.epfl.sdp.kandle.fragment.FollowingPostsFragment;
 import ch.epfl.sdp.kandle.fragment.MapViewFragment;
 import ch.epfl.sdp.kandle.fragment.ProfileFragment;
 import ch.epfl.sdp.kandle.fragment.SearchFragment;
@@ -182,6 +183,10 @@ public class MainActivity extends AppCompatActivity {
 
             case R.id.light:
                 fragmentClass = AchievementFragment.class;
+                break;
+
+            case R.id.following_posts:
+                fragmentClass = FollowingPostsFragment.class;
                 break;
 
             default:

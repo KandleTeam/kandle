@@ -46,8 +46,6 @@ public class YourPostListFragment extends Fragment {
 
     private RecyclerView rvPosts;
 
-    private DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
-
     public final static int POST_IMAGE = 10;
 
 
@@ -79,6 +77,7 @@ public class YourPostListFragment extends Fragment {
                 PostAdapter adapter = new PostAdapter(posts);
 
                     adapter.setOnItemClickListener((position, view) -> {
+                        System.out.println("WE ARE IN THE YPOUR POST PART");
                         LayoutInflater inflater1 = getLayoutInflater();
                         View popupView = inflater1.inflate(R.layout.post_content, null);
                         int width = LinearLayout.LayoutParams.WRAP_CONTENT;
