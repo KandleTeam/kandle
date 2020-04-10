@@ -1,4 +1,4 @@
-package ch.epfl.sdp.kandle;
+package ch.epfl.sdp.kandle.dependencies;
 
 
 import java.util.ArrayList;

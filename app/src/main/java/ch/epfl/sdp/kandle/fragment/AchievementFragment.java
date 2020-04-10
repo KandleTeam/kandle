@@ -13,6 +13,7 @@ import androidx.fragment.app.Fragment;
 import ch.epfl.sdp.kandle.LoggedInUser;
 import ch.epfl.sdp.kandle.R;
 import ch.epfl.sdp.kandle.dependencies.Authentication;
+import ch.epfl.sdp.kandle.caching.CachedDatabase;
 import ch.epfl.sdp.kandle.dependencies.Database;
 import ch.epfl.sdp.kandle.dependencies.DependencyManager;
 
@@ -23,7 +24,7 @@ public class AchievementFragment extends Fragment {
 
     public AchievementFragment() {
         auth = DependencyManager.getAuthSystem();
-        database = DependencyManager.getDatabaseSystem();
+        database = new CachedDatabase();
     }
 
     @Nullable
@@ -40,7 +41,7 @@ public class AchievementFragment extends Fragment {
     }
 
     private void checkPosts(TextView tv) {
-        database.getPostsByUserId(LoggedInUser.getInstance().getId()).addOnCompleteListener(task1 -> {
+        database.getPostsByUserId(auth.getCurrentUser().getId()).addOnCompleteListener(task1 -> {
             if (task1.isSuccessful()) {
                 setText(tv, task1.getResult().size() >= 10);
             } else {
@@ -51,7 +52,7 @@ public class AchievementFragment extends Fragment {
     }
 
     private void checkFollowing(TextView tv) {
-        database.userIdFollowingList(LoggedInUser.getInstance().getId()).addOnCompleteListener(task2 -> {
+        database.userIdFollowingList(auth.getCurrentUser().getId()).addOnCompleteListener(task2 -> {
             if (task2.isSuccessful()) {
                 setText(tv, task2.getResult().size() >= 3);
             } else {
@@ -62,7 +63,7 @@ public class AchievementFragment extends Fragment {
     }
 
     private void checkFollowers(TextView tv) {
-        database.userIdFollowersList(LoggedInUser.getInstance().getId()).addOnCompleteListener(task -> {
+        database.userIdFollowersList(auth.getCurrentUser().getId()).addOnCompleteListener(task -> {
             if (task.isSuccessful()) {
                 setText(tv, task.getResult().size() >= 3);
             } else {

@@ -2,6 +2,7 @@ package ch.epfl.sdp.kandle.dependencies;
 
 import androidx.annotation.NonNull;
 import ch.epfl.sdp.kandle.User;
+import ch.epfl.sdp.kandle.caching.InternalStorage;
 
 /**
  * @Author Marc Egli
@@ -14,6 +15,9 @@ public class MockInternalStorage implements InternalStorage {
 
     public MockInternalStorage(boolean userSavedLocally) {
         this.userSavedLocally = userSavedLocally;
+        if(userSavedLocally){
+            storedUser = new User("loggedInUserId","LoggedInUser","loggedInUser@kandle.ch","nickname","image")
+;        }
     }
 
     public MockInternalStorage() {
@@ -23,7 +27,7 @@ public class MockInternalStorage implements InternalStorage {
     @Override
     public User getCurrentUser() {
         if (userSavedLocally) {
-            return new User();
+            return storedUser;
         } else {
             return null;
         }
@@ -39,7 +43,7 @@ public class MockInternalStorage implements InternalStorage {
             userSavedLocally = !userSavedLocally;
         }
     }
-/*
+
     @Override
     public void updateUser(User user) throws IllegalArgumentException{
         if(user == null) {
@@ -49,7 +53,6 @@ public class MockInternalStorage implements InternalStorage {
 
     }
 
- */
 
     @Override
     public void deleteUser() {

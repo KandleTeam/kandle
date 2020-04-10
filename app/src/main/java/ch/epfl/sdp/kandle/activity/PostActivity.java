@@ -1,4 +1,4 @@
-package ch.epfl.sdp.kandle;
+package ch.epfl.sdp.kandle.activity;
 
 
 import android.content.ContentResolver;
@@ -21,10 +21,16 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import java.util.Date;
 
 import androidx.appcompat.app.AppCompatActivity;
-import ch.epfl.sdp.kandle.ImagePicker.ImagePicker;
+
+import ch.epfl.sdp.kandle.LoggedInUser;
+import ch.epfl.sdp.kandle.PostCamera;
+import ch.epfl.sdp.kandle.R;
+import ch.epfl.sdp.kandle.imagePicker.ImagePicker;
 import ch.epfl.sdp.kandle.dependencies.Authentication;
+import ch.epfl.sdp.kandle.caching.CachedDatabase;
 import ch.epfl.sdp.kandle.dependencies.Database;
 import ch.epfl.sdp.kandle.dependencies.DependencyManager;
+import ch.epfl.sdp.kandle.dependencies.Post;
 import ch.epfl.sdp.kandle.dependencies.Storage;
 
 public class PostActivity extends AppCompatActivity {
@@ -74,7 +80,7 @@ public class PostActivity extends AppCompatActivity {
         postCamera = new PostCamera(this);
 
         auth = DependencyManager.getAuthSystem();
-        database = DependencyManager.getDatabaseSystem();
+        database = new CachedDatabase();
 
         mPostButton.setOnClickListener(v -> {
 
@@ -98,9 +104,8 @@ public class PostActivity extends AppCompatActivity {
                         if (downloadUri == null) {
                             Toast.makeText(PostActivity.this, "Unable to upload image", Toast.LENGTH_LONG).show();
 
-                        }
-                        else {
-                            p = new Post(postText, downloadUri.toString(), new Date(), LoggedInUser.getInstance().getId(), longitude, latitude);
+                        } else {
+                            p = new Post(postText, downloadUri.toString(), new Date(), auth.getCurrentUser().getId(), longitude, latitude);
 
                             post(p);
                         }
@@ -109,7 +114,7 @@ public class PostActivity extends AppCompatActivity {
 
             }
             else {
-                p = new Post(postText, null, new Date(), LoggedInUser.getInstance().getId(), longitude, latitude);
+                p = new Post(postText, null, new Date(), auth.getCurrentUser().getId(), longitude, latitude);
 
                 post(p);
             }

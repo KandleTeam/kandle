@@ -1,6 +1,5 @@
 package ch.epfl.sdp.kandle;
 
-import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
@@ -11,14 +10,16 @@ import android.widget.TextView;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
-import androidx.core.app.ActivityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 import com.google.android.material.navigation.NavigationView;
 import com.squareup.picasso.Picasso;
+
+import ch.epfl.sdp.kandle.activity.LoginActivity;
 import ch.epfl.sdp.kandle.dependencies.Authentication;
+import ch.epfl.sdp.kandle.caching.CachedDatabase;
 import ch.epfl.sdp.kandle.dependencies.Database;
 import ch.epfl.sdp.kandle.dependencies.DependencyManager;
 import ch.epfl.sdp.kandle.fragment.AboutFragment;
@@ -50,11 +51,11 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 1);
+
 
 
         auth = DependencyManager.getAuthSystem();
-        database = DependencyManager.getDatabaseSystem();
+        database = new CachedDatabase();
         // Set a Toolbar to replace the ActionBar.
         toolbar = findViewById(R.id.toolbar);
         mDrawerLayout = findViewById(R.id.drawer_layout);
@@ -83,7 +84,7 @@ public class MainActivity extends AppCompatActivity {
         setTitle(mNavigationView.getCheckedItem().getTitle());
 
         final FragmentManager fragmentManager = getSupportFragmentManager();
-        mProfilePic.setOnClickListener(v -> database.getUserById(LoggedInUser.getInstance().getId()).addOnCompleteListener(task -> {
+        mProfilePic.setOnClickListener(v -> database.getUserById(auth.getCurrentUser().getId()).addOnCompleteListener(task -> {
                     if (task.isSuccessful()) {
                         fragmentManager.beginTransaction().replace(R.id.flContent, ProfileFragment.newInstance(task.getResult()))
                                 .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)

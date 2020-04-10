@@ -2,7 +2,7 @@ package ch.epfl.sdp.kandle.dependencies;
 
 import com.google.android.gms.tasks.Task;
 import java.util.List;
-import ch.epfl.sdp.kandle.Post;
+
 import ch.epfl.sdp.kandle.User;
 
 public interface Database {

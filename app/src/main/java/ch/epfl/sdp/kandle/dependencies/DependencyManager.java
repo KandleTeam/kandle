@@ -1,27 +1,31 @@
 package ch.epfl.sdp.kandle.dependencies;
 
-import com.google.android.gms.location.LocationServices;
-import android.util.Pair;
-
-import java.util.Map;
-import ch.epfl.sdp.kandle.Post;
-import ch.epfl.sdp.kandle.User;
+import ch.epfl.sdp.kandle.network.NetworkState;
+import ch.epfl.sdp.kandle.network.UserNetworkStatus;
+import ch.epfl.sdp.kandle.caching.InternalStorage;
+import ch.epfl.sdp.kandle.caching.InternalStorageHandler;
 
 public final class DependencyManager {
 
-    private static Authentication auth = FirebaseAuthentication.getInstance();
+
     private static Database db = FirestoreDatabase.getInstance();
     private static Storage storage = CloudStorage.getInstance();
-
+    private static Authentication auth = FirebaseAuthentication.getInstance();
     private static MyLocationProvider locationProvider = new GoogleLocationServices();
+    private static NetworkState networkState = UserNetworkStatus.getInstance();
+    private static InternalStorage internalStorage = InternalStorageHandler.getInstance();
 
-    //private static InternalStorage internalStorage = null;
-    public static void setFreshTestDependencies(Authentication auth, Database db, Storage storage) {
+
+
+    public static void setFreshTestDependencies(Authentication auth, Database db, Storage storage, InternalStorage internalStorage,NetworkState networkState) {
         setAuthSystem(auth);
         setDatabaseSystem(db);
         setStorageSystem(storage);
         setLocationProvider( new MockLocation());
         //setInternalStorageSystem(new MockInternalStorage(isLoggedIn));
+        setInternalStorageSystem(internalStorage);
+        setNetworkStateSystem(networkState);
+
     }
 
     public static MyLocationProvider getLocationProvider() {
@@ -56,20 +60,24 @@ public final class DependencyManager {
         DependencyManager.storage = storage;
     }
 
-    /*
-        public static InternalStorage getInternalStorageSystem(Context context) {
-            if(internalStorage == null) {
-                internalStorage = new InternalStorageHandler(context);
-            }
-            return internalStorage;
-        }
-
-        public static void setInternalStorageSystem(InternalStorage internalStorage) {
-            DependencyManager.internalStorage = internalStorage;
-        }
-    */
-    private DependencyManager() {
+    public static InternalStorage getInternalStorageSystem() {
+        return internalStorage;
     }
 
+    public static void setInternalStorageSystem(InternalStorage internalStorage) {
+        DependencyManager.internalStorage = internalStorage;
+    }
+    public static NetworkState getNetworkStateSystem() {
+        return networkState;
+    }
+
+    public static void setNetworkStateSystem(NetworkState networkState) {
+        DependencyManager.networkState = networkState;
+    }
+
+
+    private DependencyManager() {
+
+    }
 
 }

@@ -7,15 +7,19 @@ import androidx.test.espresso.contrib.DrawerActions;
 import androidx.test.espresso.contrib.NavigationViewActions;
 import androidx.test.espresso.intent.rule.IntentsTestRule;
 
-import org.junit.Rule;
-import org.junit.Test;
-
 import androidx.test.rule.GrantPermissionRule;
 import java.util.HashMap;
+
+import ch.epfl.sdp.kandle.activity.CustomAccountActivity;
+import ch.epfl.sdp.kandle.activity.LoginActivity;
+import ch.epfl.sdp.kandle.activity.RegisterActivity;
 import ch.epfl.sdp.kandle.dependencies.DependencyManager;
 import ch.epfl.sdp.kandle.dependencies.MockAuthentication;
 import ch.epfl.sdp.kandle.dependencies.MockDatabase;
+import ch.epfl.sdp.kandle.dependencies.MockInternalStorage;
+import ch.epfl.sdp.kandle.dependencies.MockNetwork;
 import ch.epfl.sdp.kandle.dependencies.MockStorage;
+import ch.epfl.sdp.kandle.dependencies.Post;
 
 import static androidx.test.espresso.Espresso.onView;
 import static androidx.test.espresso.action.ViewActions.click;
@@ -34,9 +38,9 @@ import static org.hamcrest.Matchers.not;
 
 public class RegisterActivityTest {
 
-    User userWithSameEmail;
-    User userWithSameUsername;
-    public static User alreadyHasAnAccount;
+    private User userWithSameEmail;
+    private User userWithSameUsername;
+    private MockNetwork network;
     @Rule
     public IntentsTestRule<RegisterActivity> intentsRule =
             new IntentsTestRule<RegisterActivity>(RegisterActivity.class,true,true
@@ -52,11 +56,13 @@ public class RegisterActivityTest {
                     users.put(userWithSameUsername.getId(),userWithSameUsername);
                     users.put(userWithSameEmail.getId(),userWithSameEmail);
                     HashMap<String, MockDatabase.Follow> followMap = new HashMap<>();
-                    HashMap<String,Post> posts = new HashMap<>();
+                    HashMap<String, Post> posts = new HashMap<>();
                     MockDatabase db = new MockDatabase(false, users, followMap, posts);
                     MockAuthentication authentication = new MockAuthentication(false, accounts, "password");
                     MockStorage storage = new MockStorage();
-                    DependencyManager.setFreshTestDependencies(authentication, db, storage);
+                    MockInternalStorage internalStorage = new MockInternalStorage();
+                    network = new MockNetwork(true);
+                    DependencyManager.setFreshTestDependencies(authentication, db, storage,internalStorage,network);
                 }
             };
 
@@ -168,4 +174,23 @@ public class RegisterActivityTest {
         onView(withId(R.id.signInLink)).perform(click());
         intended(hasComponent(LoginActivity.class.getName()));
     }
+
+    @Test
+    public void doNotHaveInternetWhenLoginIn() {
+        network.setIsOnline(false);
+        onView(withId (R.id.username)).perform(typeText ("newUserId"));
+        onView(withId (R.id.username)).perform(closeSoftKeyboard());
+        onView(withId(R.id.email)).perform(typeText("newedfgfdsgdfgdf@kandle.ch"));
+        onView(withId(R.id.email)).perform(closeSoftKeyboard());
+        onView(withId(R.id.password)).perform(typeText("12345678"));
+        onView(withId(R.id.password)).perform(closeSoftKeyboard());
+        onView(withId(R.id.passwordConfirm)).perform(typeText("12345678"));
+        onView(withId(R.id.passwordConfirm)).perform(closeSoftKeyboard());
+        onView(withId(R.id.loginBtn)).perform(click());
+        onView(withId(com.google.android.material.R.id.snackbar_text))
+                .check(matches(withText(R.string.no_connexion)));
+
+    }
+
+
 }

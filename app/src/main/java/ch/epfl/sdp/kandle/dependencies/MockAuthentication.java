@@ -1,7 +1,5 @@
 package ch.epfl.sdp.kandle.dependencies;
 
-import android.util.Pair;
-
 import com.google.android.gms.tasks.Task;
 import com.google.android.gms.tasks.TaskCompletionSource;
 import java.util.Map;
@@ -19,10 +17,25 @@ public class MockAuthentication implements Authentication {
         this.isConnected = isConnected;
         this.accounts = accounts;
         this.password = password;
-        if (isConnected) {
-            accounts.put(LoggedInUser.getInstance().getEmail(), LoggedInUser.getInstance().getId());
-        }
 
+
+    }
+
+    @Override
+    public boolean getCurrentUserAtApplicationStart() {
+        User localUser = DependencyManager.getInternalStorageSystem().getCurrentUser();
+        if(DependencyManager.getNetworkStateSystem().isConnected()) {
+            if (localUser != null && isConnected) {
+                LoggedInUser.init(localUser);
+                return true;
+            }
+        }else{
+            if(localUser !=null){
+                LoggedInUser.init(localUser);
+                return true;
+            }
+        }
+        return false;
     }
 
     @Override
@@ -36,6 +49,7 @@ public class MockAuthentication implements Authentication {
             String newId = "newId";
             User userToRegister = new User(newId, username, email, "nickname", null);
             accounts.put(email, newId);
+            DependencyManager.getInternalStorageSystem().saveUserAtLoginOrRegister(userToRegister);
             DependencyManager.getDatabaseSystem().createUser(userToRegister);
             isConnected = true;
             LoggedInUser.init(userToRegister);
@@ -53,6 +67,7 @@ public class MockAuthentication implements Authentication {
             isConnected = true;
             User user = DependencyManager.getDatabaseSystem().getUserById(accounts.get(email)).getResult();
             LoggedInUser.init(user);
+            DependencyManager.getInternalStorageSystem().saveUserAtLoginOrRegister(user);
             source.setResult(user);
         } else {
             source.setException(new Exception("You do not have an account yet"));
@@ -61,7 +76,7 @@ public class MockAuthentication implements Authentication {
     }
 
     @Override
-    public Task<Void> reauthenticate(String password) {
+    public Task<Void> reAuthenticate(String password) {
         TaskCompletionSource source = new TaskCompletionSource<Void>();
         if (!this.password.equals(password)) {
             source.setException(new Exception("Passwords do not match"));
@@ -83,11 +98,18 @@ public class MockAuthentication implements Authentication {
     @Override
     public void signOut() {
         isConnected = false;
+        DependencyManager.getInternalStorageSystem().deleteUser();
         LoggedInUser.clear();
     }
 
-    public boolean userCurrentlyLoggedIn() {
-        return isConnected;
+    @Override
+    public User getCurrentUser() {
+        return LoggedInUser.getInstance();
     }
+
+
+
+
+
 
 }
