@@ -1,9 +1,9 @@
 package ch.epfl.sdp.kandle.fragment;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.view.Gravity;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
@@ -16,17 +16,20 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
+
+
 import com.squareup.picasso.Picasso;
+
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import ch.epfl.sdp.kandle.ClickListener;
+
+
 import ch.epfl.sdp.kandle.LoggedInUser;
-import ch.epfl.sdp.kandle.Post;
+import ch.epfl.sdp.kandle.caching.CachedDatabase;
+import ch.epfl.sdp.kandle.dependencies.Post;
 import ch.epfl.sdp.kandle.PostAdapter;
 import ch.epfl.sdp.kandle.R;
 import ch.epfl.sdp.kandle.dependencies.Authentication;
@@ -46,6 +49,8 @@ public class YourPostListFragment extends Fragment {
 
     private RecyclerView rvPosts;
 
+    //private DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+
     public final static int POST_IMAGE = 10;
 
 
@@ -58,9 +63,12 @@ public class YourPostListFragment extends Fragment {
                              @Nullable Bundle savedInstanceState) {
 
         auth = DependencyManager.getAuthSystem();
-        database = DependencyManager.getDatabaseSystem();
+        database = new CachedDatabase();
 
-        userId = LoggedInUser.getInstance().getId();
+
+        userId = auth.getCurrentUser().getId();
+
+        Context context = this.getContext();
 
         database.getPostsByUserId(userId).addOnCompleteListener(task -> {
 
@@ -74,27 +82,27 @@ public class YourPostListFragment extends Fragment {
                     posts = new ArrayList<Post>();
                 }
 
-                PostAdapter adapter = new PostAdapter(posts);
+                PostAdapter adapter = new PostAdapter(posts, context);
 
-                    adapter.setOnItemClickListener((position, view) -> {
-                        System.out.println("WE ARE IN THE YPOUR POST PART");
-                        LayoutInflater inflater1 = getLayoutInflater();
-                        View popupView = inflater1.inflate(R.layout.post_content, null);
-                        int width = LinearLayout.LayoutParams.WRAP_CONTENT;
-                        int height = LinearLayout.LayoutParams.WRAP_CONTENT;
-                        boolean focusable = true; // lets taps ouside the popup also dismiss it
-                        final PopupWindow popupWindow = new PopupWindow(popupView, width, height, focusable);
-                        popupWindow.showAtLocation(view, Gravity.CENTER, 0, 0);
-                        TextView content = popupView.findViewById(R.id.post_content);
-                        ImageView image = popupView.findViewById(R.id.postImage);
-                        content.setText(posts.get(position).getDescription());
-                        System.out.println("Before "+ posts.get(position).getPostId());
-                        if(posts.get(position).getImageURL() != null){
-                            image.setVisibility(View.VISIBLE);
-                            image.setTag(POST_IMAGE);
-                            System.out.println("In if"+image.getTag());
-                            Picasso.get().load(posts.get(position).getImageURL()).into(image);
-                        }
+
+                adapter.setOnItemClickListener((position, view) -> {
+                    LayoutInflater inflater1 = getLayoutInflater();
+                    View popupView = inflater1.inflate(R.layout.post_content, null);
+                    int width = LinearLayout.LayoutParams.WRAP_CONTENT;
+                    int height = LinearLayout.LayoutParams.WRAP_CONTENT;
+                    boolean focusable = true; // lets taps ouside the popup also dismiss it
+                    final PopupWindow popupWindow = new PopupWindow(popupView, width, height, focusable);
+                    popupWindow.showAtLocation(view, Gravity.CENTER, 0, 0);
+                    TextView content = popupView.findViewById(R.id.post_content);
+                    ImageView image = popupView.findViewById(R.id.postImage);
+                    content.setText(posts.get(position).getDescription());
+                    System.out.println("Before " + posts.get(position).getPostId());
+                    if (posts.get(position).getImageURL() != null) {
+                        image.setVisibility(View.VISIBLE);
+                        image.setTag(POST_IMAGE);
+                        System.out.println("In if" + image.getTag());
+                        Picasso.get().load(posts.get(position).getImageURL()).into(image);
+                    }
 
                     popupView.setOnClickListener((popup) -> {
                         popupWindow.dismiss();
@@ -102,14 +110,11 @@ public class YourPostListFragment extends Fragment {
 
                 });
 
-                // Attach the adapter to the recyclerview to populate items
                 rvPosts.setAdapter(adapter);
-                // Set layout manager to position the items
 
             } else {
                 System.out.println(task.getException().getMessage());
             }
-
         });
 
 

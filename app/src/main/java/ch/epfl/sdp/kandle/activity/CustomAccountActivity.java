@@ -1,4 +1,4 @@
-package ch.epfl.sdp.kandle;
+package ch.epfl.sdp.kandle.activity;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
@@ -7,13 +7,14 @@ import android.os.Bundle;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
-
 import androidx.appcompat.app.AppCompatActivity;
-
-import ch.epfl.sdp.kandle.ImagePicker.ProfilePicPicker;
+import ch.epfl.sdp.kandle.MainActivity;
+import ch.epfl.sdp.kandle.R;
+import ch.epfl.sdp.kandle.imagePicker.ProfilePicPicker;
 import ch.epfl.sdp.kandle.dependencies.Database;
 import ch.epfl.sdp.kandle.dependencies.DependencyManager;
 
+//TODO: handle case when user leaves activity before saving
 
 public class CustomAccountActivity extends AppCompatActivity {
 

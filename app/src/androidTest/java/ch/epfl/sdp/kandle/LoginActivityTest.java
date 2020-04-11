@@ -18,10 +18,15 @@ import androidx.test.rule.GrantPermissionRule;
 
 import java.util.HashMap;
 
-import ch.epfl.sdp.kandle.dependencies.Database;
+
+import ch.epfl.sdp.kandle.activity.LoginActivity;
+
+import ch.epfl.sdp.kandle.activity.RegisterActivity;
 import ch.epfl.sdp.kandle.dependencies.DependencyManager;
 import ch.epfl.sdp.kandle.dependencies.MockAuthentication;
 import ch.epfl.sdp.kandle.dependencies.MockDatabase;
+import ch.epfl.sdp.kandle.dependencies.MockInternalStorage;
+import ch.epfl.sdp.kandle.dependencies.MockNetwork;
 import ch.epfl.sdp.kandle.dependencies.MockStorage;
 
 import static androidx.test.espresso.Espresso.onView;
@@ -47,6 +52,7 @@ public class LoginActivityTest {
 
     Resources res = ApplicationProvider.getApplicationContext().getResources();
     User alreadyHasAnAccount;
+    MockNetwork network;
     @Rule
     public ActivityTestRule<LoginActivity> intentsRule =
             new ActivityTestRule<LoginActivity>(LoginActivity.class, true, true){
@@ -60,7 +66,9 @@ public class LoginActivityTest {
                     MockDatabase db = new MockDatabase(false, users, null, null);
                     MockAuthentication authentication = new MockAuthentication(false, accounts, "password");
                     MockStorage storage = new MockStorage();
-                    DependencyManager.setFreshTestDependencies(authentication,db,storage);
+                    MockInternalStorage internalStorage = new MockInternalStorage();
+                    network = new MockNetwork(true);
+                    DependencyManager.setFreshTestDependencies(authentication, db, storage,internalStorage,network);
                 }
             };
 
@@ -72,6 +80,7 @@ public class LoginActivityTest {
     public static void clearCurrentUser() {
         LoggedInUser.clear();
     }
+
 
     @Test
     public void authenticationTestWhereUserExists() {
@@ -131,6 +140,7 @@ public class LoginActivityTest {
         Intents.release();
 
     }
+
 
 
 }

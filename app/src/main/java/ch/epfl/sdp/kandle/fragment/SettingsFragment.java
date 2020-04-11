@@ -1,9 +1,7 @@
 package ch.epfl.sdp.kandle.fragment;
 
 import android.app.ProgressDialog;
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
-import android.text.Layout;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,7 +12,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.fragment.app.Fragment;
-
 import ch.epfl.sdp.kandle.R;
 import ch.epfl.sdp.kandle.dependencies.Authentication;
 import ch.epfl.sdp.kandle.dependencies.DependencyManager;
@@ -54,7 +51,7 @@ public class SettingsFragment extends Fragment {
             ProgressDialog pd = new ProgressDialog(getContext());
             pd.setMessage("Updating password");
             pd.show();
-            auth.reauthenticate(oldPassword).addOnCompleteListener(task -> {
+            auth.reAuthenticate(oldPassword).addOnCompleteListener(task -> {
                 if (task.isSuccessful()) {
                     String newPassword = mNewPassword.getText().toString();
                     String newPasswordConfirm = mNewPasswordConfirm.getText().toString();

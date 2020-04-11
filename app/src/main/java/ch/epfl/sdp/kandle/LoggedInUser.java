@@ -7,7 +7,6 @@ public final class LoggedInUser {
 
 
     public static User getInstance() {
-
         return instance;
     }
 

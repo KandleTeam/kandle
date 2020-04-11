@@ -1,5 +1,6 @@
 package ch.epfl.sdp.kandle;
 
+import android.app.AlertDialog;
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -7,29 +8,36 @@ import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
-import androidx.annotation.NonNull;
-import androidx.recyclerview.widget.RecyclerView;
-
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.List;
 
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
+import androidx.recyclerview.widget.RecyclerView;
 import ch.epfl.sdp.kandle.dependencies.Authentication;
+import ch.epfl.sdp.kandle.caching.CachedDatabase;
 import ch.epfl.sdp.kandle.dependencies.Database;
 import ch.epfl.sdp.kandle.dependencies.DependencyManager;
+import ch.epfl.sdp.kandle.dependencies.Post;
+import ch.epfl.sdp.kandle.fragment.ListUsersFragment;
 
-public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder> {
+public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder>{
     private static ClickListener clickListener;
     private List<Post> mPosts;
-    private ViewHolder viewHolder;
+    private Context mContext;
+    private  ViewHolder viewHolder;
 
     private String userId;
 
     private Authentication auth;
     private Database database;
 
-    public PostAdapter(List<Post> posts) {
+    public PostAdapter(List<Post> posts, Context context) {
         mPosts = posts;
+        mContext = context;
     }
 
 
@@ -61,47 +69,77 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder> {
         final Post post = mPosts.get(position);
 
         auth = DependencyManager.getAuthSystem();
-        database = DependencyManager.getDatabaseSystem();
+        database = new CachedDatabase();
 
-        userId = LoggedInUser.getInstance().getId();
+        userId = auth.getCurrentUser().getId();
         DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
 
         // Set item views based on your views and data model
         TextView titleView = holder.mtitleText;
-        titleView.setText(String.valueOf(post.getPostId()));
+        titleView.setText(String.valueOf(post.getDescription()));
         TextView dateView = holder.mdate;
         dateView.setText((dateFormat.format(post.getDate())));
         final TextView likeView = holder.mlikes;
         likeView.setText(String.valueOf(post.getLikes()));
 
-        holder.mlikeButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
+        holder.mlikeButton.setOnClickListener(v -> {
 
-                if (post.getLikers().contains(userId)) {
-                    database.unlikePost(userId, post.getPostId());
-                    post.unlikePost(userId);
-                } else {
-                    database.likePost(userId, post.getPostId());
-                    post.likePost(userId);
+            if(post.getLikers().contains(userId)){
+                database.unlikePost(userId, post.getPostId()).addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
+                        post.unlikePost(userId);
+                        likeView.setText(String.valueOf(post.getLikes()));
+                    }
+                });
 
+            }else{
+                database.likePost(userId, post.getPostId()).addOnCompleteListener(task -> {
+                    if (task.isSuccessful()){
+                        post.likePost(userId);
+                        likeView.setText(String.valueOf(post.getLikes()));
+                    }
+                });
+
+
+            }
+            //likeView.setText(String.valueOf(post.getLikes()));
+        });
+
+        holder.mDeleteButton.setOnClickListener(v -> {
+
+            AlertDialog.Builder alertDialog = new AlertDialog.Builder(mContext);
+            alertDialog.setMessage("Do you really want to delete this post ?");
+            alertDialog.setCancelable(false);
+            alertDialog.setNegativeButton("No", (dialog, which) -> {
+
+            });
+            alertDialog.setPositiveButton("Yes", (dialog, which) -> database.deletePost(post).addOnCompleteListener(task -> {
+                if (task.isSuccessful()){
+                    mPosts.remove(post);
+                    notifyDataSetChanged();
                 }
-                likeView.setText(String.valueOf(post.getLikes()));
+            }));
+            alertDialog.create().show();
+
+        });
+        final FragmentManager fragmentManager =   ((AppCompatActivity) mContext).getSupportFragmentManager();
+
+        holder.mlikes.setOnClickListener(v -> database.getLikers(post.getPostId()).addOnCompleteListener(task -> {
+            if (task.isSuccessful()){
+                fragmentManager.beginTransaction().replace( R.id.flContent, ListUsersFragment.newInstance(
+                        task.getResult(),
+                        "Likes",
+                        Integer.toString(task.getResult().size())
+                )).setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
+                        .addToBackStack(null)
+                        .commit();
+
             }
 
-            ;
-        });
-
-        holder.mDeleteButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                database.deletePost(post);
-                mPosts.remove(post);
-                notifyDataSetChanged();
+            else {
+                System.out.println(task.getException().getMessage());
             }
-
-            ;
-        });
+        }));
     }
 
     @Override
@@ -132,7 +170,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder> {
 
         @Override
         public void onClick(View v) {
-            clickListener.onItemClick(getAdapterPosition(), v);
+            clickListener.onItemClick(getAdapterPosition(),v);
         }
 
     }

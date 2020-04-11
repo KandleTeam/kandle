@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.app.Instrumentation;
 import android.content.Intent;
 import android.net.Uri;
-import android.util.Pair;
 import android.view.Gravity;
 import android.view.View;
 import org.hamcrest.Description;
@@ -22,17 +21,26 @@ import androidx.test.espresso.contrib.RecyclerViewActions;
 import androidx.test.espresso.intent.rule.IntentsTestRule;
 import androidx.test.espresso.matcher.BoundedMatcher;
 import androidx.test.espresso.matcher.ViewMatchers;
+import androidx.test.rule.GrantPermissionRule;
+
+
+
+import androidx.test.rule.GrantPermissionRule;
 import java.util.HashMap;
 import java.util.LinkedList;
 import ch.epfl.sdp.kandle.dependencies.DependencyManager;
 import ch.epfl.sdp.kandle.dependencies.MockAuthentication;
 import ch.epfl.sdp.kandle.dependencies.MockDatabase;
+import ch.epfl.sdp.kandle.dependencies.MockInternalStorage;
+import ch.epfl.sdp.kandle.dependencies.MockNetwork;
 import ch.epfl.sdp.kandle.dependencies.MockStorage;
+import ch.epfl.sdp.kandle.dependencies.Post;
 import ch.epfl.sdp.kandle.fragment.ProfileFragment;
 import static androidx.test.espresso.Espresso.onView;
 import static androidx.test.espresso.action.ViewActions.clearText;
 import static androidx.test.espresso.action.ViewActions.click;
 import static androidx.test.espresso.action.ViewActions.closeSoftKeyboard;
+import static androidx.test.espresso.action.ViewActions.replaceText;
 import static androidx.test.espresso.action.ViewActions.typeText;
 import static androidx.test.espresso.assertion.ViewAssertions.matches;
 import static androidx.test.espresso.contrib.DrawerMatchers.isClosed;
@@ -49,6 +57,9 @@ public class YourProfileFragmentTest {
 
     public static User user1;
     public static User user2;
+
+    @Rule
+    public GrantPermissionRule permissionRule = GrantPermissionRule.grant(android.Manifest.permission.ACCESS_FINE_LOCATION);
     @Rule
     public IntentsTestRule<MainActivity> intentsRule =
             new IntentsTestRule<MainActivity>(MainActivity.class,true,true
@@ -64,26 +75,22 @@ public class YourProfileFragmentTest {
                     accounts.put(user1.getEmail(), user1.getId());
                     accounts.put(user2.getEmail(), user2.getId());
                     HashMap<String, MockDatabase.Follow> followMap = new HashMap<>();
-                    HashMap<String,Post> posts = new HashMap<>();
-                    followMap.put(user1.getId(),new MockDatabase.Follow(new LinkedList<>(),new LinkedList<>()));
-                    followMap.put(user2.getId(),new MockDatabase.Follow(new LinkedList<>(),new LinkedList<>()));
+                    HashMap<String, Post> posts = new HashMap<>();
                     followMap.put(LoggedInUser.getInstance().getId(),new MockDatabase.Follow(new LinkedList<>(),new LinkedList<>()));
                     MockDatabase db = new MockDatabase(true, users, followMap, posts);
                     MockAuthentication authentication = new MockAuthentication(true, accounts, "password");
                     MockStorage storage = new MockStorage();
-                    DependencyManager.setFreshTestDependencies(authentication, db, storage);
+                    MockInternalStorage internalStorage = new MockInternalStorage(true);
+                    MockNetwork network = new MockNetwork(true);
+                    DependencyManager.setFreshTestDependencies(authentication, db, storage,internalStorage,network);
                     DependencyManager.getDatabaseSystem().createUser(user1);
                     DependencyManager.getDatabaseSystem().createUser(user2);
                     DependencyManager.getDatabaseSystem().follow(user1.getId(),LoggedInUser.getInstance().getId());
                     DependencyManager.getDatabaseSystem().follow(LoggedInUser.getInstance().getId(),user1.getId());
                     DependencyManager.getDatabaseSystem().follow(user2.getId(),LoggedInUser.getInstance().getId());
 
-
                 }
             };
-
-
-
 
 
 
@@ -91,7 +98,6 @@ public class YourProfileFragmentTest {
     public void clearCurrentUser(){
         LoggedInUser.clear();
     }
-
 
     @Before
     public void loadFragment(){
@@ -137,6 +143,7 @@ public class YourProfileFragmentTest {
     @Test
     public void editNickname(){
         onView(withId(R.id.profileEditNameButton)).perform(click());
+
         onView(withId(R.id.edit_view)).perform(clearText());
         onView(withId(R.id.edit_view)).perform(typeText("New Nickname"));
         onView(withId (R.id.edit_view)).perform(closeSoftKeyboard());

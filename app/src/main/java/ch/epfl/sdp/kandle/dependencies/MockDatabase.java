@@ -5,11 +5,11 @@ import com.google.android.gms.tasks.TaskCompletionSource;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import ch.epfl.sdp.kandle.LoggedInUser;
-import ch.epfl.sdp.kandle.Post;
 import ch.epfl.sdp.kandle.User;
 
 /**
@@ -35,6 +35,9 @@ public class MockDatabase implements Database {
             users.put(LoggedInUser.getInstance().getId(), LoggedInUser.getInstance());
             followMap.put(LoggedInUser.getInstance().getId(), new Follow());
         }
+
+
+
     }
 
 
@@ -281,6 +284,26 @@ public class MockDatabase implements Database {
         return source.getTask();
     }
 
+    @Override
+    public Task<List<User>> getLikers(String postId) {
+        TaskCompletionSource<List<User>> source = new TaskCompletionSource<>();
+
+        List<String> userIds = posts.get(postId).getLikers();
+
+            List<User> usersList = new ArrayList<>();
+
+            for (Map.Entry <String,User> entry : users.entrySet() ) {
+                if (userIds.contains(entry.getKey())){
+                    usersList.add(entry.getValue());
+                }
+            }
+
+        source.setResult(usersList);
+
+        return source.getTask();
+
+    }
+
     /*
     @Override
     public Task<List<String>> likers(String postId) {
@@ -303,6 +326,16 @@ public class MockDatabase implements Database {
         source.setResult(postsList);
         return source.getTask();
     }
+
+    @Override
+    public Task<List<Post>> getNearbyPosts(double longitude, double latitude, double distance){
+        TaskCompletionSource<List<Post>> source = new TaskCompletionSource<>();
+        List<Post> posts = new ArrayList<>();
+        posts.add(new Post("mock post",null, new Date(), "mock user id", 0.0001, 0.0001));
+        source.setResult(posts);
+        return source.getTask();
+    }
+
 
 
     public static class Follow {

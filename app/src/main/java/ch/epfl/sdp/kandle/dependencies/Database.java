@@ -2,7 +2,7 @@ package ch.epfl.sdp.kandle.dependencies;
 
 import com.google.android.gms.tasks.Task;
 import java.util.List;
-import ch.epfl.sdp.kandle.Post;
+
 import ch.epfl.sdp.kandle.User;
 
 public interface Database {
@@ -70,10 +70,14 @@ public interface Database {
 
     Task<Void> unlikePost(String userId, String postId);
 
+    Task<List<User>> getLikers(String postId);
+
     //Task<List<String>> likers(String postId);
 
     //Task<Void> editPost(Post p);
 
     Task<List<Post>> getPostsByUserId(String userId);
+
+    Task<List<Post>> getNearbyPosts(double longitude, double latitude, double distance);
 
 }

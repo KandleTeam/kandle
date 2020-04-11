@@ -1,15 +1,16 @@
-package ch.epfl.sdp.kandle.dependencies;
+package ch.epfl.sdp.kandle.caching;
 
 import android.content.Context;
 import androidx.annotation.NonNull;
 
 
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import java.io.PrintWriter;
 
+import ch.epfl.sdp.kandle.Kandle;
 import ch.epfl.sdp.kandle.User;
 
 /**
@@ -18,14 +19,15 @@ import ch.epfl.sdp.kandle.User;
  */
 public class InternalStorageHandler implements InternalStorage {
 
-    private final String userDataPath = "userData";
+    private final String USER_DATA_PATH = "userData";
     private Context context;
+    private static final InternalStorageHandler INSTANCE = new InternalStorageHandler();
+    public InternalStorageHandler() {
+        this.context = Kandle.getContext();
+    }
 
-    public InternalStorageHandler(Context context) {
-        if (context == null) {
-            throw new IllegalArgumentException("Context was null");
-        }
-        this.context = context;
+    public static InternalStorage getInstance(){
+        return INSTANCE;
     }
 
     /**
@@ -39,7 +41,7 @@ public class InternalStorageHandler implements InternalStorage {
     private void storeUser(@NonNull User user) {
 
         try {
-            FileOutputStream file = context.openFileOutput(userDataPath, Context.MODE_PRIVATE);
+            FileOutputStream file = context.openFileOutput(USER_DATA_PATH, Context.MODE_PRIVATE);
             ObjectOutputStream out = new ObjectOutputStream(file);
             out.writeObject(user);
             out.close();
@@ -60,7 +62,7 @@ public class InternalStorageHandler implements InternalStorage {
 
         User user = null;
         try {
-            FileInputStream file = context.openFileInput(userDataPath);
+            FileInputStream file = context.openFileInput(USER_DATA_PATH);
             ObjectInputStream in = new ObjectInputStream(file);
             user = (User) in.readObject();
             in.close();
@@ -103,7 +105,7 @@ public class InternalStorageHandler implements InternalStorage {
      * @param
      * @throws IllegalArgumentException
      */
-/*
+
     @Override
     public void updateUser(@NonNull User user) throws IllegalArgumentException {
         if (user == null) {
@@ -113,7 +115,7 @@ public class InternalStorageHandler implements InternalStorage {
         storeUser(user);
 
     }
-    */
+
 
     /**
      * Deletes the user entry saved locally by writing an empty string to the file without append mode
@@ -123,12 +125,9 @@ public class InternalStorageHandler implements InternalStorage {
      */
     @Override
     public void deleteUser() {
-        try {
-            PrintWriter writer = new PrintWriter(userDataPath);
-            writer.close();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        File user = context.getFileStreamPath(USER_DATA_PATH);
+        user.delete();
+
     }
 
 }
