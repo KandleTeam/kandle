@@ -13,6 +13,7 @@ import androidx.test.espresso.contrib.NavigationViewActions;
 import androidx.test.espresso.contrib.RecyclerViewActions;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 import androidx.test.rule.ActivityTestRule;
+import androidx.test.rule.GrantPermissionRule;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -53,6 +54,7 @@ public class FollowingPostsTest {
     public static Post p2;
     public User u1;
     public User u2;
+    private MockDatabase db;
 
     @Rule
     public ActivityTestRule<MainActivity> intentsRule =
@@ -76,7 +78,7 @@ public class FollowingPostsTest {
                     HashMap<String,Post> posts = new HashMap<>();
                     posts.put(p1.getPostId(),p1);
                     posts.put(p2.getPostId(),p2);
-                    MockDatabase db = new MockDatabase(true, users, followMap, posts);
+                    db = new MockDatabase(true, users, followMap, posts);
                     MockAuthentication authentication = new MockAuthentication(true, accounts, "password");
                     MockStorage storage = new MockStorage();
                     DependencyManager.setFreshTestDependencies(authentication, db, storage);
@@ -84,33 +86,13 @@ public class FollowingPostsTest {
                     DependencyManager.getDatabaseSystem().createUser(u2);
                     DependencyManager.getDatabaseSystem().follow(LoggedInUser.getInstance().getId(),u1.getId());
                     DependencyManager.getDatabaseSystem().follow(LoggedInUser.getInstance().getId(), u2.getId());
-                    db.getPostsByUserId(u1.getId()).addOnCompleteListener(task ->{
-                        if(task.isSuccessful()){
-                            if(task.getResult().isEmpty()){
-                                System.out.println("NUUUUUUUUUUUUUUUUUUUUUUUUUUUULLLLLLLLLLLLLL");
-                            }
-                            else {
-                                for(Post post: task.getResult()){
-                                    System.out.println("THIS IS THE POST      !!!!!!!   " + post.getPostId());
-                                }
-                            }
-                        }
-                    });
-                    db.userFollowingList(LoggedInUser.getInstance().getId()).addOnCompleteListener(task ->{
-                        if(task.isSuccessful()){
-                            if(task.getResult().isEmpty()){
-                                System.out.println("NUUUUUUUUUUUUUUUUUUUUUUUUUUUULLLLLLLLLLLLLL");
-                            }
-                            else {
-                                for(User post: task.getResult()){
-                                    System.out.println("THIS IS THE POST      !!!!!!!   " + post.getId());
-                                }
-                            }
-                        }
-                    });
                 }
 
             };
+
+    @Rule
+    public GrantPermissionRule permissionRule = GrantPermissionRule.grant(android.Manifest.permission.ACCESS_FINE_LOCATION);
+
 
     @After
     public void clearCurrentUser(){
@@ -125,8 +107,9 @@ public class FollowingPostsTest {
     }
 
     @Test
-    public void canClickOnAlreadyCreatedPostToSeeDescriptionAndRemoveDescription() throws InterruptedException {
-        Thread.sleep(5000);
+    public void withEmptyFollowingListDoesNotthrowError() {
+        DependencyManager.getDatabaseSystem().unFollow(LoggedInUser.getInstance().getId(), u1.getId());
+        DependencyManager.getDatabaseSystem().unFollow(LoggedInUser.getInstance().getId(), u2.getId());
         onView(withId(R.id.flPosts)).perform(RecyclerViewActions.actionOnItemAtPosition(0, click()));
         onView(withId(R.id.post_content)).perform(click());
         onView(withId(R.id.flPosts)).perform(RecyclerViewActions.actionOnItemAtPosition(1, click()));

@@ -43,6 +43,7 @@ public class FollowingPostsFragment extends Fragment {
 
     public FollowingPostsFragment() {
         posts = new ArrayList<>();
+        following = new ArrayList<>();
     }
 
     @Override
@@ -73,14 +74,7 @@ public class FollowingPostsFragment extends Fragment {
                                 }
                             });
                         }
-
-
-                    } else {
-                        following = new ArrayList<>();
-                        System.out.println("!!!!!!!!!!!!!!!!!!!!!!!!!!!!    " + userId );
                     }
-
-                } else {
 
                 }
             } else {
