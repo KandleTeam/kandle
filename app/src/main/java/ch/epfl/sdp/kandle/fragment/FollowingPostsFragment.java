@@ -19,7 +19,7 @@ import com.squareup.picasso.Picasso;
 import java.util.ArrayList;
 import java.util.List;
 import ch.epfl.sdp.kandle.LoggedInUser;
-import ch.epfl.sdp.kandle.Post;
+import ch.epfl.sdp.kandle.dependencies.Post;
 import ch.epfl.sdp.kandle.PostAdapter;
 import ch.epfl.sdp.kandle.R;
 import ch.epfl.sdp.kandle.User;
@@ -55,7 +55,7 @@ public class FollowingPostsFragment extends Fragment {
         flPosts = rootView.findViewById(R.id.flPosts);
         flPosts.setLayoutManager(new LinearLayoutManager(this.getContext()));
         userId = LoggedInUser.getInstance().getId();
-        PostAdapter adapter = new PostAdapter(posts);
+        PostAdapter adapter = new PostAdapter(posts, this.getContext());
 
         database.userFollowingList(userId).addOnCompleteListener(task -> {
             if (task.isSuccessful()) {

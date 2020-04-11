@@ -33,7 +33,10 @@ import java.util.List;
 import ch.epfl.sdp.kandle.dependencies.DependencyManager;
 import ch.epfl.sdp.kandle.dependencies.MockAuthentication;
 import ch.epfl.sdp.kandle.dependencies.MockDatabase;
+import ch.epfl.sdp.kandle.dependencies.MockInternalStorage;
+import ch.epfl.sdp.kandle.dependencies.MockNetwork;
 import ch.epfl.sdp.kandle.dependencies.MockStorage;
+import ch.epfl.sdp.kandle.dependencies.Post;
 import ch.epfl.sdp.kandle.fragment.YourPostListFragment;
 
 import static androidx.test.espresso.Espresso.onView;
@@ -81,7 +84,9 @@ public class FollowingPostsTest {
                     db = new MockDatabase(true, users, followMap, posts);
                     MockAuthentication authentication = new MockAuthentication(true, accounts, "password");
                     MockStorage storage = new MockStorage();
-                    DependencyManager.setFreshTestDependencies(authentication, db, storage);
+                    MockInternalStorage internalStorage = new MockInternalStorage();
+                    MockNetwork network = new MockNetwork(true);
+                    DependencyManager.setFreshTestDependencies(authentication, db, storage, internalStorage,network);
                     DependencyManager.getDatabaseSystem().createUser(u1);
                     DependencyManager.getDatabaseSystem().createUser(u2);
                     DependencyManager.getDatabaseSystem().follow(LoggedInUser.getInstance().getId(),u1.getId());
