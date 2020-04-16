@@ -1,5 +1,9 @@
 package ch.epfl.sdp.kandle;
 
+import android.app.Activity;
+import android.app.Instrumentation;
+import android.content.Intent;
+import android.net.Uri;
 import android.view.Gravity;
 import android.view.View;
 import androidx.recyclerview.widget.RecyclerView;
@@ -12,6 +16,7 @@ import androidx.test.espresso.action.ViewActions;
 import androidx.test.espresso.contrib.DrawerActions;
 import androidx.test.espresso.contrib.NavigationViewActions;
 import androidx.test.espresso.contrib.RecyclerViewActions;
+import androidx.test.espresso.intent.rule.IntentsTestRule;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 import androidx.test.rule.ActivityTestRule;
 import org.hamcrest.Matcher;
@@ -24,6 +29,8 @@ import org.junit.runner.RunWith;
 import androidx.test.rule.GrantPermissionRule;
 import java.util.Date;
 import java.util.HashMap;
+
+import ch.epfl.sdp.kandle.activity.PostActivity;
 import ch.epfl.sdp.kandle.dependencies.DependencyManager;
 import ch.epfl.sdp.kandle.dependencies.MockAuthentication;
 import ch.epfl.sdp.kandle.dependencies.MockDatabase;
@@ -35,9 +42,12 @@ import ch.epfl.sdp.kandle.fragment.YourPostListFragment;
 import static androidx.test.espresso.Espresso.onView;
 import static androidx.test.espresso.action.ViewActions.click;
 import static androidx.test.espresso.action.ViewActions.closeSoftKeyboard;
+import static androidx.test.espresso.action.ViewActions.replaceText;
 import static androidx.test.espresso.action.ViewActions.typeText;
 import static androidx.test.espresso.assertion.ViewAssertions.matches;
 import static androidx.test.espresso.contrib.DrawerMatchers.isClosed;
+import static androidx.test.espresso.intent.Intents.intending;
+import static androidx.test.espresso.intent.matcher.IntentMatchers.hasAction;
 import static androidx.test.espresso.matcher.ViewMatchers.hasDescendant;
 import static androidx.test.espresso.matcher.ViewMatchers.withId;
 import static androidx.test.espresso.matcher.ViewMatchers.withTagValue;
@@ -53,8 +63,8 @@ public class YourPostsListTest {
     public static Post p2;
 
     @Rule
-    public ActivityTestRule<MainActivity> intentsRule =
-            new ActivityTestRule<MainActivity>(MainActivity.class, true, true){
+    public IntentsTestRule<MainActivity> intentsRule =
+            new IntentsTestRule<MainActivity>(MainActivity.class, true, true){
                 @Override
                 protected void beforeActivityLaunched() {
                     LoggedInUser.init(new User("loggedInUserId","LoggedInUser","loggedInUser@kandle.ch","nickname","image"));
@@ -125,9 +135,6 @@ public class YourPostsListTest {
         //only 1 post should be displayed
         //onView(withId(R.id.rvPosts)).check(new RecyclerViewItemCountAssertion(1));
 
-
-
-
     }
 
     @Test
@@ -189,6 +196,48 @@ public class YourPostsListTest {
         onView(withId(R.id.rvPosts)).perform(RecyclerViewActions.actionOnItemAtPosition(1, clickChildViewWithId(R.id.likeButton)));
         onView(withId(R.id.rvPosts)).perform(RecyclerViewActions.actionOnItemAtPosition(1, clickChildViewWithId(R.id.flames)));
         onView(withId(R.id.list_user_number)).check(matches(withText("1")));
+    }
+
+    @Test
+    public void EditPostImageTest(){
+        onView(withId(R.id.rvPosts)).perform(RecyclerViewActions.actionOnItemAtPosition(1, clickChildViewWithId(R.id.editButton)));
+
+        Intent resultData = new Intent();
+        resultData.setAction(Intent.ACTION_GET_CONTENT);
+        Uri imageUri = Uri.parse("android.resource://ch.epfl.sdp.kandle/drawable/ic_launcher_background.xml");
+        resultData.setData(imageUri);
+        Instrumentation.ActivityResult result = new Instrumentation.ActivityResult(Activity.RESULT_OK, resultData);
+        intending(hasAction(Intent.ACTION_GET_CONTENT)).respondWith(result);
+        onView(withId(R.id.galleryButton)).perform(click());
+        onView(withId(R.id.postImage)).check(matches(withTagValue(is(PostActivity.POST_IMAGE_TAG))));
+        onView(withId(R.id.postButton)).perform(click());
+
+        loadPostView();
+
+        onView(withId(R.id.rvPosts)).perform(RecyclerViewActions.actionOnItemAtPosition(1, click()));
+        onView(withId(R.id.postImage)).check(matches(withTagValue(is(YourPostListFragment.POST_IMAGE))));
+        onView(withId(R.id.post_content)).perform(click());
+    }
+
+    @Test
+    public void EditPostTextTest(){
+        onView(withId(R.id.rvPosts)).perform(RecyclerViewActions.actionOnItemAtPosition(0, clickChildViewWithId(R.id.editButton)));
+
+        onView(withId(R.id.postText)).perform(replaceText("   Salut Salut  "));
+        onView(withId (R.id.postText)).perform(closeSoftKeyboard());
+        onView(withId(R.id.postButton)).perform(click());
+
+        loadPostView();
+
+        onView(withId(R.id.rvPosts)).perform(RecyclerViewActions.actionOnItemAtPosition(0, click()));
+        onView(withId(R.id.post_content)).check(matches(withText(is("Salut Salut"))));
+        onView(withId(R.id.post_content)).perform(click());
+
+    }
+
+    @Test
+    public void EditPostWithoutImageTest(){
+
     }
 
 

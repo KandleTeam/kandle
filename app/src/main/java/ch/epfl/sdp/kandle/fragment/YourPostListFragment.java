@@ -45,8 +45,6 @@ public class YourPostListFragment extends Fragment {
     private Authentication auth;
     private Database database;
 
-    private ImageButton mDeleteButton;
-
     private RecyclerView rvPosts;
 
     //private DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
