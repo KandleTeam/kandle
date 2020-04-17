@@ -91,6 +91,11 @@ public class CachedDatabase implements Database {
     }
 
     @Override
+    public Task<Void> editPost(Post p, String postId) {
+        return database.editPost(p, postId);
+    }
+
+    @Override
     public Task<Void> deletePost(Post p) {
         return database.deletePost(p);
     }
@@ -118,6 +123,11 @@ public class CachedDatabase implements Database {
     @Override
     public Task<List<Post>> getNearbyPosts(double longitude, double latitude, double distance) {
         return database.getNearbyPosts(longitude,latitude,distance);
+    }
+
+    @Override
+    public Task<Post> getPostByPostId(String postId) {
+        return database.getPostByPostId(postId);
     }
 
     //-----------------This part handles the local user-----------------------

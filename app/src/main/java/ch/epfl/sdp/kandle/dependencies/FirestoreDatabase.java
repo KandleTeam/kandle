@@ -371,6 +371,16 @@ public class FirestoreDatabase implements Database {
     }
 
     @Override
+    public Task<Void> editPost(Post p, String postId) {
+        final DocumentReference editedPostDoc = POSTS.document(postId);
+        return FIRESTORE
+                .runTransaction(transaction -> {
+                    transaction.set(editedPostDoc, p);
+                    return null;
+                });
+    }
+
+    @Override
     public Task<Void> deletePost(Post p) {
         final DocumentReference deletedPostDoc = POSTS.document(p.getPostId());
         final DocumentReference userDeletingPostDoc = USERS.document(p.getUserId());
@@ -581,6 +591,21 @@ public class FirestoreDatabase implements Database {
         });
         return source.getTask();
 
+    }
+
+    @Override
+    public Task<Post> getPostByPostId(String postId) {
+        return POSTS
+                .document(postId)
+                .get()
+                .continueWith(task -> {
+                    Post post = Objects.requireNonNull(task.getResult()).toObject(Post.class);
+                    assert (post != null);
+                    System.out.println(post.getPostId());
+                    if (!post.getPostId().equals(postId))
+                        throw new AssertionError("We done goofed somewhere! Unexpected pid");
+                    return post;
+                });
     }
 
     private boolean nearby(double latitude, double longitude, double postLatitude, double postLongitude, double distance) {

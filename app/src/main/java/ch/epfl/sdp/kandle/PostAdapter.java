@@ -2,14 +2,19 @@ package ch.epfl.sdp.kandle;
 
 import android.app.AlertDialog;
 import android.content.Context;
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 
 import androidx.annotation.NonNull;
@@ -17,6 +22,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.RecyclerView;
+
+import ch.epfl.sdp.kandle.activity.PostActivity;
 import ch.epfl.sdp.kandle.dependencies.Authentication;
 import ch.epfl.sdp.kandle.caching.CachedDatabase;
 import ch.epfl.sdp.kandle.dependencies.Database;
@@ -77,6 +84,15 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder>{
         final TextView likeView = holder.mlikes;
         likeView.setText(String.valueOf(post.getLikes()));
 
+        final ImageButton editPostView = holder.mEditButton;
+        //milliseconds
+        long different = new Date().getTime() - post.getDate().getTime();
+        long minutes = different / 60000;
+        if(minutes < 6){
+            editPostView.setVisibility(View.VISIBLE);
+        }
+
+
         holder.mlikeButton.setOnClickListener(v -> {
 
             if(post.getLikers().contains(userId)){
@@ -100,6 +116,12 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder>{
             //likeView.setText(String.valueOf(post.getLikes()));
         });
 
+        holder.mEditButton.setOnClickListener(v -> {
+            Intent intent = new Intent(mContext, PostActivity.class);
+            intent.putExtra("postId", post.getPostId());
+            mContext.startActivity(intent);
+        });
+
         holder.mDeleteButton.setOnClickListener(v -> {
 
             AlertDialog.Builder alertDialog = new AlertDialog.Builder(mContext);
@@ -111,12 +133,15 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder>{
             alertDialog.setPositiveButton("Yes", (dialog, which) -> database.deletePost(post).addOnCompleteListener(task -> {
                 if (task.isSuccessful()){
                     mPosts.remove(post);
+                    holder.mEditButton.setVisibility(View.GONE);
                     notifyDataSetChanged();
                 }
             }));
             alertDialog.create().show();
 
         });
+
+
         final FragmentManager fragmentManager =   ((AppCompatActivity) mContext).getSupportFragmentManager();
 
         holder.mlikes.setOnClickListener(v -> database.getLikers(post.getPostId()).addOnCompleteListener(task -> {
@@ -151,6 +176,8 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder>{
         public TextView mdate;
         public ImageButton mlikeButton;
         public ImageButton mDeleteButton;
+        public ImageButton mEditButton;
+
 
         public ViewHolder(View itemView) {
             super(itemView);
@@ -160,6 +187,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder>{
             mdate = (TextView) itemView.findViewById(R.id.date_and_time);
             mlikeButton = itemView.findViewById(R.id.likeButton);
             mDeleteButton = itemView.findViewById(R.id.deleteButton);
+            mEditButton = itemView.findViewById(R.id.editButton);
 
         }
 
