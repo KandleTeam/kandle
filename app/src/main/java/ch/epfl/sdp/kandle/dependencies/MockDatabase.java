@@ -254,6 +254,17 @@ public class MockDatabase implements Database {
     }
 
     @Override
+    public Task<Void> editPost(Post p, String postId) {
+        if (users.get(p.getUserId()).getPosts().contains(postId)) {
+            posts.remove(postId);
+            posts.put(postId, p);
+        }
+        TaskCompletionSource<Void> source = new TaskCompletionSource<>();
+        source.setResult(null);
+        return source.getTask();
+    }
+
+    @Override
     public Task<Void> deletePost(Post p) {
         if (users.get(p.getUserId()).getPosts().contains(p.getPostId())) {
             posts.remove(p.getPostId());
@@ -336,6 +347,18 @@ public class MockDatabase implements Database {
         return source.getTask();
     }
 
+    @Override
+    public Task<Post> getPostByPostId(String postId) {
+
+        TaskCompletionSource<Post> source = new TaskCompletionSource<>();
+        if (posts.containsKey(postId)) {
+            source.setResult(posts.get(postId));
+        } else {
+            source.setException(new IllegalArgumentException("No such user with id: " + postId + "with users containing"));
+        }
+
+        return source.getTask();
+    }
 
 
     public static class Follow {

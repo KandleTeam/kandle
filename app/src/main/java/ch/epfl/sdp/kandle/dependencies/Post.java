@@ -113,6 +113,10 @@ public class Post {
         return description;
     }
 
+    public void setDescription(String s){
+        this.description = s;
+    }
+
     /*
     public ArrayList<String> getComments() {
         return comments;

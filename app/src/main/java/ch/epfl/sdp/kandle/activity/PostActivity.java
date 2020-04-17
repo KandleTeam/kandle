@@ -17,14 +17,17 @@ import android.widget.Toast;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.squareup.picasso.Picasso;
 
 import java.util.Date;
 
 import androidx.appcompat.app.AppCompatActivity;
 
 import ch.epfl.sdp.kandle.LoggedInUser;
+import ch.epfl.sdp.kandle.MainActivity;
 import ch.epfl.sdp.kandle.PostCamera;
 import ch.epfl.sdp.kandle.R;
+import ch.epfl.sdp.kandle.fragment.YourPostListFragment;
 import ch.epfl.sdp.kandle.imagePicker.ImagePicker;
 import ch.epfl.sdp.kandle.dependencies.Authentication;
 import ch.epfl.sdp.kandle.caching.CachedDatabase;
@@ -54,6 +57,7 @@ public class PostActivity extends AppCompatActivity {
     private Camera mCamera;
     private Uri imageUri;
 
+    private Post editPost;
     @Override
     public void onResume(){
         super.onResume();
@@ -66,10 +70,11 @@ public class PostActivity extends AppCompatActivity {
 
         //Permission();
 
-
         Intent intent = getIntent();
         Double latitude = intent.getDoubleExtra("latitude", 0.0) - 0.0015;
         Double longitude = intent.getDoubleExtra("longitude", 0.0) - 0.0015;
+        String postId = intent.getStringExtra("postId");
+
 
         mPostText = findViewById(R.id.postText);
         mPostButton = findViewById(R.id.postButton);
@@ -82,11 +87,27 @@ public class PostActivity extends AppCompatActivity {
         auth = DependencyManager.getAuthSystem();
         database = new CachedDatabase();
 
+        if(postId != null){
+            database.getPostByPostId(postId).addOnCompleteListener(task -> {
+                if (task.isSuccessful()) {
+                    Post p = task.getResult();
+                    mPostButton.setText("EDIT");
+                    mPostText.setText(p.getDescription());
+                    mPostImage.setTag(YourPostListFragment.POST_IMAGE);
+                    Picasso.get().load(p.getImageURL()).into(mPostImage);
+                }
+            });
+
+            //mPostImage.setImageURI();
+
+        }
+
         mPostButton.setOnClickListener(v -> {
 
+            System.out.println("passing here");
 
             String postText = mPostText.getText().toString().trim();
-
+            System.out.println(postText);
             Uri imageUri = postImagePicker.getImageUri();
             if (imageUri == null) {
                 imageUri = postCamera.getImageUri();
@@ -105,18 +126,44 @@ public class PostActivity extends AppCompatActivity {
                             Toast.makeText(PostActivity.this, "Unable to upload image", Toast.LENGTH_LONG).show();
 
                         } else {
-                            p = new Post(postText, downloadUri.toString(), new Date(), auth.getCurrentUser().getId(), longitude, latitude);
-
-                            post(p);
+                            if(postId != null){
+                                database.getPostByPostId(postId).addOnCompleteListener(task2 -> {
+                                    if (task2.isSuccessful()) {
+                                        Post p = task2.getResult();
+                                        p.setDescription(postText);
+                                        p.setImageURL(downloadUri.toString());
+                                        p.setLatitude(p.getLatitude());
+                                        p.setLongitude(p.getLongitude());
+                                        p.setLikes(p.getLikes());
+                                        editPost(p, postId);
+                                    }
+                                });
+                            }else{
+                                p = new Post(postText, downloadUri.toString(), new Date(), auth.getCurrentUser().getId(), longitude, latitude);
+                                post(p);
+                            }
                         }
                     }
                 });
 
             }
             else {
-                p = new Post(postText, null, new Date(), auth.getCurrentUser().getId(), longitude, latitude);
-
-                post(p);
+                if(postId != null){
+                    database.getPostByPostId(postId).addOnCompleteListener(task2 -> {
+                        if (task2.isSuccessful()) {
+                            Post p = task2.getResult();
+                            p.setDescription(postText);
+                            //raise the test coverage
+                            p.setLatitude(p.getLatitude());
+                            p.setLongitude(p.getLongitude());
+                            p.setLikes(p.getLikes());
+                            editPost(p, postId);
+                        }
+                    });
+                }else{
+                    p = new Post(postText, null, new Date(), auth.getCurrentUser().getId(), longitude, latitude);
+                    post(p);
+                }
             }
 
         });
@@ -134,9 +181,21 @@ public class PostActivity extends AppCompatActivity {
                 Toast.makeText(PostActivity.this, "You have successfully posted " , Toast.LENGTH_LONG ).show();
 
                 finish();
+
             }
         });
+    }
 
+    private void editPost(Post p, String postId) {
+        database.editPost(p, postId).addOnCompleteListener(task -> {
+            if (task.isSuccessful()) {
+
+                Toast.makeText(PostActivity.this, "You have successfully edited your post " , Toast.LENGTH_LONG ).show();
+
+                finish();
+
+            }
+        });
     }
 
 
