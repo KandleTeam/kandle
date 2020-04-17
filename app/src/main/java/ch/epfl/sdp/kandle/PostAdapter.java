@@ -66,6 +66,11 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder>{
         return viewHolder;
     }
 
+    public void setPost(List<Post> posts){
+        this.mPosts = posts;
+        notifyDataSetChanged();
+    }
+
     @Override
     public void onBindViewHolder(@NonNull final ViewHolder holder, int position) {
         final Post post = mPosts.get(position);

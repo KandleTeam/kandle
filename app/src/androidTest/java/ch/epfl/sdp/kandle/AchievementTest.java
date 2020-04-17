@@ -67,10 +67,6 @@ public class AchievementTest {
                 }
             };
 
-    @Rule
-    public GrantPermissionRule grantLocation = GrantPermissionRule.grant(Manifest.permission.ACCESS_FINE_LOCATION);
-
-
     @After
     public void clearCurrentUser(){
         LoggedInUser.clear();
