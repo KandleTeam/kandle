@@ -138,7 +138,7 @@ public class YourPostsListTest {
     }
 
     @Test
-    public void createTwoNewPostsAndRemoveThem() {
+    public void createTwoNewPostsAndRemoveThem() throws InterruptedException {
 
         // 2 posts should be displayed
         onView(withId(R.id.rvPosts)).check(new RecyclerViewItemCountAssertion(2));
@@ -155,6 +155,7 @@ public class YourPostsListTest {
         onView(withId(R.id.postText)).perform(closeSoftKeyboard());
         onView(withId(R.id.postButton)).perform(click());
 
+        Thread.sleep(1000);
         onView(withId(R.id.newPostButton)).perform(click());
         onView(withId(R.id.postText)).perform(typeText("Post 4"));
         onView(withId(R.id.postText)).perform(closeSoftKeyboard());
@@ -235,10 +236,6 @@ public class YourPostsListTest {
 
     }
 
-    @Test
-    public void EditPostWithoutImageTest(){
-
-    }
 
 
     private static ViewAction clickChildViewWithId(final int id) {
