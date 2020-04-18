@@ -101,7 +101,6 @@ public class ProfileFragment extends Fragment {
             mEditPicture.setOnClickListener(v -> {
                 mEditPicture.setVisibility(View.GONE);
                 ProfilePicPicker.openImage(this);
-                mValidatePictureButton.setVisibility(View.VISIBLE);
             });
 
         }
@@ -262,6 +261,7 @@ public class ProfileFragment extends Fragment {
         if (imageUri != null) {
             mProfilePicture.setTag(PROFILE_PICTURE_AFTER);
             mProfilePicture.setImageURI(imageUri);
+            mValidatePictureButton.setVisibility(View.VISIBLE);
         }
     }
 }
