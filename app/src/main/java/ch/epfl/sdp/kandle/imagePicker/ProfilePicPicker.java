@@ -1,9 +1,6 @@
 package ch.epfl.sdp.kandle.imagePicker;
 
-import android.app.Activity;
 import android.net.Uri;
-
-import androidx.fragment.app.Fragment;
 
 import com.google.android.gms.tasks.Task;
 
