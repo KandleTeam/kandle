@@ -9,7 +9,6 @@ import android.webkit.MimeTypeMap;
 import androidx.fragment.app.Fragment;
 
 import com.google.android.gms.tasks.Task;
-import com.google.android.gms.tasks.TaskCompletionSource;
 
 import ch.epfl.sdp.kandle.Kandle;
 import ch.epfl.sdp.kandle.dependencies.DependencyManager;
@@ -19,28 +18,22 @@ import static android.app.Activity.RESULT_OK;
 
 public class ImagePicker {
 
-    //private Activity activity;
-    //private Fragment fragment;
-    //private Uri imageUri;
-
     private static final int IMAGE_REQUEST = 1;
-    /*public void openImage() {
-        Intent intent = new Intent();
-        intent.setType("image/*");
-        intent.setAction(Intent.ACTION_GET_CONTENT);
-        if (activity != null) {
-            activity.startActivityForResult(intent, IMAGE_REQUEST);
-        }
-        if (fragment != null) {
-            fragment.startActivityForResult(intent, IMAGE_REQUEST);
-        }
-    }*/
 
+    /**
+     * Starts picking an image from the gallery
+     * @param activity the activity where to return after picking an image
+     *
+     */
     public static void openImage(Activity activity) {
         Intent intent = pickerIntent();
         activity.startActivityForResult(intent, IMAGE_REQUEST);
     }
 
+    /**
+     * Starts picking an image from the gallery
+     * @param fragment the fragment where to return after picking an image
+     */
     public static void openImage(Fragment fragment) {
         Intent intent = pickerIntent();
         fragment.startActivityForResult(intent, IMAGE_REQUEST);
@@ -53,16 +46,18 @@ public class ImagePicker {
         return intent;
     }
 
-    /*private String getFileExtension(Uri uri) {
-        ContentResolver contentResolver = Kandle.getContext().getContentResolver();
-        return MimeTypeMap.getSingleton().getExtensionFromMimeType(contentResolver.getType(uri));
-    }*/
-
-    public static String getFileExtension(Uri uri) {
+    private static String getFileExtension(Uri uri) {
         ContentResolver contentResolver = Kandle.getContext().getContentResolver();
         return MimeTypeMap.getSingleton().getExtensionFromMimeType(contentResolver.getType(uri));
     }
 
+    /**
+     * Checks the result received from an activity and returns an image uri if the result corresponds to a pick in the gallery
+     * @param requestCode requestCode specified when starting the activity
+     * @param resultCode resultCode received in the result
+     * @param data data received in the result
+     * @return the uri of the image selected if the activity corresponds to a pick in the gallery, else null
+     */
     public static Uri handleActivityResultAndGetUri(int requestCode, int resultCode, Intent data) {
 
         if (requestCode == IMAGE_REQUEST && resultCode == RESULT_OK &&
@@ -73,10 +68,11 @@ public class ImagePicker {
         return null;
     }
 
-    /*public Uri getImageUri() {
-        return imageUri;
-    }*/
-
+    /**
+     * Uploads an image in the storage system and returns a download url
+     * @param imageUri the uri of the image to store
+     * @return a download url to get the image from the storage system
+     */
     public static Task<Uri> uploadImage(Uri imageUri) {
         Storage storage = DependencyManager.getStorageSystem();
         return storage.storeAndGetDownloadUrl(getFileExtension(imageUri), imageUri);
