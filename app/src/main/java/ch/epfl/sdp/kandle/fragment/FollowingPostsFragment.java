@@ -31,6 +31,8 @@ import static ch.epfl.sdp.kandle.fragment.YourPostListFragment.POST_IMAGE;
 
 public class FollowingPostsFragment extends Fragment {
 
+    //TODO should not be able to delete posts other users made
+
     private String userId;
     private List<User> following;
     private List<Post> posts;

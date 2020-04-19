@@ -8,6 +8,9 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import androidx.appcompat.app.AppCompatActivity;
+
+import com.google.android.gms.tasks.Task;
+
 import ch.epfl.sdp.kandle.MainActivity;
 import ch.epfl.sdp.kandle.R;
 import ch.epfl.sdp.kandle.imagePicker.ProfilePicPicker;
@@ -19,14 +22,15 @@ import ch.epfl.sdp.kandle.dependencies.DependencyManager;
 public class CustomAccountActivity extends AppCompatActivity {
 
     public final static int PROFILE_PICTURE_TAG = 12;
-    private ProfilePicPicker profilePicPicker;
 
-    Button uploadButton;
-    Button leaveButton;
-    ImageView profilePic;
-    EditText m_nickname;
+    private Button uploadButton;
+    private Button leaveButton;
+    private ImageView profilePic;
+    private EditText m_nickname;
 
-    Database database;
+    private Database database;
+
+    private Uri imageUri;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,26 +43,35 @@ public class CustomAccountActivity extends AppCompatActivity {
         leaveButton = findViewById(R.id.startButton);
         profilePic = findViewById(R.id.profilePic);
         m_nickname = findViewById(R.id.nickname);
-        profilePicPicker = new ProfilePicPicker(this);
-        uploadButton.setOnClickListener(v -> profilePicPicker.openImage());
+        uploadButton.setOnClickListener(v -> ProfilePicPicker.openImage(this));
 
         leaveButton.setOnClickListener(v -> {
-            ProgressDialog pd = new ProgressDialog(CustomAccountActivity.this);
-            pd.setMessage("Finalizing your account");
-            pd.show();
-            profilePicPicker.setProfilePicture().addOnCompleteListener(task -> {
-                String nickname = m_nickname.getText().toString().trim();
-                if (nickname.length() > 0) {
-                    database.updateNickname(nickname).addOnCompleteListener(task1 -> {
-                        pd.dismiss();
-                        startMainActivity();;
-                    });
+            String nickname = m_nickname.getText().toString().trim();
+            if (imageUri == null && nickname.length() == 0) {
+                startMainActivity();
+            }
+            else {
+                ProgressDialog pd = new ProgressDialog(CustomAccountActivity.this);
+                pd.setMessage("Finalizing your account");
+                pd.show();
+
+                Task<Void> task;
+                if (imageUri != null) {
+                    task = ProfilePicPicker.setProfilePicture(imageUri);
+                    if (nickname.length() > 0) {
+                        task.continueWith(t -> database.updateNickname(nickname));
+                    }
                 }
                 else {
+                    task = database.updateNickname(nickname);
+                }
+
+                task.addOnCompleteListener(t -> {
                     pd.dismiss();
                     startMainActivity();
-                }
-            });
+                });
+            }
+
         });
     }
 
@@ -71,12 +84,11 @@ public class CustomAccountActivity extends AppCompatActivity {
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        profilePicPicker.handleActivityResult(requestCode, resultCode, data);
-        Uri uri = profilePicPicker.getImageUri();
+        imageUri = ProfilePicPicker.handleActivityResultAndGetUri(requestCode, resultCode, data);
 
-        if (uri != null) {
+        if (imageUri != null) {
             profilePic.setTag(PROFILE_PICTURE_TAG);
-            profilePic.setImageURI(uri);
+            profilePic.setImageURI(imageUri);
         }
     }
 

@@ -39,22 +39,14 @@ import ch.epfl.sdp.kandle.dependencies.Storage;
 public class PostActivity extends AppCompatActivity {
 
     public final static int POST_IMAGE_TAG = 42;
-    private static final int TAKE_PICTURE = 1;
-    final int CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE = 1024;
     private EditText mPostText;
-    private ImageView imageView;
     private Button mPostButton;
     private ImageButton mGalleryButton, mCameraButton;
     private ImageView mPostImage;
-    private ImagePicker postImagePicker;
     private Post p;
     private Authentication auth;
     private Database database;
-    private FirebaseAuth fAuth;
-    private FirebaseFirestore fStore;
     private PostCamera postCamera;
-    private String userID;
-    private Camera mCamera;
     private Uri imageUri;
 
     private Post editPost;
@@ -81,7 +73,6 @@ public class PostActivity extends AppCompatActivity {
         mGalleryButton = findViewById(R.id.galleryButton);
         mCameraButton = findViewById(R.id.cameraButton);
         mPostImage = findViewById(R.id.postImage);
-        postImagePicker = new ImagePicker(this);
         postCamera = new PostCamera(this);
 
         auth = DependencyManager.getAuthSystem();
@@ -107,11 +98,6 @@ public class PostActivity extends AppCompatActivity {
             System.out.println("passing here");
 
             String postText = mPostText.getText().toString().trim();
-            System.out.println(postText);
-            Uri imageUri = postImagePicker.getImageUri();
-            if (imageUri == null) {
-                imageUri = postCamera.getImageUri();
-            }
 
             if (postText.isEmpty() && imageUri == null) {
                 mPostText.setError("Your post is empty...");
@@ -119,7 +105,7 @@ public class PostActivity extends AppCompatActivity {
             }
 
             if (imageUri != null) {
-                uploadImage(imageUri).addOnCompleteListener(task -> {
+                ImagePicker.uploadImage(imageUri).addOnCompleteListener(task -> {
                     if (task.isSuccessful()) {
                         Uri downloadUri = task.getResult();
                         if (downloadUri == null) {
@@ -171,7 +157,7 @@ public class PostActivity extends AppCompatActivity {
         mCameraButton.setOnClickListener(v -> postCamera.openCamera());
 
 
-        mGalleryButton.setOnClickListener(v -> postImagePicker.openImage());
+        mGalleryButton.setOnClickListener(v -> ImagePicker.openImage(this));
     }
 
     private void post(Post p) {
@@ -208,25 +194,13 @@ public class PostActivity extends AppCompatActivity {
             if (imageBitmap != null) {
                 mPostImage.setImageBitmap(imageBitmap);
             }
+            imageUri = postCamera.getImageUri();
         } else {
-            postImagePicker.handleActivityResult(requestCode, resultCode, data);
-            Uri uri = postImagePicker.getImageUri();
-            if (uri != null) {
-                mPostImage.setImageURI(uri);
+            imageUri = ImagePicker.handleActivityResultAndGetUri(requestCode, resultCode, data);
+            if (imageUri != null) {
+                mPostImage.setImageURI(imageUri);
             }
         }
-    }
-
-
-    public Task<Uri> uploadImage(Uri imageUri) {
-        Storage storage = DependencyManager.getStorageSystem();
-        return storage.storeAndGetDownloadUrl(getFileExtension(imageUri), imageUri);
-
-    }
-
-    private String getFileExtension(Uri uri) {
-        ContentResolver contentResolver = PostActivity.this.getContentResolver();
-        return MimeTypeMap.getSingleton().getExtensionFromMimeType(contentResolver.getType(uri));
     }
 
 
