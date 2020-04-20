@@ -44,4 +44,7 @@
 
     <string name="mapbox_access_token">pk.eyJ1IjoiYS1pYm0iLCJhIjoiY2s4cmpoamd6MGEyeTNlbXNyaXZmcXNveiJ9.B5j1E7U4A_Pon-mHaRKrnQ</string>
 
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+
 </resources>

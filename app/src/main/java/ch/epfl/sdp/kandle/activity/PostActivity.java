@@ -63,8 +63,8 @@ public class PostActivity extends AppCompatActivity {
         //Permission();
 
         Intent intent = getIntent();
-        Double latitude = intent.getDoubleExtra("latitude", 0.0) - 0.0015;
-        Double longitude = intent.getDoubleExtra("longitude", 0.0) - 0.0015;
+        Double latitude = intent.getDoubleExtra("latitude", 0.0) - 0.00015;
+        Double longitude = intent.getDoubleExtra("longitude", 0.0) - 0.00015;
         String postId = intent.getStringExtra("postId");
 
 

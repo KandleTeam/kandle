@@ -15,6 +15,7 @@ import android.widget.ImageButton;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.maps.android.SphericalUtil;
 import com.mapbox.android.core.location.LocationEngine;
 import com.mapbox.android.core.location.LocationEngineCallback;
 import com.mapbox.android.core.location.LocationEngineProvider;
@@ -25,6 +26,7 @@ import com.mapbox.android.core.permissions.PermissionsManager;
 import com.mapbox.mapboxsdk.Mapbox;
 import com.mapbox.mapboxsdk.annotations.Icon;
 import com.mapbox.mapboxsdk.annotations.IconFactory;
+import com.mapbox.mapboxsdk.annotations.Marker;
 import com.mapbox.mapboxsdk.annotations.MarkerOptions;
 import com.mapbox.mapboxsdk.geometry.LatLng;
 import com.mapbox.mapboxsdk.location.LocationComponent;
@@ -43,6 +45,9 @@ import java.util.List;
 import androidx.annotation.NonNull;
 import androidx.core.content.res.ResourcesCompat;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
+import ch.epfl.sdp.kandle.User;
 import ch.epfl.sdp.kandle.activity.PostActivity;
 import ch.epfl.sdp.kandle.R;
 import ch.epfl.sdp.kandle.dependencies.Authentication;
@@ -151,7 +156,41 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback, Per
                         }
                     });
             });
+            final FragmentManager fragmentManager = this.getActivity().getSupportFragmentManager();
+
+            mapboxMap.setOnMarkerClickListener(marker -> {
+
+                database.getPostByPostId(marker.getSnippet()).addOnSuccessListener(new OnSuccessListener<Post>() {
+                    @Override
+                    public void onSuccess(Post post) {
+
+                        database.getUserById(post.getUserId()).addOnSuccessListener(new OnSuccessListener<User>() {
+                            @Override
+                            public void onSuccess(User user) {
+                                fragmentManager.beginTransaction()
+                                        .replace(R.id.flContent, PostFragment.newInstance(post, currentLocation, user
+                                                , comptuteDistance(currentLocation.getLatitude(), currentLocation.getLongitude(), post.getLatitude(), post.getLongitude()) ))
+                                        .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
+                                        .addToBackStack(null)
+                                        .commit();
+                            }
+                        });
+
+                    }
+                });
+
+                return true;
+
+            });
         });
+
+    }
+
+    private int comptuteDistance(double userLatitude, double userLongitude, double postLatitude, double postLongitude) {
+
+        com.google.android.gms.maps.model.LatLng startLatLng = new com.google.android.gms.maps.model.LatLng(userLatitude, userLongitude);
+        com.google.android.gms.maps.model.LatLng endLatLng = new com.google.android.gms.maps.model.LatLng(postLatitude, postLongitude);
+        return (int) SphericalUtil.computeDistanceBetween(startLatLng, endLatLng);
 
     }
 
