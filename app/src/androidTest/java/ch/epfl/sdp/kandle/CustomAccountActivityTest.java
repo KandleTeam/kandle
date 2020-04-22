@@ -81,7 +81,7 @@ public class CustomAccountActivityTest {
 
 
     @Test
-    public void enterUsername() throws InterruptedException {
+    public void enterUsername() {
         onView(withId(R.id.nickname)).perform(typeText("User 1"));
         onView(withId(R.id.nickname)).perform(closeSoftKeyboard());
         onView(withId(R.id.startButton)).perform(click());

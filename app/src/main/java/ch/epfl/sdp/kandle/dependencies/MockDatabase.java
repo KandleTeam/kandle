@@ -231,7 +231,7 @@ public class MockDatabase implements Database {
 
     @Override
     public Task<Void> editPost(Post p, String postId) {
-        if (users.get(p.getUserId()).getPosts().contains(postId)) {
+        if (users.get(p.getUserId()).getPostsIds().contains(postId)) {
             posts.remove(postId);
             posts.put(postId, p);
         }

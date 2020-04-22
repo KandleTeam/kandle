@@ -6,8 +6,10 @@ import com.google.android.gms.tasks.TaskCompletionSource;
 import com.google.android.gms.tasks.Tasks;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Set;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import ch.epfl.sdp.kandle.LoggedInUser;
@@ -22,6 +24,8 @@ import ch.epfl.sdp.kandle.dependencies.InternalStorage;
 import ch.epfl.sdp.kandle.Post;
 import ch.epfl.sdp.kandle.exceptions.IncompleteDataException;
 import ch.epfl.sdp.kandle.exceptions.NoInternetException;
+
+import static ch.epfl.sdp.kandle.Storage.firebase.FirestoreDatabase.*;
 
 public class CachedFirestoreDatabase implements Database {
 
@@ -153,6 +157,12 @@ public class CachedFirestoreDatabase implements Database {
     }
 
     @Override
+    public Task<Void> editPost(Post p, String postId) {
+        postDao.updatePost(p);
+        return database.editPost(p, postId);
+    }
+
+    @Override
     public Task<Void> deletePost(Post post) {
         postDao.deletePost(post);
         return database.deletePost(post);
@@ -257,12 +267,10 @@ public class CachedFirestoreDatabase implements Database {
 
         return source.getTask();
     }
-
     /**
      * Returns all the posts a user has made
-     * If the app is offline this might not return all the posts create by the user from th fact
-     * that they have to be stored locally i.e only the stored post will be returned
-     * If the app is online we combine the local and remote data and update the local Db with the remote one
+     * First it retrieves all the posts that are stored locally from the given user
+     * Then if there are not all posts stored locally
      *
      * @param userId
      * @return
@@ -270,23 +278,35 @@ public class CachedFirestoreDatabase implements Database {
     @Override
     public Task<List<Post>> getPostsByUserId(String userId) {
         TaskCompletionSource source = new TaskCompletionSource();
-        //This maybe incomplete
         List<Post> posts = localDatabase.userWithPostsDao().getPostsFromUserId(userId);
-        if (DependencyManager.getNetworkStateSystem().isConnected()) {
-            database.getPostsByUserId(userId).addOnCompleteListener(v -> {
-                List<Post> result = v.getResult();
-                if (result.removeAll(posts)) {
-                    for (Post p : result) {
-                        insertAndResizePostLocalDb(p);
+        this.getUserById(userId).addOnCompleteListener(u ->{
+            if(u.isSuccessful()){
+                if(posts.size() == u.getResult().getPostsIds().size()){
+                    source.setResult(posts);
+                }else {
+                    if (DependencyManager.getNetworkStateSystem().isConnected()) {
+                        database.getPostsByUserId(userId).addOnCompleteListener(v -> {
+                            List<Post> result = v.getResult();
+                            if (result.removeAll(posts)) {
+                                for (Post p : result) {
+                                    insertAndResizePostLocalDb(p);
+                                }
+                            }
+                            posts.addAll(v.getResult());
+                            source.setResult(posts);
+                        });
+                    } else {
+                        source.setResult(posts);
+                        //TODO Set a flag to handle incompltete information, we don't want to throw and excpetion here because we still may have information
                     }
                 }
-                posts.addAll(v.getResult());
+            }else{
                 source.setResult(posts);
-            });
-        } else {
-            source.setResult(localDatabase.userWithPostsDao().getPostsFromUserId(userId));
-            //TODO Set a flag to handle incompltete information, we don't want to throw and excpetion here because we still may have information
-        }
+            }
+
+        });
+
+
         return source.getTask();
 
     }
@@ -308,8 +328,10 @@ public class CachedFirestoreDatabase implements Database {
             TaskCompletionSource source = new TaskCompletionSource();
             List<Post> nearbyPosts = new ArrayList<>();
             List<Post> posts = postDao.getPostList();
+            Date now = new Date();
             for (Post p : posts) {
-                if (FirestoreDatabase.nearby(latitude, longitude, p.getLatitude(), p.getLongitude(), distance)) {
+                long numDays = TimeUnit.DAYS.convert(Math.abs(now.getTime() - p.getDate().getTime()), TimeUnit.MILLISECONDS);
+                if (FirestoreDatabase.nearby(latitude, longitude, p.getLatitude(), p.getLongitude(), distance, p.getLikers().size(), numDays)) {
                     nearbyPosts.add(p);
                 }
             }
@@ -317,6 +339,22 @@ public class CachedFirestoreDatabase implements Database {
             return source.getTask();
         }
 
+    }
+
+    @Override
+    public Task<Post> getPostByPostId(String postId) {
+        TaskCompletionSource source = new TaskCompletionSource();
+        Post p = postDao.getPostFromPostId(postId);
+        if (p == null) {
+            if (DependencyManager.getNetworkStateSystem().isConnected()) {
+                return database.getPostByPostId(postId);
+            } else {
+                source.setException(new NoInternetException());
+            }
+        } else {
+            source.setResult(p);
+        }
+        return source.getTask();
     }
 
 
@@ -340,7 +378,6 @@ public class CachedFirestoreDatabase implements Database {
         userDao.updateUser(user);
         return database.updateNickname(nickname);
     }
-
 
 
 }

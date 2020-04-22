@@ -13,13 +13,11 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.android.gms.tasks.Task;
 
-import ch.epfl.sdp.kandle.MainActivity;
+
 import ch.epfl.sdp.kandle.R;
 import ch.epfl.sdp.kandle.Storage.caching.CachedFirestoreDatabase;
 import ch.epfl.sdp.kandle.imagePicker.ProfilePicPicker;
 import ch.epfl.sdp.kandle.dependencies.Database;
-import ch.epfl.sdp.kandle.dependencies.DependencyManager;
-import okhttp3.Cache;
 
 //TODO: handle case when user leaves activity before saving
 
@@ -35,7 +33,7 @@ public class CustomAccountActivity extends AppCompatActivity {
     private Database database;
 
     private Uri imageUri;
-    CachedFirestoreDatabase database;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -86,6 +84,7 @@ public class CustomAccountActivity extends AppCompatActivity {
     }
 
 
+
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -93,7 +92,7 @@ public class CustomAccountActivity extends AppCompatActivity {
 
         if (imageUri != null) {
             profilePic.setTag(PROFILE_PICTURE_TAG);
-            profilePic.setImageURI(uri);
+            profilePic.setImageURI(imageUri);
         }
     }
 

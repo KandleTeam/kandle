@@ -30,7 +30,9 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 
+import ch.epfl.sdp.kandle.Post;
 import ch.epfl.sdp.kandle.User;
+import ch.epfl.sdp.kandle.dependencies.Database;
 
 public class FirestoreDatabase implements Database {
 
@@ -431,7 +433,6 @@ public class FirestoreDatabase implements Database {
                 });
 
     }
-
     @Override
     public Task<Void> unlikePost(String userId, String postId) {
         final DocumentReference unlikedPostDoc = POSTS.document(postId);
@@ -547,19 +548,18 @@ public class FirestoreDatabase implements Database {
 
 
     @Override
-    public Task<List<Post>> getNearbyPosts(double latitude, double longitude, double distance) {
+    public Task<List<Post>> getNearbyPosts(double longitude, double latitude, double distance){
         TaskCompletionSource<List<Post>> source = new TaskCompletionSource<>();
 
         POSTS.get().addOnCompleteListener(task -> {
-            if (task.isSuccessful()) {
+            if (task.isSuccessful()){
                 List<Post> posts = new ArrayList<>();
 
                 for (QueryDocumentSnapshot documentSnapshot : task.getResult()) {
 
-                    if ((documentSnapshot.get("latitude") != null) && (documentSnapshot.get("longitude") != null)) {
+                    if ((documentSnapshot.get("latitude") != null) && (documentSnapshot.get("longitude") !=null)){
                         double postLatitude = (double) documentSnapshot.get("latitude");
                         double postLongitude = (double) documentSnapshot.get("longitude");
-                        if ((nearby(latitude, longitude, postLatitude, postLongitude, distance))) {
                         List<String> likers = (List<String>) documentSnapshot.get("likers");
 
                         DateFormat df = DateFormat.getDateInstance();
@@ -578,7 +578,8 @@ public class FirestoreDatabase implements Database {
 
                 source.setResult(posts);
 
-            } else {
+            }
+            else {
                 source.setException(task.getException());
             }
         });
@@ -601,7 +602,7 @@ public class FirestoreDatabase implements Database {
                 });
     }
 
-    private boolean nearby(double latitude, double longitude, double postLatitude, double postLongitude, double distance, int numLikes, long numDays) {
+    public static boolean nearby(double latitude, double longitude, double postLatitude, double postLongitude, double distance, int numLikes, long numDays) {
 
         LatLng startLatLng = new LatLng(latitude, longitude);
         LatLng endLatLng = new LatLng(postLatitude, postLongitude);

@@ -86,8 +86,8 @@ public class YourPostsListTest {
     private LocalDatabase localDatabase;
     private MockNetwork network;
     @Rule
-    public ActivityTestRule<MainActivity> intentsRule =
-            new ActivityTestRule<MainActivity>(MainActivity.class, true, true) {
+    public IntentsTestRule<MainActivity> intentsRule =
+            new IntentsTestRule<MainActivity>(MainActivity.class, true, true) {
                 @Override
                 protected void beforeActivityLaunched() {
                     user1 = new User("user1Id", "user1", "user1@kandle.ch", "user1", null);

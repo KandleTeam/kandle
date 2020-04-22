@@ -149,8 +149,6 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder> {
         final FragmentManager fragmentManager = ((AppCompatActivity) mContext).getSupportFragmentManager();
 
 
-        final FragmentManager fragmentManager =   ((AppCompatActivity) mContext).getSupportFragmentManager();
-
         holder.mlikes.setOnClickListener(v -> database.getLikers(post.getPostId()).addOnCompleteListener(task -> {
             if (task.isSuccessful()) {
                 fragmentManager.beginTransaction().replace(R.id.flContent, ListUsersFragment.newInstance(
