@@ -60,6 +60,8 @@ public interface Database {
 
     Task<Void> addPost(Post p);
 
+    Task<Void> editPost(Post p, String postId);
+
     Task<Void> deletePost(Post p);
 
     Task<Void> likePost(String userId, String postId);
@@ -75,5 +77,7 @@ public interface Database {
     Task<List<Post>> getPostsByUserId(String userId);
 
     Task<List<Post>> getNearbyPosts(double latitude, double longitude, double distance);
+
+    Task<Post> getPostByPostId(String postId);
 
 }

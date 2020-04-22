@@ -24,6 +24,10 @@
             android:icon="@drawable/ic_light"
             android:title="Your Achievements" />
 
+        <item
+            android:id="@+id/following_posts"
+            android:icon="@drawable/ic_group_black"
+            android:title="Other Posts" />
 
         <item android:title="Communication">
             <menu>

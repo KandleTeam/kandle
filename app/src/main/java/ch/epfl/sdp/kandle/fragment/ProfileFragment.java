@@ -27,6 +27,8 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
+
+import ch.epfl.sdp.kandle.imagePicker.ImagePicker;
 import ch.epfl.sdp.kandle.imagePicker.ProfilePicPicker;
 import ch.epfl.sdp.kandle.LoggedInUser;
 import ch.epfl.sdp.kandle.R;
@@ -42,7 +44,6 @@ public class ProfileFragment extends Fragment {
     public final static int PROFILE_PICTURE_BEFORE = 6;
     public final static int PROFILE_PICTURE_AFTER = 7;
     private User user;
-    private ProfilePicPicker profilePicPicker;
     private ImageView mProfilePicture, mEditPicture, mProfilePictureInMenu, mEditName;
     private TextView mNumberOfFollowers, mNumberOfFollowing, mUsername, mNicknameView, mNickNameInMenu;
     private EditText mNicknameEdit;
@@ -50,6 +51,7 @@ public class ProfileFragment extends Fragment {
     private Button mFollowButton, mValidateNameButton, mValidatePictureButton;
     private Authentication auth;
     private Database database;
+    private Uri imageUri;
 
     private ProfileFragment(User user) {
         this.user = user;
@@ -86,8 +88,6 @@ public class ProfileFragment extends Fragment {
         auth = DependencyManager.getAuthSystem();
         database = new CachedFirestoreDatabase();
 
-        profilePicPicker = new ProfilePicPicker(this);
-
         getViews(view);
 
         final User currentUser = LoggedInUser.getInstance();
@@ -101,8 +101,7 @@ public class ProfileFragment extends Fragment {
         } else {
             mEditPicture.setOnClickListener(v -> {
                 mEditPicture.setVisibility(View.GONE);
-                profilePicPicker.openImage();
-                mValidatePictureButton.setVisibility(View.VISIBLE);
+                ProfilePicPicker.openImage(this);
             });
 
         }
@@ -137,9 +136,9 @@ public class ProfileFragment extends Fragment {
             ProgressDialog pd = new ProgressDialog(getContext());
             pd.setMessage("uploading");
             pd.show();
-            profilePicPicker.setProfilePicture().addOnCompleteListener(task -> {
+            ProfilePicPicker.setProfilePicture(imageUri).addOnCompleteListener(task -> {
                 mProfilePictureInMenu.setTag(PROFILE_PICTURE_AFTER);
-                mProfilePictureInMenu.setImageURI(profilePicPicker.getImageUri());
+                mProfilePictureInMenu.setImageURI(imageUri);
                 pd.dismiss();
             });
             mValidatePictureButton.setVisibility(View.GONE);
@@ -160,20 +159,19 @@ public class ProfileFragment extends Fragment {
         setNumberOfFollowers();
         setNumberOfFollowing();
 
-        database.userIdFollowingList(currentUser.getId()).addOnCompleteListener(task -> {
-            if (task.isSuccessful()) {
-                if ((task.getResult() == null) || (!task.getResult().contains(user.getId()))) {
-                    mFollowButton.setText(R.string.followBtnNotFollowing);
-                } else {
-                    mFollowButton.setText(R.string.followBtnAlreadyFollowing);
-                }
-            }
-        });
-
 
         if (user.getId().equals(currentUser.getId())) {
             mFollowButton.setVisibility(View.GONE);
         } else {
+            database.userIdFollowingList(currentUser.getId()).addOnCompleteListener(task -> {
+                if (task.isSuccessful()) {
+                    if ((task.getResult() == null) || (!task.getResult().contains(user.getId()))) {
+                        mFollowButton.setText(R.string.followBtnNotFollowing);
+                    } else {
+                        mFollowButton.setText(R.string.followBtnAlreadyFollowing);
+                    }
+                }
+            });
             mFollowButton.setOnClickListener(followButtonListener(currentUser));
         }
 
@@ -189,21 +187,18 @@ public class ProfileFragment extends Fragment {
     }
 
     private OnCompleteListener<List<User>> numberListener(String title, final FragmentManager fragmentManager) {
-        return new OnCompleteListener<List<User>>() {
-            @Override
-            public void onComplete(@NonNull Task<List<User>> task) {
-                if (task.isSuccessful()) {
+        return task -> {
+            if (task.isSuccessful()) {
 
-                    fragmentManager.beginTransaction().replace(R.id.flContent, ListUsersFragment.newInstance(
-                            task.getResult()
-                            , title
-                            , Integer.toString(task.getResult().size())
-                    ))
-                            .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
-                            .addToBackStack(null)
-                            .commit();
+                fragmentManager.beginTransaction().replace(R.id.flContent, ListUsersFragment.newInstance(
+                        task.getResult()
+                        , title
+                        , Integer.toString(task.getResult().size())
+                ))
+                        .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
+                        .addToBackStack(null)
+                        .commit();
 
-                }
             }
         };
     }
@@ -253,12 +248,12 @@ public class ProfileFragment extends Fragment {
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        profilePicPicker.handleActivityResult(requestCode, resultCode, data);
-        Uri uri = profilePicPicker.getImageUri();
+        imageUri = ProfilePicPicker.handleActivityResultAndGetUri(requestCode, resultCode, data);
 
-        if (uri != null) {
+        if (imageUri != null) {
             mProfilePicture.setTag(PROFILE_PICTURE_AFTER);
-            mProfilePicture.setImageURI(uri);
+            mProfilePicture.setImageURI(imageUri);
+            mValidatePictureButton.setVisibility(View.VISIBLE);
         }
     }
 }

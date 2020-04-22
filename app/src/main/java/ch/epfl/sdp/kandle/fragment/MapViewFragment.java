@@ -25,6 +25,7 @@ import com.mapbox.android.core.permissions.PermissionsManager;
 import com.mapbox.mapboxsdk.Mapbox;
 import com.mapbox.mapboxsdk.annotations.Icon;
 import com.mapbox.mapboxsdk.annotations.IconFactory;
+import com.mapbox.mapboxsdk.annotations.Marker;
 import com.mapbox.mapboxsdk.annotations.MarkerOptions;
 import com.mapbox.mapboxsdk.geometry.LatLng;
 import com.mapbox.mapboxsdk.location.LocationComponent;
@@ -43,8 +44,9 @@ import java.util.List;
 import androidx.annotation.NonNull;
 import androidx.core.content.res.ResourcesCompat;
 import androidx.fragment.app.Fragment;
-
-import ch.epfl.sdp.kandle.Storage.caching.CachedFirestoreDatabase;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
+import ch.epfl.sdp.kandle.User;
 import ch.epfl.sdp.kandle.activity.PostActivity;
 import ch.epfl.sdp.kandle.R;
 import ch.epfl.sdp.kandle.dependencies.Authentication;
@@ -55,6 +57,8 @@ import ch.epfl.sdp.kandle.Post;
 import okhttp3.Cache;
 
 public class MapViewFragment extends Fragment implements OnMapReadyCallback, PermissionsListener {
+
+    public int numMarkers;
 
     private static final String MARKER_SOURCE = "markers-source";
     private static final String MARKER_STYLE_LAYER = "markers-style-layer";
@@ -130,31 +134,75 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback, Per
         this.mapboxMap = mapboxMap;
 
 
-        locationProvider.getLocation(this.getActivity()).addOnSuccessListener(location -> {
-            currentLocation = location;
-            mapboxMap.setStyle(Style.MAPBOX_STREETS, style -> {
+        locationProvider.getLocation(this.getActivity()).addOnCompleteListener(task -> {
 
-                Drawable drawable = ResourcesCompat.getDrawable(MapViewFragment.this.getResources(), R.drawable.ic_whatshot_24dp, null);
-                Bitmap mBitmap = BitmapUtils.getBitmapFromDrawable(drawable);
-                //style.addImage(MARKER_IMAGE, mBitmap);
-                IconFactory iconFactory = IconFactory.getInstance(MapViewFragment.this.getActivity());
-                Icon icon = iconFactory.fromBitmap(mBitmap);
-                enableLocationComponent(style);
-                //addPostMarkers(style);
-                database.getNearbyPosts(currentLocation.getLatitude(), currentLocation.getLongitude(), RADIUS).addOnSuccessListener(new OnSuccessListener<List<Post>>() {
-                    @Override
-                    public void onSuccess(List<Post> posts) {
-                        for (Post p : posts) {
-                            mapboxMap.addMarker(new MarkerOptions()
-                                    .position(new LatLng(p.getLatitude(), p.getLongitude()))
-                                    .title("A post !")
-                                    .icon(icon))
-                                    .setSnippet(p.getPostId());
-                        }
-                    }
-                });
-            });
+            if (task.isSuccessful()) {
+
+                if (task.getResult() != null) {
+
+
+                    mapboxMap.setStyle(Style.MAPBOX_STREETS, style -> {
+
+                        Drawable drawable = ResourcesCompat.getDrawable(MapViewFragment.this.getResources(), R.drawable.ic_whatshot_24dp, null);
+                        Bitmap mBitmap = BitmapUtils.getBitmapFromDrawable(drawable);
+                        //style.addImage(MARKER_IMAGE, mBitmap);
+                        IconFactory iconFactory = IconFactory.getInstance(MapViewFragment.this.getActivity());
+                        Icon icon = iconFactory.fromBitmap(mBitmap);
+                        enableLocationComponent(style);
+                        currentLocation = task.getResult();
+                        //addPostMarkers(style);
+                        numMarkers = 0;
+                        database.getNearbyPosts(currentLocation.getLongitude(), currentLocation.getLatitude(), RADIUS).addOnSuccessListener(posts -> {
+                            for (Post p : posts) {
+                                numMarkers++;
+                                mapboxMap.addMarker(new MarkerOptions()
+                                        .position(new LatLng(p.getLatitude(), p.getLongitude()))
+                                        .title("A post !")
+                                        .icon(icon))
+                                        .setSnippet(p.getPostId());
+                            }
+                        });
+                    });
+
+                    mapboxMap.setOnMarkerClickListener(marker -> {
+                        goToPostFragment(marker.getSnippet(), task.getResult());
+                        return true;
+
+                    });
+
+                    mapView.setContentDescription("MAP READY");
+                }
+
+                else {
+                    Toast.makeText(this.getActivity(), "Enable GPS", Toast.LENGTH_LONG).show();
+                }
+            }
+
+            else {
+                permissionsManager = new PermissionsManager(this);
+                permissionsManager.requestLocationPermissions(this.getActivity());
+                //Toast.makeText(this.getActivity(), "An error has occurred : " + task.getException().getMessage(), Toast.LENGTH_LONG).show();
+            }
+
         });
+    }
+
+    public void goToPostFragment (String postId, Location location){
+        final FragmentManager fragmentManager = this.getActivity().getSupportFragmentManager();
+        database.getPostByPostId(postId).addOnSuccessListener(post -> database.getUserById(post.getUserId()).addOnSuccessListener(
+                user -> fragmentManager.beginTransaction()
+                .replace(R.id.flContent, PostFragment.newInstance(post, location, user
+                        , comptuteDistance(location.getLatitude(), location.getLongitude(), post.getLatitude(), post.getLongitude())))
+                .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
+                .addToBackStack(null)
+                .commit()));
+    }
+
+    private int comptuteDistance(double userLatitude, double userLongitude, double postLatitude, double postLongitude) {
+
+        com.google.android.gms.maps.model.LatLng startLatLng = new com.google.android.gms.maps.model.LatLng(userLatitude, userLongitude);
+        com.google.android.gms.maps.model.LatLng endLatLng = new com.google.android.gms.maps.model.LatLng(postLatitude, postLongitude);
+        return (int) SphericalUtil.computeDistanceBetween(startLatLng, endLatLng);
 
     }
 
@@ -233,6 +281,7 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback, Per
         }
     }
 
+
     @SuppressLint("MissingPermission")
     private void initLocationEngine() {
         locationEngine = LocationEngineProvider.getBestLocationEngine(this.getContext());
@@ -248,6 +297,7 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback, Per
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         permissionsManager.onRequestPermissionsResult(requestCode, permissions, grantResults);
     }
+
 
 
     @Override

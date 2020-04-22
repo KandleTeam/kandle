@@ -1,5 +1,9 @@
 package ch.epfl.sdp.kandle;
 
+import android.app.Activity;
+import android.app.Instrumentation;
+import android.content.Intent;
+import android.net.Uri;
 import android.view.Gravity;
 import android.view.View;
 
@@ -14,6 +18,7 @@ import androidx.test.espresso.action.ViewActions;
 import androidx.test.espresso.contrib.DrawerActions;
 import androidx.test.espresso.contrib.NavigationViewActions;
 import androidx.test.espresso.contrib.RecyclerViewActions;
+import androidx.test.espresso.intent.rule.IntentsTestRule;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 import androidx.test.rule.ActivityTestRule;
 
@@ -36,6 +41,8 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
+
+import ch.epfl.sdp.kandle.activity.PostActivity;
 import java.util.List;
 
 import ch.epfl.sdp.kandle.Storage.room.LocalDatabase;
@@ -52,10 +59,14 @@ import ch.epfl.sdp.kandle.fragment.YourPostListFragment;
 import static androidx.test.espresso.Espresso.onView;
 import static androidx.test.espresso.action.ViewActions.click;
 import static androidx.test.espresso.action.ViewActions.closeSoftKeyboard;
+import static androidx.test.espresso.action.ViewActions.replaceText;
 import static androidx.test.espresso.action.ViewActions.longClick;
 import static androidx.test.espresso.action.ViewActions.typeText;
 import static androidx.test.espresso.assertion.ViewAssertions.matches;
 import static androidx.test.espresso.contrib.DrawerMatchers.isClosed;
+import static androidx.test.espresso.intent.Intents.intending;
+import static androidx.test.espresso.intent.matcher.IntentMatchers.hasAction;
+import static androidx.test.espresso.matcher.ViewMatchers.hasDescendant;
 import static androidx.test.espresso.matcher.RootMatchers.withDecorView;
 import static androidx.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static androidx.test.espresso.matcher.ViewMatchers.withId;
@@ -190,7 +201,7 @@ public class YourPostsListTest {
     }
 
     @Test
-    public void createTwoNewPostsAndRemoveThem() {
+    public void createTwoNewPostsAndRemoveThem() throws InterruptedException {
 
         // 2 posts should be displayed
         onView(withId(R.id.rvPosts)).check(new RecyclerViewItemCountAssertion(2));
@@ -207,6 +218,7 @@ public class YourPostsListTest {
         onView(withId(R.id.postText)).perform(closeSoftKeyboard());
         onView(withId(R.id.postButton)).perform(click());
 
+        Thread.sleep(1000);
         onView(withId(R.id.newPostButton)).perform(click());
         onView(withId(R.id.postText)).perform(typeText("Post 4"));
         onView(withId(R.id.postText)).perform(closeSoftKeyboard());
@@ -314,6 +326,44 @@ public class YourPostsListTest {
 
 
 
+
+
+    @Test
+    public void EditPostImageTest(){
+        onView(withId(R.id.rvPosts)).perform(RecyclerViewActions.actionOnItemAtPosition(1, clickChildViewWithId(R.id.editButton)));
+
+        Intent resultData = new Intent();
+        resultData.setAction(Intent.ACTION_GET_CONTENT);
+        Uri imageUri = Uri.parse("android.resource://ch.epfl.sdp.kandle/drawable/ic_launcher_background.xml");
+        resultData.setData(imageUri);
+        Instrumentation.ActivityResult result = new Instrumentation.ActivityResult(Activity.RESULT_OK, resultData);
+        intending(hasAction(Intent.ACTION_GET_CONTENT)).respondWith(result);
+        onView(withId(R.id.galleryButton)).perform(click());
+        onView(withId(R.id.postImage)).check(matches(withTagValue(is(PostActivity.POST_IMAGE_TAG))));
+        onView(withId(R.id.postButton)).perform(click());
+
+        loadPostView();
+
+        onView(withId(R.id.rvPosts)).perform(RecyclerViewActions.actionOnItemAtPosition(1, click()));
+        onView(withId(R.id.postImage)).check(matches(withTagValue(is(YourPostListFragment.POST_IMAGE))));
+        onView(withId(R.id.post_content)).perform(click());
+    }
+
+    @Test
+    public void EditPostTextTest() throws InterruptedException {
+        onView(withId(R.id.rvPosts)).perform(RecyclerViewActions.actionOnItemAtPosition(0, clickChildViewWithId(R.id.editButton)));
+        Thread.sleep(1000);
+        onView(withId(R.id.postText)).perform(replaceText("   Salut Salut  "));
+        onView(withId (R.id.postText)).perform(closeSoftKeyboard());
+        onView(withId(R.id.postButton)).perform(click());
+
+        loadPostView();
+
+        onView(withId(R.id.rvPosts)).perform(RecyclerViewActions.actionOnItemAtPosition(0, click()));
+        onView(withId(R.id.post_content)).check(matches(withText(is("Salut Salut"))));
+        onView(withId(R.id.post_content)).perform(click());
+
+    }
 
 
 
