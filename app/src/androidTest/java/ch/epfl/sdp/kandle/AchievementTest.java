@@ -42,8 +42,6 @@ public class AchievementTest {
 
     @Rule
     public GrantPermissionRule grantLocation = GrantPermissionRule.grant(Manifest.permission.ACCESS_FINE_LOCATION);
-    @Rule
-    public GrantPermissionRule grantLocation2 = GrantPermissionRule.grant(Manifest.permission.ACCESS_COARSE_LOCATION);
 
     @Rule
     public ActivityTestRule<MainActivity> intentsRule =
