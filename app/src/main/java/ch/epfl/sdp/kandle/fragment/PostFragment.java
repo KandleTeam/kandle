@@ -2,9 +2,6 @@ package ch.epfl.sdp.kandle.fragment;
 
 import android.location.Location;
 import android.os.Bundle;
-
-import androidx.fragment.app.Fragment;
-
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,8 +13,8 @@ import android.widget.Toast;
 
 import com.squareup.picasso.Picasso;
 
+import androidx.fragment.app.Fragment;
 import ch.epfl.sdp.kandle.LoggedInUser;
-import ch.epfl.sdp.kandle.MainActivity;
 import ch.epfl.sdp.kandle.R;
 import ch.epfl.sdp.kandle.User;
 import ch.epfl.sdp.kandle.dependencies.Database;
@@ -38,6 +35,9 @@ public class PostFragment extends Fragment {
     private ImageView profilePicture, postImage;
     private Button followButton;
     private ImageButton likeButton;
+
+    public final static int POST_IMAGE = 20;
+    public final static int PROFILE_PICTURE_IMAGE = 21;
 
     private PostFragment(Post post, Location location, User user, int distance) {
        this.post = post;
@@ -77,7 +77,7 @@ public class PostFragment extends Fragment {
 
 
         if (user.getImageURL() != null) {
-            //profilePicture.setTag();
+            profilePicture.setTag(PROFILE_PICTURE_IMAGE);
             Picasso.get().load(user.getImageURL()).into(profilePicture);
         }
 
@@ -122,17 +122,12 @@ public class PostFragment extends Fragment {
         }   else {
             distanceView.setAlpha((float) 0.5);
             likeButton.setAlpha((float) 0.5);
-            likeButton.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    Toast.makeText(PostFragment.this.getContext(), "You are too far away from the post to like it", Toast.LENGTH_SHORT).show();
-                }
-            });
+            likeButton.setOnClickListener(v -> Toast.makeText(PostFragment.this.getContext(), "You are too far away from the post to like it", Toast.LENGTH_SHORT).show());
         }
 
         if (post.getImageURL()!=null){
-            profilePicture.setVisibility(View.VISIBLE);
-            //profilePicture.setTag();
+            postImage.setVisibility(View.VISIBLE);
+            postImage.setTag(POST_IMAGE);
             Picasso.get().load(post.getImageURL()).into(postImage);
         }
 

@@ -58,6 +58,8 @@ import ch.epfl.sdp.kandle.dependencies.Post;
 
 public class MapViewFragment extends Fragment implements OnMapReadyCallback, PermissionsListener {
 
+    public int numMarkers;
+
     private static final String MARKER_SOURCE = "markers-source";
     private static final String MARKER_STYLE_LAYER = "markers-style-layer";
     private static final String MARKER_IMAGE = "custom-marker";
@@ -132,58 +134,68 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback, Per
         this.mapboxMap=mapboxMap;
 
 
-        locationProvider.getLocation(this.getActivity()).addOnSuccessListener(location -> {
-            currentLocation=location;
-            mapboxMap.setStyle(Style.MAPBOX_STREETS, style -> {
+        locationProvider.getLocation(this.getActivity()).addOnCompleteListener(task -> {
 
-                    Drawable drawable = ResourcesCompat.getDrawable(MapViewFragment.this.getResources(), R.drawable.ic_whatshot_24dp, null);
-                    Bitmap mBitmap = BitmapUtils.getBitmapFromDrawable(drawable);
-                    //style.addImage(MARKER_IMAGE, mBitmap);
-                    IconFactory iconFactory = IconFactory.getInstance(MapViewFragment.this.getActivity());
-                    Icon icon = iconFactory.fromBitmap(mBitmap);
-                    enableLocationComponent(style);
-                    //addPostMarkers(style);
-                    database.getNearbyPosts(currentLocation.getLongitude(), currentLocation.getLatitude(), RADIUS).addOnSuccessListener(new OnSuccessListener<List<Post>>() {
-                        @Override
-                        public void onSuccess(List<Post> posts) {
-                            for (Post p : posts){
+            if (task.isSuccessful()) {
+
+                if (task.getResult() != null) {
+
+
+                    mapboxMap.setStyle(Style.MAPBOX_STREETS, style -> {
+
+                        Drawable drawable = ResourcesCompat.getDrawable(MapViewFragment.this.getResources(), R.drawable.ic_whatshot_24dp, null);
+                        Bitmap mBitmap = BitmapUtils.getBitmapFromDrawable(drawable);
+                        //style.addImage(MARKER_IMAGE, mBitmap);
+                        IconFactory iconFactory = IconFactory.getInstance(MapViewFragment.this.getActivity());
+                        Icon icon = iconFactory.fromBitmap(mBitmap);
+                        enableLocationComponent(style);
+                        currentLocation = task.getResult();
+                        //addPostMarkers(style);
+                        numMarkers = 0;
+                        database.getNearbyPosts(currentLocation.getLongitude(), currentLocation.getLatitude(), RADIUS).addOnSuccessListener(posts -> {
+                            for (Post p : posts) {
+                                numMarkers++;
                                 mapboxMap.addMarker(new MarkerOptions()
                                         .position(new LatLng(p.getLatitude(), p.getLongitude()))
-                                        .title ("A post !")
+                                        .title("A post !")
                                         .icon(icon))
                                         .setSnippet(p.getPostId());
                             }
-                        }
-                    });
-            });
-            final FragmentManager fragmentManager = this.getActivity().getSupportFragmentManager();
-
-            mapboxMap.setOnMarkerClickListener(marker -> {
-
-                database.getPostByPostId(marker.getSnippet()).addOnSuccessListener(new OnSuccessListener<Post>() {
-                    @Override
-                    public void onSuccess(Post post) {
-
-                        database.getUserById(post.getUserId()).addOnSuccessListener(new OnSuccessListener<User>() {
-                            @Override
-                            public void onSuccess(User user) {
-                                fragmentManager.beginTransaction()
-                                        .replace(R.id.flContent, PostFragment.newInstance(post, currentLocation, user
-                                                , comptuteDistance(currentLocation.getLatitude(), currentLocation.getLongitude(), post.getLatitude(), post.getLongitude()) ))
-                                        .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
-                                        .addToBackStack(null)
-                                        .commit();
-                            }
                         });
+                    });
 
-                    }
-                });
+                    mapboxMap.setOnMarkerClickListener(marker -> {
+                        goToPostFragment(marker.getSnippet(), task.getResult());
+                        return true;
 
-                return true;
+                    });
 
-            });
+                    mapView.setContentDescription("MAP READY");
+                }
+
+                else {
+                    Toast.makeText(this.getActivity(), "Enable GPS", Toast.LENGTH_LONG).show();
+                }
+            }
+
+            else {
+                permissionsManager = new PermissionsManager(this);
+                permissionsManager.requestLocationPermissions(this.getActivity());
+                //Toast.makeText(this.getActivity(), "An error has occurred : " + task.getException().getMessage(), Toast.LENGTH_LONG).show();
+            }
+
         });
+    }
 
+    public void goToPostFragment (String postId, Location location){
+        final FragmentManager fragmentManager = this.getActivity().getSupportFragmentManager();
+        database.getPostByPostId(postId).addOnSuccessListener(post -> database.getUserById(post.getUserId()).addOnSuccessListener(
+                user -> fragmentManager.beginTransaction()
+                .replace(R.id.flContent, PostFragment.newInstance(post, location, user
+                        , comptuteDistance(location.getLatitude(), location.getLongitude(), post.getLatitude(), post.getLongitude())))
+                .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
+                .addToBackStack(null)
+                .commit()));
     }
 
     private int comptuteDistance(double userLatitude, double userLongitude, double postLatitude, double postLongitude) {
@@ -268,6 +280,7 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback, Per
             permissionsManager.requestLocationPermissions(this.getActivity());
         }
     }
+
 
     @SuppressLint("MissingPermission")
     private void initLocationEngine() {
