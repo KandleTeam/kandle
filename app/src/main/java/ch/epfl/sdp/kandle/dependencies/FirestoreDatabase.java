@@ -1,8 +1,11 @@
 package ch.epfl.sdp.kandle.dependencies;
 
+import android.provider.Settings;
+
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.tasks.Task;
 import com.google.android.gms.tasks.TaskCompletionSource;
+import com.google.firebase.Timestamp;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
@@ -14,16 +17,24 @@ import com.google.firebase.firestore.FirebaseFirestoreSettings;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.SetOptions;
 import com.google.maps.android.SphericalUtil;
+
+import java.text.DateFormat;
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.concurrent.TimeUnit;
 
 import ch.epfl.sdp.kandle.User;
 
 public class FirestoreDatabase implements Database {
+
+    private static final int LIKE_BONUS_DISTANCE = 250;
+    private static final int DATE_MALUS_DISTANCE = 150;
 
     private static final FirebaseFirestore FIRESTORE = FirebaseFirestore.getInstance();
     private static final FirestoreDatabase INSTANCE = new FirestoreDatabase();
@@ -575,7 +586,16 @@ public class FirestoreDatabase implements Database {
                     if ((documentSnapshot.get("latitude") != null) && (documentSnapshot.get("longitude") !=null)){
                         double postLatitude = (double) documentSnapshot.get("latitude");
                         double postLongitude = (double) documentSnapshot.get("longitude");
-                        if  ( (nearby (latitude, longitude, postLatitude, postLongitude, distance))){
+                        List<String> likers = (List<String>) documentSnapshot.get("likers");
+
+                        DateFormat df = DateFormat.getDateInstance();
+                        Date postDate =  ((Timestamp) documentSnapshot.get("date")).toDate() ;
+                        Date now = new Date();
+                        long numDays = TimeUnit.DAYS.convert(Math.abs(now.getTime() - postDate.getTime()), TimeUnit.MILLISECONDS);
+                        int numLikes = 0;
+                        if (likers != null) numLikes = likers.size();
+
+                        if  ( (nearby (latitude, longitude, postLatitude, postLongitude, distance, numLikes, numDays))){
                             posts.add(documentSnapshot.toObject(Post.class));
                         }
                     }
@@ -608,11 +628,11 @@ public class FirestoreDatabase implements Database {
                 });
     }
 
-    private boolean nearby(double latitude, double longitude, double postLatitude, double postLongitude, double distance) {
+    private boolean nearby(double latitude, double longitude, double postLatitude, double postLongitude, double distance, int numLikes, long numDays) {
 
         LatLng startLatLng = new LatLng(latitude, longitude);
         LatLng endLatLng = new LatLng(postLatitude, postLongitude);
-        return SphericalUtil.computeDistanceBetween(startLatLng, endLatLng) <= distance;
+        return SphericalUtil.computeDistanceBetween(startLatLng, endLatLng) <= distance+numLikes*LIKE_BONUS_DISTANCE-numDays*DATE_MALUS_DISTANCE;
 
     }
 

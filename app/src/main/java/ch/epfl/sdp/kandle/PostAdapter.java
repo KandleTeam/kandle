@@ -115,10 +115,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder>{
                         likeView.setText(String.valueOf(post.getLikes()));
                     }
                 });
-
-
             }
-            //likeView.setText(String.valueOf(post.getLikes()));
         });
 
         holder.mEditButton.setOnClickListener(v -> {

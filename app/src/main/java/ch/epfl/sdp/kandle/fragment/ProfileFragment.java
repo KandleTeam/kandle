@@ -158,20 +158,19 @@ public class ProfileFragment extends Fragment {
         setNumberOfFollowers();
         setNumberOfFollowing();
 
-        database.userIdFollowingList(currentUser.getId()).addOnCompleteListener(task -> {
-            if (task.isSuccessful()) {
-                if ((task.getResult() == null) || (!task.getResult().contains(user.getId()))) {
-                    mFollowButton.setText(R.string.followBtnNotFollowing);
-                } else {
-                    mFollowButton.setText(R.string.followBtnAlreadyFollowing);
-                }
-            }
-        });
-
 
         if (user.getId().equals(currentUser.getId())) {
             mFollowButton.setVisibility(View.GONE);
         } else {
+            database.userIdFollowingList(currentUser.getId()).addOnCompleteListener(task -> {
+                if (task.isSuccessful()) {
+                    if ((task.getResult() == null) || (!task.getResult().contains(user.getId()))) {
+                        mFollowButton.setText(R.string.followBtnNotFollowing);
+                    } else {
+                        mFollowButton.setText(R.string.followBtnAlreadyFollowing);
+                    }
+                }
+            });
             mFollowButton.setOnClickListener(followButtonListener(currentUser));
         }
 
@@ -187,21 +186,18 @@ public class ProfileFragment extends Fragment {
     }
 
     private OnCompleteListener<List<User>> numberListener(String title, final FragmentManager fragmentManager) {
-        return new OnCompleteListener<List<User>>() {
-            @Override
-            public void onComplete(@NonNull Task<List<User>> task) {
-                if (task.isSuccessful()) {
+        return task -> {
+            if (task.isSuccessful()) {
 
-                    fragmentManager.beginTransaction().replace(R.id.flContent, ListUsersFragment.newInstance(
-                            task.getResult()
-                            , title
-                            , Integer.toString(task.getResult().size())
-                    ))
-                            .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
-                            .addToBackStack(null)
-                            .commit();
+                fragmentManager.beginTransaction().replace(R.id.flContent, ListUsersFragment.newInstance(
+                        task.getResult()
+                        , title
+                        , Integer.toString(task.getResult().size())
+                ))
+                        .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
+                        .addToBackStack(null)
+                        .commit();
 
-                }
             }
         };
     }
