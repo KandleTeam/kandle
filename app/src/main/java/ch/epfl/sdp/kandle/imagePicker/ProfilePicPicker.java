@@ -7,6 +7,8 @@ import androidx.fragment.app.Fragment;
 
 import com.google.android.gms.tasks.Task;
 
+import ch.epfl.sdp.kandle.Storage.caching.CachedFirestoreDatabase;
+import ch.epfl.sdp.kandle.dependencies.Authentication;
 import ch.epfl.sdp.kandle.dependencies.DependencyManager;
 
 public class ProfilePicPicker extends ImagePicker {
@@ -20,11 +22,13 @@ public class ProfilePicPicker extends ImagePicker {
     }
 
     public Task<Void> setProfilePicture() {
-        DependencyManager.getDatabaseSystem().getProfilePicture().addOnCompleteListener(task -> {
-            if (task.isSuccessful() && task.getResult() != null) {
-                DependencyManager.getStorageSystem().delete(task.getResult());
+        CachedFirestoreDatabase database = new CachedFirestoreDatabase();
+        Authentication auth = DependencyManager.getAuthSystem();
+        String url = auth.getCurrentUser().getImageURL();
+            if (url != null) {
+                DependencyManager.getStorageSystem().delete(url);
             }
-        });
+
 
         return uploadImage().continueWithTask(task -> {
             String sUri = null;
@@ -33,7 +37,7 @@ public class ProfilePicPicker extends ImagePicker {
                 sUri = downloadUri.toString();
             }
 
-            return DependencyManager.getDatabaseSystem().updateProfilePicture(sUri);
+            return database.updateProfilePicture(sUri);
         });
     }
 }

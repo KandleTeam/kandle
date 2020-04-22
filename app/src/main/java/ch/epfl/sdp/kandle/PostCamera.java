@@ -17,7 +17,7 @@ import androidx.core.content.ContextCompat;
 import static android.app.Activity.RESULT_OK;
 import static androidx.constraintlayout.widget.Constraints.TAG;
 
-public class PostCamera{
+public class PostCamera {
 
     protected Activity activity;
     protected Uri imageUri;
@@ -33,8 +33,8 @@ public class PostCamera{
         values = new ContentValues();
     }
 
-    public  void openCamera(){
-        if(allPermissionsGranted(permissions)){
+    public void openCamera() {
+        if (allPermissionsGranted(permissions)) {
             values.put(MediaStore.Images.Media.TITLE, "New Picture");
             values.put(MediaStore.Images.Media.DESCRIPTION, "From your Camera");
             imageUri = activity.getContentResolver().insert(
@@ -42,19 +42,21 @@ public class PostCamera{
             Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
             intent.putExtra(MediaStore.EXTRA_OUTPUT, imageUri);
             activity.startActivityForResult(intent, PHOTO_REQUEST);
-        }
-        else {
+        } else {
             makePermissionRequest();
         }
     }
 
-    protected void uploadImage(){
+    protected void uploadImage() {
     }
 
     private void makePermissionRequest() {
         ActivityCompat.requestPermissions(activity, permissions, PERMISSIONS_REQUEST_CODE);
     }
-    /** Returns true if all the necessary permissions have been granted already. */
+
+    /**
+     * Returns true if all the necessary permissions have been granted already.
+     */
     private boolean allPermissionsGranted(String[] permissionsTab) {
         for (String permission : permissionsTab) {
             if (ContextCompat.checkSelfPermission(activity.getApplicationContext(), permission)
@@ -65,15 +67,15 @@ public class PostCamera{
         return true;
     }
 
-    public Uri getImageUri(){
+    public Uri getImageUri() {
         return imageUri;
     }
 
-    public Bitmap handleActivityResult(int requestCode, int resultCode, Intent data){
+    public Bitmap handleActivityResult(int requestCode, int resultCode, Intent data) {
         Bitmap imageBitmap = null;
         if (requestCode == PHOTO_REQUEST && resultCode == RESULT_OK) {
             try {
-                  imageBitmap = MediaStore.Images.Media.getBitmap(
+                imageBitmap = MediaStore.Images.Media.getBitmap(
                         activity.getContentResolver(), imageUri);
             } catch (Exception e) {
                 e.printStackTrace();

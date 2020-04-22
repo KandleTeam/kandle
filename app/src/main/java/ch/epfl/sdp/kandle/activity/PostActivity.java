@@ -22,15 +22,14 @@ import java.util.Date;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import ch.epfl.sdp.kandle.LoggedInUser;
 import ch.epfl.sdp.kandle.PostCamera;
 import ch.epfl.sdp.kandle.R;
 import ch.epfl.sdp.kandle.imagePicker.ImagePicker;
 import ch.epfl.sdp.kandle.dependencies.Authentication;
-import ch.epfl.sdp.kandle.caching.CachedDatabase;
+import ch.epfl.sdp.kandle.Storage.caching.CachedFirestoreDatabase;
 import ch.epfl.sdp.kandle.dependencies.Database;
 import ch.epfl.sdp.kandle.dependencies.DependencyManager;
-import ch.epfl.sdp.kandle.dependencies.Post;
+import ch.epfl.sdp.kandle.Post;
 import ch.epfl.sdp.kandle.dependencies.Storage;
 
 public class PostActivity extends AppCompatActivity {
@@ -55,7 +54,7 @@ public class PostActivity extends AppCompatActivity {
     private Uri imageUri;
 
     @Override
-    public void onResume(){
+    public void onResume() {
         super.onResume();
     }
 
@@ -80,7 +79,7 @@ public class PostActivity extends AppCompatActivity {
         postCamera = new PostCamera(this);
 
         auth = DependencyManager.getAuthSystem();
-        database = new CachedDatabase();
+        database = new CachedFirestoreDatabase();
 
         mPostButton.setOnClickListener(v -> {
 
@@ -112,8 +111,7 @@ public class PostActivity extends AppCompatActivity {
                     }
                 });
 
-            }
-            else {
+            } else {
                 p = new Post(postText, null, new Date(), auth.getCurrentUser().getId(), longitude, latitude);
 
                 post(p);
@@ -131,7 +129,7 @@ public class PostActivity extends AppCompatActivity {
         database.addPost(p).addOnCompleteListener(task -> {
             if (task.isSuccessful()) {
 
-                Toast.makeText(PostActivity.this, "You have successfully posted " , Toast.LENGTH_LONG ).show();
+                Toast.makeText(PostActivity.this, "You have successfully posted ", Toast.LENGTH_LONG).show();
 
                 finish();
             }

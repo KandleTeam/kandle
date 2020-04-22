@@ -1,4 +1,4 @@
-package ch.epfl.sdp.kandle.dependencies;
+package ch.epfl.sdp.kandle.Storage.firebase;
 
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.tasks.Task;
@@ -14,6 +14,7 @@ import com.google.firebase.firestore.FirebaseFirestoreSettings;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.SetOptions;
 import com.google.maps.android.SphericalUtil;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -22,6 +23,8 @@ import java.util.Map;
 import java.util.Objects;
 
 import ch.epfl.sdp.kandle.User;
+import ch.epfl.sdp.kandle.dependencies.Database;
+import ch.epfl.sdp.kandle.Post;
 
 public class FirestoreDatabase implements Database {
 
@@ -296,13 +299,11 @@ public class FirestoreDatabase implements Database {
                         }
 
                     });
-                }
-                else {
+                } else {
                     source.setResult(new ArrayList<User>());
                 }
-            }
-            else {
-                source.setException( new Exception(task.getException().getMessage()));
+            } else {
+                source.setException(new Exception(task.getException().getMessage()));
             }
         });
 
@@ -316,13 +317,7 @@ public class FirestoreDatabase implements Database {
         return loggedInUser().update(map);
     }
 
-    @Override
-    public Task<String> getProfilePicture() {
-        return loggedInUser().get().continueWith(task -> {
-            DocumentSnapshot doc = task.getResult();
-            return doc != null ? (String) doc.get("imageURL") : null;
-        });
-    }
+
 
     @Override
     public Task<Void> updateNickname(String nickname) {
@@ -331,13 +326,6 @@ public class FirestoreDatabase implements Database {
         return loggedInUser().update(map);
     }
 
-    @Override
-    public Task<String> getNickname() {
-        return loggedInUser().get().continueWith(task -> {
-            DocumentSnapshot doc = task.getResult();
-            return doc != null ? (String) doc.get("nickname") : null;
-        });
-    }
 
 
     @Override
@@ -453,35 +441,30 @@ public class FirestoreDatabase implements Database {
         TaskCompletionSource<List<User>> source = new TaskCompletionSource<>();
 
         Task<List<String>> getLikersIdTask = POSTS
-                                        .document(postId)
-                                        .get()
-                                        .continueWith(task -> (List<String>) task.getResult().get("likers"));
+                .document(postId)
+                .get()
+                .continueWith(task -> (List<String>) task.getResult().get("likers"));
 
         getLikersIdTask.addOnCompleteListener(task -> {
-            if (task.isSuccessful()){
+            if (task.isSuccessful()) {
                 USERS.get().addOnCompleteListener(task2 -> {
-                    if (task2.isSuccessful()){
+                    if (task2.isSuccessful()) {
                         List<User> users = new ArrayList<>();
                         for (QueryDocumentSnapshot document : task2.getResult()) {
-                            String id =  (String) document.get("id");
-                            if (task.getResult().contains(id)){
+                            String id = (String) document.get("id");
+                            if (task.getResult().contains(id)) {
                                 users.add(document.toObject(User.class));
                             }
                         }
 
                         source.setResult(users);
 
-                    }
-
-
-                    else {
+                    } else {
                         source.setException(task.getException());
                     }
                 });
 
-            }
-
-            else {
+            } else {
                 source.setException(task.getException());
             }
         });
@@ -544,28 +527,20 @@ public class FirestoreDatabase implements Database {
     }
 
 
-    public Task<String> getUsername() {
-        return loggedInUser().get().continueWith(task -> {
-            DocumentSnapshot doc = task.getResult();
-            return doc != null? (String) doc.get("username") : null;
-        });
-    }
-
-
     @Override
-    public Task<List<Post>> getNearbyPosts(double longitude, double latitude, double distance){
+    public Task<List<Post>> getNearbyPosts(double latitude, double longitude, double distance) {
         TaskCompletionSource<List<Post>> source = new TaskCompletionSource<>();
 
         POSTS.get().addOnCompleteListener(task -> {
-            if (task.isSuccessful()){
+            if (task.isSuccessful()) {
                 List<Post> posts = new ArrayList<>();
 
                 for (QueryDocumentSnapshot documentSnapshot : task.getResult()) {
 
-                    if ((documentSnapshot.get("latitude") != null) && (documentSnapshot.get("longitude") !=null)){
+                    if ((documentSnapshot.get("latitude") != null) && (documentSnapshot.get("longitude") != null)) {
                         double postLatitude = (double) documentSnapshot.get("latitude");
                         double postLongitude = (double) documentSnapshot.get("longitude");
-                        if  ( (nearby (latitude, longitude, postLatitude, postLongitude, distance))){
+                        if ((nearby(latitude, longitude, postLatitude, postLongitude, distance))) {
                             posts.add(documentSnapshot.toObject(Post.class));
                         }
                     }
@@ -574,8 +549,7 @@ public class FirestoreDatabase implements Database {
 
                 source.setResult(posts);
 
-            }
-            else {
+            } else {
                 source.setException(task.getException());
             }
         });
@@ -583,7 +557,7 @@ public class FirestoreDatabase implements Database {
 
     }
 
-    private boolean nearby(double latitude, double longitude, double postLatitude, double postLongitude, double distance) {
+    public static boolean nearby(double latitude, double longitude, double postLatitude, double postLongitude, double distance) {
 
         LatLng startLatLng = new LatLng(latitude, longitude);
         LatLng endLatLng = new LatLng(postLatitude, postLongitude);

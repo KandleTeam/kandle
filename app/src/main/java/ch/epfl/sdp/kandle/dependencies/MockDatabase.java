@@ -2,6 +2,7 @@ package ch.epfl.sdp.kandle.dependencies;
 
 import com.google.android.gms.tasks.Task;
 import com.google.android.gms.tasks.TaskCompletionSource;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -9,7 +10,9 @@ import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+
 import ch.epfl.sdp.kandle.LoggedInUser;
+import ch.epfl.sdp.kandle.Post;
 import ch.epfl.sdp.kandle.User;
 
 /**
@@ -19,8 +22,6 @@ import ch.epfl.sdp.kandle.User;
  */
 
 public class MockDatabase implements Database {
-
-
 
 
     private Map<String, User> users;
@@ -35,7 +36,6 @@ public class MockDatabase implements Database {
             users.put(LoggedInUser.getInstance().getId(), LoggedInUser.getInstance());
             followMap.put(LoggedInUser.getInstance().getId(), new Follow());
         }
-
 
 
     }
@@ -208,14 +208,7 @@ public class MockDatabase implements Database {
         return source.getTask();
     }
 
-    @Override
-    public Task<String> getProfilePicture() {
 
-        TaskCompletionSource<String> source = new TaskCompletionSource<>();
-        User user = users.get(LoggedInUser.getInstance().getId());
-        source.setResult(user.getImageURL());
-        return source.getTask();
-    }
 
     @Override
     public Task<Void> updateNickname(String nickname) {
@@ -226,28 +219,11 @@ public class MockDatabase implements Database {
         return source.getTask();
     }
 
-    @Override
-    public Task<String> getNickname() {
-        TaskCompletionSource<String> source = new TaskCompletionSource<>();
-        User user = users.get(LoggedInUser.getInstance().getId());
-        source.setResult(user.getNickname());
-        return source.getTask();
-    }
 
-    @Override
-    public Task<String> getUsername() {
-        TaskCompletionSource<String> source = new TaskCompletionSource<>();
-        User user = users.get(LoggedInUser.getInstance().getId());
-        source.setResult(user.getUsername());
-        return source.getTask();
-    }
 
     @Override
     public Task<Void> addPost(Post p) {
-        if (!users.get(p.getUserId()).getPosts().contains(p.getPostId())) {
-            posts.put(p.getPostId(), p);
-            users.get(p.getUserId()).addPostId(p.getPostId());
-        }
+        posts.put(p.getPostId(), p);
         TaskCompletionSource<Void> source = new TaskCompletionSource<>();
         source.setResult(null);
         return source.getTask();
@@ -255,10 +231,7 @@ public class MockDatabase implements Database {
 
     @Override
     public Task<Void> deletePost(Post p) {
-        if (users.get(p.getUserId()).getPosts().contains(p.getPostId())) {
-            posts.remove(p.getPostId());
-            users.get(p.getUserId()).removePostId(p.getPostId());
-        }
+        posts.remove(p.getPostId());
         TaskCompletionSource<Void> source = new TaskCompletionSource<>();
         source.setResult(null);
         return source.getTask();
@@ -290,13 +263,13 @@ public class MockDatabase implements Database {
 
         List<String> userIds = posts.get(postId).getLikers();
 
-            List<User> usersList = new ArrayList<>();
+        List<User> usersList = new ArrayList<>();
 
-            for (Map.Entry <String,User> entry : users.entrySet() ) {
-                if (userIds.contains(entry.getKey())){
-                    usersList.add(entry.getValue());
-                }
+        for (Map.Entry<String, User> entry : users.entrySet()) {
+            if (userIds.contains(entry.getKey())) {
+                usersList.add(entry.getValue());
             }
+        }
 
         source.setResult(usersList);
 
@@ -315,10 +288,9 @@ public class MockDatabase implements Database {
 
     @Override
     public Task<List<Post>> getPostsByUserId(String userId) {
-        List<String> userPostsIds = users.get(userId).getPosts();
         List<Post> postsList = new ArrayList<Post>();
         for (Map.Entry<String, Post> entry : posts.entrySet()) {
-            if (userPostsIds.contains(entry.getValue().getPostId())) {
+            if (userId.equals(entry.getValue().getUserId())) {
                 postsList.add(entry.getValue());
             }
         }
@@ -328,14 +300,13 @@ public class MockDatabase implements Database {
     }
 
     @Override
-    public Task<List<Post>> getNearbyPosts(double longitude, double latitude, double distance){
+    public Task<List<Post>> getNearbyPosts(double latitude, double longitude, double distance) {
         TaskCompletionSource<List<Post>> source = new TaskCompletionSource<>();
         List<Post> posts = new ArrayList<>();
-        posts.add(new Post("mock post",null, new Date(), "mock user id", 0.0001, 0.0001));
+        posts.add(new Post("mock post", null, new Date(), "mock user id", 0.0001, 0.0001));
         source.setResult(posts);
         return source.getTask();
     }
-
 
 
     public static class Follow {

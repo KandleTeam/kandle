@@ -14,6 +14,8 @@ import java.util.List;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
+
+import ch.epfl.sdp.kandle.Storage.caching.CachedFirestoreDatabase;
 import ch.epfl.sdp.kandle.dependencies.Authentication;
 import ch.epfl.sdp.kandle.dependencies.Database;
 import ch.epfl.sdp.kandle.dependencies.DependencyManager;
@@ -73,7 +75,7 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.ViewHolder> {
 
         final Authentication authentication = DependencyManager.getAuthSystem();
         final User currentUser = authentication.getCurrentUser();
-        final Database database = DependencyManager.getDatabaseSystem();
+        final CachedFirestoreDatabase database = new CachedFirestoreDatabase();
 
         if (user.getId().equals(currentUser.getId())) {
             holder.mFollowBtn.setVisibility(View.GONE);
@@ -100,7 +102,6 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.ViewHolder> {
             holder.mFollowBtn.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    System.out.println("clickButton");
                     if (holder.mFollowBtn.getText().toString().equals("follow")) {
 
                         database.follow(currentUser.getId(), user.getId()).addOnCompleteListener(task -> {
@@ -153,7 +154,6 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.ViewHolder> {
 
         @Override
         public void onClick(View v) {
-            System.out.println("click");
             clickListener.onItemClick(getAdapterPosition(), v);
         }
     }

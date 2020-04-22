@@ -71,5 +71,7 @@ public class ImagePicker {
         TaskCompletionSource<Uri> result = new TaskCompletionSource<>();
         result.setResult(null);
         return result.getTask();
-    };
+    }
+
+    ;
 }

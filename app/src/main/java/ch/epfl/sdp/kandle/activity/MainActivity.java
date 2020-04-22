@@ -1,4 +1,4 @@
-package ch.epfl.sdp.kandle;
+package ch.epfl.sdp.kandle.activity;
 
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -7,6 +7,7 @@ import android.util.Log;
 import android.view.MenuItem;
 import android.widget.ImageView;
 import android.widget.TextView;
+
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
@@ -14,12 +15,13 @@ import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
+
 import com.google.android.material.navigation.NavigationView;
 import com.squareup.picasso.Picasso;
 
-import ch.epfl.sdp.kandle.activity.LoginActivity;
+import ch.epfl.sdp.kandle.R;
 import ch.epfl.sdp.kandle.dependencies.Authentication;
-import ch.epfl.sdp.kandle.caching.CachedDatabase;
+import ch.epfl.sdp.kandle.Storage.caching.CachedFirestoreDatabase;
 import ch.epfl.sdp.kandle.dependencies.Database;
 import ch.epfl.sdp.kandle.dependencies.DependencyManager;
 import ch.epfl.sdp.kandle.fragment.AboutFragment;
@@ -52,10 +54,8 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
 
-
-
         auth = DependencyManager.getAuthSystem();
-        database = new CachedDatabase();
+        database = new CachedFirestoreDatabase();
         // Set a Toolbar to replace the ActionBar.
         toolbar = findViewById(R.id.toolbar);
         mDrawerLayout = findViewById(R.id.drawer_layout);
@@ -64,11 +64,8 @@ public class MainActivity extends AppCompatActivity {
         mUsername = mNavigationView.getHeaderView(0).findViewById(R.id.username);
         mNickname = mNavigationView.getHeaderView(0).findViewById(R.id.nicknameInMenu);
         mUsername = mNavigationView.getHeaderView(0).findViewById(R.id.usernameInMenu);
-        database.getUsername().addOnCompleteListener(task -> {
-            if (task.isSuccessful()) {
-                mUsername.setText("@" + task.getResult());
-            }
-        });
+        mUsername.setText("@" + auth.getCurrentUser().getUsername());
+
 
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -84,19 +81,15 @@ public class MainActivity extends AppCompatActivity {
         setTitle(mNavigationView.getCheckedItem().getTitle());
 
         final FragmentManager fragmentManager = getSupportFragmentManager();
-        mProfilePic.setOnClickListener(v -> database.getUserById(auth.getCurrentUser().getId()).addOnCompleteListener(task -> {
-                    if (task.isSuccessful()) {
-                        fragmentManager.beginTransaction().replace(R.id.flContent, ProfileFragment.newInstance(task.getResult()))
-                                .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
-                                .addToBackStack(null)
-                                .commit();
-                        setTitle("Your Profile");
-                        mDrawerLayout.closeDrawers();
-                    } else {
-                        Log.e("Profile pic", "Error fetching profile pic", task.getException());
-                    }
+        mProfilePic.setOnClickListener(v -> {
 
-        }));
+            fragmentManager.beginTransaction().replace(R.id.flContent, ProfileFragment.newInstance(auth.getCurrentUser()))
+                    .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
+                    .addToBackStack(null)
+                    .commit();
+            setTitle("Your Profile");
+            mDrawerLayout.closeDrawers();
+        });
 
     }
 
@@ -104,29 +97,20 @@ public class MainActivity extends AppCompatActivity {
     public void onResume() {
         super.onResume();
 
-        database.getProfilePicture().addOnCompleteListener(task -> {
+        String imageUrl = auth.getCurrentUser().getImageURL();
 
-            if (task.isSuccessful()) {
-                String imageUrl = task.getResult();
-                if (imageUrl != null) {
-                    mProfilePic.setTag(PROFILE_PICTURE_TAG);
-                    Picasso.get().load(imageUrl).into(mProfilePic);
-                }
-            } else {
-                //TODO handle case when user is offline (get picture from cache)
+            if (imageUrl != null) {
+                mProfilePic.setTag(PROFILE_PICTURE_TAG);
+                Picasso.get().load(imageUrl).into(mProfilePic);
             }
-        });
 
-        database.getNickname().addOnCompleteListener(task -> {
-            if (task.isSuccessful()) {
-                String username = task.getResult();
-                if (username != null) {
-                    mNickname.setText(username);
-                }
-            } else {
-                //TODO handle case when user is offline (get username from cache)
+
+            String username = auth.getCurrentUser().getNickname();
+            if (username != null) {
+                mNickname.setText(username);
             }
-        });
+
+
     }
 
     /**
@@ -209,12 +193,12 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    protected Fragment getCurrentFragment(){
+    public Fragment getCurrentFragment() {
         return fragment;
     }
 
 
-    private void createNewFragmentInstance(Class fragmentClass){
+    private void createNewFragmentInstance(Class fragmentClass) {
         try {
             fragment = (Fragment) fragmentClass.newInstance();
         } catch (Exception e) {

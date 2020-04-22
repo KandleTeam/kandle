@@ -12,6 +12,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.fragment.app.Fragment;
+
 import ch.epfl.sdp.kandle.R;
 import ch.epfl.sdp.kandle.dependencies.Authentication;
 import ch.epfl.sdp.kandle.dependencies.DependencyManager;
@@ -58,12 +59,10 @@ public class SettingsFragment extends Fragment {
                     if (newPassword.length() < 8) {
                         mNewPassword.setError("Please choose a password of more than 8 characters !");
                         pd.dismiss();
-                    }
-                    else if (!newPassword.equals(newPasswordConfirm)) {
+                    } else if (!newPassword.equals(newPasswordConfirm)) {
                         mNewPasswordConfirm.setError("Your passwords do not match !");
                         pd.dismiss();
-                    }
-                    else {
+                    } else {
                         auth.updatePassword(newPassword).addOnCompleteListener(task1 -> {
                             if (task1.isSuccessful()) {
                                 mOldPassword.setText("");
@@ -101,8 +100,7 @@ public class SettingsFragment extends Fragment {
         if (view.getVisibility() == View.GONE) {
             view.setVisibility(View.VISIBLE);
             iv.setImageDrawable(getResources().getDrawable(R.drawable.ic_expand_less_black_24dp));
-        }
-        else {
+        } else {
             view.setVisibility(View.GONE);
             iv.setImageDrawable(getResources().getDrawable(R.drawable.ic_expand_more_black_24dp));
         }

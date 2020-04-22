@@ -1,4 +1,4 @@
-package ch.epfl.sdp.kandle.dependencies;
+package ch.epfl.sdp.kandle.Storage.firebase;
 
 import com.google.android.gms.tasks.Task;
 import com.google.android.gms.tasks.TaskCompletionSource;
@@ -6,14 +6,19 @@ import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.EmailAuthProvider;
 import com.google.firebase.auth.FirebaseAuth;
+
 import ch.epfl.sdp.kandle.LoggedInUser;
+import ch.epfl.sdp.kandle.Storage.caching.CachedFirestoreDatabase;
 import ch.epfl.sdp.kandle.User;
+import ch.epfl.sdp.kandle.dependencies.Authentication;
+import ch.epfl.sdp.kandle.dependencies.Database;
+import ch.epfl.sdp.kandle.dependencies.DependencyManager;
 
 public class FirebaseAuthentication implements Authentication {
 
     private static final FirebaseAuth FAUTH = FirebaseAuth.getInstance();
     private static final FirebaseAuthentication INSTANCE = new FirebaseAuthentication();
-    private Database database = DependencyManager.getDatabaseSystem();
+    private Database database = new CachedFirestoreDatabase();
 
     private FirebaseAuthentication() {
     }
@@ -31,22 +36,23 @@ public class FirebaseAuthentication implements Authentication {
      */
     public boolean getCurrentUserAtApplicationStart() {
         User localUser = DependencyManager.getInternalStorageSystem().getCurrentUser();
-        if(DependencyManager.getNetworkStateSystem().isConnected()) {
+        if (LoggedInUser.getInstance() != null) {
+            return true;
+        }
+
+        if (DependencyManager.getNetworkStateSystem().isConnected()) {
             if (localUser != null && FAUTH.getCurrentUser() != null) {
-                System.out.println("Local user is not null when login at start");
                 LoggedInUser.init(localUser);
                 return true;
             }
-        }else{
-            if(localUser !=null){
+        } else {
+            if (localUser != null) {
                 LoggedInUser.init(localUser);
                 return true;
             }
         }
         return false;
     }
-
-
 
 
     /**
@@ -116,6 +122,7 @@ public class FirebaseAuthentication implements Authentication {
     /**
      * This function allows to change the current password of the user logged in
      * Note that this function doesn't has to update the current user instance in the app
+     *
      * @param password
      * @return
      */
@@ -134,7 +141,6 @@ public class FirebaseAuthentication implements Authentication {
     public void signOut() {
         LoggedInUser.clear();
         DependencyManager.getInternalStorageSystem().deleteUser();
-        System.out.println(DependencyManager.getInternalStorageSystem().getCurrentUser() == null);
         FAUTH.signOut();
     }
 
