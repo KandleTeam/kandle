@@ -24,6 +24,7 @@ import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -268,7 +269,6 @@ public class FirestoreDatabase implements Database {
     @Override
     public Task<List<String>> userIdFollowersList(String userId) {
         return getFollowerOrFollowedListTask(userId, FOLLOWERS);
-
     }
 
     @Override
