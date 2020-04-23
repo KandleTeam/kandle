@@ -19,7 +19,6 @@ public class Achievement {
     Achievement_type type;
     int goal_value;
     private Authentication auth;
-    private TextView view;
     private Database database;
     private AchievementAdapter achievementAdapter;
     private boolean state_achievement;
@@ -176,13 +175,5 @@ public class Achievement {
                 System.out.println(task.getException().getMessage());
             }
         });
-    }
-
-    private void setText(TextView tv, boolean condition) {
-        if (condition) {
-            tv.setText("DONE");
-        } else {
-            tv.setText("NOT DONE");
-        }
     }
 }

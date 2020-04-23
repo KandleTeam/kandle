@@ -45,21 +45,11 @@ public class AchievementFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.fragment_achievement, container, false);
         AchievementAdapter achievementAdapter = new AchievementAdapter(achievements, this.getContext());
-        for(int i = 1; i < 4; i++){
-            achievements.add(new Achievement(Achievement.Achievement_type.NB_POSTS, i * 5, achievementAdapter));
-        }
-        for(int i = 1; i < 3; i++){
-            achievements.add(new Achievement(Achievement.Achievement_type.FOLLOWING, i * 3, achievementAdapter));
-        }
-        for(int i = 1; i < 3; i++){
-            achievements.add(new Achievement(Achievement.Achievement_type.FOLLOWERS,  i * 3, achievementAdapter));
-        }
-        for(int i = 1; i < 3; i++){
-            achievements.add(new Achievement(Achievement.Achievement_type.NB_LIKES_POST, i * 3, achievementAdapter));
-        }
-        for (int i = 1; i < 3; i++){
-            achievements.add(new Achievement(Achievement.Achievement_type.NB_LIKES_POSTS_TOTAL, i * 5, achievementAdapter));
-        }
+        createAchievements(3, 5, Achievement.Achievement_type.NB_POSTS, achievementAdapter);
+        createAchievements(2, 3, Achievement.Achievement_type.FOLLOWING, achievementAdapter);
+        createAchievements(2, 3, Achievement.Achievement_type.FOLLOWERS, achievementAdapter);
+        createAchievements(2, 3, Achievement.Achievement_type.NB_LIKES_POST, achievementAdapter);
+        createAchievements(2, 5, Achievement.Achievement_type.NB_LIKES_POSTS_TOTAL, achievementAdapter);
         achievementAdapter.changeList(achievements);
         flAchievements = view.findViewById(R.id.flAchievements);
         flAchievements.setLayoutManager(new LinearLayoutManager(this.getContext()));
@@ -67,9 +57,11 @@ public class AchievementFragment extends Fragment {
         return view;
     }
 
-
-
-
+    private void createAchievements(int numberOfAchievements, int scaleIncrementation, Achievement.Achievement_type typeOfAchievement, AchievementAdapter achievementAdapter){
+        for(int i = 1; i < numberOfAchievements + 1; i++){
+            achievements.add(new Achievement(typeOfAchievement,  i * scaleIncrementation, achievementAdapter));
+        }
+    }
 
 
 }

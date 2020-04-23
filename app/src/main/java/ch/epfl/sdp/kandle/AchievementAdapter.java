@@ -32,15 +32,9 @@ import ch.epfl.sdp.kandle.dependencies.Post;
 import ch.epfl.sdp.kandle.fragment.ListUsersFragment;
 
 public class AchievementAdapter extends RecyclerView.Adapter<AchievementAdapter.ViewHolder>{
-    private static ClickListener clickListener;
     private List<Achievement> mAchievemnts;
     private Context mContext;
     private  ViewHolder viewHolder;
-
-    private String userId;
-
-    private Authentication auth;
-    private Database database;
 
     public AchievementAdapter(List<Achievement> achievements, Context context) {
         mAchievemnts = achievements;
