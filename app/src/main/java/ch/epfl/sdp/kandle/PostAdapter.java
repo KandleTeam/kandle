@@ -43,7 +43,6 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder> {
 
     public final static int POST_IMAGE = 10;
 
-    private static ClickListener clickListener;
     private List<Post> mPosts;
     private Context mContext;
     private ViewHolder viewHolder;
@@ -56,11 +55,6 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder> {
     public PostAdapter(List<Post> posts, Context context) {
         mPosts = posts;
         mContext = context;
-    }
-
-
-    public void setOnItemClickListener(ClickListener clickListener) {
-        PostAdapter.clickListener = clickListener;
     }
 
     @NonNull
@@ -208,7 +202,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder> {
     }
 
 
-    public static class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+    public static class ViewHolder extends RecyclerView.ViewHolder {
 
         public TextView mtitleText;
         public TextView mlikes;
@@ -224,7 +218,6 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder> {
 
         public ViewHolder(View itemView) {
             super(itemView);
-            itemView.setOnClickListener(this);
             mtitleText = (TextView) itemView.findViewById(R.id.title);
             mlikes = (TextView) itemView.findViewById(R.id.flames);
             mdate = (TextView) itemView.findViewById(R.id.date_and_time);
@@ -235,11 +228,6 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder> {
             mPostImage = itemView.findViewById(R.id.postImageInPost);
             mUsername = itemView.findViewById(R.id.usernameinPost);
             mNickname = itemView.findViewById(R.id.nicknameInPost);
-        }
-
-        @Override
-        public void onClick(View v) {
-            clickListener.onItemClick(getAdapterPosition(), v);
         }
 
     }

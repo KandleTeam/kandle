@@ -80,31 +80,6 @@ public class YourPostListFragment extends Fragment {
 
                 PostAdapter adapter = new PostAdapter(posts, context);
 
-
-                adapter.setOnItemClickListener((position, view) -> {
-                    LayoutInflater inflater1 = getLayoutInflater();
-                    View popupView = inflater1.inflate(R.layout.post_content, null);
-                    int width = LinearLayout.LayoutParams.WRAP_CONTENT;
-                    int height = LinearLayout.LayoutParams.WRAP_CONTENT;
-                    boolean focusable = true; // lets taps ouside the popup also dismiss it
-                    final PopupWindow popupWindow = new PopupWindow(popupView, width, height, focusable);
-                    popupWindow.showAtLocation(view, Gravity.CENTER, 0, 0);
-                    TextView content = popupView.findViewById(R.id.post_content);
-                    ImageView image = popupView.findViewById(R.id.postImage);
-                    content.setText(posts.get(position).getDescription());
-
-                    if (posts.get(position).getImageURL() != null) {
-                        image.setVisibility(View.VISIBLE);
-                        image.setTag(POST_IMAGE);
-                        Picasso.get().load(posts.get(position).getImageURL()).into(image);
-                    }
-
-                    popupView.setOnClickListener((popup) -> {
-                        popupWindow.dismiss();
-                    });
-
-                });
-
                 rvPosts.setAdapter(adapter);
 
             } else {
