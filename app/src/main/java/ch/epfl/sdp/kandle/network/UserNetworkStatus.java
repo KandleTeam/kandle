@@ -10,8 +10,9 @@ import ch.epfl.sdp.kandle.Kandle;
 
 
 public class UserNetworkStatus implements NetworkState {
-    private ConnexionStatus connexionStatus;
+    //private ConnexionStatus connexionStatus;
     private static final UserNetworkStatus INSTANCE = new UserNetworkStatus();
+
     private UserNetworkStatus() {
 
     }
@@ -33,11 +34,14 @@ public class UserNetworkStatus implements NetworkState {
             connected = info != null && info.isConnectedOrConnecting();
         }
 
-        if(connected){
+        /*
+        if (connected) {
             connexionStatus = ConnexionStatus.ONLINE;
-        }else{
+        } else {
             connexionStatus = ConnexionStatus.OFFLINE;
         }
+
+         */
         return connected;
     }
 

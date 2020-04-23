@@ -6,7 +6,7 @@ import androidx.core.content.ContextCompat;
 
 import ch.epfl.sdp.kandle.R;
 import ch.epfl.sdp.kandle.dependencies.Authentication;
-import ch.epfl.sdp.kandle.caching.CachedDatabase;
+import ch.epfl.sdp.kandle.Storage.caching.CachedFirestoreDatabase;
 import ch.epfl.sdp.kandle.dependencies.Database;
 import ch.epfl.sdp.kandle.dependencies.DependencyManager;
 
@@ -43,7 +43,7 @@ public class RegisterActivity extends AppCompatActivity {
         mPasswordConfirm = findViewById(R.id.passwordConfirm);
         mSignUpBtn = findViewById(R.id.loginBtn);
         mSignInLink = findViewById(R.id.signInLink);
-        database = new CachedDatabase();
+        database = new CachedFirestoreDatabase();
         auth = DependencyManager.getAuthSystem();
         mSignInLink.setOnClickListener(v -> {
             startActivity(new Intent(getApplicationContext(), LoginActivity.class));
@@ -119,10 +119,10 @@ public class RegisterActivity extends AppCompatActivity {
 
     }
 
-    private boolean checkForInternetConnection(){
+    private boolean checkForInternetConnection() {
         if (!DependencyManager.getNetworkStateSystem().isConnected()) {
             CNetworkBar = (CoordinatorLayout) findViewById(R.id.connectionBar);
-            Snackbar snackbar = Snackbar.make(CNetworkBar,  R.string.no_connexion, Snackbar.LENGTH_SHORT);
+            Snackbar snackbar = Snackbar.make(CNetworkBar, R.string.no_connexion, Snackbar.LENGTH_SHORT);
             snackbar.setTextColor(ContextCompat.getColor(this, R.color.white));
             CNetworkBar.setBackgroundColor(ContextCompat.getColor(this, R.color.colorAccent));
             snackbar.show();

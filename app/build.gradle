@@ -52,6 +52,7 @@ dependencies {
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
     androidTestImplementation 'androidx.test.espresso:espresso-contrib:3.2.0'
     androidTestImplementation 'androidx.test:rules:1.2.0'
+    androidTestImplementation 'androidx.test.uiautomator:uiautomator:2.2.0'
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
     androidTestImplementation("com.android.support.test.espresso:espresso-intents:3.0.2")
     implementation 'com.google.android.material:material:1.1.0'
@@ -100,7 +101,7 @@ task jacocoTestReport(type: JacocoReport, dependsOn: ['testDebugUnitTest', 'crea
         html.enabled = true
     }
 
-    def fileFilter = ['**/R.class', '**/R$*.class', '**/BuildConfig.*', '**/Manifest*.*', '**/*Test*.*', 'android/**/*.*']
+    def fileFilter = ['**/R.class', '**/R$*.class', '**/BuildConfig.*', '**/Manifest*.*', '**/*Test*.*', 'android/**/*.*', '**/*_Impl*.*']
     def debugTree = fileTree(dir: "$project.buildDir/intermediates/javac/debug/classes", excludes: fileFilter)
     def mainSrc = "$project.projectDir/src/main/java"
 

@@ -1,8 +1,10 @@
 package ch.epfl.sdp.kandle.dependencies;
 
 import com.google.android.gms.tasks.Task;
+
 import java.util.List;
 
+import ch.epfl.sdp.kandle.Post;
 import ch.epfl.sdp.kandle.User;
 
 public interface Database {
@@ -54,13 +56,7 @@ public interface Database {
 
     Task<Void> updateProfilePicture(String uri);
 
-    Task<String> getProfilePicture();
-
     Task<Void> updateNickname(String nickname);
-
-    Task<String> getNickname();
-
-    Task<String> getUsername();
 
     Task<Void> addPost(Post p);
 
@@ -80,7 +76,7 @@ public interface Database {
 
     Task<List<Post>> getPostsByUserId(String userId);
 
-    Task<List<Post>> getNearbyPosts(double longitude, double latitude, double distance);
+    Task<List<Post>> getNearbyPosts(double latitude, double longitude, double distance);
 
     Task<Post> getPostByPostId(String postId);
 

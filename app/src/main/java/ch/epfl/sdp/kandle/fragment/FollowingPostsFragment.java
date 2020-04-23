@@ -19,7 +19,7 @@ import com.squareup.picasso.Picasso;
 import java.util.ArrayList;
 import java.util.List;
 import ch.epfl.sdp.kandle.LoggedInUser;
-import ch.epfl.sdp.kandle.dependencies.Post;
+import ch.epfl.sdp.kandle.Post;
 import ch.epfl.sdp.kandle.PostAdapter;
 import ch.epfl.sdp.kandle.R;
 import ch.epfl.sdp.kandle.User;

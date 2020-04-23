@@ -11,6 +11,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.PopupWindow;
 import android.widget.TextView;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
@@ -20,16 +21,13 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.squareup.picasso.Picasso;
 
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
 
-import ch.epfl.sdp.kandle.LoggedInUser;
-import ch.epfl.sdp.kandle.caching.CachedDatabase;
-import ch.epfl.sdp.kandle.dependencies.Post;
+import ch.epfl.sdp.kandle.Storage.caching.CachedFirestoreDatabase;
+import ch.epfl.sdp.kandle.Post;
 import ch.epfl.sdp.kandle.PostAdapter;
 import ch.epfl.sdp.kandle.R;
 import ch.epfl.sdp.kandle.dependencies.Authentication;
@@ -61,7 +59,7 @@ public class YourPostListFragment extends Fragment {
                              @Nullable Bundle savedInstanceState) {
 
         auth = DependencyManager.getAuthSystem();
-        database = new CachedDatabase();
+        database = new CachedFirestoreDatabase();
 
 
         userId = auth.getCurrentUser().getId();
@@ -94,11 +92,10 @@ public class YourPostListFragment extends Fragment {
                     TextView content = popupView.findViewById(R.id.post_content);
                     ImageView image = popupView.findViewById(R.id.postImage);
                     content.setText(posts.get(position).getDescription());
-                    System.out.println("Before " + posts.get(position).getPostId());
+
                     if (posts.get(position).getImageURL() != null) {
                         image.setVisibility(View.VISIBLE);
                         image.setTag(POST_IMAGE);
-                        System.out.println("In if" + image.getTag());
                         Picasso.get().load(posts.get(position).getImageURL()).into(image);
                     }
 
@@ -111,7 +108,7 @@ public class YourPostListFragment extends Fragment {
                 rvPosts.setAdapter(adapter);
 
             } else {
-                System.out.println(task.getException().getMessage());
+                System.err.println(task.getException().getMessage());
             }
         });
 

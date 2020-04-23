@@ -1,40 +1,32 @@
 package ch.epfl.sdp.kandle.activity;
 
 
-import android.content.ContentResolver;
 import android.content.Intent;
 import android.graphics.Bitmap;
-import android.hardware.Camera;
 import android.net.Uri;
 import android.os.Bundle;
-import android.webkit.MimeTypeMap;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.Toast;
 
-import com.google.android.gms.tasks.Task;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.firestore.FirebaseFirestore;
 import com.squareup.picasso.Picasso;
 
 import java.util.Date;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import ch.epfl.sdp.kandle.LoggedInUser;
-import ch.epfl.sdp.kandle.MainActivity;
 import ch.epfl.sdp.kandle.PostCamera;
 import ch.epfl.sdp.kandle.R;
 import ch.epfl.sdp.kandle.fragment.YourPostListFragment;
 import ch.epfl.sdp.kandle.imagePicker.ImagePicker;
 import ch.epfl.sdp.kandle.dependencies.Authentication;
-import ch.epfl.sdp.kandle.caching.CachedDatabase;
+import ch.epfl.sdp.kandle.Storage.caching.CachedFirestoreDatabase;
 import ch.epfl.sdp.kandle.dependencies.Database;
 import ch.epfl.sdp.kandle.dependencies.DependencyManager;
-import ch.epfl.sdp.kandle.dependencies.Post;
-import ch.epfl.sdp.kandle.dependencies.Storage;
+import ch.epfl.sdp.kandle.Post;
+
 
 public class PostActivity extends AppCompatActivity {
 
@@ -50,8 +42,9 @@ public class PostActivity extends AppCompatActivity {
     private Uri imageUri;
 
     private Post editPost;
+
     @Override
-    public void onResume(){
+    public void onResume() {
         super.onResume();
     }
 
@@ -63,8 +56,8 @@ public class PostActivity extends AppCompatActivity {
         //Permission();
 
         Intent intent = getIntent();
-        Double latitude = intent.getDoubleExtra("latitude", 0.0) - 0.0015;
-        Double longitude = intent.getDoubleExtra("longitude", 0.0) - 0.0015;
+        Double latitude = intent.getDoubleExtra("latitude", 0.0) - 0.00015;
+        Double longitude = intent.getDoubleExtra("longitude", 0.0) - 0.00015;
         String postId = intent.getStringExtra("postId");
 
 
@@ -76,9 +69,9 @@ public class PostActivity extends AppCompatActivity {
         postCamera = new PostCamera(this);
 
         auth = DependencyManager.getAuthSystem();
-        database = new CachedDatabase();
+        database = new CachedFirestoreDatabase();
 
-        if(postId != null){
+        if (postId != null) {
             database.getPostByPostId(postId).addOnCompleteListener(task -> {
                 if (task.isSuccessful()) {
                     Post p = task.getResult();
@@ -95,8 +88,6 @@ public class PostActivity extends AppCompatActivity {
 
         mPostButton.setOnClickListener(v -> {
 
-            System.out.println("passing here");
-
             String postText = mPostText.getText().toString().trim();
 
             if (postText.isEmpty() && imageUri == null) {
@@ -112,7 +103,7 @@ public class PostActivity extends AppCompatActivity {
                             Toast.makeText(PostActivity.this, "Unable to upload image", Toast.LENGTH_LONG).show();
 
                         } else {
-                            if(postId != null){
+                            if (postId != null) {
                                 database.getPostByPostId(postId).addOnCompleteListener(task2 -> {
                                     if (task2.isSuccessful()) {
                                         Post p = task2.getResult();
@@ -120,11 +111,11 @@ public class PostActivity extends AppCompatActivity {
                                         p.setImageURL(downloadUri.toString());
                                         p.setLatitude(p.getLatitude());
                                         p.setLongitude(p.getLongitude());
-                                        p.setLikes(p.getLikes());
+                                        p.setLikers(p.getLikers());
                                         editPost(p, postId);
                                     }
                                 });
-                            }else{
+                            } else {
                                 p = new Post(postText, downloadUri.toString(), new Date(), auth.getCurrentUser().getId(), longitude, latitude);
                                 post(p);
                             }
@@ -132,9 +123,8 @@ public class PostActivity extends AppCompatActivity {
                     }
                 });
 
-            }
-            else {
-                if(postId != null){
+            } else {
+                if (postId != null) {
                     database.getPostByPostId(postId).addOnCompleteListener(task2 -> {
                         if (task2.isSuccessful()) {
                             Post p = task2.getResult();
@@ -142,11 +132,11 @@ public class PostActivity extends AppCompatActivity {
                             //raise the test coverage
                             p.setLatitude(p.getLatitude());
                             p.setLongitude(p.getLongitude());
-                            p.setLikes(p.getLikes());
+                            p.setLikers(p.getLikers());
                             editPost(p, postId);
                         }
                     });
-                }else{
+                } else {
                     p = new Post(postText, null, new Date(), auth.getCurrentUser().getId(), longitude, latitude);
                     post(p);
                 }
@@ -164,7 +154,7 @@ public class PostActivity extends AppCompatActivity {
         database.addPost(p).addOnCompleteListener(task -> {
             if (task.isSuccessful()) {
 
-                Toast.makeText(PostActivity.this, "You have successfully posted " , Toast.LENGTH_LONG ).show();
+                Toast.makeText(PostActivity.this, "You have successfully posted ", Toast.LENGTH_LONG).show();
 
                 finish();
 
@@ -176,14 +166,13 @@ public class PostActivity extends AppCompatActivity {
         database.editPost(p, postId).addOnCompleteListener(task -> {
             if (task.isSuccessful()) {
 
-                Toast.makeText(PostActivity.this, "You have successfully edited your post " , Toast.LENGTH_LONG ).show();
+                Toast.makeText(PostActivity.this, "You have successfully edited your post ", Toast.LENGTH_LONG).show();
 
                 finish();
 
             }
         });
     }
-
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {

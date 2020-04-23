@@ -11,6 +11,7 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -23,19 +24,22 @@ import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.RecyclerView;
 
+import ch.epfl.sdp.kandle.activity.MainActivity;
+import ch.epfl.sdp.kandle.activity.RegisterActivity;
+
 import ch.epfl.sdp.kandle.activity.PostActivity;
 import ch.epfl.sdp.kandle.dependencies.Authentication;
-import ch.epfl.sdp.kandle.caching.CachedDatabase;
+import ch.epfl.sdp.kandle.Storage.caching.CachedFirestoreDatabase;
 import ch.epfl.sdp.kandle.dependencies.Database;
 import ch.epfl.sdp.kandle.dependencies.DependencyManager;
-import ch.epfl.sdp.kandle.dependencies.Post;
 import ch.epfl.sdp.kandle.fragment.ListUsersFragment;
+import ch.epfl.sdp.kandle.fragment.YourPostListFragment;
 
-public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder>{
+public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder> {
     private static ClickListener clickListener;
     private List<Post> mPosts;
     private Context mContext;
-    private  ViewHolder viewHolder;
+    private ViewHolder viewHolder;
 
     private String userId;
 
@@ -76,7 +80,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder>{
         final Post post = mPosts.get(position);
 
         auth = DependencyManager.getAuthSystem();
-        database = new CachedDatabase();
+        database = new CachedFirestoreDatabase();
 
         userId = auth.getCurrentUser().getId();
         DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
@@ -100,7 +104,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder>{
 
         holder.mlikeButton.setOnClickListener(v -> {
 
-            if(post.getLikers().contains(userId)){
+            if (post.getLikers().contains(userId)) {
                 database.unlikePost(userId, post.getPostId()).addOnCompleteListener(task -> {
                     if (task.isSuccessful()) {
                         post.unlikePost(userId);
@@ -108,17 +112,14 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder>{
                     }
                 });
 
-            }else{
+            } else {
                 database.likePost(userId, post.getPostId()).addOnCompleteListener(task -> {
-                    if (task.isSuccessful()){
+                    if (task.isSuccessful()) {
                         post.likePost(userId);
                         likeView.setText(String.valueOf(post.getLikes()));
                     }
                 });
-
-
             }
-            //likeView.setText(String.valueOf(post.getLikes()));
         });
 
         holder.mEditButton.setOnClickListener(v -> {
@@ -136,7 +137,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder>{
 
             });
             alertDialog.setPositiveButton("Yes", (dialog, which) -> database.deletePost(post).addOnCompleteListener(task -> {
-                if (task.isSuccessful()){
+                if (task.isSuccessful()) {
                     mPosts.remove(post);
                     holder.mEditButton.setVisibility(View.GONE);
                     notifyDataSetChanged();
@@ -145,13 +146,12 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder>{
             alertDialog.create().show();
 
         });
+        final FragmentManager fragmentManager = ((AppCompatActivity) mContext).getSupportFragmentManager();
 
-
-        final FragmentManager fragmentManager =   ((AppCompatActivity) mContext).getSupportFragmentManager();
 
         holder.mlikes.setOnClickListener(v -> database.getLikers(post.getPostId()).addOnCompleteListener(task -> {
-            if (task.isSuccessful()){
-                fragmentManager.beginTransaction().replace( R.id.flContent, ListUsersFragment.newInstance(
+            if (task.isSuccessful()) {
+                fragmentManager.beginTransaction().replace(R.id.flContent, ListUsersFragment.newInstance(
                         task.getResult(),
                         "Likes",
                         Integer.toString(task.getResult().size())
@@ -159,10 +159,9 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder>{
                         .addToBackStack(null)
                         .commit();
 
-            }
+            } else {
+                Toast.makeText(this.mContext, task.getException().getMessage(), Toast.LENGTH_LONG).show();
 
-            else {
-                System.out.println(task.getException().getMessage());
             }
         }));
     }
@@ -198,7 +197,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder>{
 
         @Override
         public void onClick(View v) {
-            clickListener.onItemClick(getAdapterPosition(),v);
+            clickListener.onItemClick(getAdapterPosition(), v);
         }
 
     }
