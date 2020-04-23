@@ -255,9 +255,8 @@ public class FirestoreDatabase implements Database {
         userIdFollowingList(userId).addOnCompleteListener(task -> {
 
             if (task.isSuccessful()) {
-                if (task.getResult() == null) {
-                    source.setResult(null);
-                } else {
+                if (task.getResult() != null) {
+
                     USERS.get().addOnCompleteListener(task2 -> {
                         if (task2.isSuccessful()) {
                             List<User> users = new ArrayList<>();
@@ -273,6 +272,8 @@ public class FirestoreDatabase implements Database {
                             source.setException(new Exception(task2.getException().getMessage()));
                         }
                     });
+                }else{
+                    source.setResult(new ArrayList<User>());
                 }
             } else {
                 source.setException(new Exception(task.getException().getMessage()));
@@ -349,18 +350,18 @@ public class FirestoreDatabase implements Database {
                 .runTransaction(transaction -> {
 
                     DocumentSnapshot userAddingPostSnapshot = transaction.get(userAddingPostDoc);
-                    List<String> posts = (List<String>) userAddingPostSnapshot.get("posts");
+                    List<String> postsIds = (List<String>) userAddingPostSnapshot.get("postsIds");
 
-                    if (posts != null) {
-                        if (!posts.contains(p.getPostId())) {
+                    if (postsIds != null) {
+                        if (!postsIds.contains(p.getPostId())) {
                             Map<String, Object> mapPosts = new HashMap<>();
-                            posts.add(p.getPostId());
-                            mapPosts.put("posts", posts);
+                            postsIds.add(p.getPostId());
+                            mapPosts.put("postsIds", postsIds);
                             transaction.set(userAddingPostDoc, mapPosts, SetOptions.merge());
                         }
                     } else {
                         Map<String, Object> mapPosts = new HashMap<>();
-                        mapPosts.put("posts", Arrays.asList(p.getPostId()));
+                        mapPosts.put("postsIds", Arrays.asList(p.getPostId()));
                         transaction.set(userAddingPostDoc, mapPosts, SetOptions.merge());
                     }
 
@@ -389,13 +390,13 @@ public class FirestoreDatabase implements Database {
 
                     DocumentSnapshot userDeletingPostSnapshot = transaction.get(userDeletingPostDoc);
 
-                    List<String> posts = (List<String>) userDeletingPostSnapshot.get("posts");
+                    List<String> postsIds = (List<String>) userDeletingPostSnapshot.get("postsIds");
 
-                    if (posts != null) {
-                        if (posts.contains(p.getPostId())) {
+                    if (postsIds != null) {
+                        if (postsIds.contains(p.getPostId())) {
                             Map<String, Object> mapPosts = new HashMap<>();
-                            posts.remove(p.getPostId());
-                            mapPosts.put("posts", posts);
+                            postsIds.remove(p.getPostId());
+                            mapPosts.put("postsIds", postsIds);
                             transaction.set(userDeletingPostDoc, mapPosts, SetOptions.merge());
                         }
                     }
@@ -510,7 +511,7 @@ public class FirestoreDatabase implements Database {
         Task<List<String>> taskListPostId = USERS
                 .document(userId)
                 .get()
-                .continueWith(task -> (List<String>) task.getResult().get("posts"));
+                .continueWith(task -> (List<String>) task.getResult().get("postsIds"));
 
         TaskCompletionSource<List<Post>> source = new TaskCompletionSource<>();
         taskListPostId.addOnCompleteListener(task -> {
