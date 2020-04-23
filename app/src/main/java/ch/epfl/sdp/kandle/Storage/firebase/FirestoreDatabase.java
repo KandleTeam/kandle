@@ -245,9 +245,9 @@ public class FirestoreDatabase implements Database {
                 .document(userId)
                 .get()
                 .continueWith(task -> {
-                    List<String> result = (List<String>) task.getResult().get(field);
-                    if (result == null) return Collections.emptyList();
-                    else return result;
+                    List<String> userIds = (List<String>) task.getResult().get(field);
+                    if (userIds == null) return new ArrayList<>();
+                    else return userIds;
                 });
     }
 
