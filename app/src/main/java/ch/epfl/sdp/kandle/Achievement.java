@@ -31,6 +31,7 @@ public class Achievement {
         state_achievement = false;
         auth = DependencyManager.getAuthSystem();
         database = DependencyManager.getDatabaseSystem();
+                //DependencyManager.getDatabaseSystem();
              //   new CachedFirestoreDatabase();
     }
 
