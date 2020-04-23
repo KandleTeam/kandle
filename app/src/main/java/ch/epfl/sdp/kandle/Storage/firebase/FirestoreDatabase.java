@@ -1,7 +1,5 @@
 package ch.epfl.sdp.kandle.Storage.firebase;
 
-import android.provider.Settings;
-
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.tasks.Task;
 import com.google.android.gms.tasks.TaskCompletionSource;
@@ -18,9 +16,7 @@ import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.SetOptions;
 import com.google.maps.android.SphericalUtil;
 
-
 import java.text.DateFormat;
-import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -46,16 +42,11 @@ public class FirestoreDatabase implements Database {
     private static final CollectionReference USERNAMES = FIRESTORE.collection("usernames");
     private static final CollectionReference POSTS = FIRESTORE.collection("posts");
     private static final CollectionReference FOLLOW = FIRESTORE.collection("follow");
+
+    // Array fields of the documents in collection 'follow'
     private static final String FOLLOWERS = "followers";
     private static final String FOLLOWING = "following";
-
-    private DocumentReference loggedInUser() {
-        return USERS.document(FirebaseAuth.getInstance().getCurrentUser().getUid());
-    }
-
-
     private Map<String, Object> mapDeleteFollowing = (Map<String, Object>) new HashMap<>().put("following", FieldValue.delete());
-
     private Map<String, Object> mapDeleteFollowers = (Map<String, Object>) new HashMap<>().put("followers", FieldValue.delete());
 
     private FirestoreDatabase() {
@@ -70,6 +61,17 @@ public class FirestoreDatabase implements Database {
         return INSTANCE;
     }
 
+    public static boolean nearby(double latitude, double longitude, double postLatitude, double postLongitude, double distance, int numLikes, long numDays) {
+
+        LatLng startLatLng = new LatLng(latitude, longitude);
+        LatLng endLatLng = new LatLng(postLatitude, postLongitude);
+        return SphericalUtil.computeDistanceBetween(startLatLng, endLatLng) <= distance + numLikes * LIKE_BONUS_DISTANCE - numDays * DATE_MALUS_DISTANCE;
+
+    }
+
+    private DocumentReference loggedInUser() {
+        return USERS.document(FirebaseAuth.getInstance().getCurrentUser().getUid());
+    }
 
     @Override
     public Task<User> getUserByName(final String username) {
@@ -81,7 +83,6 @@ public class FirestoreDatabase implements Database {
                     return task.getResult().iterator().next().toObject(User.class);
                 });
     }
-
 
     @Override
     public Task<User> getUserById(final String userId) {
@@ -98,7 +99,6 @@ public class FirestoreDatabase implements Database {
                     return user;
                 });
     }
-
 
     @Override
     public Task<Void> createUser(final User user) {
@@ -146,7 +146,6 @@ public class FirestoreDatabase implements Database {
                 .get()
                 .continueWith(task -> task.getResult().toObjects(User.class));
     }
-
 
     @Override
     public Task<Void> follow(final String userFollowing, final String userFollowed) {
@@ -236,8 +235,9 @@ public class FirestoreDatabase implements Database {
     /**
      * Returns a list of userIds of the users followed by the specified user, or following the
      * specified user, depending on the `field` parameter
+     *
      * @param userId userId of the concerned user
-     * @param field should be either FOLLOWING or FOLLOWERS (use constants)
+     * @param field  should be either FOLLOWING or FOLLOWERS (use constants)
      * @return a list containing the userIds of following/followed users (be it empty)
      */
     private Task<List<String>> getFollowerOrFollowedListTask(String userId, String field) {
@@ -253,6 +253,7 @@ public class FirestoreDatabase implements Database {
 
     /**
      * Asynchronously retrieve the userIds of the users who the specified user follows
+     *
      * @param userId the concerned user
      * @return a list of userIds
      */
@@ -263,6 +264,7 @@ public class FirestoreDatabase implements Database {
 
     /**
      * Asynchronously retrieve the userIds of the users following the specified user
+     *
      * @param userId the concerned user
      * @return a list of userIds
      */
@@ -353,16 +355,12 @@ public class FirestoreDatabase implements Database {
         return loggedInUser().update(map);
     }
 
-
-
     @Override
     public Task<Void> updateNickname(String nickname) {
         HashMap<String, Object> map = new HashMap<>();
         map.put("nickname", nickname);
         return loggedInUser().update(map);
     }
-
-
 
     @Override
 
@@ -458,6 +456,7 @@ public class FirestoreDatabase implements Database {
                 });
 
     }
+
     @Override
     public Task<Void> unlikePost(String userId, String postId) {
         final DocumentReference unlikedPostDoc = POSTS.document(postId);
@@ -479,6 +478,16 @@ public class FirestoreDatabase implements Database {
                     return null;
                 });
     }
+
+    /*
+    @Override
+    public Task<List<String>> likers(String postId) {
+        return posts
+                .document(postId)
+                .get()
+                .continueWith(task -> (List<String>)  task.getResult().get("likers"));
+    }
+    */
 
     @Override
     public Task<List<User>> getLikers(String postId) {
@@ -519,16 +528,6 @@ public class FirestoreDatabase implements Database {
 
 
     }
-
-    /*
-    @Override
-    public Task<List<String>> likers(String postId) {
-        return posts
-                .document(postId)
-                .get()
-                .continueWith(task -> (List<String>)  task.getResult().get("likers"));
-    }
-    */
 
     @Override
     public Task<List<Post>> getPostsByUserId(String userId) {
@@ -571,30 +570,29 @@ public class FirestoreDatabase implements Database {
         return source.getTask();
     }
 
-
     @Override
-    public Task<List<Post>> getNearbyPosts(double longitude, double latitude, double distance){
+    public Task<List<Post>> getNearbyPosts(double longitude, double latitude, double distance) {
         TaskCompletionSource<List<Post>> source = new TaskCompletionSource<>();
 
         POSTS.get().addOnCompleteListener(task -> {
-            if (task.isSuccessful()){
+            if (task.isSuccessful()) {
                 List<Post> posts = new ArrayList<>();
 
                 for (QueryDocumentSnapshot documentSnapshot : task.getResult()) {
 
-                    if ((documentSnapshot.get("latitude") != null) && (documentSnapshot.get("longitude") !=null)){
+                    if ((documentSnapshot.get("latitude") != null) && (documentSnapshot.get("longitude") != null)) {
                         double postLatitude = (double) documentSnapshot.get("latitude");
                         double postLongitude = (double) documentSnapshot.get("longitude");
                         List<String> likers = (List<String>) documentSnapshot.get("likers");
 
                         DateFormat df = DateFormat.getDateInstance();
-                        Date postDate =  ((Timestamp) documentSnapshot.get("date")).toDate() ;
+                        Date postDate = ((Timestamp) documentSnapshot.get("date")).toDate();
                         Date now = new Date();
                         long numDays = TimeUnit.DAYS.convert(Math.abs(now.getTime() - postDate.getTime()), TimeUnit.MILLISECONDS);
                         int numLikes = 0;
                         if (likers != null) numLikes = likers.size();
 
-                        if  ( (nearby (latitude, longitude, postLatitude, postLongitude, distance, numLikes, numDays))){
+                        if ((nearby(latitude, longitude, postLatitude, postLongitude, distance, numLikes, numDays))) {
                             posts.add(documentSnapshot.toObject(Post.class));
                         }
                     }
@@ -603,8 +601,7 @@ public class FirestoreDatabase implements Database {
 
                 source.setResult(posts);
 
-            }
-            else {
+            } else {
                 source.setException(task.getException());
             }
         });
@@ -625,14 +622,6 @@ public class FirestoreDatabase implements Database {
                         throw new AssertionError("We done goofed somewhere! Unexpected pid");
                     return post;
                 });
-    }
-
-    public static boolean nearby(double latitude, double longitude, double postLatitude, double postLongitude, double distance, int numLikes, long numDays) {
-
-        LatLng startLatLng = new LatLng(latitude, longitude);
-        LatLng endLatLng = new LatLng(postLatitude, postLongitude);
-        return SphericalUtil.computeDistanceBetween(startLatLng, endLatLng) <= distance+numLikes*LIKE_BONUS_DISTANCE-numDays*DATE_MALUS_DISTANCE;
-
     }
 
 
