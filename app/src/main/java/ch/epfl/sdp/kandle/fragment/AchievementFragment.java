@@ -9,7 +9,14 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import ch.epfl.sdp.kandle.Achievement;
+import ch.epfl.sdp.kandle.AchievementAdapter;
 import ch.epfl.sdp.kandle.LoggedInUser;
 import ch.epfl.sdp.kandle.R;
 import ch.epfl.sdp.kandle.dependencies.Authentication;
@@ -21,65 +28,48 @@ public class AchievementFragment extends Fragment {
 
     private Authentication auth;
     private Database database;
+    private List<Achievement> achievements;
+    private RecyclerView flAchievements;
+    private View view;
+
+
 
     public AchievementFragment() {
         auth = DependencyManager.getAuthSystem();
         database = new CachedDatabase();
+        achievements = new ArrayList<>();
     }
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_achievement, container, false);
-        TextView tv1 = (TextView) view.findViewById(R.id.is_posts);
-        TextView tv2 = (TextView) view.findViewById(R.id.is_following);
-        TextView tv3 = (TextView) view.findViewById(R.id.is_followers);
-        checkPosts(tv1);
-        checkFollowing(tv2);
-        checkFollowers(tv3);
+        view = inflater.inflate(R.layout.fragment_achievement, container, false);
+        AchievementAdapter achievementAdapter = new AchievementAdapter(achievements, this.getContext());
+        for(int i = 1; i < 4; i++){
+            achievements.add(new Achievement(Achievement.Achievement_type.NB_POSTS, i * 5, achievementAdapter));
+        }
+        for(int i = 1; i < 3; i++){
+            achievements.add(new Achievement(Achievement.Achievement_type.FOLLOWING, i * 3, achievementAdapter));
+        }
+        for(int i = 1; i < 3; i++){
+            achievements.add(new Achievement(Achievement.Achievement_type.FOLLOWERS,  i * 3, achievementAdapter));
+        }
+        for(int i = 1; i < 3; i++){
+            achievements.add(new Achievement(Achievement.Achievement_type.NB_LIKES_POST, i * 3, achievementAdapter));
+        }
+        for (int i = 1; i < 3; i++){
+            achievements.add(new Achievement(Achievement.Achievement_type.NB_LIKES_POSTS_TOTAL, i * 5, achievementAdapter));
+        }
+        achievementAdapter.changeList(achievements);
+        flAchievements = view.findViewById(R.id.flAchievements);
+        flAchievements.setLayoutManager(new LinearLayoutManager(this.getContext()));
+        flAchievements.setAdapter(achievementAdapter);
         return view;
     }
 
-    private void checkPosts(TextView tv) {
-        database.getPostsByUserId(auth.getCurrentUser().getId()).addOnCompleteListener(task1 -> {
-            if (task1.isSuccessful()) {
-                setText(tv, task1.getResult().size() >= 10);
-            } else {
-                setText(tv, false);
-                System.out.println(task1.getException().getMessage());
-            }
-        });
-    }
 
-    private void checkFollowing(TextView tv) {
-        database.userIdFollowingList(auth.getCurrentUser().getId()).addOnCompleteListener(task2 -> {
-            if (task2.isSuccessful()) {
-                setText(tv, task2.getResult().size() >= 3);
-            } else {
-                tv.setText("NOT DONE");
-                System.out.println(task2.getException().getMessage());
-            }
-        });
-    }
 
-    private void checkFollowers(TextView tv) {
-        database.userIdFollowersList(auth.getCurrentUser().getId()).addOnCompleteListener(task -> {
-            if (task.isSuccessful()) {
-                setText(tv, task.getResult().size() >= 3);
-            } else {
-                setText(tv, false);
-                System.out.println(task.getException().getMessage());
-            }
-        });
-    }
 
-    private void setText(TextView tv, boolean condition) {
-        if (condition) {
-            tv.setText("DONE");
-        } else {
-            tv.setText("NOT DONE");
-        }
-    }
 
 
 }
