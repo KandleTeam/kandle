@@ -24,6 +24,8 @@ import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.squareup.picasso.Picasso;
+
 import ch.epfl.sdp.kandle.activity.MainActivity;
 import ch.epfl.sdp.kandle.activity.RegisterActivity;
 
@@ -34,8 +36,12 @@ import ch.epfl.sdp.kandle.dependencies.Database;
 import ch.epfl.sdp.kandle.dependencies.DependencyManager;
 import ch.epfl.sdp.kandle.fragment.ListUsersFragment;
 import ch.epfl.sdp.kandle.fragment.YourPostListFragment;
+import de.hdodenhof.circleimageview.CircleImageView;
 
 public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder> {
+
+    public final static int POST_IMAGE = 10;
+
     private static ClickListener clickListener;
     private List<Post> mPosts;
     private Context mContext;
@@ -92,6 +98,24 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder> {
         dateView.setText((dateFormat.format(post.getDate())));
         final TextView likeView = holder.mlikes;
         likeView.setText(String.valueOf(post.getLikes()));
+        CircleImageView profilePicView = holder.mProfilePic;
+        TextView usernameView = holder.mUsername;
+        TextView nicknameView = holder.mNickname;
+
+        ImageView postImageView = holder.mPostImage;
+        if (post.getImageURL() != null) {
+            postImageView.setVisibility(View.VISIBLE);
+            postImageView.setTag(POST_IMAGE);
+            Picasso.get().load(post.getImageURL()).into(postImageView);
+        }
+        database.getUserById(post.getUserId()).addOnCompleteListener(task -> {
+            if (task.isSuccessful() && task.getResult() != null) {
+                User user = task.getResult();
+                Picasso.get().load(user.getImageURL()).into(profilePicView);
+                usernameView.setText("@" + user.getUsername());
+                nicknameView.setText(user.getNickname());
+            }
+        });
 
         final ImageButton editPostView = holder.mEditButton;
         //milliseconds
@@ -181,6 +205,10 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder> {
         public ImageButton mlikeButton;
         public ImageButton mDeleteButton;
         public ImageButton mEditButton;
+        public CircleImageView mProfilePic;
+        public ImageView mPostImage;
+        public TextView mUsername;
+        public TextView mNickname;
 
 
         public ViewHolder(View itemView) {
@@ -192,7 +220,10 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder> {
             mlikeButton = itemView.findViewById(R.id.likeButton);
             mDeleteButton = itemView.findViewById(R.id.deleteButton);
             mEditButton = itemView.findViewById(R.id.editButton);
-
+            mProfilePic = itemView.findViewById(R.id.profilePicInPost);
+            mPostImage = itemView.findViewById(R.id.postImageInPost);
+            mUsername = itemView.findViewById(R.id.usernameinPost);
+            mNickname = itemView.findViewById(R.id.nicknameInPost);
         }
 
         @Override

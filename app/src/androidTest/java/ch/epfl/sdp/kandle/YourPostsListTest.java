@@ -3,6 +3,7 @@ package ch.epfl.sdp.kandle;
 import android.app.Activity;
 import android.app.Instrumentation;
 import android.content.Intent;
+import android.content.res.Resources;
 import android.net.Uri;
 import android.view.Gravity;
 import android.view.View;
@@ -22,7 +23,9 @@ import androidx.test.espresso.intent.rule.IntentsTestRule;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 import androidx.test.rule.ActivityTestRule;
 
+import org.hamcrest.Description;
 import org.hamcrest.Matcher;
+import org.hamcrest.TypeSafeMatcher;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
@@ -72,6 +75,7 @@ import static androidx.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static androidx.test.espresso.matcher.ViewMatchers.withId;
 import static androidx.test.espresso.matcher.ViewMatchers.withTagValue;
 import static androidx.test.espresso.matcher.ViewMatchers.withText;
+import static ch.epfl.sdp.kandle.YourProfileFragmentTest.atPosition;
 import static junit.framework.TestCase.assertEquals;
 import static org.hamcrest.Matchers.empty;
 import static org.hamcrest.Matchers.emptyArray;
@@ -240,14 +244,13 @@ public class YourPostsListTest {
         //2 posts should be displayed
         onView(withId(R.id.rvPosts)).check(new RecyclerViewItemCountAssertion(2));
 
-        onView(withId(R.id.rvPosts)).perform(RecyclerViewActions.actionOnItemAtPosition(0, click()));
-        onView(withId(R.id.postImage)).check(matches(withTagValue(is(YourPostListFragment.POST_IMAGE))));
-        onView(withId(R.id.post_content)).perform(click());
+        onView(new RecyclerViewMatcher(R.id.rvPosts)
+                .atPositionOnView(0, R.id.postImageInPost))
+                .check(matches(withTagValue(is(PostAdapter.POST_IMAGE))));
 
-        onView(withId(R.id.rvPosts)).perform(RecyclerViewActions.actionOnItemAtPosition(1, click()));
-        onView(withId(R.id.postImage)).check(matches(not(withTagValue(is(YourPostListFragment.POST_IMAGE)))));
-        onView(withId(R.id.post_content)).perform(click());
-
+        onView(new RecyclerViewMatcher(R.id.rvPosts)
+                .atPositionOnView(1, R.id.postImageInPost))
+                .check(matches(not(withTagValue(is(PostAdapter.POST_IMAGE)))));
 
     }
 
@@ -405,6 +408,56 @@ public class YourPostsListTest {
             RecyclerView recyclerView = (RecyclerView) view;
             RecyclerView.Adapter adapter = recyclerView.getAdapter();
             assertEquals(adapter.getItemCount(), expectedCount);
+        }
+    }
+
+    public class RecyclerViewMatcher {
+
+        private final int recyclerViewId;
+
+        public RecyclerViewMatcher(int recyclerViewId) {
+            this.recyclerViewId = recyclerViewId;
+        }
+
+        public Matcher<View> atPosition(final int position) {
+            return atPositionOnView(position, -1);
+        }
+
+        public Matcher<View> atPositionOnView(final int position, final int targetViewId) {
+            return new TypeSafeMatcher<View>() {
+                Resources resources = null;
+                View childView;
+                public void describeTo(Description description) {
+                    String idDescription = Integer.toString(recyclerViewId);
+                    if(this.resources != null) {
+                        try {
+                            idDescription = this.resources.getResourceName(recyclerViewId);
+                        } catch (Resources.NotFoundException var4) {
+                            idDescription = String.format("%s (resource name not found)",
+                                    new Object[] {Integer.valueOf(recyclerViewId) });
+                        }
+                    }
+                    description.appendText("with id: " + idDescription);
+                }
+
+                public boolean matchesSafely(View view) {
+                    this.resources = view.getResources();
+                    if (childView == null) {
+                        RecyclerView recyclerView = (RecyclerView) view.getRootView().findViewById(recyclerViewId);
+                        if (recyclerView != null && recyclerView.getId() == recyclerViewId) {
+                            childView = recyclerView.findViewHolderForAdapterPosition(position).itemView;
+                        } else {
+                            return false;
+                        }
+                    }
+                    if (targetViewId == -1) {
+                        return view == childView;
+                    } else {
+                        View targetView = childView.findViewById(targetViewId);
+                        return view == targetView;
+                    }
+                }
+            };
         }
     }
 
