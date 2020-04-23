@@ -9,7 +9,8 @@ import java.security.InvalidParameterException;
 import java.util.Date;
 import java.util.List;
 
-import ch.epfl.sdp.kandle.caching.CachedDatabase;
+import ch.epfl.sdp.kandle.Storage.caching.CachedFirestoreDatabase;
+import ch.epfl.sdp.kandle.Storage.firebase.FirestoreDatabase;
 import ch.epfl.sdp.kandle.dependencies.Authentication;
 import ch.epfl.sdp.kandle.dependencies.Database;
 import ch.epfl.sdp.kandle.dependencies.DependencyManager;
@@ -29,7 +30,8 @@ public class Achievement {
         this.achievementAdapter = adapter;
         state_achievement = false;
         auth = DependencyManager.getAuthSystem();
-        database = new CachedDatabase();
+        database = DependencyManager.getDatabaseSystem();
+             //   new CachedFirestoreDatabase();
     }
 
     public String getDescription() {

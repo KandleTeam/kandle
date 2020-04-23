@@ -36,7 +36,6 @@ public class AchievementFragment extends Fragment {
 
     public AchievementFragment() {
         auth = DependencyManager.getAuthSystem();
-        database = new CachedDatabase();
         achievements = new ArrayList<>();
         database = new CachedFirestoreDatabase();
     }

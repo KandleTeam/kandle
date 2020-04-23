@@ -18,18 +18,8 @@ import java.util.Date;
 import java.util.List;
 
 import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.RecyclerView;
 
-import ch.epfl.sdp.kandle.activity.PostActivity;
-import ch.epfl.sdp.kandle.dependencies.Authentication;
-import ch.epfl.sdp.kandle.caching.CachedDatabase;
-import ch.epfl.sdp.kandle.dependencies.Database;
-import ch.epfl.sdp.kandle.dependencies.DependencyManager;
-import ch.epfl.sdp.kandle.dependencies.Post;
-import ch.epfl.sdp.kandle.fragment.ListUsersFragment;
 
 public class AchievementAdapter extends RecyclerView.Adapter<AchievementAdapter.ViewHolder>{
     private List<Achievement> mAchievemnts;

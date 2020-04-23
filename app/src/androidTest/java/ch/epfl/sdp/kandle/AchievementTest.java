@@ -6,9 +6,9 @@ import android.view.Gravity;
 import android.view.View;
 
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.room.Room;
 import androidx.test.espresso.NoMatchingViewException;
 import androidx.test.espresso.ViewAssertion;
-import androidx.room.Room;
 import androidx.test.espresso.contrib.DrawerActions;
 import androidx.test.espresso.contrib.NavigationViewActions;
 import androidx.test.espresso.contrib.RecyclerViewActions;
@@ -98,7 +98,6 @@ public class AchievementTest {
                     posts.put(p2.getPostId(),p2);
                     posts.put(p3.getPostId(),p3);
                     posts.put(p4.getPostId(),p4);
-                    posts.put(p5.getPostId(),p5);
                      db = new MockDatabase(true, users, followMap, posts);
                     MockAuthentication authentication = new MockAuthentication(true, accounts, "password");
                     MockStorage storage = new MockStorage();
