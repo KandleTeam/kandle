@@ -1,6 +1,7 @@
-package ch.epfl.sdp.kandle.caching;
+package ch.epfl.sdp.kandle.Storage.caching;
 
 import android.content.Context;
+
 import androidx.annotation.NonNull;
 
 
@@ -12,6 +13,7 @@ import java.io.ObjectOutputStream;
 
 import ch.epfl.sdp.kandle.Kandle;
 import ch.epfl.sdp.kandle.User;
+import ch.epfl.sdp.kandle.dependencies.InternalStorage;
 
 /**
  * @Author Marc Egli
@@ -22,11 +24,12 @@ public class InternalStorageHandler implements InternalStorage {
     private final String USER_DATA_PATH = "userData";
     private Context context;
     private static final InternalStorageHandler INSTANCE = new InternalStorageHandler();
+
     public InternalStorageHandler() {
         this.context = Kandle.getContext();
     }
 
-    public static InternalStorage getInstance(){
+    public static InternalStorage getInstance() {
         return INSTANCE;
     }
 
@@ -101,9 +104,10 @@ public class InternalStorageHandler implements InternalStorage {
     /**
      * Updates the stored user with a new user instance
      * This function overwrites the current
-     * @Author Marc Egli
+     *
      * @param
      * @throws IllegalArgumentException
+     * @Author Marc Egli
      */
 
     @Override

@@ -10,6 +10,8 @@ import com.google.android.gms.maps.SupportMapFragment;
 import org.junit.Before;
 import org.junit.Rule;
 
+import ch.epfl.sdp.kandle.activity.MainActivity;
+
 public class MapTest {
     @Rule
     public final ActivityTestRule<MainActivity> mainActivityRule =

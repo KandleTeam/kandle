@@ -47,6 +47,8 @@ import androidx.core.content.res.ResourcesCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
+
+import ch.epfl.sdp.kandle.Storage.caching.CachedFirestoreDatabase;
 import ch.epfl.sdp.kandle.User;
 import ch.epfl.sdp.kandle.activity.PostActivity;
 import ch.epfl.sdp.kandle.R;
@@ -54,7 +56,8 @@ import ch.epfl.sdp.kandle.dependencies.Authentication;
 import ch.epfl.sdp.kandle.dependencies.Database;
 import ch.epfl.sdp.kandle.dependencies.DependencyManager;
 import ch.epfl.sdp.kandle.dependencies.MyLocationProvider;
-import ch.epfl.sdp.kandle.dependencies.Post;
+import ch.epfl.sdp.kandle.Post;
+import okhttp3.Cache;
 
 public class MapViewFragment extends Fragment implements OnMapReadyCallback, PermissionsListener {
 
@@ -70,7 +73,7 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback, Per
     private static final int RADIUS = 2000;
     private static final int LOCATION_PERMISSION_REQUEST_CODE = 1;
 
-    private Database database;
+    private CachedFirestoreDatabase database;
     private Authentication authentication;
 
     private MyLocationProvider locationProvider;
@@ -80,7 +83,7 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback, Per
     private MapboxMap mapboxMap;
     private PermissionsManager permissionsManager;
     private LocationEngine locationEngine;
-    private LocationEngineCallback<LocationEngineResult> callback ;
+    private LocationEngineCallback<LocationEngineResult> callback;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -90,7 +93,7 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback, Per
         callback = new LocationEngineCallback<LocationEngineResult>() {
             @Override
             public void onSuccess(LocationEngineResult result) {
-                if (result.getLastLocation() != null){
+                if (result.getLastLocation() != null) {
 
                     currentLocation = result.getLastLocation();
                     mapboxMap.getLocationComponent().forceLocationUpdate(result.getLastLocation());
@@ -107,13 +110,13 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback, Per
         View view = inflater.inflate(R.layout.fragment_map, container, false);
 
         locationProvider = DependencyManager.getLocationProvider();
-        database = DependencyManager.getDatabaseSystem();
+        database = new CachedFirestoreDatabase();
         authentication = DependencyManager.getAuthSystem();
 
         ImageButton mNewPostButton = view.findViewById(R.id.newPostButton);
         mNewPostButton.setOnClickListener(v -> {
-            Intent intent = new Intent( getContext(), PostActivity.class);
-            if (currentLocation!=null){
+            Intent intent = new Intent(getContext(), PostActivity.class);
+            if (currentLocation != null) {
                 intent.putExtra("latitude", currentLocation.getLatitude());
                 intent.putExtra("longitude", currentLocation.getLongitude());
             }
@@ -131,7 +134,7 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback, Per
     @Override
     public void onMapReady(@NonNull final MapboxMap mapboxMap) {
 
-        this.mapboxMap=mapboxMap;
+        this.mapboxMap = mapboxMap;
 
 
         locationProvider.getLocation(this.getActivity()).addOnCompleteListener(task -> {
@@ -240,7 +243,7 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback, Per
     /**
      * Initialize the Maps SDK's LocationComponent
      */
-    @SuppressWarnings( {"MissingPermission"})
+    @SuppressWarnings({"MissingPermission"})
     private void enableLocationComponent(@NonNull Style loadedMapStyle) {
         // Check if permissions are enabled and if not request
         if (PermissionsManager.areLocationPermissionsGranted(this.getContext())) {
@@ -337,7 +340,7 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback, Per
     }
 
     @Override
-    public void onSaveInstanceState (Bundle outState){
+    public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         mapView.onSaveInstanceState(outState);
     }

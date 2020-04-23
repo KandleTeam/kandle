@@ -6,6 +6,8 @@ import android.content.Intent;
 import android.net.Uri;
 
 import android.provider.MediaStore;
+
+import androidx.room.Room;
 import androidx.test.espresso.intent.rule.IntentsTestRule;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 import androidx.test.rule.GrantPermissionRule;
@@ -16,6 +18,7 @@ import org.junit.runner.RunWith;
 
 import java.util.HashMap;
 
+import ch.epfl.sdp.kandle.Storage.room.LocalDatabase;
 import ch.epfl.sdp.kandle.activity.PostActivity;
 import ch.epfl.sdp.kandle.dependencies.DependencyManager;
 import ch.epfl.sdp.kandle.dependencies.MockAuthentication;
@@ -23,7 +26,6 @@ import ch.epfl.sdp.kandle.dependencies.MockDatabase;
 import ch.epfl.sdp.kandle.dependencies.MockInternalStorage;
 import ch.epfl.sdp.kandle.dependencies.MockNetwork;
 import ch.epfl.sdp.kandle.dependencies.MockStorage;
-import ch.epfl.sdp.kandle.dependencies.Post;
 
 import static androidx.test.espresso.Espresso.onView;
 import static androidx.test.espresso.action.ViewActions.click;
@@ -44,7 +46,7 @@ import static org.junit.Assert.*;
 @RunWith(AndroidJUnit4.class)
 public class PostActivityTest {
 
-
+    private LocalDatabase localDatabase;
     @Rule
     public IntentsTestRule<PostActivity> intentsRule =
             new IntentsTestRule<PostActivity>(PostActivity.class,true,true){
@@ -60,7 +62,8 @@ public class PostActivityTest {
                     MockStorage storage = new MockStorage();
                     MockInternalStorage internalStorage = new MockInternalStorage();
                     MockNetwork network = new MockNetwork(true);
-                    DependencyManager.setFreshTestDependencies(authentication, db, storage,internalStorage,network);
+                    localDatabase = Room.inMemoryDatabaseBuilder(Kandle.getContext(), LocalDatabase.class).allowMainThreadQueries().build();
+                    DependencyManager.setFreshTestDependencies(authentication, db, storage,internalStorage,network,localDatabase);
                 }
             };
     @Rule
@@ -74,11 +77,12 @@ public class PostActivityTest {
             GrantPermissionRule.grant(android.Manifest.permission.WRITE_EXTERNAL_STORAGE);
 
 
-    @After
-    public void clearCurrentUser(){
-        LoggedInUser.clear();
-    }
 
+    @After
+    public void clearCurrentUserAndLocalDb(){
+        LoggedInUser.clear();
+        localDatabase.close();
+    }
     @Test
     public void postEmptyGetsErrorMessage(){
         onView(withId(R.id.postText)).perform(typeText("     "));

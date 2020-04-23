@@ -27,13 +27,14 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
+
 import ch.epfl.sdp.kandle.imagePicker.ImagePicker;
 import ch.epfl.sdp.kandle.imagePicker.ProfilePicPicker;
 import ch.epfl.sdp.kandle.LoggedInUser;
 import ch.epfl.sdp.kandle.R;
 import ch.epfl.sdp.kandle.User;
 import ch.epfl.sdp.kandle.dependencies.Authentication;
-import ch.epfl.sdp.kandle.caching.CachedDatabase;
+import ch.epfl.sdp.kandle.Storage.caching.CachedFirestoreDatabase;
 import ch.epfl.sdp.kandle.dependencies.Database;
 import ch.epfl.sdp.kandle.dependencies.DependencyManager;
 
@@ -85,7 +86,7 @@ public class ProfileFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_profile, container, false);
 
         auth = DependencyManager.getAuthSystem();
-        database = new CachedDatabase();
+        database = new CachedFirestoreDatabase();
 
         getViews(view);
 
@@ -113,8 +114,8 @@ public class ProfileFragment extends Fragment {
 
         mValidateNameButton.setOnClickListener(v -> {
 
-            InputMethodManager imm = (InputMethodManager)getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
-            if (getActivity().getCurrentFocus()!=null) {
+            InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+            if (getActivity().getCurrentFocus() != null) {
 
                 imm.hideSoftInputFromWindow(getActivity().getCurrentFocus().getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
             }
@@ -204,12 +205,9 @@ public class ProfileFragment extends Fragment {
 
     private View.OnClickListener followButtonListener(User currUser) {
         return v -> {
-            System.out.println(mFollowButton.getText().toString());
             if (mFollowButton.getText().toString().equals(getString(R.string.followBtnNotFollowing))) {
                 database.follow(currUser.getId(), user.getId()).addOnCompleteListener(task -> {
                     if (task.isSuccessful()) {
-                        System.out.println("not following -> following");
-
                         mFollowButton.setText(R.string.followBtnAlreadyFollowing);
                         setNumberOfFollowers();
                     }
@@ -217,8 +215,6 @@ public class ProfileFragment extends Fragment {
             } else {
                 database.unFollow(currUser.getId(), user.getId()).addOnCompleteListener(task -> {
                     if (task.isSuccessful()) {
-                        System.out.println("following -> not following");
-
                         mFollowButton.setText(R.string.followBtnNotFollowing);
                         setNumberOfFollowers();
                     }

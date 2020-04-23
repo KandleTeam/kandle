@@ -1,4 +1,4 @@
-package ch.epfl.sdp.kandle.dependencies;
+package ch.epfl.sdp.kandle.Storage.firebase;
 
 import android.provider.Settings;
 
@@ -18,6 +18,7 @@ import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.SetOptions;
 import com.google.maps.android.SphericalUtil;
 
+
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.util.ArrayList;
@@ -29,7 +30,9 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 
+import ch.epfl.sdp.kandle.Post;
 import ch.epfl.sdp.kandle.User;
+import ch.epfl.sdp.kandle.dependencies.Database;
 
 public class FirestoreDatabase implements Database {
 
@@ -307,13 +310,11 @@ public class FirestoreDatabase implements Database {
                         }
 
                     });
-                }
-                else {
+                } else {
                     source.setResult(new ArrayList<User>());
                 }
-            }
-            else {
-                source.setException( new Exception(task.getException().getMessage()));
+            } else {
+                source.setException(new Exception(task.getException().getMessage()));
             }
         });
 
@@ -327,13 +328,7 @@ public class FirestoreDatabase implements Database {
         return loggedInUser().update(map);
     }
 
-    @Override
-    public Task<String> getProfilePicture() {
-        return loggedInUser().get().continueWith(task -> {
-            DocumentSnapshot doc = task.getResult();
-            return doc != null ? (String) doc.get("imageURL") : null;
-        });
-    }
+
 
     @Override
     public Task<Void> updateNickname(String nickname) {
@@ -342,13 +337,6 @@ public class FirestoreDatabase implements Database {
         return loggedInUser().update(map);
     }
 
-    @Override
-    public Task<String> getNickname() {
-        return loggedInUser().get().continueWith(task -> {
-            DocumentSnapshot doc = task.getResult();
-            return doc != null ? (String) doc.get("nickname") : null;
-        });
-    }
 
 
     @Override
@@ -445,7 +433,6 @@ public class FirestoreDatabase implements Database {
                 });
 
     }
-
     @Override
     public Task<Void> unlikePost(String userId, String postId) {
         final DocumentReference unlikedPostDoc = POSTS.document(postId);
@@ -474,35 +461,30 @@ public class FirestoreDatabase implements Database {
         TaskCompletionSource<List<User>> source = new TaskCompletionSource<>();
 
         Task<List<String>> getLikersIdTask = POSTS
-                                        .document(postId)
-                                        .get()
-                                        .continueWith(task -> (List<String>) task.getResult().get("likers"));
+                .document(postId)
+                .get()
+                .continueWith(task -> (List<String>) task.getResult().get("likers"));
 
         getLikersIdTask.addOnCompleteListener(task -> {
-            if (task.isSuccessful()){
+            if (task.isSuccessful()) {
                 USERS.get().addOnCompleteListener(task2 -> {
-                    if (task2.isSuccessful()){
+                    if (task2.isSuccessful()) {
                         List<User> users = new ArrayList<>();
                         for (QueryDocumentSnapshot document : task2.getResult()) {
-                            String id =  (String) document.get("id");
-                            if (task.getResult().contains(id)){
+                            String id = (String) document.get("id");
+                            if (task.getResult().contains(id)) {
                                 users.add(document.toObject(User.class));
                             }
                         }
 
                         source.setResult(users);
 
-                    }
-
-
-                    else {
+                    } else {
                         source.setException(task.getException());
                     }
                 });
 
-            }
-
-            else {
+            } else {
                 source.setException(task.getException());
             }
         });
@@ -565,14 +547,6 @@ public class FirestoreDatabase implements Database {
     }
 
 
-    public Task<String> getUsername() {
-        return loggedInUser().get().continueWith(task -> {
-            DocumentSnapshot doc = task.getResult();
-            return doc != null? (String) doc.get("username") : null;
-        });
-    }
-
-
     @Override
     public Task<List<Post>> getNearbyPosts(double longitude, double latitude, double distance){
         TaskCompletionSource<List<Post>> source = new TaskCompletionSource<>();
@@ -628,7 +602,7 @@ public class FirestoreDatabase implements Database {
                 });
     }
 
-    private boolean nearby(double latitude, double longitude, double postLatitude, double postLongitude, double distance, int numLikes, long numDays) {
+    public static boolean nearby(double latitude, double longitude, double postLatitude, double postLongitude, double distance, int numLikes, long numDays) {
 
         LatLng startLatLng = new LatLng(latitude, longitude);
         LatLng endLatLng = new LatLng(postLatitude, postLongitude);

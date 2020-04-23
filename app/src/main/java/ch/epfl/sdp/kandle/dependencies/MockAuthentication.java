@@ -2,7 +2,9 @@ package ch.epfl.sdp.kandle.dependencies;
 
 import com.google.android.gms.tasks.Task;
 import com.google.android.gms.tasks.TaskCompletionSource;
+
 import java.util.Map;
+
 import ch.epfl.sdp.kandle.LoggedInUser;
 import ch.epfl.sdp.kandle.User;
 
@@ -24,13 +26,13 @@ public class MockAuthentication implements Authentication {
     @Override
     public boolean getCurrentUserAtApplicationStart() {
         User localUser = DependencyManager.getInternalStorageSystem().getCurrentUser();
-        if(DependencyManager.getNetworkStateSystem().isConnected()) {
+        if (DependencyManager.getNetworkStateSystem().isConnected()) {
             if (localUser != null && isConnected) {
                 LoggedInUser.init(localUser);
                 return true;
             }
-        }else{
-            if(localUser !=null){
+        } else {
+            if (localUser != null) {
                 LoggedInUser.init(localUser);
                 return true;
             }
@@ -80,8 +82,7 @@ public class MockAuthentication implements Authentication {
         TaskCompletionSource source = new TaskCompletionSource<Void>();
         if (!this.password.equals(password)) {
             source.setException(new Exception("Passwords do not match"));
-        }
-        else {
+        } else {
             source.setResult(null);
         }
         return source.getTask();
@@ -106,10 +107,6 @@ public class MockAuthentication implements Authentication {
     public User getCurrentUser() {
         return LoggedInUser.getInstance();
     }
-
-
-
-
 
 
 }

@@ -7,15 +7,17 @@ import android.os.Bundle;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+
 import androidx.appcompat.app.AppCompatActivity;
+
 
 import com.google.android.gms.tasks.Task;
 
-import ch.epfl.sdp.kandle.MainActivity;
+
 import ch.epfl.sdp.kandle.R;
+import ch.epfl.sdp.kandle.Storage.caching.CachedFirestoreDatabase;
 import ch.epfl.sdp.kandle.imagePicker.ProfilePicPicker;
 import ch.epfl.sdp.kandle.dependencies.Database;
-import ch.epfl.sdp.kandle.dependencies.DependencyManager;
 
 //TODO: handle case when user leaves activity before saving
 
@@ -32,12 +34,13 @@ public class CustomAccountActivity extends AppCompatActivity {
 
     private Uri imageUri;
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_custom_account);
 
-        database = DependencyManager.getDatabaseSystem();
+        database = new CachedFirestoreDatabase();
 
         uploadButton = findViewById(R.id.button);
         leaveButton = findViewById(R.id.startButton);
@@ -79,6 +82,7 @@ public class CustomAccountActivity extends AppCompatActivity {
         startActivity(new Intent(getApplicationContext(), MainActivity.class));
         finish();
     }
+
 
 
     @Override

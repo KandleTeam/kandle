@@ -6,6 +6,7 @@ import android.view.View;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.room.Room;
 import androidx.test.espresso.NoMatchingViewException;
 import androidx.test.espresso.ViewAssertion;
 import androidx.test.espresso.contrib.DrawerActions;
@@ -30,13 +31,15 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 
+import ch.epfl.sdp.kandle.Storage.room.LocalDatabase;
+import ch.epfl.sdp.kandle.activity.MainActivity;
 import ch.epfl.sdp.kandle.dependencies.DependencyManager;
 import ch.epfl.sdp.kandle.dependencies.MockAuthentication;
 import ch.epfl.sdp.kandle.dependencies.MockDatabase;
 import ch.epfl.sdp.kandle.dependencies.MockInternalStorage;
 import ch.epfl.sdp.kandle.dependencies.MockNetwork;
 import ch.epfl.sdp.kandle.dependencies.MockStorage;
-import ch.epfl.sdp.kandle.dependencies.Post;
+
 import ch.epfl.sdp.kandle.fragment.YourPostListFragment;
 
 import static androidx.test.espresso.Espresso.onView;
@@ -58,7 +61,7 @@ public class FollowingPostsTest {
     public User u1;
     public User u2;
     private MockDatabase db;
-
+    private LocalDatabase localDatabase;
     @Rule
     public ActivityTestRule<MainActivity> intentsRule =
             new ActivityTestRule<MainActivity>(MainActivity.class, true, true){
@@ -86,7 +89,8 @@ public class FollowingPostsTest {
                     MockStorage storage = new MockStorage();
                     MockInternalStorage internalStorage = new MockInternalStorage();
                     MockNetwork network = new MockNetwork(true);
-                    DependencyManager.setFreshTestDependencies(authentication, db, storage, internalStorage,network);
+                    localDatabase = Room.inMemoryDatabaseBuilder(Kandle.getContext(), LocalDatabase.class).allowMainThreadQueries().build();
+                    DependencyManager.setFreshTestDependencies(authentication, db, storage,internalStorage,network,localDatabase);
                     DependencyManager.getDatabaseSystem().createUser(u1);
                     DependencyManager.getDatabaseSystem().createUser(u2);
                     DependencyManager.getDatabaseSystem().follow(LoggedInUser.getInstance().getId(),u1.getId());

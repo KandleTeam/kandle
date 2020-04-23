@@ -10,16 +10,15 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import com.squareup.picasso.Picasso;
-
 import androidx.fragment.app.Fragment;
 import ch.epfl.sdp.kandle.LoggedInUser;
+import ch.epfl.sdp.kandle.Post;
 import ch.epfl.sdp.kandle.R;
 import ch.epfl.sdp.kandle.User;
 import ch.epfl.sdp.kandle.dependencies.Database;
 import ch.epfl.sdp.kandle.dependencies.DependencyManager;
-import ch.epfl.sdp.kandle.dependencies.Post;
+
 
 public class PostFragment extends Fragment {
 
