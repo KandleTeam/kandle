@@ -6,6 +6,7 @@ import android.app.Instrumentation.ActivityResult;
 import android.content.Intent;
 import android.net.Uri;
 
+import androidx.room.Room;
 import androidx.test.espresso.intent.rule.IntentsTestRule;
 import androidx.test.rule.GrantPermissionRule;
 
@@ -15,7 +16,9 @@ import org.junit.Test;
 
 import java.util.HashMap;
 
+import ch.epfl.sdp.kandle.Storage.room.LocalDatabase;
 import ch.epfl.sdp.kandle.activity.CustomAccountActivity;
+import ch.epfl.sdp.kandle.activity.MainActivity;
 import ch.epfl.sdp.kandle.dependencies.DependencyManager;
 import ch.epfl.sdp.kandle.dependencies.MockDatabase;
 
@@ -39,11 +42,11 @@ import ch.epfl.sdp.kandle.dependencies.MockAuthentication;
 import ch.epfl.sdp.kandle.dependencies.MockInternalStorage;
 import ch.epfl.sdp.kandle.dependencies.MockNetwork;
 import ch.epfl.sdp.kandle.dependencies.MockStorage;
-import ch.epfl.sdp.kandle.dependencies.Post;
 
 
 public class CustomAccountActivityTest {
 
+    private LocalDatabase localDatabase;
     @Rule
     public IntentsTestRule<CustomAccountActivity> intentsRule =
             new IntentsTestRule<CustomAccountActivity>(CustomAccountActivity.class, true, true) {
@@ -57,9 +60,10 @@ public class CustomAccountActivityTest {
                     MockDatabase db = new MockDatabase(true, users, followMap, posts);
                     MockAuthentication authentication = new MockAuthentication(true, accounts, "password");
                     MockStorage storage = new MockStorage();
-                    MockInternalStorage internalStorage = new MockInternalStorage();
+                    MockInternalStorage internalStorage = new MockInternalStorage(true);
                     MockNetwork network = new MockNetwork(true);
-                    DependencyManager.setFreshTestDependencies(authentication, db, storage,internalStorage,network);
+                    localDatabase = Room.inMemoryDatabaseBuilder(Kandle.getContext(), LocalDatabase.class).allowMainThreadQueries().build();
+                    DependencyManager.setFreshTestDependencies(authentication, db, storage,internalStorage,network,localDatabase);
 
                 }
             };
@@ -69,22 +73,21 @@ public class CustomAccountActivityTest {
     public GrantPermissionRule grantLocation = GrantPermissionRule.grant(Manifest.permission.ACCESS_FINE_LOCATION);
 
     @After
-    public void signout() {
+    public void signoutAndCloseLocalDb() {
         DependencyManager.getAuthSystem().signOut();
+        localDatabase.close();
     }
 
 
 
     @Test
-    public void enterUsername() throws InterruptedException {
+    public void enterUsername() {
         onView(withId(R.id.nickname)).perform(typeText("User 1"));
         onView(withId(R.id.nickname)).perform(closeSoftKeyboard());
         onView(withId(R.id.startButton)).perform(click());
+        String nickname = DependencyManager.getAuthSystem().getCurrentUser().getNickname();
+        assertThat(nickname, is(equalTo("User 1")));
 
-        DependencyManager.getDatabaseSystem().getNickname().addOnCompleteListener(task -> {
-            String nickname = task.getResult();
-            assertThat(nickname, is(equalTo("User 1")));
-        });
     }
 
     @Test
@@ -99,10 +102,10 @@ public class CustomAccountActivityTest {
         onView(withId(R.id.button)).perform(click());
         onView(withId(R.id.profilePic)).check(matches(withTagValue(is(CustomAccountActivity.PROFILE_PICTURE_TAG))));
         onView(withId(R.id.startButton)).perform(click());
-        DependencyManager.getDatabaseSystem().getProfilePicture().addOnCompleteListener(task -> {
-            String uri = task.getResult();
-            assertThat(uri, is(not(equalTo(null))));
-        });
+
+        String uri = DependencyManager.getAuthSystem().getCurrentUser().getImageURL();
+        assertThat(uri, is(not(equalTo(null))));
+
     }
 
     @Test

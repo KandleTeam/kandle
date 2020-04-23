@@ -1,6 +1,7 @@
-package ch.epfl.sdp.kandle.caching;
+package ch.epfl.sdp.kandle.dependencies;
 
 import androidx.annotation.NonNull;
+
 import ch.epfl.sdp.kandle.User;
 
 

@@ -4,10 +4,12 @@ package ch.epfl.sdp.kandle;
 import android.Manifest;
 import android.content.res.Resources;
 
-import org.junit.AfterClass;
+import org.junit.After;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+
+import androidx.room.Room;
 import androidx.test.core.app.ApplicationProvider;
 import androidx.test.espresso.contrib.DrawerActions;
 import androidx.test.espresso.contrib.NavigationViewActions;
@@ -19,8 +21,10 @@ import androidx.test.rule.GrantPermissionRule;
 import java.util.HashMap;
 
 
+import ch.epfl.sdp.kandle.Storage.room.LocalDatabase;
 import ch.epfl.sdp.kandle.activity.LoginActivity;
 
+import ch.epfl.sdp.kandle.activity.MainActivity;
 import ch.epfl.sdp.kandle.activity.RegisterActivity;
 import ch.epfl.sdp.kandle.dependencies.DependencyManager;
 import ch.epfl.sdp.kandle.dependencies.MockAuthentication;
@@ -50,9 +54,10 @@ import static org.hamcrest.Matchers.not;
 
 public class LoginActivityTest {
 
-    Resources res = ApplicationProvider.getApplicationContext().getResources();
-    User alreadyHasAnAccount;
-    MockNetwork network;
+    private Resources res = ApplicationProvider.getApplicationContext().getResources();
+    private User alreadyHasAnAccount;
+    private MockNetwork network;
+    private LocalDatabase localDatabase;
     @Rule
     public ActivityTestRule<LoginActivity> intentsRule =
             new ActivityTestRule<LoginActivity>(LoginActivity.class, true, true){
@@ -68,7 +73,8 @@ public class LoginActivityTest {
                     MockStorage storage = new MockStorage();
                     MockInternalStorage internalStorage = new MockInternalStorage();
                     network = new MockNetwork(true);
-                    DependencyManager.setFreshTestDependencies(authentication, db, storage,internalStorage,network);
+                    localDatabase = Room.inMemoryDatabaseBuilder(Kandle.getContext(), LocalDatabase.class).allowMainThreadQueries().build();
+                    DependencyManager.setFreshTestDependencies(authentication, db, storage,internalStorage,network,localDatabase);
                 }
             };
 
@@ -76,12 +82,12 @@ public class LoginActivityTest {
     public GrantPermissionRule grantLocation = GrantPermissionRule.grant(Manifest.permission.ACCESS_FINE_LOCATION);
 
 
-    @AfterClass
-    public static void clearCurrentUser() {
+
+    @After
+    public void clearCurrentUserAndLocalDb(){
         LoggedInUser.clear();
+        localDatabase.close();
     }
-
-
     @Test
     public void authenticationTestWhereUserExists() {
         Intents.init();

@@ -3,6 +3,7 @@ package ch.epfl.sdp.kandle;
 import android.Manifest;
 import android.view.Gravity;
 
+import androidx.room.Room;
 import androidx.test.espresso.contrib.DrawerActions;
 import androidx.test.espresso.contrib.NavigationViewActions;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
@@ -24,21 +25,24 @@ import org.junit.runner.RunWith;
 
 import java.util.HashMap;
 
+import ch.epfl.sdp.kandle.Storage.room.LocalDatabase;
+import ch.epfl.sdp.kandle.activity.MainActivity;
 import ch.epfl.sdp.kandle.dependencies.DependencyManager;
 import ch.epfl.sdp.kandle.dependencies.MockAuthentication;
 import ch.epfl.sdp.kandle.dependencies.MockDatabase;
 import ch.epfl.sdp.kandle.dependencies.MockInternalStorage;
 import ch.epfl.sdp.kandle.dependencies.MockNetwork;
 import ch.epfl.sdp.kandle.dependencies.MockStorage;
-import ch.epfl.sdp.kandle.dependencies.Post;
 
-@RunWith(AndroidJUnit4.class)
+
 public class AchievementTest {
     private  User user1;
     private  User user2;
+    private LocalDatabase localDatabase;
 
     @Rule
-    public GrantPermissionRule permissionRule = GrantPermissionRule.grant(android.Manifest.permission.ACCESS_FINE_LOCATION);
+    public GrantPermissionRule grantLocation = GrantPermissionRule.grant(Manifest.permission.ACCESS_FINE_LOCATION);
+
     @Rule
     public ActivityTestRule<MainActivity> intentsRule =
             new ActivityTestRule<MainActivity>(MainActivity.class,true,true){
@@ -59,7 +63,8 @@ public class AchievementTest {
                     MockStorage storage = new MockStorage();
                     MockInternalStorage internalStorage = new MockInternalStorage();
                     MockNetwork network = new MockNetwork(true);
-                    DependencyManager.setFreshTestDependencies(authentication, db, storage,internalStorage,network);
+                    localDatabase = Room.inMemoryDatabaseBuilder(Kandle.getContext(), LocalDatabase.class).allowMainThreadQueries().build();
+                    DependencyManager.setFreshTestDependencies(authentication, db, storage,internalStorage,network,localDatabase);
                     DependencyManager.getDatabaseSystem().createUser(user1);
                     DependencyManager.getDatabaseSystem().createUser(user2);
                     DependencyManager.getDatabaseSystem().follow(LoggedInUser.getInstance().getId(),user1.getId());
@@ -67,9 +72,13 @@ public class AchievementTest {
                 }
             };
 
+
+
+
     @After
-    public void clearCurrentUser(){
+    public void clearCurrentUserAndCloseLocalDb(){
         LoggedInUser.clear();
+        localDatabase.close();
     }
 
 

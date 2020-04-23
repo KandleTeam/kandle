@@ -3,6 +3,8 @@ package ch.epfl.sdp.kandle;
 import org.junit.After;
 import org.junit.Rule;
 import org.junit.Test;
+
+import androidx.room.Room;
 import androidx.test.espresso.contrib.DrawerActions;
 import androidx.test.espresso.contrib.NavigationViewActions;
 import androidx.test.espresso.intent.rule.IntentsTestRule;
@@ -10,6 +12,7 @@ import androidx.test.espresso.intent.rule.IntentsTestRule;
 import androidx.test.rule.GrantPermissionRule;
 import java.util.HashMap;
 
+import ch.epfl.sdp.kandle.Storage.room.LocalDatabase;
 import ch.epfl.sdp.kandle.activity.CustomAccountActivity;
 import ch.epfl.sdp.kandle.activity.LoginActivity;
 import ch.epfl.sdp.kandle.activity.RegisterActivity;
@@ -19,7 +22,6 @@ import ch.epfl.sdp.kandle.dependencies.MockDatabase;
 import ch.epfl.sdp.kandle.dependencies.MockInternalStorage;
 import ch.epfl.sdp.kandle.dependencies.MockNetwork;
 import ch.epfl.sdp.kandle.dependencies.MockStorage;
-import ch.epfl.sdp.kandle.dependencies.Post;
 
 import static androidx.test.espresso.Espresso.onView;
 import static androidx.test.espresso.action.ViewActions.click;
@@ -37,7 +39,7 @@ import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.not;
 
 public class RegisterActivityTest {
-
+    private LocalDatabase localDatabase;
     private User userWithSameEmail;
     private User userWithSameUsername;
     private MockNetwork network;
@@ -62,18 +64,20 @@ public class RegisterActivityTest {
                     MockStorage storage = new MockStorage();
                     MockInternalStorage internalStorage = new MockInternalStorage();
                     network = new MockNetwork(true);
-                    DependencyManager.setFreshTestDependencies(authentication, db, storage,internalStorage,network);
+                    localDatabase = Room.inMemoryDatabaseBuilder(Kandle.getContext(), LocalDatabase.class).allowMainThreadQueries().build();
+                    DependencyManager.setFreshTestDependencies(authentication, db, storage,internalStorage,network,localDatabase);
                 }
             };
 
     @Rule
     public GrantPermissionRule permissionRule = GrantPermissionRule.grant(android.Manifest.permission.ACCESS_FINE_LOCATION);
 
-    @After
-    public void clearCurrentUser(){
-        LoggedInUser.clear();
-    }
 
+    @After
+    public void clearCurrentUserAndLocalDb(){
+        LoggedInUser.clear();
+        localDatabase.close();
+    }
     @Test
     public void errorsInForm() {
 

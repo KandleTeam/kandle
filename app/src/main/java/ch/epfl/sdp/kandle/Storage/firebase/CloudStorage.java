@@ -1,16 +1,20 @@
-package ch.epfl.sdp.kandle.dependencies;
+package ch.epfl.sdp.kandle.Storage.firebase;
 
 import android.net.Uri;
+
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
+
+import ch.epfl.sdp.kandle.dependencies.Storage;
 
 public class CloudStorage implements Storage {
 
 
     private static final StorageReference STORAGE_REFERENCE = FirebaseStorage.getInstance().getReferenceFromUrl("gs://kandle-1b646.appspot.com");
     private static final CloudStorage INSTANCE = new CloudStorage();
+
     public static CloudStorage getInstance() {
         return INSTANCE;
     }

@@ -14,7 +14,7 @@ public class MockLocation implements MyLocationProvider {
     public Task<Location> getLocation(Activity activity) {
         TaskCompletionSource source = new TaskCompletionSource<Location>();
 
-        source.setResult( new Location("mock") );
+        source.setResult(new Location("mock"));
 
         return source.getTask();
     }

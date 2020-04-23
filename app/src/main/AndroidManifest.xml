@@ -46,7 +46,7 @@
         -->
         <activity android:name=".activity.CustomAccountActivity" />
         <activity android:name=".activity.PostActivity" />
-        <activity android:name=".MainActivity" />
+        <activity android:name=".activity.MainActivity" />
         <activity android:name=".activity.LoginActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
