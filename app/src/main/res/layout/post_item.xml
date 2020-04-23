@@ -19,7 +19,8 @@
             android:id="@+id/profilePicInPost"
             android:layout_width="60dp"
             android:layout_height="60dp"
-            android:layout_margin="10dp"/>
+            android:layout_margin="10dp"
+            android:src="@mipmap/ic_launcher"/>
 
         <TextView
             android:id="@+id/nicknameInPost"
@@ -68,7 +69,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_toEndOf="@+id/editButton"
-                android:background="@android:drawable/ic_notification_clear_all" />
+                android:background="@android:drawable/ic_notification_clear_all"
+                android:visibility="gone"/>
 
 
         </RelativeLayout>

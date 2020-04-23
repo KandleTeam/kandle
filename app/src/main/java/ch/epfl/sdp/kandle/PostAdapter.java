@@ -35,6 +35,7 @@ import ch.epfl.sdp.kandle.Storage.caching.CachedFirestoreDatabase;
 import ch.epfl.sdp.kandle.dependencies.Database;
 import ch.epfl.sdp.kandle.dependencies.DependencyManager;
 import ch.epfl.sdp.kandle.fragment.ListUsersFragment;
+import ch.epfl.sdp.kandle.fragment.ProfileFragment;
 import ch.epfl.sdp.kandle.fragment.YourPostListFragment;
 import de.hdodenhof.circleimageview.CircleImageView;
 
@@ -101,6 +102,8 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder> {
         CircleImageView profilePicView = holder.mProfilePic;
         TextView usernameView = holder.mUsername;
         TextView nicknameView = holder.mNickname;
+        final ImageButton editPostView = holder.mEditButton;
+        final ImageButton deletePostView = holder.mDeleteButton;
 
         ImageView postImageView = holder.mPostImage;
         if (post.getImageURL() != null) {
@@ -111,19 +114,27 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder> {
         database.getUserById(post.getUserId()).addOnCompleteListener(task -> {
             if (task.isSuccessful() && task.getResult() != null) {
                 User user = task.getResult();
-                Picasso.get().load(user.getImageURL()).into(profilePicView);
+
+                if (user.getImageURL() != null) {
+                    Picasso.get().load(user.getImageURL()).into(profilePicView);
+                }
                 usernameView.setText("@" + user.getUsername());
                 nicknameView.setText(user.getNickname());
+
+                //milliseconds
+                long different = new Date().getTime() - post.getDate().getTime();
+                long minutes = different / 60000;
+                if(user.getId().equals(userId)){
+                    deletePostView.setVisibility(View.VISIBLE);
+                    if (minutes < 6) {
+                        editPostView.setVisibility(View.VISIBLE);
+                    }
+                }
+
+
             }
         });
 
-        final ImageButton editPostView = holder.mEditButton;
-        //milliseconds
-        long different = new Date().getTime() - post.getDate().getTime();
-        long minutes = different / 60000;
-        if(minutes < 6){
-            editPostView.setVisibility(View.VISIBLE);
-        }
 
 
         holder.mlikeButton.setOnClickListener(v -> {
@@ -146,13 +157,13 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder> {
             }
         });
 
-        holder.mEditButton.setOnClickListener(v -> {
+        editPostView.setOnClickListener(v -> {
             Intent intent = new Intent(mContext, PostActivity.class);
             intent.putExtra("postId", post.getPostId());
             mContext.startActivity(intent);
         });
 
-        holder.mDeleteButton.setOnClickListener(v -> {
+        deletePostView.setOnClickListener(v -> {
 
             AlertDialog.Builder alertDialog = new AlertDialog.Builder(mContext);
             alertDialog.setMessage("Do you really want to delete this post ?");
