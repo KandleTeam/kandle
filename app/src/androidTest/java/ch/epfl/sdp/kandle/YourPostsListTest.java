@@ -340,6 +340,8 @@ public class YourPostsListTest {
         resultData.setData(imageUri);
         Instrumentation.ActivityResult result = new Instrumentation.ActivityResult(Activity.RESULT_OK, resultData);
         intending(hasAction(Intent.ACTION_GET_CONTENT)).respondWith(result);
+
+        Thread.sleep(500);
         onView(withId(R.id.galleryButton)).perform(click());
         onView(withId(R.id.postImage)).check(matches(withTagValue(is(PostActivity.POST_IMAGE_TAG))));
         onView(withId(R.id.postButton)).perform(click());
