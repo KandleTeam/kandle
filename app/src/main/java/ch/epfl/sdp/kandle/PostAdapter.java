@@ -43,6 +43,9 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder> {
 
     public final static int POST_IMAGE = 10;
 
+    public final int EDITABLE_TIME = 5; //you can edit your posts within 5 minutes
+    public final int MILISEC_IN_MINUTE = 60000;
+
     private static ClickListener clickListener;
     private List<Post> mPosts;
     private Context mContext;
@@ -124,13 +127,13 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder> {
 
                 //milliseconds
                 long different = new Date().getTime() - post.getDate().getTime();
-                long minutes = different / 60000;
+                long minutes = different / MILISEC_IN_MINUTE;
                 if (user.getId().equals(userId)) {
                     deletePostView.setVisibility(View.VISIBLE);
-                    if (minutes >= 6) {
+                    if (minutes >= EDITABLE_TIME) {
                         post.setEditable(false);
                     }
-                    if (post.getEditable()) {
+                    if (post.isEditable()) {
                         editPostView.setVisibility(View.VISIBLE);
                     }
                 }

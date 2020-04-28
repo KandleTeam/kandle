@@ -153,7 +153,7 @@ public class Post {
         this.latitude = latitude;
     }
 
-    public Boolean getEditable(){
+    public Boolean isEditable(){
         return editable;
     }
 
