@@ -103,149 +103,148 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder> {
         TextView usernameView = holder.mUsername;
         TextView nicknameView = holder.mNickname;
         final ImageButton editPostView = holder.mEditButton;
+        final ImageButton deletePostView = holder.mDeleteButton;
 
-            final ImageButton deletePostView = holder.mDeleteButton;
+        ImageView postImageView = holder.mPostImage;
+        if (post.getImageURL() != null) {
+            postImageView.setVisibility(View.VISIBLE);
+            postImageView.setTag(POST_IMAGE);
+            Picasso.get().load(post.getImageURL()).into(postImageView);
 
-            ImageView postImageView = holder.mPostImage;
-            if (post.getImageURL() != null) {
-                postImageView.setVisibility(View.VISIBLE);
-                postImageView.setTag(POST_IMAGE);
-                Picasso.get().load(post.getImageURL()).into(postImageView);
+        }
+        database.getUserById(post.getUserId()).addOnCompleteListener(task -> {
+            if (task.isSuccessful() && task.getResult() != null) {
+                User user = task.getResult();
+
+                if (user.getImageURL() != null) {
+                    Picasso.get().load(user.getImageURL()).into(profilePicView);
+                }
+                usernameView.setText("@" + user.getUsername());
+                nicknameView.setText(user.getNickname());
+
+                //milliseconds
+                long different = new Date().getTime() - post.getDate().getTime();
+                long minutes = different / 60000;
+                if (user.getId().equals(userId)) {
+                    deletePostView.setVisibility(View.VISIBLE);
+                    if (minutes >= 6) {
+                        post.setEditable(false);
+                    }
+                    if (post.getEditable()) {
+                        editPostView.setVisibility(View.VISIBLE);
+                    }
+                }
+
 
             }
-            database.getUserById(post.getUserId()).addOnCompleteListener(task -> {
-                if (task.isSuccessful() && task.getResult() != null) {
-                    User user = task.getResult();
-
-                    if (user.getImageURL() != null) {
-                        Picasso.get().load(user.getImageURL()).into(profilePicView);
-                    }
-                    usernameView.setText("@" + user.getUsername());
-                    nicknameView.setText(user.getNickname());
-
-                    //milliseconds
-                    long different = new Date().getTime() - post.getDate().getTime();
-                    long minutes = different / 60000;
-                    if(user.getId().equals(userId)){
-                        deletePostView.setVisibility(View.VISIBLE);
-                        if(minutes >= 6){
-                            post.setEditable(false);
-                        }
-                        if(post.getEditable()) {
-                            editPostView.setVisibility(View.VISIBLE);
-                        }
-                    }
-
-                }
-            });
+        });
 
 
+        holder.mlikeButton.setOnClickListener(v -> {
 
-            holder.mlikeButton.setOnClickListener(v -> {
-
-                if (post.getLikers().contains(userId)) {
-                    database.unlikePost(userId, post.getPostId()).addOnCompleteListener(task -> {
-                        if (task.isSuccessful()) {
-                            post.unlikePost(userId);
-                            likeView.setText(String.valueOf(post.getLikes()));
-                        }
-                    });
-
-                } else {
-                    database.likePost(userId, post.getPostId()).addOnCompleteListener(task -> {
-                        if (task.isSuccessful()) {
-                            post.likePost(userId);
-                            likeView.setText(String.valueOf(post.getLikes()));
-                        }
-                    });
-                }
-            });
-
-            editPostView.setOnClickListener(v -> {
-                Intent intent = new Intent(mContext, PostActivity.class);
-                intent.putExtra("postId", post.getPostId());
-                mContext.startActivity(intent);
-            });
-
-            deletePostView.setOnClickListener(v -> {
-
-                AlertDialog.Builder alertDialog = new AlertDialog.Builder(mContext);
-                alertDialog.setMessage("Do you really want to delete this post ?");
-                alertDialog.setCancelable(false);
-                alertDialog.setNegativeButton("No", (dialog, which) -> {
-
-                });
-                alertDialog.setPositiveButton("Yes", (dialog, which) -> database.deletePost(post).addOnCompleteListener(task -> {
+            if (post.getLikers().contains(userId)) {
+                database.unlikePost(userId, post.getPostId()).addOnCompleteListener(task -> {
                     if (task.isSuccessful()) {
-                        mPosts.remove(post);
-                        holder.mEditButton.setVisibility(View.GONE);
-                        notifyDataSetChanged();
+                        post.unlikePost(userId);
+                        likeView.setText(String.valueOf(post.getLikes()));
                     }
-                }));
-                alertDialog.create().show();
+                });
+
+            } else {
+                database.likePost(userId, post.getPostId()).addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
+                        post.likePost(userId);
+                        likeView.setText(String.valueOf(post.getLikes()));
+                    }
+                });
+            }
+        });
+
+        editPostView.setOnClickListener(v -> {
+            Intent intent = new Intent(mContext, PostActivity.class);
+            intent.putExtra("postId", post.getPostId());
+            mContext.startActivity(intent);
+        });
+
+        deletePostView.setOnClickListener(v -> {
+
+            AlertDialog.Builder alertDialog = new AlertDialog.Builder(mContext);
+            alertDialog.setMessage("Do you really want to delete this post ?");
+            alertDialog.setCancelable(false);
+            alertDialog.setNegativeButton("No", (dialog, which) -> {
 
             });
-            final FragmentManager fragmentManager = ((AppCompatActivity) mContext).getSupportFragmentManager();
-
-
-            holder.mlikes.setOnClickListener(v -> database.getLikers(post.getPostId()).addOnCompleteListener(task -> {
+            alertDialog.setPositiveButton("Yes", (dialog, which) -> database.deletePost(post).addOnCompleteListener(task -> {
                 if (task.isSuccessful()) {
-                    fragmentManager.beginTransaction().replace(R.id.flContent, ListUsersFragment.newInstance(
-                            task.getResult(),
-                            "Likes",
-                            Integer.toString(task.getResult().size())
-                    )).setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
-                            .addToBackStack(null)
-                            .commit();
-
-                } else {
-                    Toast.makeText(this.mContext, task.getException().getMessage(), Toast.LENGTH_LONG).show();
-
+                    mPosts.remove(post);
+                    holder.mEditButton.setVisibility(View.GONE);
+                    notifyDataSetChanged();
                 }
             }));
+            alertDialog.create().show();
+
+        });
+        final FragmentManager fragmentManager = ((AppCompatActivity) mContext).getSupportFragmentManager();
+
+
+        holder.mlikes.setOnClickListener(v -> database.getLikers(post.getPostId()).addOnCompleteListener(task -> {
+            if (task.isSuccessful()) {
+                fragmentManager.beginTransaction().replace(R.id.flContent, ListUsersFragment.newInstance(
+                        task.getResult(),
+                        "Likes",
+                        Integer.toString(task.getResult().size())
+                )).setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
+                        .addToBackStack(null)
+                        .commit();
+
+            } else {
+                Toast.makeText(this.mContext, task.getException().getMessage(), Toast.LENGTH_LONG).show();
+
+            }
+        }));
+    }
+
+    @Override
+    public int getItemCount() {
+        //if (mPosts == null) return 0;
+        return mPosts.size();
+    }
+
+
+    public static class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+
+        public TextView mtitleText;
+        public TextView mlikes;
+        public TextView mdate;
+        public ImageButton mlikeButton;
+        public ImageButton mDeleteButton;
+        public ImageButton mEditButton;
+        public CircleImageView mProfilePic;
+        public ImageView mPostImage;
+        public TextView mUsername;
+        public TextView mNickname;
+
+
+        public ViewHolder(View itemView) {
+            super(itemView);
+            itemView.setOnClickListener(this);
+            mtitleText = (TextView) itemView.findViewById(R.id.title);
+            mlikes = (TextView) itemView.findViewById(R.id.flames);
+            mdate = (TextView) itemView.findViewById(R.id.date_and_time);
+            mlikeButton = itemView.findViewById(R.id.likeButton);
+            mDeleteButton = itemView.findViewById(R.id.deleteButton);
+            mEditButton = itemView.findViewById(R.id.editButton);
+            mProfilePic = itemView.findViewById(R.id.profilePicInPost);
+            mPostImage = itemView.findViewById(R.id.postImageInPost);
+            mUsername = itemView.findViewById(R.id.usernameinPost);
+            mNickname = itemView.findViewById(R.id.nicknameInPost);
         }
 
         @Override
-        public int getItemCount() {
-            //if (mPosts == null) return 0;
-            return mPosts.size();
-        }
-
-
-        public static class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
-
-            public TextView mtitleText;
-            public TextView mlikes;
-            public TextView mdate;
-            public ImageButton mlikeButton;
-            public ImageButton mDeleteButton;
-            public ImageButton mEditButton;
-            public CircleImageView mProfilePic;
-            public ImageView mPostImage;
-            public TextView mUsername;
-            public TextView mNickname;
-
-
-            public ViewHolder(View itemView) {
-                super(itemView);
-                itemView.setOnClickListener(this);
-                mtitleText = (TextView) itemView.findViewById(R.id.title);
-                mlikes = (TextView) itemView.findViewById(R.id.flames);
-                mdate = (TextView) itemView.findViewById(R.id.date_and_time);
-                mlikeButton = itemView.findViewById(R.id.likeButton);
-                mDeleteButton = itemView.findViewById(R.id.deleteButton);
-                mEditButton = itemView.findViewById(R.id.editButton);
-                mProfilePic = itemView.findViewById(R.id.profilePicInPost);
-                mPostImage = itemView.findViewById(R.id.postImageInPost);
-                mUsername = itemView.findViewById(R.id.usernameinPost);
-                mNickname = itemView.findViewById(R.id.nicknameInPost);
-            }
-
-            @Override
-            public void onClick(View v) {
-                clickListener.onItemClick(getAdapterPosition(), v);
-            }
-
+        public void onClick(View v) {
+            clickListener.onItemClick(getAdapterPosition(), v);
         }
 
     }
+
+}

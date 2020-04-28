@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
@@ -33,6 +34,7 @@ public class PostActivity extends AppCompatActivity {
     public final static int POST_IMAGE_TAG = 42;
     private EditText mPostText;
     private Button mPostButton;
+    private ImageButton mBackButton;
     private ImageButton mGalleryButton, mCameraButton;
     private ImageView mPostImage;
     private Post p;
@@ -66,6 +68,7 @@ public class PostActivity extends AppCompatActivity {
         mGalleryButton = findViewById(R.id.galleryButton);
         mCameraButton = findViewById(R.id.cameraButton);
         mPostImage = findViewById(R.id.postImage);
+        mBackButton = findViewById(R.id.backButton);
         postCamera = new PostCamera(this);
 
         auth = DependencyManager.getAuthSystem();
@@ -77,6 +80,7 @@ public class PostActivity extends AppCompatActivity {
                     Post p = task.getResult();
                     mPostButton.setText("EDIT");
                     mPostText.setText(p.getDescription());
+                    mPostImage.setVisibility(View.VISIBLE);
                     mPostImage.setTag(YourPostListFragment.POST_IMAGE);
                     Picasso.get().load(p.getImageURL()).into(mPostImage);
                 }
@@ -144,6 +148,8 @@ public class PostActivity extends AppCompatActivity {
 
         });
 
+        mBackButton.setOnClickListener(v -> finish());
+
         mCameraButton.setOnClickListener(v -> postCamera.openCamera());
 
 
@@ -177,16 +183,19 @@ public class PostActivity extends AppCompatActivity {
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        mPostImage.setTag(POST_IMAGE_TAG);
         if (requestCode == 0) {
             Bitmap imageBitmap = postCamera.handleActivityResult(requestCode, resultCode, data);
             if (imageBitmap != null) {
+                mPostImage.setVisibility(View.VISIBLE);
+                mPostImage.setTag(POST_IMAGE_TAG);
                 mPostImage.setImageBitmap(imageBitmap);
             }
             imageUri = postCamera.getImageUri();
         } else {
             imageUri = ImagePicker.handleActivityResultAndGetUri(requestCode, resultCode, data);
             if (imageUri != null) {
+                mPostImage.setVisibility(View.VISIBLE);
+                mPostImage.setTag(POST_IMAGE_TAG);
                 mPostImage.setImageURI(imageUri);
             }
         }

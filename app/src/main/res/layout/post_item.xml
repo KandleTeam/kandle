@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -8,90 +8,122 @@
     android:layout_marginTop="10dp"
     android:layout_marginRight="5dp"
     android:layout_marginBottom="10dp"
-    android:background="@drawable/post_background"
-    android:orientation="horizontal"
+    android:orientation="vertical"
     >
 
-    <ImageButton
-        android:id="@+id/likeButton"
+    <RelativeLayout
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_height="wrap_content">
 
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/flames"
-        app:layout_constraintHorizontal_bias="0.941"
-        app:layout_constraintStart_toEndOf="@+id/date_and_time"
-        app:layout_constraintTop_toBottomOf="@+id/title"
-        app:layout_constraintVertical_bias="0.0"
-        app:srcCompat="@drawable/ic_whatshot_24dp" />
+        <de.hdodenhof.circleimageview.CircleImageView
+            android:id="@+id/profilePicInPost"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:layout_margin="10dp"
+            android:src="@mipmap/ic_launcher"/>
 
-    <ImageButton
-        android:id="@+id/deleteButton"
-        android:layout_width="43dp"
-        android:layout_height="30dp"
-        app:layout_constraintBottom_toTopOf="@+id/likeButton"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.009"
-        app:srcCompat="@android:drawable/ic_notification_clear_all" />
+        <TextView
+            android:id="@+id/nicknameInPost"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toEndOf="@+id/profilePicInPost"
+            android:text="Nickname"
+            android:textStyle="bold"
+            android:layout_marginTop="20dp"/>
 
-    <ImageButton
-        android:id="@+id/editButton"
-        android:layout_width="43dp"
-        android:layout_height="30dp"
-        android:layout_marginEnd="44dp"
-        app:layout_constraintBottom_toTopOf="@+id/likeButton"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.009"
-        app:srcCompat="@android:drawable/ic_menu_edit"
-        android:visibility="gone"/>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/usernameinPost"
+            android:layout_toEndOf="@+id/nicknameInPost"
+            android:text="\@username"
+            android:layout_marginTop="20dp"
+            android:layout_marginStart="10dp"/>
+
+        <TextView
+            android:id="@+id/date_and_time"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Date : Time"
+            android:textAppearance="@style/TextAppearance.Compat.Notification.Time"
+            android:textSize="10dp"
+            android:layout_toEndOf="@id/profilePicInPost"
+            android:layout_below="@+id/nicknameInPost"/>
+
+        <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true">
+
+            <ImageButton
+                android:id="@+id/editButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="5dp"
+                android:background="@android:drawable/ic_menu_edit"
+                android:visibility="gone"/>
+
+            <ImageButton
+                android:id="@+id/deleteButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_toEndOf="@+id/editButton"
+                android:background="@android:drawable/ic_notification_clear_all"
+                android:visibility="gone"/>
+
+
+        </RelativeLayout>
+
+
+    </RelativeLayout>
 
 
 
     <TextView
         android:id="@+id/title"
-        android:layout_width="0dp"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="32dp"
         android:layout_marginStart="5dp"
+        android:layout_marginEnd="5dp"
         android:paddingBottom="10dp"
         android:text="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed non risus. Suspendisse lectus tortor, dignissim sit amet, adipiscing nec, ultricies sed, dolor. Cras elementum ultrices diam. Maecenas ligula massa, varius a, semper congue, euismod non, mi. Proin porttitor, orci nec nonummy molestie, enim est eleifend mi, non fermentum diam nisl sit amet erat. Duis semper."
-        android:textSize="18sp"
-        android:textStyle="bold"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        android:textSize="14sp"/>
 
-    <TextView
-        android:id="@+id/date_and_time"
-        android:layout_width="0dp"
+    <ImageView
+        android:id="@+id/postImageInPost"
+        android:visibility="gone"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="4dp"
-        android:layout_marginTop="8dp"
-        android:layout_weight="1"
-        android:text="Date : Time"
+        android:layout_margin="10dp"
+        android:scaleType="centerInside"/>
 
-        android:textAppearance="@style/TextAppearance.Compat.Notification.Time"
-        android:textSize="7dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/title"
-        app:layout_constraintVertical_bias="0.789" />
-
-    <TextView
-        android:id="@+id/flames"
+    <RelativeLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="4dp"
-        android:layout_marginEnd="144dp"
-        android:clickable="true"
-        android:focusable="true"
-        android:text="0"
-        android:textColor="#000000"
-        android:textSize="26dp"
-        android:textStyle="bold"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/title" />
+        android:layout_gravity="center_horizontal">
+
+        <ImageButton
+            android:id="@+id/likeButton"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:background="@drawable/ic_whatshot_24dp"
+            android:layout_centerVertical="true"/>
+
+        <TextView
+            android:id="@+id/flames"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toEndOf="@+id/likeButton"
+            android:clickable="true"
+            android:focusable="true"
+            android:text="0"
+            android:textColor="#000000"
+            android:textSize="26dp"
+            android:textStyle="bold"
+            android:layout_centerVertical="true"/>
+
+    </RelativeLayout>
 
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+</LinearLayout>
