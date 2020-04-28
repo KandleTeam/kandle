@@ -24,6 +24,8 @@ import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.squareup.picasso.Picasso;
+
 import ch.epfl.sdp.kandle.activity.MainActivity;
 import ch.epfl.sdp.kandle.activity.RegisterActivity;
 
@@ -33,9 +35,14 @@ import ch.epfl.sdp.kandle.Storage.caching.CachedFirestoreDatabase;
 import ch.epfl.sdp.kandle.dependencies.Database;
 import ch.epfl.sdp.kandle.dependencies.DependencyManager;
 import ch.epfl.sdp.kandle.fragment.ListUsersFragment;
+import ch.epfl.sdp.kandle.fragment.ProfileFragment;
 import ch.epfl.sdp.kandle.fragment.YourPostListFragment;
+import de.hdodenhof.circleimageview.CircleImageView;
 
 public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder> {
+
+    public final static int POST_IMAGE = 10;
+
     private static ClickListener clickListener;
     private List<Post> mPosts;
     private Context mContext;
@@ -92,8 +99,11 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder> {
         dateView.setText((dateFormat.format(post.getDate())));
         final TextView likeView = holder.mlikes;
         likeView.setText(String.valueOf(post.getLikes()));
-
+        CircleImageView profilePicView = holder.mProfilePic;
+        TextView usernameView = holder.mUsername;
+        TextView nicknameView = holder.mNickname;
         final ImageButton editPostView = holder.mEditButton;
+
         //milliseconds
         long different = new Date().getTime() - post.getDate().getTime();
         long minutes = different / 60000;
@@ -102,7 +112,40 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder> {
         }
         if(post.getEditable()){
             editPostView.setVisibility(View.VISIBLE);
+
+        final ImageButton deletePostView = holder.mDeleteButton;
+
+        ImageView postImageView = holder.mPostImage;
+        if (post.getImageURL() != null) {
+            postImageView.setVisibility(View.VISIBLE);
+            postImageView.setTag(POST_IMAGE);
+            Picasso.get().load(post.getImageURL()).into(postImageView);
+
         }
+        database.getUserById(post.getUserId()).addOnCompleteListener(task -> {
+            if (task.isSuccessful() && task.getResult() != null) {
+                User user = task.getResult();
+
+                if (user.getImageURL() != null) {
+                    Picasso.get().load(user.getImageURL()).into(profilePicView);
+                }
+                usernameView.setText("@" + user.getUsername());
+                nicknameView.setText(user.getNickname());
+
+                //milliseconds
+                long different = new Date().getTime() - post.getDate().getTime();
+                long minutes = different / 60000;
+                if(user.getId().equals(userId)){
+                    deletePostView.setVisibility(View.VISIBLE);
+                    if (minutes < 6) {
+                        editPostView.setVisibility(View.VISIBLE);
+                    }
+                }
+
+
+            }
+        });
+
 
 
         holder.mlikeButton.setOnClickListener(v -> {
@@ -125,13 +168,13 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder> {
             }
         });
 
-        holder.mEditButton.setOnClickListener(v -> {
+        editPostView.setOnClickListener(v -> {
             Intent intent = new Intent(mContext, PostActivity.class);
             intent.putExtra("postId", post.getPostId());
             mContext.startActivity(intent);
         });
 
-        holder.mDeleteButton.setOnClickListener(v -> {
+        deletePostView.setOnClickListener(v -> {
 
             AlertDialog.Builder alertDialog = new AlertDialog.Builder(mContext);
             alertDialog.setMessage("Do you really want to delete this post ?");
@@ -184,6 +227,10 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder> {
         public ImageButton mlikeButton;
         public ImageButton mDeleteButton;
         public ImageButton mEditButton;
+        public CircleImageView mProfilePic;
+        public ImageView mPostImage;
+        public TextView mUsername;
+        public TextView mNickname;
 
 
         public ViewHolder(View itemView) {
@@ -195,7 +242,10 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder> {
             mlikeButton = itemView.findViewById(R.id.likeButton);
             mDeleteButton = itemView.findViewById(R.id.deleteButton);
             mEditButton = itemView.findViewById(R.id.editButton);
-
+            mProfilePic = itemView.findViewById(R.id.profilePicInPost);
+            mPostImage = itemView.findViewById(R.id.postImageInPost);
+            mUsername = itemView.findViewById(R.id.usernameinPost);
+            mNickname = itemView.findViewById(R.id.nicknameInPost);
         }
 
         @Override

@@ -45,7 +45,8 @@
              You can define the keys for the debug and release targets in src/debug/ and src/release/.
         -->
         <activity android:name=".activity.CustomAccountActivity" />
-        <activity android:name=".activity.PostActivity" />
+        <activity android:name=".activity.PostActivity"
+            android:windowSoftInputMode="adjustResize"/>
         <activity android:name=".activity.MainActivity" />
         <activity android:name=".activity.LoginActivity">
             <intent-filter>

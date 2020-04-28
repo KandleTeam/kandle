@@ -3,6 +3,7 @@ package ch.epfl.sdp.kandle;
 import android.app.Activity;
 import android.app.Instrumentation;
 import android.content.Intent;
+import android.content.res.Resources;
 import android.net.Uri;
 import android.view.Gravity;
 import android.view.View;
@@ -22,7 +23,9 @@ import androidx.test.espresso.intent.rule.IntentsTestRule;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 import androidx.test.rule.ActivityTestRule;
 
+import org.hamcrest.Description;
 import org.hamcrest.Matcher;
+import org.hamcrest.TypeSafeMatcher;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
@@ -72,6 +75,7 @@ import static androidx.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static androidx.test.espresso.matcher.ViewMatchers.withId;
 import static androidx.test.espresso.matcher.ViewMatchers.withTagValue;
 import static androidx.test.espresso.matcher.ViewMatchers.withText;
+import static ch.epfl.sdp.kandle.YourProfileFragmentTest.atPosition;
 import static junit.framework.TestCase.assertEquals;
 import static org.hamcrest.Matchers.empty;
 import static org.hamcrest.Matchers.emptyArray;
@@ -240,14 +244,13 @@ public class YourPostsListTest {
         //2 posts should be displayed
         onView(withId(R.id.rvPosts)).check(new RecyclerViewItemCountAssertion(2));
 
-        onView(withId(R.id.rvPosts)).perform(RecyclerViewActions.actionOnItemAtPosition(0, click()));
-        onView(withId(R.id.postImage)).check(matches(withTagValue(is(YourPostListFragment.POST_IMAGE))));
-        onView(withId(R.id.post_content)).perform(click());
+        onView(new RecyclerViewMatcher(R.id.rvPosts)
+                .atPositionOnView(0, R.id.postImageInPost))
+                .check(matches(withTagValue(is(PostAdapter.POST_IMAGE))));
 
-        onView(withId(R.id.rvPosts)).perform(RecyclerViewActions.actionOnItemAtPosition(1, click()));
-        onView(withId(R.id.postImage)).check(matches(not(withTagValue(is(YourPostListFragment.POST_IMAGE)))));
-        onView(withId(R.id.post_content)).perform(click());
-
+        onView(new RecyclerViewMatcher(R.id.rvPosts)
+                .atPositionOnView(1, R.id.postImageInPost))
+                .check(matches(not(withTagValue(is(PostAdapter.POST_IMAGE)))));
 
     }
 
@@ -329,9 +332,8 @@ public class YourPostsListTest {
 
 
     @Test
-    public void EditPostImageTest(){
+    public void EditPostImageTest() throws InterruptedException {
         onView(withId(R.id.rvPosts)).perform(RecyclerViewActions.actionOnItemAtPosition(1, clickChildViewWithId(R.id.editButton)));
-
         Intent resultData = new Intent();
         resultData.setAction(Intent.ACTION_GET_CONTENT);
         Uri imageUri = Uri.parse("android.resource://ch.epfl.sdp.kandle/drawable/ic_launcher_background.xml");
@@ -407,5 +409,7 @@ public class YourPostsListTest {
             assertEquals(adapter.getItemCount(), expectedCount);
         }
     }
+
+
 
 }

@@ -116,28 +116,18 @@ public class FollowingPostsTest {
     }
 
     @Test
-    public void withEmptyFollowingListDoesNotthrowError() {
-        DependencyManager.getDatabaseSystem().unFollow(LoggedInUser.getInstance().getId(), u1.getId());
-        DependencyManager.getDatabaseSystem().unFollow(LoggedInUser.getInstance().getId(), u2.getId());
-        onView(withId(R.id.flPosts)).perform(RecyclerViewActions.actionOnItemAtPosition(0, click()));
-        onView(withId(R.id.post_content)).perform(click());
-        onView(withId(R.id.flPosts)).perform(RecyclerViewActions.actionOnItemAtPosition(1, click()));
-        onView(withId(R.id.post_content)).perform(click());
-    }
-
-    @Test
     public void ChecksOnePostHasAnImageNotTheOther() throws Throwable {
 
         //2 posts should be displayed
         onView(withId(R.id.flPosts)).check(new FollowingPostsTest.RecyclerViewItemCountAssertion(2));
 
-        onView(withId(R.id.flPosts)).perform(RecyclerViewActions.actionOnItemAtPosition(1,click()));
-        onView(withId(R.id.postImage)).check(matches(withTagValue(is(YourPostListFragment.POST_IMAGE))));
-        onView(withId(R.id.post_content)).perform(click());
+        onView(new RecyclerViewMatcher(R.id.flPosts)
+                .atPositionOnView(1, R.id.postImageInPost))
+                .check(matches(withTagValue(is(PostAdapter.POST_IMAGE))));
 
-        onView(withId(R.id.flPosts)).perform(RecyclerViewActions.actionOnItemAtPosition(0,click()));
-        onView(withId(R.id.postImage)).check(matches(not(withTagValue(is(YourPostListFragment.POST_IMAGE)))));
-        onView(withId(R.id.post_content)).perform(click());
+        onView(new RecyclerViewMatcher(R.id.flPosts)
+                .atPositionOnView(0, R.id.postImageInPost))
+                .check(matches(not(withTagValue(is(PostAdapter.POST_IMAGE)))));
     }
 
     private class RecyclerViewItemCountAssertion implements ViewAssertion {
