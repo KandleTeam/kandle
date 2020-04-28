@@ -97,7 +97,10 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder> {
         //milliseconds
         long different = new Date().getTime() - post.getDate().getTime();
         long minutes = different / 60000;
-        if(minutes < 6){
+        if(minutes >= 6){
+            post.setEditable(false);
+        }
+        if(post.getEditable()){
             editPostView.setVisibility(View.VISIBLE);
         }
 
