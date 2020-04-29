@@ -39,7 +39,8 @@ public class Post {
     @ColumnInfo(name = "date")
     @TypeConverters(Converters.class)
     private Date date;
-
+    @ColumnInfo(name = "editable")
+    private Boolean editable;
     @Ignore
     public Post() {
 
@@ -54,8 +55,7 @@ public class Post {
         this.postId = UUID.randomUUID().toString();
         this.userId = userId;
         this.imageURL = imageURL;
-
-
+        this.editable = true;
     }
 
     //Useful for tests
@@ -70,6 +70,7 @@ public class Post {
         this.postId = postId;
         this.userId = userId;
         this.imageURL = imageURL;
+        this.editable = true;
     }
 
 
@@ -150,6 +151,14 @@ public class Post {
 
     public void setLatitude(double latitude) {
         this.latitude = latitude;
+    }
+
+    public Boolean isEditable(){
+        return editable;
+    }
+
+    public void setEditable(Boolean editable){
+        this.editable = editable;
     }
 
     @Override
