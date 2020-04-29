@@ -3,7 +3,6 @@ package ch.epfl.sdp.kandle.activity;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.MenuItem;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -19,14 +18,12 @@ import androidx.fragment.app.FragmentTransaction;
 import com.google.android.material.navigation.NavigationView;
 import com.squareup.picasso.Picasso;
 
+import ch.epfl.sdp.kandle.LoggedInUser;
 import ch.epfl.sdp.kandle.R;
 import ch.epfl.sdp.kandle.dependencies.Authentication;
-import ch.epfl.sdp.kandle.Storage.caching.CachedFirestoreDatabase;
-import ch.epfl.sdp.kandle.dependencies.Database;
 import ch.epfl.sdp.kandle.dependencies.DependencyManager;
 import ch.epfl.sdp.kandle.fragment.AboutFragment;
 import ch.epfl.sdp.kandle.fragment.AchievementFragment;
-//import ch.epfl.sdp.kandle.Fragment.ProfileFragment;
 import ch.epfl.sdp.kandle.fragment.FollowingPostsFragment;
 import ch.epfl.sdp.kandle.fragment.MapViewFragment;
 import ch.epfl.sdp.kandle.fragment.ProfileFragment;
@@ -36,9 +33,10 @@ import ch.epfl.sdp.kandle.fragment.YourPostListFragment;
 
 public class MainActivity extends AppCompatActivity {
 
+
     public final static int PROFILE_PICTURE_TAG = 5;
+
     private DrawerLayout mDrawerLayout;
-    private Toolbar toolbar;
     private NavigationView mNavigationView;
     private Fragment fragment;
     private FragmentManager fragmentManager;
@@ -46,7 +44,6 @@ public class MainActivity extends AppCompatActivity {
     private TextView mUsername;
     private TextView mNickname;
     private Authentication auth;
-    private Database database;
     private ActionBarDrawerToggle drawerToggle;
 
     @Override
@@ -54,11 +51,9 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-
         auth = DependencyManager.getAuthSystem();
-        database = new CachedFirestoreDatabase();
         // Set a Toolbar to replace the ActionBar.
-        toolbar = findViewById(R.id.toolbar);
+        Toolbar toolbar = findViewById(R.id.toolbar);
         mDrawerLayout = findViewById(R.id.drawer_layout);
         mNavigationView = findViewById(R.id.navigation_view);
         mProfilePic = mNavigationView.getHeaderView(0).findViewById(R.id.profilePicInMenu);
@@ -81,7 +76,6 @@ public class MainActivity extends AppCompatActivity {
         fragmentManager.beginTransaction().replace(R.id.flContent, fragment).commit();
         setTitle(mNavigationView.getCheckedItem().getTitle());
 
-        final FragmentManager fragmentManager = getSupportFragmentManager();
         mProfilePic.setOnClickListener(v -> {
 
             fragmentManager.beginTransaction().replace(R.id.flContent, ProfileFragment.newInstance(auth.getCurrentUser()))
@@ -100,26 +94,32 @@ public class MainActivity extends AppCompatActivity {
 
         String imageUrl = auth.getCurrentUser().getImageURL();
 
-            if (imageUrl != null) {
-                mProfilePic.setTag(PROFILE_PICTURE_TAG);
-                Picasso.get().load(imageUrl).into(mProfilePic);
-            }
+        if (imageUrl != null) {
+            mProfilePic.setTag(PROFILE_PICTURE_TAG);
+            Picasso.get().load(imageUrl).into(mProfilePic);
+        }
 
-
-            String username = auth.getCurrentUser().getNickname();
-            if (username != null) {
-                mNickname.setText(username);
-            }
-
+        String username = auth.getCurrentUser().getNickname();
+        if (username != null) {
+            mNickname.setText(username);
+        }
 
     }
 
     /**
-     * Calls the slectDrawerItem method if one of the items in the drawer menu is selected by the user
+     * Hides unavailable menus from navigation, and sets the selection listener
      *
      * @param navigationView
      */
     private void setupDrawerContent(NavigationView navigationView) {
+
+        if (LoggedInUser.isGuestMode()) {
+            navigationView.getMenu().findItem(R.id.your_posts).setVisible(false);
+            navigationView.getMenu().findItem(R.id.follow).setVisible(false);
+            navigationView.getMenu().findItem(R.id.following_posts).setVisible(false);
+            navigationView.getMenu().findItem(R.id.light).setVisible(false);
+        }
+
         navigationView.setNavigationItemSelectedListener(
                 menuItem -> {
                     selectDrawerItem(menuItem);
@@ -135,13 +135,11 @@ public class MainActivity extends AppCompatActivity {
     private void selectDrawerItem(MenuItem menuItem) {
         // Create a new fragment and specify the fragment to show based on nav item clicked
 
-        fragment = null;
         Class fragmentClass = null;
 
         switch (menuItem.getItemId()) {
             case R.id.logout:
                 auth.signOut();
-
                 startActivity(new Intent(getApplicationContext(), LoginActivity.class));
                 finish();
                 break;
@@ -175,28 +173,31 @@ public class MainActivity extends AppCompatActivity {
                 break;
 
             default:
-                fragmentClass = null;
-                break;
+                throw new IllegalArgumentException("There is a missing MenuItem case!");
         }
 
+        if (fragmentClass != fragment.getClass()) {
+
+            openFragment(fragmentClass);
+            setTitle(menuItem.getTitle());
+
+        }
+
+        mDrawerLayout.closeDrawers();
+    }
+
+    private void openFragment(Class fragmentClass) {
 
         createNewFragmentInstance(fragmentClass);
 
-        if (fragment != null) {
-            FragmentManager fragmentManager = getSupportFragmentManager();
-            fragmentManager.beginTransaction()
-                    .replace(R.id.flContent, fragment)
-                    .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
-                    .addToBackStack(null)
-                    .commit();
-
-
-        }
-        menuItem.setChecked(true);
-        setTitle(menuItem.getTitle());
-        mDrawerLayout.closeDrawers();
-
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        fragmentManager.beginTransaction()
+                .replace(R.id.flContent, fragment)
+                .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
+                .addToBackStack(null)
+                .commit();
     }
+
 
     public Fragment getCurrentFragment() {
         return fragment;
@@ -213,7 +214,7 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults) {
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
         switch (requestCode) {
             case 1: {
                 // If request is cancelled, the result arrays are empty.
