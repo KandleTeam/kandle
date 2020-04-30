@@ -14,39 +14,40 @@ import java.util.List;
 import java.util.UUID;
 
 import ch.epfl.sdp.kandle.Storage.room.Converters;
+import ch.epfl.sdp.kandle.Storage.room.PostDao;
 
-@Entity(tableName = "Posts")
+import static ch.epfl.sdp.kandle.Storage.room.PostDao.*;
+
+@Entity(tableName = POSTS_TABLE_NAME)
 public class Post {
 
 
-    @NonNull
-    @PrimaryKey(autoGenerate = false)
+    @PrimaryKey @NonNull
     private String postId;
-    @NonNull
-    @ColumnInfo(name = "userId")
+
+    @ColumnInfo(name = POST_ATTR_USER_ID) @NonNull
     private String userId;
-    @ColumnInfo(name = "longitude")
-    private double longitude;
-    @ColumnInfo(name = "latitude")
+    @ColumnInfo(name = POST_ATTR_LATITUDE)
     private double latitude;
-    @ColumnInfo(name = "likers")
-    @TypeConverters(Converters.class)
+    @ColumnInfo(name = POST_ATTR_LONGITUDE)
+    private double longitude;
+    @ColumnInfo(name = POST_ATTR_LIKERS_LIST) @TypeConverters(Converters.class)
     private List<String> likers;
-    @ColumnInfo(name = "imageURL")
+    @ColumnInfo(name = POST_ATTR_IMAGE_URL)
     private String imageURL;
-    @ColumnInfo(name = "description")
+    @ColumnInfo(name = POST_ATTR_DESCRIPTION)
     private String description;
-    @ColumnInfo(name = "date")
-    @TypeConverters(Converters.class)
+    @ColumnInfo(name = POST_ATTR_EDITABLE)
+    private boolean editable;
+    @ColumnInfo(name = POST_ATTR_DATE) @TypeConverters(Converters.class)
     private Date date;
-    @ColumnInfo(name = "editable")
-    private Boolean editable;
+
     @Ignore
     public Post() {
 
     }
 
-    public Post(String description, String imageURL, Date date, String userId, double longitude, double latitude) {
+    public Post(String description, String imageURL, Date date, @NonNull String userId, double longitude, double latitude) {
         this.latitude = latitude;
         this.longitude = longitude;
         this.description = description;
@@ -60,10 +61,9 @@ public class Post {
 
     //Useful for tests
     @Ignore
-    public Post(String description, String imageURL, Date date, String userId, String postId) {
+    public Post(String description, String imageURL, Date date, @NonNull String userId, @NonNull String postId) {
         this.latitude = 0;
         this.longitude = 0;
-        // this.location = null;
         this.description = description;
         this.date = date;
         this.likers = new ArrayList<String>();
@@ -73,11 +73,11 @@ public class Post {
         this.editable = true;
     }
 
-
     public int getLikes() {
         return likers.size();
     }
 
+    @NonNull
     public String getPostId() {
         return postId;
     }
@@ -86,7 +86,7 @@ public class Post {
         this.postId = postId;
     }
 
-
+    @NonNull
     public String getUserId() {
         return userId;
     }
@@ -117,12 +117,12 @@ public class Post {
         }
     }
 
-    public void setLikers(List<String> likers) {
-        this.likers = likers;
-    }
-
     public List<String> getLikers() {
         return Collections.unmodifiableList(likers);
+    }
+
+    public void setLikers(List<String> likers) {
+        this.likers = likers;
     }
 
     public void unlikePost(String userId) {
@@ -153,11 +153,11 @@ public class Post {
         this.latitude = latitude;
     }
 
-    public Boolean isEditable(){
+    public boolean isEditable() {
         return editable;
     }
 
-    public void setEditable(Boolean editable){
+    public void setEditable(Boolean editable) {
         this.editable = editable;
     }
 
@@ -166,7 +166,7 @@ public class Post {
         if (!(other instanceof Post)) {
             return false;
         }
-        Post otherPost = (Post)other;
+        Post otherPost = (Post) other;
         return otherPost.getPostId().equals(getPostId());
     }
 
