@@ -129,16 +129,6 @@ public class YourPostsListTest {
 
 
     @Test
-    public void canClickOnAlreadyCreatedPostToSeeDescriptionAndRemoveDescription() {
-        onView(withId(R.id.rvPosts)).perform(RecyclerViewActions.actionOnItemAtPosition(0, click()));
-        onView(withId(R.id.post_content)).perform(click());
-        onView(withId(R.id.rvPosts)).perform(RecyclerViewActions.actionOnItemAtPosition(1, click()));
-        onView(withId(R.id.post_content)).perform(click());
-
-    }
-
-
-    @Test
     public void likesThenUnlikesAlreadyCreatedPostsAndDeleteOne() throws InterruptedException {
 
         //2 posts should be displayed
@@ -312,15 +302,18 @@ public class YourPostsListTest {
         resultData.setData(imageUri);
         Instrumentation.ActivityResult result = new Instrumentation.ActivityResult(Activity.RESULT_OK, resultData);
         intending(hasAction(Intent.ACTION_GET_CONTENT)).respondWith(result);
+
+        Thread.sleep(500);
+
         onView(withId(R.id.galleryButton)).perform(click());
         onView(withId(R.id.postImage)).check(matches(withTagValue(is(PostActivity.POST_IMAGE_TAG))));
         onView(withId(R.id.postButton)).perform(click());
 
         loadPostView();
 
-        onView(withId(R.id.rvPosts)).perform(RecyclerViewActions.actionOnItemAtPosition(1, click()));
-        onView(withId(R.id.postImage)).check(matches(withTagValue(is(YourPostListFragment.POST_IMAGE))));
-        onView(withId(R.id.post_content)).perform(click());
+        onView(new RecyclerViewMatcher(R.id.rvPosts)
+                .atPositionOnView(1, R.id.postImageInPost))
+                .check(matches(withTagValue(is(PostAdapter.POST_IMAGE))));
     }
 
     @Test
@@ -333,9 +326,9 @@ public class YourPostsListTest {
 
         loadPostView();
 
-        onView(withId(R.id.rvPosts)).perform(RecyclerViewActions.actionOnItemAtPosition(0, click()));
-        onView(withId(R.id.post_content)).check(matches(withText(is("Salut Salut"))));
-        onView(withId(R.id.post_content)).perform(click());
+        onView(new RecyclerViewMatcher(R.id.rvPosts)
+                .atPositionOnView(0, R.id.title))
+                .check(matches(withText(is("Salut Salut"))));
 
     }
 
