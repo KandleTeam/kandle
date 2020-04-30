@@ -95,7 +95,7 @@ public class ProfileFragment extends Fragment {
         mValidateNameButton.setVisibility(View.GONE);
         mValidatePictureButton.setVisibility(View.GONE);
 
-        if (!user.getId().equals(currentUser.getId())) {
+        if (!user.getId().equals(currentUser.getId()) || LoggedInUser.isGuestMode()) {
             mEditPicture.setVisibility(View.GONE);
             mEditName.setVisibility(View.GONE);
         } else {
@@ -179,8 +179,11 @@ public class ProfileFragment extends Fragment {
 
 
         mNumberOfFollowers.setOnClickListener(v -> database.userFollowersList(user.getId()).addOnCompleteListener(numberListener("Followers", fragmentManager)));
-
         mNumberOfFollowing.setOnClickListener(v -> database.userFollowingList(user.getId()).addOnCompleteListener(numberListener("Following", fragmentManager)));
+        if(LoggedInUser.isGuestMode()) {
+            mNumberOfFollowers.setClickable(false);
+            mNumberOfFollowing.setClickable(false);
+        }
 
 
         return view;

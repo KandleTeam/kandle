@@ -48,6 +48,7 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
+import ch.epfl.sdp.kandle.LoggedInUser;
 import ch.epfl.sdp.kandle.Storage.caching.CachedFirestoreDatabase;
 import ch.epfl.sdp.kandle.User;
 import ch.epfl.sdp.kandle.activity.PostActivity;
@@ -114,14 +115,20 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback, Per
         authentication = DependencyManager.getAuthSystem();
 
         ImageButton mNewPostButton = view.findViewById(R.id.newPostButton);
-        mNewPostButton.setOnClickListener(v -> {
-            Intent intent = new Intent(getContext(), PostActivity.class);
-            if (currentLocation != null) {
-                intent.putExtra("latitude", currentLocation.getLatitude());
-                intent.putExtra("longitude", currentLocation.getLongitude());
-            }
-            startActivity(intent);
-        });
+        if(LoggedInUser.isGuestMode()) {
+            mNewPostButton.setVisibility(View.GONE);
+        } else {
+            mNewPostButton.setOnClickListener(v -> {
+                Intent intent = new Intent(getContext(), PostActivity.class);
+                if (currentLocation != null) {
+                    intent.putExtra("latitude", currentLocation.getLatitude());
+                    intent.putExtra("longitude", currentLocation.getLongitude());
+                }
+                startActivity(intent);
+            });
+        }
+
+
 
         mapView = view.findViewById(R.id.mapView);
         mapView.onCreate(savedInstanceState);

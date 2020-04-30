@@ -1,16 +1,17 @@
 package ch.epfl.sdp.kandle;
 
 import android.view.Gravity;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Rule;
-import org.junit.Test;
 
 import androidx.room.Room;
 import androidx.test.espresso.contrib.DrawerActions;
 import androidx.test.espresso.contrib.NavigationViewActions;
 import androidx.test.rule.ActivityTestRule;
 import androidx.test.rule.GrantPermissionRule;
+
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Rule;
+import org.junit.Test;
 
 import java.util.HashMap;
 
@@ -39,18 +40,18 @@ import static org.hamcrest.Matchers.not;
 
 public class SettingsFragmentTest {
 
-    private LocalDatabase localDatabase;
     @Rule
     public GrantPermissionRule permissionRule = GrantPermissionRule.grant(android.Manifest.permission.ACCESS_FINE_LOCATION);
+    private LocalDatabase localDatabase;
     @Rule
     public ActivityTestRule<MainActivity> intentsRule =
-            new ActivityTestRule<MainActivity>(MainActivity.class,true,true
-            ){
+            new ActivityTestRule<MainActivity>(MainActivity.class, true, true
+            ) {
                 @Override
                 protected void beforeActivityLaunched() {
-                    LoggedInUser.init(new User("loggedInUserId","LoggedInUser","loggedInUser@kandle.ch","nickname","image"));
+                    LoggedInUser.init(new User("loggedInUserId", "LoggedInUser", "loggedInUser@kandle.ch", "nickname", "image"));
                     HashMap<String, String> accounts = new HashMap<>();
-                    HashMap<String,User> users = new HashMap<>();
+                    HashMap<String, User> users = new HashMap<>();
                     HashMap<String, MockDatabase.Follow> followMap = new HashMap<>();
                     HashMap<String, Post> posts = new HashMap<>();
                     MockDatabase db = new MockDatabase(true, users, followMap, posts);
@@ -59,20 +60,15 @@ public class SettingsFragmentTest {
                     MockInternalStorage internalStorage = new MockInternalStorage();
                     MockNetwork network = new MockNetwork(true);
                     localDatabase = Room.inMemoryDatabaseBuilder(Kandle.getContext(), LocalDatabase.class).allowMainThreadQueries().build();
-                    DependencyManager.setFreshTestDependencies(authentication, db, storage,internalStorage,network,localDatabase);
+                    DependencyManager.setFreshTestDependencies(authentication, db, storage, internalStorage, network, localDatabase);
 
 
                 }
             };
 
 
-
-
-
-
-
     @After
-    public void clearCurrentUserAndLocalDb(){
+    public void clearCurrentUserAndLocalDb() {
         LoggedInUser.clear();
         localDatabase.close();
     }
@@ -86,7 +82,7 @@ public class SettingsFragmentTest {
 
 
     @Test
-    public void wrongOldPasswordDisplaysError() throws InterruptedException {
+    public void wrongOldPasswordDisplaysError() {
         onView(withId(R.id.modifyPassword)).perform(click());
         onView(withId(R.id.oldPassword)).perform(typeText("passworf"));
         onView(withId(R.id.oldPassword)).perform(closeSoftKeyboard());
@@ -95,7 +91,7 @@ public class SettingsFragmentTest {
     }
 
     @Test
-    public void invalidNewPasswordDisplaysError() throws InterruptedException {
+    public void invalidNewPasswordDisplaysError() {
         onView(withId(R.id.modifyPassword)).perform(click());
         onView(withId(R.id.oldPassword)).perform(typeText("password"));
         onView(withId(R.id.newPassword)).perform(closeSoftKeyboard());
@@ -106,7 +102,7 @@ public class SettingsFragmentTest {
     }
 
     @Test
-    public void notMatchingPasswordsDisplaysError() throws InterruptedException {
+    public void notMatchingPasswordsDisplaysError() {
         onView(withId(R.id.modifyPassword)).perform(click());
         onView(withId(R.id.oldPassword)).perform(typeText("password"));
         onView(withId(R.id.newPassword)).perform(closeSoftKeyboard());
@@ -119,7 +115,7 @@ public class SettingsFragmentTest {
     }
 
     @Test
-    public void correctPasswordInputDisplaysToast() throws InterruptedException {
+    public void correctPasswordInputDisplaysToast() {
         onView(withId(R.id.modifyPassword)).perform(click());
         onView(withId(R.id.oldPassword)).perform(typeText("password"));
         onView(withId(R.id.newPassword)).perform(closeSoftKeyboard());
@@ -128,7 +124,7 @@ public class SettingsFragmentTest {
         onView(withId(R.id.newPasswordConfirm)).perform(typeText("newpassword"));
         onView(withId(R.id.newPasswordConfirm)).perform(closeSoftKeyboard());
         onView(withId(R.id.validatePasswordButton)).perform(click());
-        onView(withText("Your password has been succesfully updated")).inRoot(withDecorView(not(is(intentsRule.getActivity().getWindow().getDecorView())))).check(matches(isDisplayed()));
+        onView(withText("Your password has been successfully updated")).inRoot(withDecorView(not(is(intentsRule.getActivity().getWindow().getDecorView())))).check(matches(isDisplayed()));
     }
 
     @Test
@@ -136,7 +132,6 @@ public class SettingsFragmentTest {
         onView(withId(R.id.otherSettings)).perform(click());
         onView(withId(R.id.otherSettings)).perform(click());
     }
-
 
 
 }

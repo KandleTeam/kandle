@@ -83,6 +83,7 @@ public class MainActivity extends AppCompatActivity {
                     .addToBackStack(null)
                     .commit();
             setTitle("Your Profile");
+            mNavigationView.getCheckedItem().setChecked(false);
             mDrawerLayout.closeDrawers();
         });
 
@@ -117,7 +118,7 @@ public class MainActivity extends AppCompatActivity {
             navigationView.getMenu().findItem(R.id.your_posts).setVisible(false);
             navigationView.getMenu().findItem(R.id.follow).setVisible(false);
             navigationView.getMenu().findItem(R.id.following_posts).setVisible(false);
-            navigationView.getMenu().findItem(R.id.light).setVisible(false);
+            navigationView.getMenu().findItem(R.id.achievements).setVisible(false);
         }
 
         navigationView.setNavigationItemSelectedListener(
@@ -164,7 +165,7 @@ public class MainActivity extends AppCompatActivity {
                 fragmentClass = SearchFragment.class;
                 break;
 
-            case R.id.light:
+            case R.id.achievements:
                 fragmentClass = AchievementFragment.class;
                 break;
 
@@ -176,12 +177,9 @@ public class MainActivity extends AppCompatActivity {
                 throw new IllegalArgumentException("There is a missing MenuItem case!");
         }
 
-        if (fragmentClass != fragment.getClass()) {
 
-            openFragment(fragmentClass);
-            setTitle(menuItem.getTitle());
-
-        }
+        openFragment(fragmentClass);
+        setTitle(menuItem.getTitle());
 
         mDrawerLayout.closeDrawers();
     }
