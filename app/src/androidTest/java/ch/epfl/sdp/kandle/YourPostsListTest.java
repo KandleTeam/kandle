@@ -81,7 +81,9 @@ public class YourPostsListTest {
                     user2 = new User("user2Id", "user2", "user2@kandle.ch", "user2", null);
                     LoggedInUser.init(new User("loggedInUserId", "LoggedInUser", "loggedInUser@kandle.ch", "nickname", "image"));
                     p1 = new Post("Hello", null, new Date(), LoggedInUser.getInstance().getId(), "post1Id");
+                    p1.setType(Post.EVENT);
                     p2 = new Post("There", "image", new Date(), LoggedInUser.getInstance().getId(), "post2Id");
+                    p2.setType(Post.EVENT);
                     ArrayList<String> likers = new ArrayList<>();
                     likers.add(user1.getId());
                     likers.add(user2.getId());

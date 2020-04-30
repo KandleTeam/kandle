@@ -23,6 +23,7 @@ import static ch.epfl.sdp.kandle.storage.room.PostDao.POST_ATTR_IMAGE_URL;
 import static ch.epfl.sdp.kandle.storage.room.PostDao.POST_ATTR_LATITUDE;
 import static ch.epfl.sdp.kandle.storage.room.PostDao.POST_ATTR_LIKERS_LIST;
 import static ch.epfl.sdp.kandle.storage.room.PostDao.POST_ATTR_LONGITUDE;
+import static ch.epfl.sdp.kandle.storage.room.PostDao.POST_ATTR_TYPE;
 import static ch.epfl.sdp.kandle.storage.room.PostDao.POST_ATTR_USER_ID;
 
 @Entity(tableName = POSTS_TABLE_NAME)
@@ -31,6 +32,11 @@ public class Post {
     public static final int EDITABLE_TIME = 5; //you can edit your posts within 5 minutes
     @Ignore
     public static final int MILLISECONDS_PER_MINUTE = 60000;
+
+    @Ignore
+    public static final String MESSAGE = "message";
+    @Ignore
+    public static final String EVENT = "event";
 
     @PrimaryKey
     @NonNull
@@ -55,6 +61,8 @@ public class Post {
     @ColumnInfo(name = POST_ATTR_DATE)
     @TypeConverters(Converters.class)
     private Date date;
+    @ColumnInfo(name = POST_ATTR_TYPE)
+    private String type;
 
     @Ignore
     public Post() {
@@ -71,6 +79,7 @@ public class Post {
         this.userId = userId;
         this.imageURL = imageURL;
         this.editable = true;
+        this.type = MESSAGE;
     }
 
     //Useful for tests
@@ -167,8 +176,12 @@ public class Post {
         this.latitude = latitude;
     }
 
+    public String getType() { return type; }
+
+    public void setType(String type) { this.type = type; }
+
     public boolean isEditable() {
-        return (new Date().getTime() - this.getDate().getTime() / MILLISECONDS_PER_MINUTE) < EDITABLE_TIME;
+        return ((new Date().getTime() - this.getDate().getTime()) / MILLISECONDS_PER_MINUTE) < EDITABLE_TIME;
     }
 
     public void setEditable(Boolean editable) {

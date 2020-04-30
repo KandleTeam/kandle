@@ -37,6 +37,7 @@ public class PostFragment extends Fragment {
     private ImageView profilePicture, postImage;
     private Button followButton;
     private ImageButton likeButton;
+    private TextView date;
 
     private PostFragment(Post post, Location location, User user, int distance) {
         this.post = post;
@@ -59,6 +60,7 @@ public class PostFragment extends Fragment {
         followButton = parent.findViewById(R.id.postFragmentFollowButton);
         likeButton = parent.findViewById(R.id.postFragmentLikeButton);
         distanceView = parent.findViewById(R.id.postFragmentDistanceText);
+        date = parent.findViewById(R.id.postDateTime);
     }
 
     @Override
@@ -70,6 +72,11 @@ public class PostFragment extends Fragment {
         final User currentUser = LoggedInUser.getInstance();
         final String currentUserId = currentUser.getId();
         database = DependencyManager.getDatabaseSystem();
+
+        if (post.getType() != null && post.getType().equals(Post.EVENT)) {
+            likeButton.setImageDrawable(getResources().getDrawable(R.drawable.ic_event_red_24dp));
+            date.setVisibility(View.VISIBLE);
+        }
 
         username.setText(user.getUsername());
         distanceView.setText(distance + " m");
@@ -98,7 +105,7 @@ public class PostFragment extends Fragment {
 
         numberOfLikes.setText(String.valueOf(post.getLikes()));
 
-        if (distance <= 30) {
+        if (post.getType()!=null && post.getType().equals(Post.EVENT) || distance <= 30) {
             likeButton.setOnClickListener(v -> {
 
                 if (post.getLikers().contains(currentUserId)) {
