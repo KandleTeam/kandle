@@ -599,6 +599,7 @@ public class FirestoreDatabase implements Database {
                     }
 
                 }
+                Collections.sort(posts, (o1, o2) -> o2.getLikers().size() - o1.getLikers().size());
                 source.setResult(posts);
 
             } else {
