@@ -1,4 +1,4 @@
-package ch.epfl.sdp.kandle.Storage.firebase;
+package ch.epfl.sdp.kandle.storage.firebase;
 
 import android.net.Uri;
 

@@ -1,4 +1,4 @@
-package ch.epfl.sdp.kandle.Storage.firebase;
+package ch.epfl.sdp.kandle.storage.firebase;
 
 import com.google.android.gms.tasks.Task;
 import com.google.android.gms.tasks.TaskCompletionSource;
@@ -8,7 +8,7 @@ import com.google.firebase.auth.EmailAuthProvider;
 import com.google.firebase.auth.FirebaseAuth;
 
 import ch.epfl.sdp.kandle.LoggedInUser;
-import ch.epfl.sdp.kandle.Storage.caching.CachedFirestoreDatabase;
+import ch.epfl.sdp.kandle.storage.caching.CachedFirestoreDatabase;
 import ch.epfl.sdp.kandle.User;
 import ch.epfl.sdp.kandle.dependencies.Authentication;
 import ch.epfl.sdp.kandle.dependencies.Database;

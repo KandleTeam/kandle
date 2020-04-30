@@ -4,7 +4,7 @@ import android.net.Uri;
 
 import com.google.android.gms.tasks.Task;
 
-import ch.epfl.sdp.kandle.Storage.caching.CachedFirestoreDatabase;
+import ch.epfl.sdp.kandle.storage.caching.CachedFirestoreDatabase;
 import ch.epfl.sdp.kandle.dependencies.Authentication;
 import ch.epfl.sdp.kandle.dependencies.DependencyManager;
 
