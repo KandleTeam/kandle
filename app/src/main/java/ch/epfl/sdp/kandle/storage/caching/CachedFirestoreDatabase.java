@@ -31,7 +31,6 @@ public class CachedFirestoreDatabase implements Database {
     private final LocalDatabase localDatabase = DependencyManager.getLocalDatabase();
     private final UserDao userDao;
     private final PostDao postDao;
-    private final Executor executor = command -> new Thread(command).start();
 
     public CachedFirestoreDatabase() {
         userDao = localDatabase.userDao();
