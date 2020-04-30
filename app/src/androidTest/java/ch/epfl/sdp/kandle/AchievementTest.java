@@ -173,7 +173,7 @@ public class AchievementTest {
 
     private void setFragment(){
         onView(withId(R.id.drawer_layout)).check(matches(isClosed(Gravity.LEFT))).perform(DrawerActions.open());
-        onView(withId(R.id.navigation_view)).perform(NavigationViewActions.navigateTo(R.id.light));
+        onView(withId(R.id.navigation_view)).perform(NavigationViewActions.navigateTo(R.id.achievements));
         onView(withId(R.id.drawer_layout)).perform(DrawerActions.close());
     }
 

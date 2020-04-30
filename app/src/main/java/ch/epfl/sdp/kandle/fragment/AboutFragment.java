@@ -1,14 +1,11 @@
 package ch.epfl.sdp.kandle.fragment;
 
 
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
 
-import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 
 import ch.epfl.sdp.kandle.R;
@@ -18,7 +15,7 @@ import mehdi.sakout.aboutpage.Element;
 public class AboutFragment extends Fragment {
 
     @Override
-    public View onCreateView(LayoutInflater inflater,ViewGroup container, Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         Element versionElement = new Element().setTitle("Beta Version 1.0.0");
         Element adsElement = new Element().setTitle("Advertises");
         View aboutPage = new AboutPage(this.getContext())

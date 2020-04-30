@@ -9,6 +9,12 @@ import androidx.test.espresso.intent.Intents;
 import androidx.test.rule.ActivityTestRule;
 import androidx.test.rule.GrantPermissionRule;
 
+import org.junit.After;
+import org.junit.Rule;
+import org.junit.Test;
+
+import java.util.HashMap;
+
 import ch.epfl.sdp.kandle.storage.room.LocalDatabase;
 import ch.epfl.sdp.kandle.activity.MainActivity;
 import ch.epfl.sdp.kandle.activity.PostActivity;
@@ -38,23 +44,23 @@ import static androidx.test.espresso.matcher.ViewMatchers.withText;
 import static org.hamcrest.Matchers.is;
 
 
-
 public class MainActivityTest {
+
+    @Rule
+    public GrantPermissionRule permissionRule = GrantPermissionRule.grant(android.Manifest.permission.ACCESS_FINE_LOCATION);
+    @Rule
+    public GrantPermissionRule grantLocation = GrantPermissionRule.grant(android.Manifest.permission.ACCESS_FINE_LOCATION);
 
     private LocalDatabase localDatabase;
 
     @Rule
-    public GrantPermissionRule permissionRule = GrantPermissionRule.grant(android.Manifest.permission.ACCESS_FINE_LOCATION);
-
-    @Rule
     public ActivityTestRule<MainActivity> intentsRule =
-            new ActivityTestRule<MainActivity>(MainActivity.class,true,true
-            ){
+            new ActivityTestRule<MainActivity>(MainActivity.class, true, true) {
                 @Override
                 protected void beforeActivityLaunched() {
-                    LoggedInUser.init(new User("loggedInUserId","LoggedInUser","loggedInUser@kandle.ch","nickname","image"));
+                    LoggedInUser.init(new User("loggedInUserId", "LoggedInUser", "loggedInUser@kandle.ch", "nickname", "image"));
                     HashMap<String, String> accounts = new HashMap<>();
-                    HashMap<String,User> users = new HashMap<>();
+                    HashMap<String, User> users = new HashMap<>();
                     HashMap<String, MockDatabase.Follow> followMap = new HashMap<>();
                     HashMap<String, Post> posts = new HashMap<>();
                     MockDatabase db = new MockDatabase(true, users, followMap, posts);
@@ -63,23 +69,19 @@ public class MainActivityTest {
                     MockInternalStorage internalStorage = new MockInternalStorage();
                     MockNetwork network = new MockNetwork(true);
                     localDatabase = Room.inMemoryDatabaseBuilder(Kandle.getContext(), LocalDatabase.class).allowMainThreadQueries().build();
-                    DependencyManager.setFreshTestDependencies(authentication, db, storage,internalStorage,network,localDatabase);
+                    DependencyManager.setFreshTestDependencies(authentication, db, storage, internalStorage, network, localDatabase);
                 }
             };
 
-    @Rule
-    public GrantPermissionRule grantLocation = GrantPermissionRule.grant(android.Manifest.permission.ACCESS_FINE_LOCATION);
-
-
     @After
-    public void clearCurrentUserAndLocalDb(){
+    public void clearCurrentUserAndLocalDb() {
         LoggedInUser.clear();
         localDatabase.close();
     }
 
 
     @Test
-    public void openMenuAndNavigateToAboutUs()  {
+    public void openMenuAndNavigateToAboutUs() {
         onView(withId(R.id.drawer_layout)).check(matches(isClosed(Gravity.LEFT))).perform(DrawerActions.open());
         onView(withId(R.id.navigation_view)).perform(NavigationViewActions.navigateTo(R.id.about));
         onView(withId(R.id.toolbar)).check(matches(hasDescendant(withText("About us"))));
@@ -104,18 +106,14 @@ public class MainActivityTest {
 
     }
 
-    /*
     @Test
     public void openMenuNavigateToMap() {
 
         onView(withId(R.id.drawer_layout)).check(matches(isClosed(Gravity.LEFT))).perform(DrawerActions.open());
         onView(withId(R.id.navigation_view)).perform(NavigationViewActions.navigateTo(R.id.map_support));
-        //onView(withId(R.id.toolbar)).check(matches(hasDescendant(withText("Map"))));
-
-
+        onView(withId(R.id.toolbar)).check(matches(hasDescendant(withText("Map"))));
     }
 
-     */
 
     @Test
     public void openMenuNavigateToYourPosts() {
@@ -128,7 +126,7 @@ public class MainActivityTest {
     }
 
     @Test
-    public void openMenuNavigateToFollow(){
+    public void openMenuNavigateToFollow() {
         onView(withId(R.id.drawer_layout)).check(matches(isClosed(Gravity.LEFT))).perform(DrawerActions.open());
         onView(withId(R.id.navigation_view)).perform(NavigationViewActions.navigateTo(R.id.follow));
         onView(withId(R.id.toolbar)).check(matches(hasDescendant(withText("Follow"))));
@@ -136,7 +134,7 @@ public class MainActivityTest {
     }
 
     @Test
-    public void profilePictureIsDisplayed(){
+    public void profilePictureIsDisplayed() {
         onView(withId(R.id.drawer_layout)).check(matches(isClosed(Gravity.LEFT))).perform(DrawerActions.open());
         onView(withId(R.id.profilePicInMenu)).check(matches(withTagValue(is(MainActivity.PROFILE_PICTURE_TAG))));
     }
@@ -157,16 +155,12 @@ public class MainActivityTest {
     }
 
     @Test
-    public void navigateToPost(){
+    public void navigateToPost() {
         Intents.init();
         onView(withId(R.id.newPostButton)).perform(click());
         intended(hasComponent(PostActivity.class.getName()));
         Intents.release();
     }
-
-
-
-
 
 
 }

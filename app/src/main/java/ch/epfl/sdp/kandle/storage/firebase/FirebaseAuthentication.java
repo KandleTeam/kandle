@@ -8,11 +8,11 @@ import com.google.firebase.auth.EmailAuthProvider;
 import com.google.firebase.auth.FirebaseAuth;
 
 import ch.epfl.sdp.kandle.LoggedInUser;
-import ch.epfl.sdp.kandle.storage.caching.CachedFirestoreDatabase;
 import ch.epfl.sdp.kandle.User;
 import ch.epfl.sdp.kandle.dependencies.Authentication;
 import ch.epfl.sdp.kandle.dependencies.Database;
 import ch.epfl.sdp.kandle.dependencies.DependencyManager;
+import ch.epfl.sdp.kandle.storage.caching.CachedFirestoreDatabase;
 
 public class FirebaseAuthentication implements Authentication {
 
@@ -29,10 +29,10 @@ public class FirebaseAuthentication implements Authentication {
 
     /**
      * In this function we consider the case where the user didn't log out from the app but closed it
-     * Therefor the CurretnUser woudl be non null but the Instance of the loggedinUser would be wiped.
+     * Therefore the CurrentUser would be non null but the Instance of the loggedInUser would be wiped.
      * We then call the CachedDatabase to get the User data back to init the LoggedInUser
      *
-     * @return boolean that idicates if there is a current user logged in or not
+     * @return boolean that indicates if there is a current user logged in or not
      */
     public boolean getCurrentUserAtApplicationStart() {
         User localUser = DependencyManager.getInternalStorageSystem().getCurrentUser();

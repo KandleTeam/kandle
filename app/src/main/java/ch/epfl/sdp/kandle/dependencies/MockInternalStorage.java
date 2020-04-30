@@ -14,7 +14,7 @@ public class MockInternalStorage implements InternalStorage {
     private static User storedUser;
 
     public MockInternalStorage(boolean userSavedLocally) {
-        this.userSavedLocally = userSavedLocally;
+        MockInternalStorage.userSavedLocally = userSavedLocally;
         if (userSavedLocally) {
             storedUser = new User("loggedInUserId", "LoggedInUser", "loggedInUser@kandle.ch", "nickname", "image")
             ;
@@ -22,7 +22,7 @@ public class MockInternalStorage implements InternalStorage {
     }
 
     public MockInternalStorage() {
-        this.userSavedLocally = false;
+        userSavedLocally = false;
     }
 
     @Override

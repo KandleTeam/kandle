@@ -13,6 +13,14 @@ import ch.epfl.sdp.kandle.User;
 
 @Dao
 public interface UserDao {
+
+    String USER_TABLE_NAME = "Users";
+    String USER_ATTR_USERNAME = "username";
+    String USER_ATTR_EMAIL = "email";
+    String USER_ATTR_NICKNAME = "nickname";
+    String USER_ATTR_IMAGE_URL = "imageURL";
+    String USER_ATTR_POSTS_LIST = "postIds";
+
     @Query("SELECT * from Users")
     List<User> getUserList();
 
@@ -28,7 +36,7 @@ public interface UserDao {
     @Delete
     void deleteUser(User user);
 
-    @Query("DELETE FROM Users where id NOT IN (SELECT id from Users ORDER BY id DESC LIMIT 50)")
+    @Query("DELETE FROM Users WHERE id NOT IN (SELECT id FROM Users ORDER BY id DESC LIMIT 50)")
     void storeOnly50Users();
 
     @Query("SELECT * FROM Users WHERE id=:userId")

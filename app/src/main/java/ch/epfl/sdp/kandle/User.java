@@ -14,40 +14,43 @@ import java.util.List;
 
 import ch.epfl.sdp.kandle.storage.room.Converters;
 
-@Entity(tableName = "Users")
+import static ch.epfl.sdp.kandle.storage.room.UserDao.USER_ATTR_EMAIL;
+import static ch.epfl.sdp.kandle.storage.room.UserDao.USER_ATTR_IMAGE_URL;
+import static ch.epfl.sdp.kandle.storage.room.UserDao.USER_ATTR_NICKNAME;
+import static ch.epfl.sdp.kandle.storage.room.UserDao.USER_ATTR_POSTS_LIST;
+import static ch.epfl.sdp.kandle.storage.room.UserDao.USER_ATTR_USERNAME;
+import static ch.epfl.sdp.kandle.storage.room.UserDao.USER_TABLE_NAME;
+
+@Entity(tableName = USER_TABLE_NAME)
 public class User implements Serializable {
 
+    @PrimaryKey
     @NonNull
-    @PrimaryKey(autoGenerate = false)
     private String id;
-    @ColumnInfo(name = "username")
+    @ColumnInfo(name = USER_ATTR_USERNAME)
     private String username;
-    @ColumnInfo(name = "email")
+    @ColumnInfo(name = USER_ATTR_EMAIL)
     private String email;
-    @ColumnInfo(name = "nickname")
+    @ColumnInfo(name = USER_ATTR_NICKNAME)
     private String nickname;
-    @ColumnInfo(name = "imageURL")
+    @ColumnInfo(name = USER_ATTR_IMAGE_URL)
     private String imageURL;
-
-
-    @ColumnInfo(name = "postIds")
+    @ColumnInfo(name = USER_ATTR_POSTS_LIST)
     @TypeConverters(Converters.class)
     private List<String> postsIds;
-
 
     @Ignore
     public User() {
         // Keep fields null
     }
 
-    public User(String id, String username, String email, String nickname, String imageURL) {
+    public User(@NonNull String id, String username, String email, String nickname, String imageURL) {
         this.id = id;
         this.username = username;
         this.email = email;
         this.imageURL = imageURL;
         this.nickname = nickname;
         postsIds = new ArrayList<>();
-
     }
 
     public String getNickname() {
@@ -58,6 +61,7 @@ public class User implements Serializable {
         this.nickname = nickname;
     }
 
+    @NonNull
     public String getId() {
         return id;
     }
@@ -74,14 +78,13 @@ public class User implements Serializable {
         this.email = email;
     }
 
-    public void setImageURL(String imageURL) {
-        this.imageURL = imageURL;
-    }
-
     public String getImageURL() {
         return imageURL;
     }
 
+    public void setImageURL(String imageURL) {
+        this.imageURL = imageURL;
+    }
 
     public List<String> getPostsIds() {
         return Collections.unmodifiableList(postsIds);
@@ -99,7 +102,6 @@ public class User implements Serializable {
     public void removePostId(String postId) {
         postsIds.remove(postId);
     }
-
 
 
 }

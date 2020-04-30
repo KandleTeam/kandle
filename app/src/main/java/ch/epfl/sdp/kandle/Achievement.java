@@ -13,15 +13,15 @@ public class Achievement {
     private AchievementAdapter achievementAdapter;
     private boolean state_achievement;
 
-    public Achievement(Achievement_type type, int goal_value, AchievementAdapter adapter){
+    public Achievement(Achievement_type type, int goal_value, AchievementAdapter adapter) {
         this.type = type;
         this.goal_value = goal_value;
         this.achievementAdapter = adapter;
         state_achievement = false;
         auth = DependencyManager.getAuthSystem();
         database = DependencyManager.getDatabaseSystem();
-                //DependencyManager.getDatabaseSystem();
-             //   new CachedFirestoreDatabase();
+        //DependencyManager.getDatabaseSystem();
+        //   new CachedFirestoreDatabase();
     }
 
     public String getDescription() {
@@ -31,7 +31,7 @@ public class Achievement {
     public String getWayToComplete() {
         StringBuilder sb = new StringBuilder();
         sb.append("You need to ");
-        switch (type){
+        switch (type) {
             case FOLLOWERS:
                 return sb.append("have ").append(goal_value).append(" followers").toString();
 
@@ -46,56 +46,46 @@ public class Achievement {
 
             case NB_LIKES_POSTS_TOTAL:
                 return sb.append("have in total ").append(goal_value).append(" likes in your posts").toString();
-                //THIS CASE IS NEVER REACHED
+            //THIS CASE IS NEVER REACHED
             default:
                 return sb.toString();
         }
     }
 
-    //the number is the number of followers, followings, posts, likes achieved in one posts or in total in order to succeed one achievement
-    public enum Achievement_type {
-        FOLLOWERS,
-        FOLLOWING,
-        NB_POSTS,
-        NB_LIKES_POST,
-        NB_LIKES_POSTS_TOTAL}
-
-    public boolean checkAchievementState(){
+    public boolean checkAchievementState() {
         return state_achievement;
     }
 
-
-
-    public void checkAchievement(){
-        if(!state_achievement){
-            switch (type){
+    public void checkAchievement() {
+        if (!state_achievement) {
+            switch (type) {
                 case FOLLOWERS:
                     checkFollowers();
-                break;
+                    break;
 
                 case FOLLOWING:
                     checkFollowing();
-                break;
+                    break;
 
                 case NB_POSTS:
                     checkPosts();
-                break;
+                    break;
 
                 case NB_LIKES_POST:
                     checkOnePostLikes();
-                break;
+                    break;
 
                 case NB_LIKES_POSTS_TOTAL:
                     checkPostsLikes();
-                break;
+                    break;
             }
         }
     }
 
-    public void checkFollowers(){
+    public void checkFollowers() {
         database.userIdFollowersList(auth.getCurrentUser().getId()).addOnCompleteListener(task -> {
             if (task.isSuccessful()) {
-                if(task.getResult().size() >= goal_value){
+                if (task.getResult().size() >= goal_value) {
                     System.out.println(goal_value);
                     state_achievement = true;
                     achievementAdapter.notifyChange();
@@ -107,10 +97,10 @@ public class Achievement {
         });
     }
 
-    public void checkFollowing(){
+    public void checkFollowing() {
         database.userIdFollowingList(auth.getCurrentUser().getId()).addOnCompleteListener(task -> {
             if (task.isSuccessful()) {
-                if(task.getResult().size() >= goal_value){
+                if (task.getResult().size() >= goal_value) {
                     state_achievement = true;
                     achievementAdapter.notifyChange();
                 }
@@ -121,10 +111,10 @@ public class Achievement {
         });
     }
 
-    public void checkPosts(){
+    public void checkPosts() {
         database.getPostsByUserId(auth.getCurrentUser().getId()).addOnCompleteListener(task -> {
             if (task.isSuccessful()) {
-                if(task.getResult().size() >= goal_value){
+                if (task.getResult().size() >= goal_value) {
                     state_achievement = true;
                     achievementAdapter.notifyChange();
                 }
@@ -135,14 +125,14 @@ public class Achievement {
         });
     }
 
-    public void checkPostsLikes(){
+    public void checkPostsLikes() {
         database.getPostsByUserId(auth.getCurrentUser().getId()).addOnCompleteListener(task -> {
             if (task.isSuccessful()) {
                 int number_likes = 0;
-                for(int i = 0; i < task.getResult().size(); i++){
+                for (int i = 0; i < task.getResult().size(); i++) {
                     number_likes += task.getResult().get(i).getLikes();
                 }
-                if(number_likes >= goal_value) {
+                if (number_likes >= goal_value) {
                     state_achievement = true;
                     achievementAdapter.notifyChange();
                 }
@@ -152,11 +142,11 @@ public class Achievement {
         });
     }
 
-    public void checkOnePostLikes(){
+    public void checkOnePostLikes() {
         database.getPostsByUserId(auth.getCurrentUser().getId()).addOnCompleteListener(task -> {
             if (task.isSuccessful()) {
-                for(int i = 0; i < task.getResult().size(); i++){
-                    if(task.getResult().get(i).getLikes() >= goal_value){
+                for (int i = 0; i < task.getResult().size(); i++) {
+                    if (task.getResult().get(i).getLikes() >= goal_value) {
                         state_achievement = true;
                         i = task.getResult().size();
                         achievementAdapter.notifyChange();
@@ -167,5 +157,14 @@ public class Achievement {
                 System.out.println(task.getException().getMessage());
             }
         });
+    }
+
+    //the number is the number of followers, followings, posts, likes achieved in one posts or in total in order to succeed one achievement
+    public enum Achievement_type {
+        FOLLOWERS,
+        FOLLOWING,
+        NB_POSTS,
+        NB_LIKES_POST,
+        NB_LIKES_POSTS_TOTAL
     }
 }

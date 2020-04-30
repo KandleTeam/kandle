@@ -10,8 +10,11 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
-import com.squareup.picasso.Picasso;
+
 import androidx.fragment.app.Fragment;
+
+import com.squareup.picasso.Picasso;
+
 import ch.epfl.sdp.kandle.LoggedInUser;
 import ch.epfl.sdp.kandle.Post;
 import ch.epfl.sdp.kandle.R;
@@ -22,27 +25,24 @@ import ch.epfl.sdp.kandle.dependencies.DependencyManager;
 
 public class PostFragment extends Fragment {
 
+    public final static int POST_IMAGE = 20;
+    public final static int PROFILE_PICTURE_IMAGE = 21;
     Database database;
-
     private Post post;
     private User user;
     private Location location;
     private int distance;
-
     //Views
-    private TextView username, description, numberOfLikes, distanceView ;
+    private TextView username, description, numberOfLikes, distanceView;
     private ImageView profilePicture, postImage;
     private Button followButton;
     private ImageButton likeButton;
 
-    public final static int POST_IMAGE = 20;
-    public final static int PROFILE_PICTURE_IMAGE = 21;
-
     private PostFragment(Post post, Location location, User user, int distance) {
-       this.post = post;
-       this.location = location;
-       this.user = user;
-       this.distance = distance;
+        this.post = post;
+        this.location = location;
+        this.user = user;
+        this.distance = distance;
     }
 
     public static PostFragment newInstance(Post post, Location location, User user, int distance) {
@@ -106,7 +106,7 @@ public class PostFragment extends Fragment {
                         if (task.isSuccessful()) {
                             post.unlikePost(currentUserId);
                             numberOfLikes.setText(String.valueOf(post.getLikes()));
-                        }else{
+                        } else {
                             Toast.makeText(PostFragment.this.getContext(), R.string.no_connexion, Toast.LENGTH_SHORT).show();
                         }
                     });
@@ -116,22 +116,27 @@ public class PostFragment extends Fragment {
                         if (task.isSuccessful()) {
                             post.likePost(currentUserId);
                             numberOfLikes.setText(String.valueOf(post.getLikes()));
-                        }else{
+                        } else {
                             Toast.makeText(PostFragment.this.getContext(), "ERRROROOORORRRRRRRRRRRRRRRRRRRRRRR", Toast.LENGTH_SHORT).show();
                         }
                     });
                 }
             });
-        }   else {
+        } else {
             distanceView.setAlpha((float) 0.5);
             likeButton.setAlpha((float) 0.5);
             likeButton.setOnClickListener(v -> Toast.makeText(PostFragment.this.getContext(), "You are too far away from the post to like it", Toast.LENGTH_SHORT).show());
         }
 
-        if (post.getImageURL()!=null){
+        if (post.getImageURL() != null) {
             postImage.setVisibility(View.VISIBLE);
             postImage.setTag(POST_IMAGE);
             Picasso.get().load(post.getImageURL()).into(postImage);
+        }
+
+        if (LoggedInUser.isGuestMode()) {
+            likeButton.setClickable(false);
+            followButton.setVisibility(View.GONE);
         }
 
         return view;
