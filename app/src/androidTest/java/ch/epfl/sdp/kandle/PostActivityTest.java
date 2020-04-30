@@ -8,6 +8,7 @@ import android.net.Uri;
 import android.provider.MediaStore;
 
 import androidx.room.Room;
+import androidx.test.espresso.contrib.PickerActions;
 import androidx.test.espresso.intent.rule.IntentsTestRule;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 import androidx.test.rule.GrantPermissionRule;
@@ -135,5 +136,37 @@ public class PostActivityTest {
         onView(withId(R.id.galleryButton)).perform(click());
         onView(withId(R.id.postImage)).check(matches(withTagValue(is(PostActivity.POST_IMAGE_TAG))));
         onView(withId(R.id.postButton)).perform(click());
+    }
+
+    @Test
+    public void createEvent() {
+        onView(withId(R.id.selectEventButton)).perform(click());
+        onView(withId(R.id.dateSelector)).perform(PickerActions.setDate(2020, 12, 31));
+        onView(withId(R.id.postText)).perform(typeText("Super event"));
+        onView(withId(R.id.postButton)).perform(click());
+
+    }
+
+    @Test
+    public void eventWithImage() {
+        Intent resultData = new Intent();
+        resultData.setAction(Intent.ACTION_GET_CONTENT);
+        Uri imageUri = Uri.parse("android.resource://ch.epfl.sdp.kandle/drawable/ic_launcher_background.xml");
+        resultData.setData(imageUri);
+        Instrumentation.ActivityResult result = new Instrumentation.ActivityResult(Activity.RESULT_OK, resultData);
+        intending(hasAction(Intent.ACTION_GET_CONTENT)).respondWith(result);
+
+        onView(withId(R.id.selectEventButton)).perform(click());
+        onView(withId(R.id.galleryButton)).perform(click());
+        onView(withId(R.id.dateSelector)).perform(PickerActions.setDate(2020, 12, 31));
+        onView(withId(R.id.postText)).perform(typeText("Super event"));
+        onView(withId(R.id.postButton)).perform(click());
+
+    }
+
+    @Test
+    public void eventThenMessage() {
+        onView(withId(R.id.selectEventButton)).perform(click());
+        onView(withId(R.id.selectMessageButton)).perform(click());
     }
 }

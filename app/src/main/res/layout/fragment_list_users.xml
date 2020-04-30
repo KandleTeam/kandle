@@ -9,7 +9,7 @@
 
     <TextView
         android:id="@+id/list_user_title"
-        android:layout_width="96dp"
+        android:layout_width="wrap_content"
         android:layout_height="40dp"
         android:layout_marginLeft="50dp"
         android:layout_marginTop="10dp"

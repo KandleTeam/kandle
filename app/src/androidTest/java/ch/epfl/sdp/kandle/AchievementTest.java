@@ -59,8 +59,6 @@ public class AchievementTest {
     @Rule
     public GrantPermissionRule permissionRule = GrantPermissionRule.grant(android.Manifest.permission.ACCESS_FINE_LOCATION);
 
-    public GrantPermissionRule grantLocation = GrantPermissionRule.grant(Manifest.permission.ACCESS_FINE_LOCATION);
-
     @Rule
     public ActivityTestRule<MainActivity> intentsRule =
             new ActivityTestRule<MainActivity>(MainActivity.class,true,true){
