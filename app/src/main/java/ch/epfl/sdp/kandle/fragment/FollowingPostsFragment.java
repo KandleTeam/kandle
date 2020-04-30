@@ -4,13 +4,16 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+
 import java.util.ArrayList;
 import java.util.List;
+
 import ch.epfl.sdp.kandle.LoggedInUser;
 import ch.epfl.sdp.kandle.Post;
 import ch.epfl.sdp.kandle.PostAdapter;
@@ -25,13 +28,13 @@ public class FollowingPostsFragment extends Fragment {
 
     //TODO should not be able to delete posts other users made
 
+    View rootView;
     private String userId;
     private List<User> following;
     private List<Post> posts;
     private RecyclerView flPosts;
     private Authentication auth;
     private Database database;
-    View rootView;
 
     public FollowingPostsFragment() {
         posts = new ArrayList<>();

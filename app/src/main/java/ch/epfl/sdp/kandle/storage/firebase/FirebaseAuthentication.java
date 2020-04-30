@@ -8,11 +8,11 @@ import com.google.firebase.auth.EmailAuthProvider;
 import com.google.firebase.auth.FirebaseAuth;
 
 import ch.epfl.sdp.kandle.LoggedInUser;
-import ch.epfl.sdp.kandle.storage.caching.CachedFirestoreDatabase;
 import ch.epfl.sdp.kandle.User;
 import ch.epfl.sdp.kandle.dependencies.Authentication;
 import ch.epfl.sdp.kandle.dependencies.Database;
 import ch.epfl.sdp.kandle.dependencies.DependencyManager;
+import ch.epfl.sdp.kandle.storage.caching.CachedFirestoreDatabase;
 
 public class FirebaseAuthentication implements Authentication {
 

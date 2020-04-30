@@ -3,27 +3,24 @@ package ch.epfl.sdp.kandle;
 import android.app.Activity;
 import android.content.ContentValues;
 import android.content.Intent;
-import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.provider.MediaStore;
-import android.util.Log;
 import android.widget.ImageView;
 
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
 import static android.app.Activity.RESULT_OK;
-import static androidx.constraintlayout.widget.Constraints.TAG;
 
 public class PostCamera {
 
+    protected static final int PERMISSIONS_REQUEST_CODE = 42;
+    protected static final int PHOTO_REQUEST = 0;
     protected Activity activity;
     protected Uri imageUri;
-    protected static final int PERMISSIONS_REQUEST_CODE = 42;
     ImageView imageView;
-    protected static final int PHOTO_REQUEST = 0;
     ContentValues values;
     private String[] permissions = {"android.permission.CAMERA", "android.permission.WRITE_EXTERNAL_STORAGE"};
 

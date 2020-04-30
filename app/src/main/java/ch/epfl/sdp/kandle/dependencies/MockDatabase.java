@@ -209,7 +209,6 @@ public class MockDatabase implements Database {
     }
 
 
-
     @Override
     public Task<Void> updateNickname(String nickname) {
         TaskCompletionSource<Void> source = new TaskCompletionSource<>();
@@ -218,7 +217,6 @@ public class MockDatabase implements Database {
         source.setResult(null);
         return source.getTask();
     }
-
 
 
     @Override

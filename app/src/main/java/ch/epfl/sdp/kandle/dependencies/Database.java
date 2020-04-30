@@ -40,6 +40,7 @@ public interface Database {
 
     /**
      * Asynchronously retrieves maxNumber of users that have a username matching prefix
+     *
      * @param prefix
      * @param maxNumber
      * @return A list of user of at most maxNUmber length that have their usernames matching the prefix
@@ -48,6 +49,7 @@ public interface Database {
 
     /**
      * Asynchronously adds the userFollowing to the follow list of the userFollowed
+     *
      * @param userFollowing
      * @param userFollowed
      * @return A void task
@@ -56,6 +58,7 @@ public interface Database {
 
     /**
      * Asynchronously removes the userUnFollowing from the follow list of the userUnFollowed
+     *
      * @param userUnFollowing
      * @param userUnFollowed
      * @return A void task
@@ -64,6 +67,7 @@ public interface Database {
 
     /**
      * Asynchronously retrieves all the userIds that the target user is following
+     *
      * @param userId The id of the target user
      * @return A list of userIds that the target user follows
      */
@@ -71,6 +75,7 @@ public interface Database {
 
     /**
      * Asynchronously retrieves all the user ids that are following the target user
+     *
      * @param userId The id of the target user
      * @return A list of userIds that are following the target user
      */
@@ -78,6 +83,7 @@ public interface Database {
 
     /**
      * Asynchronously retrieves all the users that the target user is following
+     *
      * @param userId The id of the target user
      * @return A list of user that the target user follows
      */
@@ -85,6 +91,7 @@ public interface Database {
 
     /**
      * Asynchronously retrieves all the users that are following the target user
+     *
      * @param userId The id of the target user
      * @return A list of user that are following the target user
      */
@@ -92,6 +99,7 @@ public interface Database {
 
     /**
      * Asynchronously updates the current users profil picture URI
+     *
      * @param uri
      * @return A void task
      */
@@ -99,6 +107,7 @@ public interface Database {
 
     /**
      * Asynchronously updates the current users nickname
+     *
      * @param nickname
      * @return A void task
      */
@@ -106,6 +115,7 @@ public interface Database {
 
     /**
      * Asynchronously adds a new post to the database
+     *
      * @param p The post to add
      * @return A void task
      */
@@ -113,7 +123,8 @@ public interface Database {
 
     /**
      * Asynchronously edits a already present post in the database
-     * @param p The updated post
+     *
+     * @param p      The updated post
      * @param postId The Id of the post to update in the database
      * @return A void task
      */
@@ -121,6 +132,7 @@ public interface Database {
 
     /**
      * Asynchronously deletes a post in the database
+     *
      * @param p The post to delete in the database
      * @return A void task
      */
@@ -128,6 +140,7 @@ public interface Database {
 
     /**
      * Asynchronously likes a post with the userId
+     *
      * @param userId The user that liked the post
      * @param postId The post that has been liked
      * @return A void task
@@ -136,6 +149,7 @@ public interface Database {
 
     /**
      * Asynchronously unlikes a post with the userId
+     *
      * @param userId The user that unliked the post
      * @param postId The post that has been unliked
      * @return A void task
@@ -144,6 +158,7 @@ public interface Database {
 
     /**
      * Asynchronously retrieves all the users that liked the given post
+     *
      * @param postId The id of the concerned post
      * @return A list of user that liked the post with the corresponding postId
      */
@@ -151,6 +166,7 @@ public interface Database {
 
     /**
      * Asynchronously retrives all the posts that a user has made
+     *
      * @param userId
      * @return A list of post that were created by the user with the corresponding userId
      */
@@ -158,15 +174,17 @@ public interface Database {
 
     /**
      * Asynchronously retrives all the nearby post
-     * @param latitude The latitude of the zone center
+     *
+     * @param latitude  The latitude of the zone center
      * @param longitude The longitude of the zone center
-     * @param distance The radius of the zone in which the post are retrieved
+     * @param distance  The radius of the zone in which the post are retrieved
      * @return A list of nearby post
      */
     Task<List<Post>> getNearbyPosts(double latitude, double longitude, double distance);
 
     /**
      * Asynchronously retrieves the post with the corresponding postId
+     *
      * @param postId The id of the post to retrieve
      * @return A post with the corresponding Id
      */

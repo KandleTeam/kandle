@@ -15,22 +15,22 @@ import java.util.UUID;
 
 import ch.epfl.sdp.kandle.storage.room.Converters;
 
-import static ch.epfl.sdp.kandle.Storage.room.PostDao.POSTS_TABLE_NAME;
-import static ch.epfl.sdp.kandle.Storage.room.PostDao.POST_ATTR_DATE;
-import static ch.epfl.sdp.kandle.Storage.room.PostDao.POST_ATTR_DESCRIPTION;
-import static ch.epfl.sdp.kandle.Storage.room.PostDao.POST_ATTR_EDITABLE;
-import static ch.epfl.sdp.kandle.Storage.room.PostDao.POST_ATTR_IMAGE_URL;
-import static ch.epfl.sdp.kandle.Storage.room.PostDao.POST_ATTR_LATITUDE;
-import static ch.epfl.sdp.kandle.Storage.room.PostDao.POST_ATTR_LIKERS_LIST;
-import static ch.epfl.sdp.kandle.Storage.room.PostDao.POST_ATTR_LONGITUDE;
-import static ch.epfl.sdp.kandle.Storage.room.PostDao.POST_ATTR_USER_ID;
+import static ch.epfl.sdp.kandle.storage.room.PostDao.POSTS_TABLE_NAME;
+import static ch.epfl.sdp.kandle.storage.room.PostDao.POST_ATTR_DATE;
+import static ch.epfl.sdp.kandle.storage.room.PostDao.POST_ATTR_DESCRIPTION;
+import static ch.epfl.sdp.kandle.storage.room.PostDao.POST_ATTR_EDITABLE;
+import static ch.epfl.sdp.kandle.storage.room.PostDao.POST_ATTR_IMAGE_URL;
+import static ch.epfl.sdp.kandle.storage.room.PostDao.POST_ATTR_LATITUDE;
+import static ch.epfl.sdp.kandle.storage.room.PostDao.POST_ATTR_LIKERS_LIST;
+import static ch.epfl.sdp.kandle.storage.room.PostDao.POST_ATTR_LONGITUDE;
+import static ch.epfl.sdp.kandle.storage.room.PostDao.POST_ATTR_USER_ID;
 
 @Entity(tableName = POSTS_TABLE_NAME)
 public class Post {
     @Ignore
     public static final int EDITABLE_TIME = 5; //you can edit your posts within 5 minutes
     @Ignore
-    public static final int MILLISECS_PER_MINUTE = 60000;
+    public static final int MILLISECONDS_PER_MINUTE = 60000;
 
     @PrimaryKey
     @NonNull
@@ -168,7 +168,7 @@ public class Post {
     }
 
     public boolean isEditable() {
-        return  (new Date().getTime() - this.getDate().getTime() / MILLISECS_PER_MINUTE) < EDITABLE_TIME;
+        return (new Date().getTime() - this.getDate().getTime() / MILLISECONDS_PER_MINUTE) < EDITABLE_TIME;
     }
 
     public void setEditable(Boolean editable) {

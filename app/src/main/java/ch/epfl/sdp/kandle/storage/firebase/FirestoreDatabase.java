@@ -1,7 +1,5 @@
 package ch.epfl.sdp.kandle.storage.firebase;
 
-import android.util.Log;
-
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.tasks.Task;
 import com.google.android.gms.tasks.TaskCompletionSource;
@@ -300,7 +298,7 @@ public class FirestoreDatabase implements Database {
                             source.setException(new Exception(task2.getException().getMessage()));
                         }
                     });
-                }else{
+                } else {
                     source.setResult(new ArrayList<User>());
                 }
             } else {

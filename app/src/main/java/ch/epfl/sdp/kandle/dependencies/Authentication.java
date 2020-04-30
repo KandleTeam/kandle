@@ -1,7 +1,6 @@
 package ch.epfl.sdp.kandle.dependencies;
 
 import com.google.android.gms.tasks.Task;
-import com.google.firebase.auth.AuthResult;
 
 import ch.epfl.sdp.kandle.User;
 

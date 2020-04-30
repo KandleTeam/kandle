@@ -41,9 +41,9 @@ public class SettingsFragment extends Fragment {
         auth = DependencyManager.getAuthSystem();
 
         mModifyPasswordLayout.setOnClickListener(v ->
-            extendOnClick(mModifyPasswordContent, mExpandPassword)
+                extendOnClick(mModifyPasswordContent, mExpandPassword)
         );
-        if(LoggedInUser.isGuestMode()) {
+        if (LoggedInUser.isGuestMode()) {
             mModifyPasswordLayout.setVisibility(View.GONE);
         }
 

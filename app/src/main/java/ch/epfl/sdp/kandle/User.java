@@ -14,12 +14,12 @@ import java.util.List;
 
 import ch.epfl.sdp.kandle.storage.room.Converters;
 
-import static ch.epfl.sdp.kandle.Storage.room.UserDao.USER_ATTR_EMAIL;
-import static ch.epfl.sdp.kandle.Storage.room.UserDao.USER_ATTR_IMAGE_URL;
-import static ch.epfl.sdp.kandle.Storage.room.UserDao.USER_ATTR_NICKNAME;
-import static ch.epfl.sdp.kandle.Storage.room.UserDao.USER_ATTR_POSTS_LIST;
-import static ch.epfl.sdp.kandle.Storage.room.UserDao.USER_ATTR_USERNAME;
-import static ch.epfl.sdp.kandle.Storage.room.UserDao.USER_TABLE_NAME;
+import static ch.epfl.sdp.kandle.storage.room.UserDao.USER_ATTR_EMAIL;
+import static ch.epfl.sdp.kandle.storage.room.UserDao.USER_ATTR_IMAGE_URL;
+import static ch.epfl.sdp.kandle.storage.room.UserDao.USER_ATTR_NICKNAME;
+import static ch.epfl.sdp.kandle.storage.room.UserDao.USER_ATTR_POSTS_LIST;
+import static ch.epfl.sdp.kandle.storage.room.UserDao.USER_ATTR_USERNAME;
+import static ch.epfl.sdp.kandle.storage.room.UserDao.USER_TABLE_NAME;
 
 @Entity(tableName = USER_TABLE_NAME)
 public class User implements Serializable {

@@ -4,7 +4,6 @@ import android.content.Context;
 
 import androidx.annotation.NonNull;
 
-
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -22,9 +21,9 @@ import ch.epfl.sdp.kandle.dependencies.InternalStorage;
 @SuppressWarnings("ResultOfMethodCallIgnored")
 public class InternalStorageHandler implements InternalStorage {
 
+    private static final InternalStorageHandler INSTANCE = new InternalStorageHandler();
     private final String USER_DATA_PATH = "userData";
     private final Context context;
-    private static final InternalStorageHandler INSTANCE = new InternalStorageHandler();
 
     public InternalStorageHandler() {
         this.context = Kandle.getContext();

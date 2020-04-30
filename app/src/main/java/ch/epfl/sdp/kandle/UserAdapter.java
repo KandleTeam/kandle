@@ -9,30 +9,23 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.RecyclerView;
+
 import com.squareup.picasso.Picasso;
 
 import java.util.List;
 
-import androidx.annotation.NonNull;
-import androidx.recyclerview.widget.RecyclerView;
-
-import ch.epfl.sdp.kandle.storage.caching.CachedFirestoreDatabase;
 import ch.epfl.sdp.kandle.dependencies.Authentication;
 import ch.epfl.sdp.kandle.dependencies.DependencyManager;
+import ch.epfl.sdp.kandle.storage.caching.CachedFirestoreDatabase;
 import de.hdodenhof.circleimageview.CircleImageView;
 
 public class UserAdapter extends RecyclerView.Adapter<UserAdapter.ViewHolder> {
 
     public final static int PROFILE_PICTURE_TAG = 9;
-
-
-    public interface ClickListener {
-        void onItemClick(int position, View v);
-    }
-
     private static ClickListener clickListener;
     private List<User> mUsers;
-
     public UserAdapter(List<User> mUsers) {
         this.mUsers = mUsers;
     }
@@ -40,7 +33,6 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.ViewHolder> {
     public void setOnItemClickListener(ClickListener clickListener) {
         UserAdapter.clickListener = clickListener;
     }
-
 
     @NonNull
     @Override
@@ -78,7 +70,7 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.ViewHolder> {
         final CachedFirestoreDatabase database = new CachedFirestoreDatabase();
 
 
-        Log.i("TAG",Thread.currentThread().getName());
+        Log.i("TAG", Thread.currentThread().getName());
         if (user.getId().equals(currentUser.getId())) {
             holder.mFollowBtn.setVisibility(View.GONE);
         } else {
@@ -134,6 +126,10 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.ViewHolder> {
     @Override
     public int getItemCount() {
         return mUsers.size();
+    }
+
+    public interface ClickListener {
+        void onItemClick(int position, View v);
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {

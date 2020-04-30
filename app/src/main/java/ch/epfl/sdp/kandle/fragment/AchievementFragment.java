@@ -18,9 +18,9 @@ import ch.epfl.sdp.kandle.Achievement;
 import ch.epfl.sdp.kandle.AchievementAdapter;
 import ch.epfl.sdp.kandle.R;
 import ch.epfl.sdp.kandle.dependencies.Authentication;
-import ch.epfl.sdp.kandle.storage.caching.CachedFirestoreDatabase;
 import ch.epfl.sdp.kandle.dependencies.Database;
 import ch.epfl.sdp.kandle.dependencies.DependencyManager;
+import ch.epfl.sdp.kandle.storage.caching.CachedFirestoreDatabase;
 
 public class AchievementFragment extends Fragment {
 
@@ -29,7 +29,6 @@ public class AchievementFragment extends Fragment {
     private List<Achievement> achievements;
     private RecyclerView flAchievements;
     private View view;
-
 
 
     public AchievementFragment() {
@@ -55,9 +54,9 @@ public class AchievementFragment extends Fragment {
         return view;
     }
 
-    private void createAchievements(int numberOfAchievements, int scaleIncrementation, Achievement.Achievement_type typeOfAchievement, AchievementAdapter achievementAdapter){
-        for(int i = 1; i < numberOfAchievements + 1; i++){
-            achievements.add(new Achievement(typeOfAchievement,  i * scaleIncrementation, achievementAdapter));
+    private void createAchievements(int numberOfAchievements, int scaleIncrementation, Achievement.Achievement_type typeOfAchievement, AchievementAdapter achievementAdapter) {
+        for (int i = 1; i < numberOfAchievements + 1; i++) {
+            achievements.add(new Achievement(typeOfAchievement, i * scaleIncrementation, achievementAdapter));
         }
     }
 

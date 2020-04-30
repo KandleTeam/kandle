@@ -49,19 +49,11 @@ import java.util.List;
 import ch.epfl.sdp.kandle.LoggedInUser;
 import ch.epfl.sdp.kandle.Post;
 import ch.epfl.sdp.kandle.R;
-import ch.epfl.sdp.kandle.Storage.caching.CachedFirestoreDatabase;
-import androidx.annotation.NonNull;
-import androidx.core.content.res.ResourcesCompat;
-import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentTransaction;
-
-import ch.epfl.sdp.kandle.storage.caching.CachedFirestoreDatabase;
 import ch.epfl.sdp.kandle.activity.PostActivity;
 import ch.epfl.sdp.kandle.dependencies.Authentication;
 import ch.epfl.sdp.kandle.dependencies.DependencyManager;
 import ch.epfl.sdp.kandle.dependencies.MyLocationProvider;
-import ch.epfl.sdp.kandle.Post;
+import ch.epfl.sdp.kandle.storage.caching.CachedFirestoreDatabase;
 
 public class MapViewFragment extends Fragment implements OnMapReadyCallback, PermissionsListener {
 

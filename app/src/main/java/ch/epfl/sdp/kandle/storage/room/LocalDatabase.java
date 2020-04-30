@@ -4,17 +4,15 @@ import androidx.room.Database;
 import androidx.room.Room;
 import androidx.room.RoomDatabase;
 
-
 import ch.epfl.sdp.kandle.Kandle;
 import ch.epfl.sdp.kandle.Post;
 import ch.epfl.sdp.kandle.User;
 
 @Database(entities = {User.class, Post.class}, exportSchema = false, version = 1)
 public abstract class LocalDatabase extends RoomDatabase {
-    private static final String DB_NAME = "kandle_local_db";
     public static final int MAX_USER_IN_DB = 50;
     public static final int MAX_POST_IN_DB = 50;
-
+    private static final String DB_NAME = "kandle_local_db";
     private static LocalDatabase instance;
 
     public static synchronized LocalDatabase getInstance() {

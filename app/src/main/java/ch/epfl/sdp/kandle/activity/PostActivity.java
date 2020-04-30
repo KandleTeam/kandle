@@ -12,21 +12,21 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import androidx.appcompat.app.AppCompatActivity;
+
 import com.squareup.picasso.Picasso;
 
 import java.util.Date;
 
-import androidx.appcompat.app.AppCompatActivity;
-
+import ch.epfl.sdp.kandle.Post;
 import ch.epfl.sdp.kandle.PostCamera;
 import ch.epfl.sdp.kandle.R;
-import ch.epfl.sdp.kandle.fragment.YourPostListFragment;
-import ch.epfl.sdp.kandle.imagePicker.ImagePicker;
 import ch.epfl.sdp.kandle.dependencies.Authentication;
-import ch.epfl.sdp.kandle.storage.caching.CachedFirestoreDatabase;
 import ch.epfl.sdp.kandle.dependencies.Database;
 import ch.epfl.sdp.kandle.dependencies.DependencyManager;
-import ch.epfl.sdp.kandle.Post;
+import ch.epfl.sdp.kandle.fragment.YourPostListFragment;
+import ch.epfl.sdp.kandle.imagePicker.ImagePicker;
+import ch.epfl.sdp.kandle.storage.caching.CachedFirestoreDatabase;
 
 
 public class PostActivity extends AppCompatActivity {

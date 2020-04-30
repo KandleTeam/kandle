@@ -10,14 +10,12 @@ import android.widget.ImageView;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-
 import com.google.android.gms.tasks.Task;
 
-
 import ch.epfl.sdp.kandle.R;
-import ch.epfl.sdp.kandle.storage.caching.CachedFirestoreDatabase;
-import ch.epfl.sdp.kandle.imagePicker.ProfilePicPicker;
 import ch.epfl.sdp.kandle.dependencies.Database;
+import ch.epfl.sdp.kandle.imagePicker.ProfilePicPicker;
+import ch.epfl.sdp.kandle.storage.caching.CachedFirestoreDatabase;
 
 //TODO: handle case when user leaves activity before saving
 
@@ -52,8 +50,7 @@ public class CustomAccountActivity extends AppCompatActivity {
             String nickname = m_nickname.getText().toString().trim();
             if (imageUri == null && nickname.length() == 0) {
                 startMainActivity();
-            }
-            else {
+            } else {
                 ProgressDialog pd = new ProgressDialog(CustomAccountActivity.this);
                 pd.setMessage("Finalizing your account");
                 pd.show();
@@ -64,8 +61,7 @@ public class CustomAccountActivity extends AppCompatActivity {
                     if (nickname.length() > 0) {
                         task.continueWith(t -> database.updateNickname(nickname));
                     }
-                }
-                else {
+                } else {
                     task = database.updateNickname(nickname);
                 }
 
@@ -82,7 +78,6 @@ public class CustomAccountActivity extends AppCompatActivity {
         startActivity(new Intent(getApplicationContext(), MainActivity.class));
         finish();
     }
-
 
 
     @Override
