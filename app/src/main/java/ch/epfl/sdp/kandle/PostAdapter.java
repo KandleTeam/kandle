@@ -43,6 +43,9 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder> {
 
     public final static int POST_IMAGE = 10;
 
+    public final int EDITABLE_TIME = 5; //you can edit your posts within 5 minutes
+    public final int MILISEC_IN_MINUTE = 60000;
+
     private static ClickListener clickListener;
     private List<Post> mPosts;
     private Context mContext;
@@ -110,6 +113,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder> {
             postImageView.setVisibility(View.VISIBLE);
             postImageView.setTag(POST_IMAGE);
             Picasso.get().load(post.getImageURL()).into(postImageView);
+
         }
         database.getUserById(post.getUserId()).addOnCompleteListener(task -> {
             if (task.isSuccessful() && task.getResult() != null) {
@@ -123,10 +127,13 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder> {
 
                 //milliseconds
                 long different = new Date().getTime() - post.getDate().getTime();
-                long minutes = different / 60000;
-                if(user.getId().equals(userId)){
+                long minutes = different / MILISEC_IN_MINUTE;
+                if (user.getId().equals(userId)) {
                     deletePostView.setVisibility(View.VISIBLE);
-                    if (minutes < 6) {
+                    if (minutes >= EDITABLE_TIME) {
+                        post.setEditable(false);
+                    }
+                    if (post.isEditable()) {
                         editPostView.setVisibility(View.VISIBLE);
                     }
                 }
@@ -134,7 +141,6 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder> {
 
             }
         });
-
 
 
         holder.mlikeButton.setOnClickListener(v -> {
