@@ -37,7 +37,7 @@ public interface PostDao {
     @Delete
     void deletePost(Post post);
 
-    @Query("DELETE FROM Posts where date NOT IN (SELECT date FROM Posts ORDER BY date DESC LIMIT 50)")
+    @Query("DELETE FROM Posts WHERE date NOT IN (SELECT date FROM Posts ORDER BY date DESC LIMIT 50)")
     void storeOnly50Posts();
 
     @Query("SELECT * FROM Posts WHERE postId=:postId")

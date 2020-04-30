@@ -14,24 +14,34 @@ import java.util.List;
 import java.util.UUID;
 
 import ch.epfl.sdp.kandle.Storage.room.Converters;
-import ch.epfl.sdp.kandle.Storage.room.PostDao;
 
-import static ch.epfl.sdp.kandle.Storage.room.PostDao.*;
+import static ch.epfl.sdp.kandle.Storage.room.PostDao.POSTS_TABLE_NAME;
+import static ch.epfl.sdp.kandle.Storage.room.PostDao.POST_ATTR_DATE;
+import static ch.epfl.sdp.kandle.Storage.room.PostDao.POST_ATTR_DESCRIPTION;
+import static ch.epfl.sdp.kandle.Storage.room.PostDao.POST_ATTR_EDITABLE;
+import static ch.epfl.sdp.kandle.Storage.room.PostDao.POST_ATTR_IMAGE_URL;
+import static ch.epfl.sdp.kandle.Storage.room.PostDao.POST_ATTR_LATITUDE;
+import static ch.epfl.sdp.kandle.Storage.room.PostDao.POST_ATTR_LIKERS_LIST;
+import static ch.epfl.sdp.kandle.Storage.room.PostDao.POST_ATTR_LONGITUDE;
+import static ch.epfl.sdp.kandle.Storage.room.PostDao.POST_ATTR_USER_ID;
 
 @Entity(tableName = POSTS_TABLE_NAME)
 public class Post {
 
 
-    @PrimaryKey @NonNull
+    @PrimaryKey
+    @NonNull
     private String postId;
 
-    @ColumnInfo(name = POST_ATTR_USER_ID) @NonNull
+    @ColumnInfo(name = POST_ATTR_USER_ID)
+    @NonNull
     private String userId;
     @ColumnInfo(name = POST_ATTR_LATITUDE)
     private double latitude;
     @ColumnInfo(name = POST_ATTR_LONGITUDE)
     private double longitude;
-    @ColumnInfo(name = POST_ATTR_LIKERS_LIST) @TypeConverters(Converters.class)
+    @ColumnInfo(name = POST_ATTR_LIKERS_LIST)
+    @TypeConverters(Converters.class)
     private List<String> likers;
     @ColumnInfo(name = POST_ATTR_IMAGE_URL)
     private String imageURL;
@@ -39,7 +49,8 @@ public class Post {
     private String description;
     @ColumnInfo(name = POST_ATTR_EDITABLE)
     private boolean editable;
-    @ColumnInfo(name = POST_ATTR_DATE) @TypeConverters(Converters.class)
+    @ColumnInfo(name = POST_ATTR_DATE)
+    @TypeConverters(Converters.class)
     private Date date;
 
     @Ignore
