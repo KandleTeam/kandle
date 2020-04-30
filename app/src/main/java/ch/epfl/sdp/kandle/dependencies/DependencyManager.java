@@ -1,12 +1,12 @@
 package ch.epfl.sdp.kandle.dependencies;
 
-import ch.epfl.sdp.kandle.Storage.firebase.CloudStorage;
-import ch.epfl.sdp.kandle.Storage.firebase.FirebaseAuthentication;
-import ch.epfl.sdp.kandle.Storage.firebase.FirestoreDatabase;
-import ch.epfl.sdp.kandle.Storage.room.LocalDatabase;
+import ch.epfl.sdp.kandle.storage.firebase.CloudStorage;
+import ch.epfl.sdp.kandle.storage.firebase.FirebaseAuthentication;
+import ch.epfl.sdp.kandle.storage.firebase.FirestoreDatabase;
+import ch.epfl.sdp.kandle.storage.room.LocalDatabase;
 import ch.epfl.sdp.kandle.network.NetworkState;
 import ch.epfl.sdp.kandle.network.UserNetworkStatus;
-import ch.epfl.sdp.kandle.Storage.caching.InternalStorageHandler;
+import ch.epfl.sdp.kandle.storage.caching.InternalStorageHandler;
 
 public final class DependencyManager {
 

@@ -12,7 +12,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import ch.epfl.sdp.kandle.Storage.room.Converters;
+import ch.epfl.sdp.kandle.storage.room.Converters;
 
 import static ch.epfl.sdp.kandle.Storage.room.UserDao.USER_ATTR_EMAIL;
 import static ch.epfl.sdp.kandle.Storage.room.UserDao.USER_ATTR_IMAGE_URL;

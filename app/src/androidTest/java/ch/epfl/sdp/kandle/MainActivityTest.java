@@ -15,7 +15,7 @@ import org.junit.Test;
 
 import java.util.HashMap;
 
-import ch.epfl.sdp.kandle.Storage.room.LocalDatabase;
+import ch.epfl.sdp.kandle.storage.room.LocalDatabase;
 import ch.epfl.sdp.kandle.activity.MainActivity;
 import ch.epfl.sdp.kandle.activity.PostActivity;
 import ch.epfl.sdp.kandle.dependencies.DependencyManager;
@@ -24,6 +24,12 @@ import ch.epfl.sdp.kandle.dependencies.MockDatabase;
 import ch.epfl.sdp.kandle.dependencies.MockInternalStorage;
 import ch.epfl.sdp.kandle.dependencies.MockNetwork;
 import ch.epfl.sdp.kandle.dependencies.MockStorage;
+
+import org.junit.After;
+import org.junit.Rule;
+import org.junit.Test;
+
+import java.util.HashMap;
 
 import static androidx.test.espresso.Espresso.onView;
 import static androidx.test.espresso.action.ViewActions.click;
@@ -44,7 +50,7 @@ public class MainActivityTest {
     public GrantPermissionRule permissionRule = GrantPermissionRule.grant(android.Manifest.permission.ACCESS_FINE_LOCATION);
     @Rule
     public GrantPermissionRule grantLocation = GrantPermissionRule.grant(android.Manifest.permission.ACCESS_FINE_LOCATION);
-    
+
     private LocalDatabase localDatabase;
 
     @Rule

@@ -23,6 +23,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+
+import ch.epfl.sdp.kandle.storage.caching.CachedFirestoreDatabase;
 import ch.epfl.sdp.kandle.Post;
 import ch.epfl.sdp.kandle.PostAdapter;
 import ch.epfl.sdp.kandle.R;
@@ -34,7 +36,7 @@ import ch.epfl.sdp.kandle.dependencies.DependencyManager;
 public class YourPostListFragment extends Fragment {
 
 
-    public final static int POST_IMAGE = 10;
+    public static final int POST_IMAGE = 10;
     private String userId;
     private List<Post> posts;
     private Authentication auth;

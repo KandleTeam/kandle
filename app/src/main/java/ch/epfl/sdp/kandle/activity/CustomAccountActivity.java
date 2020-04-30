@@ -15,7 +15,7 @@ import com.google.android.gms.tasks.Task;
 
 
 import ch.epfl.sdp.kandle.R;
-import ch.epfl.sdp.kandle.Storage.caching.CachedFirestoreDatabase;
+import ch.epfl.sdp.kandle.storage.caching.CachedFirestoreDatabase;
 import ch.epfl.sdp.kandle.imagePicker.ProfilePicPicker;
 import ch.epfl.sdp.kandle.dependencies.Database;
 

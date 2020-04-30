@@ -1,16 +1,5 @@
 package ch.epfl.sdp.kandle;
 
-import android.widget.TextView;
-
-import com.google.android.gms.tasks.Task;
-import com.google.android.gms.tasks.TaskCompletionSource;
-
-import java.security.InvalidParameterException;
-import java.util.Date;
-import java.util.List;
-
-import ch.epfl.sdp.kandle.Storage.caching.CachedFirestoreDatabase;
-import ch.epfl.sdp.kandle.Storage.firebase.FirestoreDatabase;
 import ch.epfl.sdp.kandle.dependencies.Authentication;
 import ch.epfl.sdp.kandle.dependencies.Database;
 import ch.epfl.sdp.kandle.dependencies.DependencyManager;

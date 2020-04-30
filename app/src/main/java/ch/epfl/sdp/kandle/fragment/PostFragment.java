@@ -106,6 +106,8 @@ public class PostFragment extends Fragment {
                         if (task.isSuccessful()) {
                             post.unlikePost(currentUserId);
                             numberOfLikes.setText(String.valueOf(post.getLikes()));
+                        }else{
+                            Toast.makeText(PostFragment.this.getContext(), R.string.no_connexion, Toast.LENGTH_SHORT).show();
                         }
                     });
 
@@ -114,6 +116,8 @@ public class PostFragment extends Fragment {
                         if (task.isSuccessful()) {
                             post.likePost(currentUserId);
                             numberOfLikes.setText(String.valueOf(post.getLikes()));
+                        }else{
+                            Toast.makeText(PostFragment.this.getContext(), "ERRROROOORORRRRRRRRRRRRRRRRRRRRRRR", Toast.LENGTH_SHORT).show();
                         }
                     });
                 }

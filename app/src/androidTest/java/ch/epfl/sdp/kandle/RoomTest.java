@@ -14,7 +14,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
-import ch.epfl.sdp.kandle.Storage.room.LocalDatabase;
+import ch.epfl.sdp.kandle.storage.room.LocalDatabase;
 import ch.epfl.sdp.kandle.activity.MainActivity;
 import ch.epfl.sdp.kandle.dependencies.DependencyManager;
 import ch.epfl.sdp.kandle.dependencies.MockAuthentication;
@@ -106,7 +106,7 @@ public class RoomTest {
             localDatabase.postDao().insertPost(new Post("Hello", null, new Date(), LoggedInUser.getInstance().getId(), "post" + i + "Id"));
         }
         List<Post> allPostsLocally = localDatabase.postDao().getPostList();
-        Assert.assertEquals(51,allPostsLocally.size() );
+        Assert.assertEquals(52,allPostsLocally.size() );
         localDatabase.postDao().storeOnly50Posts();
         allPostsLocally = localDatabase.postDao().getPostList();
         Assert.assertEquals(50, allPostsLocally.size());

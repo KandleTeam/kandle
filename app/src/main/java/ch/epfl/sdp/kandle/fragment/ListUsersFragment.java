@@ -18,7 +18,7 @@ import ch.epfl.sdp.kandle.R;
 import ch.epfl.sdp.kandle.User;
 import ch.epfl.sdp.kandle.UserAdapter;
 import ch.epfl.sdp.kandle.dependencies.Authentication;
-import ch.epfl.sdp.kandle.Storage.caching.CachedFirestoreDatabase;
+import ch.epfl.sdp.kandle.storage.caching.CachedFirestoreDatabase;
 import ch.epfl.sdp.kandle.dependencies.Database;
 import ch.epfl.sdp.kandle.dependencies.DependencyManager;
 
@@ -64,8 +64,7 @@ public class ListUsersFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_list_users, container, false);
 
         getViews(view);
-        auth = DependencyManager.getAuthSystem();
-        database = new CachedFirestoreDatabase();
+
 
         mNumber.setText(number);
         mTitle.setText(title);

@@ -21,6 +21,8 @@ import com.squareup.picasso.Picasso;
 import ch.epfl.sdp.kandle.LoggedInUser;
 import ch.epfl.sdp.kandle.R;
 import ch.epfl.sdp.kandle.dependencies.Authentication;
+import ch.epfl.sdp.kandle.storage.caching.CachedFirestoreDatabase;
+import ch.epfl.sdp.kandle.dependencies.Database;
 import ch.epfl.sdp.kandle.dependencies.DependencyManager;
 import ch.epfl.sdp.kandle.fragment.AboutFragment;
 import ch.epfl.sdp.kandle.fragment.AchievementFragment;

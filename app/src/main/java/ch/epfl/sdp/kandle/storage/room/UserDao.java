@@ -1,8 +1,9 @@
-package ch.epfl.sdp.kandle.Storage.room;
+package ch.epfl.sdp.kandle.storage.room;
 
 import androidx.room.Dao;
 import androidx.room.Delete;
 import androidx.room.Insert;
+import androidx.room.OnConflictStrategy;
 import androidx.room.Query;
 import androidx.room.Update;
 
@@ -23,8 +24,11 @@ public interface UserDao {
     @Query("SELECT * from Users")
     List<User> getUserList();
 
-    @Insert
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     void insertUser(User user);
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    void insertAllUsers(List<User> users);
 
     @Update
     void updateUser(User user);

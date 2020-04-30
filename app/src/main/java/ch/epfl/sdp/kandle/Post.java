@@ -13,7 +13,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
-import ch.epfl.sdp.kandle.Storage.room.Converters;
+import ch.epfl.sdp.kandle.storage.room.Converters;
 
 import static ch.epfl.sdp.kandle.Storage.room.PostDao.POSTS_TABLE_NAME;
 import static ch.epfl.sdp.kandle.Storage.room.PostDao.POST_ATTR_DATE;
@@ -27,7 +27,10 @@ import static ch.epfl.sdp.kandle.Storage.room.PostDao.POST_ATTR_USER_ID;
 
 @Entity(tableName = POSTS_TABLE_NAME)
 public class Post {
-
+    @Ignore
+    public static final int EDITABLE_TIME = 5; //you can edit your posts within 5 minutes
+    @Ignore
+    public static final int MILLISECS_PER_MINUTE = 60000;
 
     @PrimaryKey
     @NonNull
@@ -165,7 +168,7 @@ public class Post {
     }
 
     public boolean isEditable() {
-        return editable;
+        return  (new Date().getTime() - this.getDate().getTime() / MILLISECS_PER_MINUTE) < EDITABLE_TIME;
     }
 
     public void setEditable(Boolean editable) {
