@@ -3,8 +3,8 @@ package ch.epfl.sdp.kandle;
 import android.app.Activity;
 import android.app.Instrumentation;
 import android.content.Intent;
-import android.content.res.Resources;
 import android.net.Uri;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 
@@ -21,34 +21,23 @@ import androidx.test.espresso.contrib.NavigationViewActions;
 import androidx.test.espresso.contrib.RecyclerViewActions;
 import androidx.test.espresso.intent.rule.IntentsTestRule;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
-import androidx.test.rule.ActivityTestRule;
 
-import org.hamcrest.Description;
 import org.hamcrest.Matcher;
-import org.hamcrest.TypeSafeMatcher;
 import org.junit.After;
-import org.junit.Assert;
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import androidx.test.rule.GrantPermissionRule;
 
-import net.bytebuddy.asm.Advice;
-
-import java.lang.reflect.Array;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 
 import ch.epfl.sdp.kandle.activity.PostActivity;
-import java.util.List;
 
-import ch.epfl.sdp.kandle.Storage.room.LocalDatabase;
+import ch.epfl.sdp.kandle.storage.room.LocalDatabase;
 import ch.epfl.sdp.kandle.activity.MainActivity;
 import ch.epfl.sdp.kandle.dependencies.DependencyManager;
 import ch.epfl.sdp.kandle.dependencies.MockAuthentication;
@@ -56,29 +45,23 @@ import ch.epfl.sdp.kandle.dependencies.MockDatabase;
 import ch.epfl.sdp.kandle.dependencies.MockInternalStorage;
 import ch.epfl.sdp.kandle.dependencies.MockNetwork;
 import ch.epfl.sdp.kandle.dependencies.MockStorage;
-import ch.epfl.sdp.kandle.exceptions.NoInternetException;
 import ch.epfl.sdp.kandle.fragment.YourPostListFragment;
 
 import static androidx.test.espresso.Espresso.onView;
 import static androidx.test.espresso.action.ViewActions.click;
 import static androidx.test.espresso.action.ViewActions.closeSoftKeyboard;
 import static androidx.test.espresso.action.ViewActions.replaceText;
-import static androidx.test.espresso.action.ViewActions.longClick;
 import static androidx.test.espresso.action.ViewActions.typeText;
 import static androidx.test.espresso.assertion.ViewAssertions.matches;
 import static androidx.test.espresso.contrib.DrawerMatchers.isClosed;
 import static androidx.test.espresso.intent.Intents.intending;
 import static androidx.test.espresso.intent.matcher.IntentMatchers.hasAction;
-import static androidx.test.espresso.matcher.ViewMatchers.hasDescendant;
 import static androidx.test.espresso.matcher.RootMatchers.withDecorView;
 import static androidx.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static androidx.test.espresso.matcher.ViewMatchers.withId;
 import static androidx.test.espresso.matcher.ViewMatchers.withTagValue;
 import static androidx.test.espresso.matcher.ViewMatchers.withText;
-import static ch.epfl.sdp.kandle.YourProfileFragmentTest.atPosition;
 import static junit.framework.TestCase.assertEquals;
-import static org.hamcrest.Matchers.empty;
-import static org.hamcrest.Matchers.emptyArray;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.not;
 
@@ -112,6 +95,7 @@ public class YourPostsListTest {
                     posts.put(p2.getPostId(), p2);
                     users.put(user2.getId(), user2);
                     users.put(user1.getId(), user1);
+                    users.put(LoggedInUser.getInstance().getId(), LoggedInUser.getInstance());
                     MockDatabase db = new MockDatabase(true, users, followMap, posts);
                     MockAuthentication authentication = new MockAuthentication(true, accounts, "password");
                     MockStorage storage = new MockStorage();
@@ -245,24 +229,30 @@ public class YourPostsListTest {
         onView(withId(R.id.rvPosts)).check(new RecyclerViewItemCountAssertion(2));
 
         onView(new RecyclerViewMatcher(R.id.rvPosts)
-                .atPositionOnView(0, R.id.postImageInPost))
+                .atPositionOnView(1, R.id.postImageInPost))
                 .check(matches(withTagValue(is(PostAdapter.POST_IMAGE))));
 
         onView(new RecyclerViewMatcher(R.id.rvPosts)
-                .atPositionOnView(1, R.id.postImageInPost))
+                .atPositionOnView(0, R.id.postImageInPost))
                 .check(matches(not(withTagValue(is(PostAdapter.POST_IMAGE)))));
 
     }
 
 
     @Test
-    public void likesListInteractionTestWithNoUserStoredLocally() {
+    public void likesListInteractionTestWithNoUserStoredLocally() throws InterruptedException {
 
         onView(withId(R.id.rvPosts)).perform(RecyclerViewActions.actionOnItemAtPosition(1, clickChildViewWithId(R.id.flames)));
+        Thread.sleep(1000);
         onView(withId(R.id.list_user_number)).check(matches(withText("2")));
         Espresso.pressBack();
+        onView(withId(R.id.drawer_layout)).check(matches(isClosed(Gravity.LEFT))).perform(DrawerActions.open());
+        onView(withId(R.id.navigation_view)).perform(NavigationViewActions.navigateTo(R.id.your_posts));
+        onView(withId(R.id.drawer_layout)).perform(DrawerActions.close());
         onView(withId(R.id.rvPosts)).perform(RecyclerViewActions.actionOnItemAtPosition(1, clickChildViewWithId(R.id.likeButton)));
+
         onView(withId(R.id.rvPosts)).perform(RecyclerViewActions.actionOnItemAtPosition(1, clickChildViewWithId(R.id.flames)));
+        Thread.sleep(1000);
         onView(withId(R.id.list_user_number)).check(matches(withText("3")));
 
 
@@ -270,62 +260,44 @@ public class YourPostsListTest {
 
     @Test
     public void likesListInteractionTestWithUserStoredLocallyButStillOnlinePhone() {
-
         onView(withId(R.id.rvPosts)).perform(RecyclerViewActions.actionOnItemAtPosition(0, clickChildViewWithId(R.id.flames)));
         onView(withId(R.id.list_user_number)).check(matches(withText("2")));
         Espresso.pressBack();
 
-
     }
 
+
+
+
+
     @Test
-    public void likesListInteractionTestWithNoUserStoredLocallyButOnlinePhone() {
-        localDatabase.userDao().deleteUser(user1);
+    public void performingALikeDuringAnOfflineStateShouldReturnANoInternetException() {
+        network.setIsOnline(false);
+        onView(withId(R.id.drawer_layout)).check(matches(isClosed(Gravity.LEFT))).perform(DrawerActions.open());
+        onView(withId(R.id.navigation_view)).perform(NavigationViewActions.navigateTo(R.id.your_posts));
+        onView(withId(R.id.drawer_layout)).perform(DrawerActions.close());
+        onView(withId(R.id.rvPosts)).perform(RecyclerViewActions.actionOnItemAtPosition(1, clickChildViewWithId(R.id.likeButton)));
+        onView(withText(R.string.no_connexion)).inRoot(withDecorView(not(is(intentsRule.getActivity().getWindow().getDecorView())))).check(matches(isDisplayed()));
+    }
+
+
+    @Test
+    public void shouldOnlyShowtoStoredLikersIfTheAppIsOffline(){
+        network.setIsOnline(false);
         onView(withId(R.id.drawer_layout)).check(matches(isClosed(Gravity.LEFT))).perform(DrawerActions.open());
         onView(withId(R.id.navigation_view)).perform(NavigationViewActions.navigateTo(R.id.your_posts));
         onView(withId(R.id.drawer_layout)).perform(DrawerActions.close());
         onView(withId(R.id.rvPosts)).perform(RecyclerViewActions.actionOnItemAtPosition(0, clickChildViewWithId(R.id.flames)));
-        onView(withId(R.id.list_user_number)).check(matches(withText("2")));
-        //Espresso.pressBack();
-
-
-    }
-
-    @Test
-    public void likesListInteractionTestWithNoUserStoredLocallyButOfflinePhone() {
-        localDatabase.userDao().deleteUser(user1);
-        network.setIsOnline(false);
-        onView(withId(R.id.rvPosts)).perform(RecyclerViewActions.actionOnItemAtPosition(0, clickChildViewWithId(R.id.flames)));
-        onView(withText(R.string.no_connexion)).inRoot(withDecorView(not(is(intentsRule.getActivity().getWindow().getDecorView())))).check(matches(isDisplayed()));
-
-    }
-
-    @Test
-    public void likesListInteractionTestWithOnylOneUserStoredLocallyButOfflinePhone() {
-        network.setIsOnline(false);
-        onView(withId(R.id.rvPosts)).perform(RecyclerViewActions.actionOnItemAtPosition(0, clickChildViewWithId(R.id.flames)));
-        onView(withText(R.string.incomplete_data)).inRoot(withDecorView(not(is(intentsRule.getActivity().getWindow().getDecorView())))).check(matches(isDisplayed()));
-
-    }
-
-    @Test
-    public void likesListFromNotStoredPostLocallyAndOfflineApp() {
-        network.setIsOnline(false);
-        localDatabase.userDao().deleteUser(user1);
+        onView(withId(R.id.list_user_number)).check(matches(withText("1")));
+        Espresso.pressBack();
         onView(withId(R.id.drawer_layout)).check(matches(isClosed(Gravity.LEFT))).perform(DrawerActions.open());
         onView(withId(R.id.navigation_view)).perform(NavigationViewActions.navigateTo(R.id.your_posts));
         onView(withId(R.id.drawer_layout)).perform(DrawerActions.close());
         onView(withId(R.id.rvPosts)).perform(RecyclerViewActions.actionOnItemAtPosition(1, clickChildViewWithId(R.id.flames)));
-        onView(withText(R.string.no_connexion)).inRoot(withDecorView(not(is(intentsRule.getActivity().getWindow().getDecorView())))).check(matches(isDisplayed()));
+        onView(withId(R.id.list_user_number)).check(matches(withText("1")));
 
     }
 
-    @Test
-    public void likesListFromNotStoredPostLocallyAndOnlineApp() {
-        network.setIsOnline(false);
-        onView(withId(R.id.rvPosts)).perform(RecyclerViewActions.actionOnItemAtPosition(1, clickChildViewWithId(R.id.flames)));
-
-    }
 
 
 

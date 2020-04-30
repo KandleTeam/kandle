@@ -1,14 +1,9 @@
-package ch.epfl.sdp.kandle.Storage.room;
+package ch.epfl.sdp.kandle.storage.room;
 
 import androidx.room.Database;
-import androidx.room.Entity;
 import androidx.room.Room;
 import androidx.room.RoomDatabase;
-import androidx.room.TypeConverters;
 
-
-import java.util.Arrays;
-import java.util.List;
 
 import ch.epfl.sdp.kandle.Kandle;
 import ch.epfl.sdp.kandle.Post;
@@ -16,7 +11,7 @@ import ch.epfl.sdp.kandle.User;
 
 @Database(entities = {User.class, Post.class}, exportSchema = false, version = 1)
 public abstract class LocalDatabase extends RoomDatabase {
-    public static final String DB_NAME = "kandle_local_db";
+    private static final String DB_NAME = "kandle_local_db";
     public static final int MAX_USER_IN_DB = 50;
     public static final int MAX_POST_IN_DB = 50;
 

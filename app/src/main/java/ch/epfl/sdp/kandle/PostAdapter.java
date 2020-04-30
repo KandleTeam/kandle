@@ -3,11 +3,10 @@ package ch.epfl.sdp.kandle;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
-import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -17,6 +16,7 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -24,27 +24,22 @@ import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.android.gms.tasks.Task;
+import com.google.android.gms.tasks.Tasks;
 import com.squareup.picasso.Picasso;
-
-import ch.epfl.sdp.kandle.activity.MainActivity;
-import ch.epfl.sdp.kandle.activity.RegisterActivity;
 
 import ch.epfl.sdp.kandle.activity.PostActivity;
 import ch.epfl.sdp.kandle.dependencies.Authentication;
-import ch.epfl.sdp.kandle.Storage.caching.CachedFirestoreDatabase;
+import ch.epfl.sdp.kandle.storage.caching.CachedFirestoreDatabase;
 import ch.epfl.sdp.kandle.dependencies.Database;
 import ch.epfl.sdp.kandle.dependencies.DependencyManager;
 import ch.epfl.sdp.kandle.fragment.ListUsersFragment;
-import ch.epfl.sdp.kandle.fragment.ProfileFragment;
-import ch.epfl.sdp.kandle.fragment.YourPostListFragment;
 import de.hdodenhof.circleimageview.CircleImageView;
 
 public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder> {
 
     public final static int POST_IMAGE = 10;
 
-    public final int EDITABLE_TIME = 5; //you can edit your posts within 5 minutes
-    public final int MILISEC_IN_MINUTE = 60000;
 
     private static ClickListener clickListener;
     private List<Post> mPosts;
@@ -126,13 +121,9 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder> {
                 nicknameView.setText(user.getNickname());
 
                 //milliseconds
-                long different = new Date().getTime() - post.getDate().getTime();
-                long minutes = different / MILISEC_IN_MINUTE;
+
+
                 if (user.getId().equals(userId)) {
-                    deletePostView.setVisibility(View.VISIBLE);
-                    if (minutes >= EDITABLE_TIME) {
-                        post.setEditable(false);
-                    }
                     if (post.isEditable()) {
                         editPostView.setVisibility(View.VISIBLE);
                     }
@@ -150,6 +141,8 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder> {
                     if (task.isSuccessful()) {
                         post.unlikePost(userId);
                         likeView.setText(String.valueOf(post.getLikes()));
+                    }else {
+                        Toast.makeText(this.mContext, task.getException().getMessage(), Toast.LENGTH_LONG).show();
                     }
                 });
 
@@ -158,6 +151,8 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder> {
                     if (task.isSuccessful()) {
                         post.likePost(userId);
                         likeView.setText(String.valueOf(post.getLikes()));
+                    }else {
+                        Toast.makeText(this.mContext, task.getException().getMessage(), Toast.LENGTH_LONG).show();
                     }
                 });
             }
@@ -249,5 +244,9 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder> {
         }
 
     }
+
+
+
+
 
 }

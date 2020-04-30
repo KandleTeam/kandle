@@ -13,11 +13,14 @@ import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
-import ch.epfl.sdp.kandle.Storage.room.Converters;
+import ch.epfl.sdp.kandle.storage.room.Converters;
 
 @Entity(tableName = "Posts")
 public class Post {
-
+    @Ignore
+    public final int EDITABLE_TIME = 5; //you can edit your posts within 5 minutes
+    @Ignore
+    public final int MILISEC_IN_MINUTE = 60000;
 
     @NonNull
     @PrimaryKey(autoGenerate = false)
@@ -154,7 +157,7 @@ public class Post {
     }
 
     public Boolean isEditable(){
-        return editable;
+        return  (new Date().getTime() - this.getDate().getTime() / MILISEC_IN_MINUTE) < EDITABLE_TIME;
     }
 
     public void setEditable(Boolean editable){
