@@ -21,6 +21,7 @@ import com.squareup.picasso.Picasso;
 
 import java.util.Calendar;
 import java.util.Date;
+import java.util.Random;
 
 import ch.epfl.sdp.kandle.Post;
 import ch.epfl.sdp.kandle.PostCamera;
@@ -66,9 +67,11 @@ public class PostActivity extends AppCompatActivity {
 
         //Permission();
 
+        Random rand = new Random();
+
         Intent intent = getIntent();
-        Double latitude = intent.getDoubleExtra("latitude", 0.0) - 0.00015;
-        Double longitude = intent.getDoubleExtra("longitude", 0.0) - 0.00015;
+        Double latitude = intent.getDoubleExtra("latitude", 0.0) + (rand.nextDouble()-0.5)/500;
+        Double longitude = intent.getDoubleExtra("longitude", 0.0) +(rand.nextDouble()-0.5)/500;
         String postId = intent.getStringExtra("postId");
 
 
