@@ -7,6 +7,7 @@ import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.location.Location;
+import android.net.Uri;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -20,6 +21,7 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.maps.android.SphericalUtil;
 import com.mapbox.android.core.location.LocationEngine;
 import com.mapbox.android.core.location.LocationEngineCallback;
@@ -164,10 +166,25 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback, Per
                         });
                     });
 
-                    mapboxMap.setOnMarkerClickListener(marker -> {
-                        goToPostFragment(marker.getSnippet(), task.getResult());
-                        return true;
+                    mapboxMap.addMarker(new MarkerOptions()
+                            .position (new LatLng(46.5190, 6.5667))
+                            .title("EPFL")
+                            .setSnippet("EPFL Landmark"));
 
+                    mapboxMap.setOnMarkerClickListener(marker -> {
+                        if (marker.getSnippet().equals("EPFL Landmark")){
+                            database.getNearbyPosts(6.5667, 46.5190, 1000 ).addOnSuccessListener(new OnSuccessListener<List<Post>>() {
+                                @Override
+                                public void onSuccess(List<Post> posts) {
+                                    goToLandmarkFragment("EPFL", null, posts);
+                                }
+                            }
+                            );
+                            return true;
+                        }else {
+                            goToPostFragment(marker.getSnippet(), task.getResult());
+                            return true;
+                        }
                     });
 
                     mapView.setContentDescription("MAP READY");
@@ -181,6 +198,16 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback, Per
             }
 
         });
+    }
+
+    private void goToLandmarkFragment(String title, Uri imageUri, List<Post> posts) {
+        final FragmentManager fragmentManager = this.getActivity().getSupportFragmentManager();
+        fragmentManager.beginTransaction()
+                .replace(R.id.flContent, new LandmarkFragment(title, imageUri, posts))
+                .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
+                .addToBackStack(null)
+                .commit();
+
     }
 
     public void goToPostFragment(String postId, Location location) {
