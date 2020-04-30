@@ -121,8 +121,11 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder> {
             }
         });
 
+        //NOTE: DO NOT DELETE
+        //for the moment we do not want to be able to like a post from the posts list
+        //however if we decide to use this adapter on the map instead of PostFragment we could use this code again
 
-        holder.mlikeButton.setOnClickListener(v -> {
+        /*holder.mlikeButton.setOnClickListener(v -> {
 
             if (post.getLikers().contains(userId)) {
                 database.unlikePost(userId, post.getPostId()).addOnCompleteListener(task -> {
@@ -144,7 +147,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder> {
                     }
                 });
             }
-        });
+        });*/
 
         editPostView.setOnClickListener(v -> {
             Intent intent = new Intent(mContext, PostActivity.class);
