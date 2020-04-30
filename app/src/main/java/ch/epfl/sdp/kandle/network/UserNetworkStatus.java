@@ -10,7 +10,7 @@ import ch.epfl.sdp.kandle.Kandle;
 
 
 public class UserNetworkStatus implements NetworkState {
-    //private ConnexionStatus connexionStatus;
+
     private static final UserNetworkStatus INSTANCE = new UserNetworkStatus();
 
     private UserNetworkStatus() {
@@ -22,26 +22,24 @@ public class UserNetworkStatus implements NetworkState {
     }
 
     public boolean isConnected() {
-        Boolean connected;
+        boolean connected;
         ConnectivityManager cm = (ConnectivityManager) Kandle.getContext().getSystemService(Context.CONNECTIVITY_SERVICE);
-        //For Api 29
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) { //For Api 29
+
             NetworkCapabilities capabilities = cm.getNetworkCapabilities(cm.getActiveNetwork());
-            connected = capabilities != null && (capabilities.hasTransport(NetworkCapabilities.TRANSPORT_WIFI) || capabilities.hasTransport(NetworkCapabilities.TRANSPORT_ETHERNET) || capabilities.hasTransport(NetworkCapabilities.TRANSPORT_ETHERNET));
-            //For lower Api versions
-        } else {
+
+            connected = capabilities != null &&
+                    (capabilities.hasTransport(NetworkCapabilities.TRANSPORT_WIFI)
+                            || capabilities.hasTransport(NetworkCapabilities.TRANSPORT_ETHERNET)
+                            || capabilities.hasTransport(NetworkCapabilities.TRANSPORT_CELLULAR));
+
+
+        } else { //For lower Api versions
             NetworkInfo info = cm.getActiveNetworkInfo();
             connected = info != null && info.isConnectedOrConnecting();
         }
 
-        /*
-        if (connected) {
-            connexionStatus = ConnexionStatus.ONLINE;
-        } else {
-            connexionStatus = ConnexionStatus.OFFLINE;
-        }
-
-         */
         return connected;
     }
 
