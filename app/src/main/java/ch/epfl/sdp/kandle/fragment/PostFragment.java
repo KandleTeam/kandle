@@ -15,6 +15,9 @@ import androidx.fragment.app.Fragment;
 
 import com.squareup.picasso.Picasso;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+
 import ch.epfl.sdp.kandle.LoggedInUser;
 import ch.epfl.sdp.kandle.Post;
 import ch.epfl.sdp.kandle.R;
@@ -102,6 +105,9 @@ public class PostFragment extends Fragment {
             });
             followButton.setOnClickListener(followButtonListener(currentUser));
         }
+
+        DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+        date.setText((dateFormat.format(post.getDate())));
 
         numberOfLikes.setText(String.valueOf(post.getLikes()));
 

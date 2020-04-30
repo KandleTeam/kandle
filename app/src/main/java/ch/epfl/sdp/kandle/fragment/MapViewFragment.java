@@ -46,6 +46,7 @@ import com.mapbox.mapboxsdk.maps.OnMapReadyCallback;
 import com.mapbox.mapboxsdk.maps.Style;
 import com.mapbox.mapboxsdk.utils.BitmapUtils;
 
+import java.util.Date;
 import java.util.List;
 
 import ch.epfl.sdp.kandle.LoggedInUser;
@@ -160,11 +161,13 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback, Per
                         database.getNearbyPosts(currentLocation.getLongitude(), currentLocation.getLatitude(), RADIUS).addOnSuccessListener(posts -> {
                             for (Post p : posts) {
                                 numMarkers++;
-                                mapboxMap.addMarker(new MarkerOptions()
-                                        .position(new LatLng(p.getLatitude(), p.getLongitude()))
-                                        .title("A post !")
-                                        .icon(icon))
-                                        .setSnippet(p.getPostId());
+                                if (p.getType() == null || !p.equals(Post.EVENT) || p.getDate().getTime() < new Date().getTime()) {
+                                    mapboxMap.addMarker(new MarkerOptions()
+                                            .position(new LatLng(p.getLatitude(), p.getLongitude()))
+                                            .title("A post !")
+                                            .icon(icon))
+                                            .setSnippet(p.getPostId());
+                                }
                             }
                         });
                     });
