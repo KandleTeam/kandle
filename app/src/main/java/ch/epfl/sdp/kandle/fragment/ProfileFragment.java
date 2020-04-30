@@ -15,28 +15,24 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.ViewSwitcher;
 
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
+
 import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
 import com.google.android.material.navigation.NavigationView;
 import com.squareup.picasso.Picasso;
 
 import java.util.List;
 
-import androidx.annotation.NonNull;
-import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentTransaction;
-
-
-import ch.epfl.sdp.kandle.imagePicker.ImagePicker;
-import ch.epfl.sdp.kandle.imagePicker.ProfilePicPicker;
 import ch.epfl.sdp.kandle.LoggedInUser;
 import ch.epfl.sdp.kandle.R;
 import ch.epfl.sdp.kandle.User;
 import ch.epfl.sdp.kandle.dependencies.Authentication;
-import ch.epfl.sdp.kandle.Storage.caching.CachedFirestoreDatabase;
 import ch.epfl.sdp.kandle.dependencies.Database;
 import ch.epfl.sdp.kandle.dependencies.DependencyManager;
+import ch.epfl.sdp.kandle.imagePicker.ProfilePicPicker;
+import ch.epfl.sdp.kandle.storage.caching.CachedFirestoreDatabase;
 
 
 public class ProfileFragment extends Fragment {
@@ -95,7 +91,7 @@ public class ProfileFragment extends Fragment {
         mValidateNameButton.setVisibility(View.GONE);
         mValidatePictureButton.setVisibility(View.GONE);
 
-        if (!user.getId().equals(currentUser.getId())) {
+        if (!user.getId().equals(currentUser.getId()) || LoggedInUser.isGuestMode()) {
             mEditPicture.setVisibility(View.GONE);
             mEditName.setVisibility(View.GONE);
         } else {
@@ -150,7 +146,7 @@ public class ProfileFragment extends Fragment {
         mNicknameView.setText(user.getNickname());
         mNicknameEdit.setText(user.getNickname());
 
-        mUsername.setText("@" + user.getUsername());
+        mUsername.setText(String.format("@%s", user.getUsername()));
         if (user.getImageURL() != null) {
             mProfilePicture.setTag(PROFILE_PICTURE_BEFORE);
             Picasso.get().load(user.getImageURL()).into(mProfilePicture);
@@ -179,8 +175,11 @@ public class ProfileFragment extends Fragment {
 
 
         mNumberOfFollowers.setOnClickListener(v -> database.userFollowersList(user.getId()).addOnCompleteListener(numberListener("Followers", fragmentManager)));
-
         mNumberOfFollowing.setOnClickListener(v -> database.userFollowingList(user.getId()).addOnCompleteListener(numberListener("Following", fragmentManager)));
+        if (LoggedInUser.isGuestMode()) {
+            mNumberOfFollowers.setClickable(false);
+            mNumberOfFollowing.setClickable(false);
+        }
 
 
         return view;

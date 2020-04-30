@@ -22,8 +22,8 @@ public class ImagePicker {
 
     /**
      * Starts picking an image from the gallery
-     * @param activity the activity where to return after picking an image
      *
+     * @param activity the activity where to return after picking an image
      */
     public static void openImage(Activity activity) {
         Intent intent = pickerIntent();
@@ -32,6 +32,7 @@ public class ImagePicker {
 
     /**
      * Starts picking an image from the gallery
+     *
      * @param fragment the fragment where to return after picking an image
      */
     public static void openImage(Fragment fragment) {
@@ -39,7 +40,7 @@ public class ImagePicker {
         fragment.startActivityForResult(intent, IMAGE_REQUEST);
     }
 
-    private static Intent pickerIntent(){
+    private static Intent pickerIntent() {
         Intent intent = new Intent();
         intent.setType("image/*");
         intent.setAction(Intent.ACTION_GET_CONTENT);
@@ -53,9 +54,10 @@ public class ImagePicker {
 
     /**
      * Checks the result received from an activity and returns an image uri if the result corresponds to a pick in the gallery
+     *
      * @param requestCode requestCode specified when starting the activity
-     * @param resultCode resultCode received in the result
-     * @param data data received in the result
+     * @param resultCode  resultCode received in the result
+     * @param data        data received in the result
      * @return the uri of the image selected if the activity corresponds to a pick in the gallery, else null
      */
     public static Uri handleActivityResultAndGetUri(int requestCode, int resultCode, Intent data) {
@@ -70,6 +72,7 @@ public class ImagePicker {
 
     /**
      * Uploads an image in the storage system and returns a download url
+     *
      * @param imageUri the uri of the image to store
      * @return a download url to get the image from the storage system
      */

@@ -1,9 +1,8 @@
-package ch.epfl.sdp.kandle.Storage.caching;
+package ch.epfl.sdp.kandle.storage.caching;
 
 import android.content.Context;
 
 import androidx.annotation.NonNull;
-
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -19,11 +18,12 @@ import ch.epfl.sdp.kandle.dependencies.InternalStorage;
  * @Author Marc Egli
  * This class handles the internal storage accesses
  */
+@SuppressWarnings("ResultOfMethodCallIgnored")
 public class InternalStorageHandler implements InternalStorage {
 
-    private final String USER_DATA_PATH = "userData";
-    private Context context;
     private static final InternalStorageHandler INSTANCE = new InternalStorageHandler();
+    private final String USER_DATA_PATH = "userData";
+    private final Context context;
 
     public InternalStorageHandler() {
         this.context = Kandle.getContext();
@@ -87,10 +87,6 @@ public class InternalStorageHandler implements InternalStorage {
     @Override
     public void saveUserAtLoginOrRegister(@NonNull User user) throws IllegalArgumentException {
 
-        if (user == null) {
-            throw new IllegalArgumentException();
-        }
-
         User storedUser = getCurrentUser();
         if (storedUser == null) {
             storeUser(user);
@@ -112,9 +108,6 @@ public class InternalStorageHandler implements InternalStorage {
 
     @Override
     public void updateUser(@NonNull User user) throws IllegalArgumentException {
-        if (user == null) {
-            throw new IllegalArgumentException();
-        }
         deleteUser();
         storeUser(user);
 

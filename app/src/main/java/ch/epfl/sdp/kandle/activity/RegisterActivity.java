@@ -1,15 +1,5 @@
 package ch.epfl.sdp.kandle.activity;
 
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.coordinatorlayout.widget.CoordinatorLayout;
-import androidx.core.content.ContextCompat;
-
-import ch.epfl.sdp.kandle.R;
-import ch.epfl.sdp.kandle.dependencies.Authentication;
-import ch.epfl.sdp.kandle.Storage.caching.CachedFirestoreDatabase;
-import ch.epfl.sdp.kandle.dependencies.Database;
-import ch.epfl.sdp.kandle.dependencies.DependencyManager;
-
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
@@ -18,7 +8,17 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.coordinatorlayout.widget.CoordinatorLayout;
+import androidx.core.content.ContextCompat;
+
 import com.google.android.material.snackbar.Snackbar;
+
+import ch.epfl.sdp.kandle.R;
+import ch.epfl.sdp.kandle.dependencies.Authentication;
+import ch.epfl.sdp.kandle.dependencies.Database;
+import ch.epfl.sdp.kandle.dependencies.DependencyManager;
+import ch.epfl.sdp.kandle.storage.caching.CachedFirestoreDatabase;
 
 public class RegisterActivity extends AppCompatActivity {
 
@@ -121,7 +121,7 @@ public class RegisterActivity extends AppCompatActivity {
 
     private boolean checkForInternetConnection() {
         if (!DependencyManager.getNetworkStateSystem().isConnected()) {
-            CNetworkBar = (CoordinatorLayout) findViewById(R.id.connectionBar);
+            CNetworkBar = findViewById(R.id.connectionBar);
             Snackbar snackbar = Snackbar.make(CNetworkBar, R.string.no_connexion, Snackbar.LENGTH_SHORT);
             snackbar.setTextColor(ContextCompat.getColor(this, R.color.white));
             CNetworkBar.setBackgroundColor(ContextCompat.getColor(this, R.color.colorAccent));

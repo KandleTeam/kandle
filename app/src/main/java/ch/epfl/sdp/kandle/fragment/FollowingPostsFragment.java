@@ -4,13 +4,16 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+
 import java.util.ArrayList;
 import java.util.List;
+
 import ch.epfl.sdp.kandle.LoggedInUser;
 import ch.epfl.sdp.kandle.Post;
 import ch.epfl.sdp.kandle.PostAdapter;
@@ -19,18 +22,19 @@ import ch.epfl.sdp.kandle.User;
 import ch.epfl.sdp.kandle.dependencies.Authentication;
 import ch.epfl.sdp.kandle.dependencies.Database;
 import ch.epfl.sdp.kandle.dependencies.DependencyManager;
+import ch.epfl.sdp.kandle.storage.caching.CachedFirestoreDatabase;
 
 public class FollowingPostsFragment extends Fragment {
 
     //TODO should not be able to delete posts other users made
 
+    View rootView;
     private String userId;
     private List<User> following;
     private List<Post> posts;
     private RecyclerView flPosts;
     private Authentication auth;
     private Database database;
-    View rootView;
 
     public FollowingPostsFragment() {
         posts = new ArrayList<>();
@@ -41,7 +45,7 @@ public class FollowingPostsFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
         auth = DependencyManager.getAuthSystem();
-        database = DependencyManager.getDatabaseSystem();
+        database = new CachedFirestoreDatabase();
         rootView = inflater.inflate(R.layout.fragment_following_posts, container, false);
         flPosts = rootView.findViewById(R.id.flPosts);
         flPosts.setLayoutManager(new LinearLayoutManager(this.getContext()));

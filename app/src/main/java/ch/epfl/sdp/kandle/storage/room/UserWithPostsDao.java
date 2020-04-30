@@ -1,4 +1,4 @@
-package ch.epfl.sdp.kandle.Storage.room;
+package ch.epfl.sdp.kandle.storage.room;
 
 import androidx.room.Dao;
 import androidx.room.Query;

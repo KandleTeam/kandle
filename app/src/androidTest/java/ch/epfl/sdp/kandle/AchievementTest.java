@@ -1,7 +1,6 @@
 package ch.epfl.sdp.kandle;
 
 import android.Manifest;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 
@@ -11,8 +10,6 @@ import androidx.test.espresso.NoMatchingViewException;
 import androidx.test.espresso.ViewAssertion;
 import androidx.test.espresso.contrib.DrawerActions;
 import androidx.test.espresso.contrib.NavigationViewActions;
-import androidx.test.espresso.contrib.RecyclerViewActions;
-import androidx.test.ext.junit.runners.AndroidJUnit4;
 import androidx.test.rule.ActivityTestRule;
 import androidx.test.rule.GrantPermissionRule;
 
@@ -29,16 +26,14 @@ import static junit.framework.TestCase.assertEquals;
 
 
 import org.junit.After;
-import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
-import org.junit.runner.RunWith;
 
 import java.util.Date;
 import java.util.HashMap;
 import java.util.LinkedList;
 
-import ch.epfl.sdp.kandle.Storage.room.LocalDatabase;
+import ch.epfl.sdp.kandle.storage.room.LocalDatabase;
 import ch.epfl.sdp.kandle.activity.MainActivity;
 import ch.epfl.sdp.kandle.dependencies.DependencyManager;
 import ch.epfl.sdp.kandle.dependencies.MockAuthentication;
@@ -178,7 +173,7 @@ public class AchievementTest {
 
     private void setFragment(){
         onView(withId(R.id.drawer_layout)).check(matches(isClosed(Gravity.LEFT))).perform(DrawerActions.open());
-        onView(withId(R.id.navigation_view)).perform(NavigationViewActions.navigateTo(R.id.light));
+        onView(withId(R.id.navigation_view)).perform(NavigationViewActions.navigateTo(R.id.achievements));
         onView(withId(R.id.drawer_layout)).perform(DrawerActions.close());
     }
 

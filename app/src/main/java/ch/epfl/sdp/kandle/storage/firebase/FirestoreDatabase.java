@@ -1,4 +1,4 @@
-package ch.epfl.sdp.kandle.Storage.firebase;
+package ch.epfl.sdp.kandle.storage.firebase;
 
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.tasks.Task;
@@ -19,7 +19,6 @@ import com.google.maps.android.SphericalUtil;
 import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -299,7 +298,7 @@ public class FirestoreDatabase implements Database {
                             source.setException(new Exception(task2.getException().getMessage()));
                         }
                     });
-                }else{
+                } else {
                     source.setResult(new ArrayList<User>());
                 }
             } else {
@@ -550,6 +549,7 @@ public class FirestoreDatabase implements Database {
 
                             for (QueryDocumentSnapshot documentSnapshot : task2.getResult()) {
                                 String postId = (String) documentSnapshot.get("postId");
+                                System.out.println(task.getResult() == null);
                                 if (task.getResult().contains(postId)) {
                                     posts.add(documentSnapshot.toObject(Post.class));
                                 }
@@ -574,7 +574,6 @@ public class FirestoreDatabase implements Database {
     @Override
     public Task<List<Post>> getNearbyPosts(double longitude, double latitude, double distance) {
         TaskCompletionSource<List<Post>> source = new TaskCompletionSource<>();
-
         POSTS.get().addOnCompleteListener(task -> {
             if (task.isSuccessful()) {
                 List<Post> posts = new ArrayList<>();
