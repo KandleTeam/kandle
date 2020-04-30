@@ -586,7 +586,6 @@ public class FirestoreDatabase implements Database {
                         double postLongitude = (double) documentSnapshot.get("longitude");
                         List<String> likers = (List<String>) documentSnapshot.get("likers");
 
-                        DateFormat df = DateFormat.getDateInstance();
                         Date postDate = ((Timestamp) documentSnapshot.get("date")).toDate();
                         Date now = new Date();
                         long numDays = TimeUnit.DAYS.convert(Math.abs(now.getTime() - postDate.getTime()), TimeUnit.MILLISECONDS);

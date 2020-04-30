@@ -112,6 +112,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder> {
 
 
                 if (user.getId().equals(userId)) {
+                    deletePostView.setVisibility(View.VISIBLE);
                     if (post.isEditable()) {
                         editPostView.setVisibility(View.VISIBLE);
                     }

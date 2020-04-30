@@ -137,7 +137,7 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback, Per
 
 
         locationProvider.getLocation(this.getActivity()).addOnCompleteListener(task -> {
-
+            IconFactory iconFactory = IconFactory.getInstance(MapViewFragment.this.getActivity());
             if (task.isSuccessful()) {
 
                 if (task.getResult() != null) {
@@ -146,10 +146,13 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback, Per
                     mapboxMap.setStyle(Style.MAPBOX_STREETS, style -> {
 
                         Drawable drawable = ResourcesCompat.getDrawable(MapViewFragment.this.getResources(), R.drawable.ic_whatshot_24dp, null);
+
                         Bitmap mBitmap = BitmapUtils.getBitmapFromDrawable(drawable);
+
                         //style.addImage(MARKER_IMAGE, mBitmap);
-                        IconFactory iconFactory = IconFactory.getInstance(MapViewFragment.this.getActivity());
+
                         Icon icon = iconFactory.fromBitmap(mBitmap);
+
                         enableLocationComponent(style);
                         currentLocation = task.getResult();
                         //addPostMarkers(style);
@@ -165,21 +168,18 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback, Per
                             }
                         });
                     });
-
+                    Drawable drawableLandMark = ResourcesCompat.getDrawable(MapViewFragment.this.getResources(), R.drawable.ic_place_red_50dp, null);
+                    Bitmap mBitmapLandmark = BitmapUtils.getBitmapFromDrawable(drawableLandMark);
+                    Icon iconLandmark = iconFactory.fromBitmap(mBitmapLandmark);
                     mapboxMap.addMarker(new MarkerOptions()
                             .position (new LatLng(46.5190, 6.5667))
                             .title("EPFL")
-                            .setSnippet("EPFL Landmark"));
+                            .icon(iconLandmark))
+                            .setSnippet("EPFL Landmark");
 
                     mapboxMap.setOnMarkerClickListener(marker -> {
                         if (marker.getSnippet().equals("EPFL Landmark")){
-                            database.getNearbyPosts(6.5667, 46.5190, 1000 ).addOnSuccessListener(new OnSuccessListener<List<Post>>() {
-                                @Override
-                                public void onSuccess(List<Post> posts) {
-                                    goToLandmarkFragment("EPFL", null, posts);
-                                }
-                            }
-                            );
+                            goToEpflLandmarkFragment();
                             return true;
                         }else {
                             goToPostFragment(marker.getSnippet(), task.getResult());
@@ -200,13 +200,17 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback, Per
         });
     }
 
-    private void goToLandmarkFragment(String title, Uri imageUri, List<Post> posts) {
+    public void goToEpflLandmarkFragment() {
         final FragmentManager fragmentManager = this.getActivity().getSupportFragmentManager();
-        fragmentManager.beginTransaction()
-                .replace(R.id.flContent, new LandmarkFragment(title, imageUri, posts))
-                .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
-                .addToBackStack(null)
-                .commit();
+        database.getNearbyPosts(6.5667, 46.5190, 1000 ).addOnSuccessListener(posts -> {
+            fragmentManager.beginTransaction()
+                    .replace(R.id.flContent, new LandmarkFragment("EPFL", "image", posts))
+                    .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
+                    .addToBackStack(null)
+                    .commit();
+        });
+
+
 
     }
 
@@ -296,6 +300,7 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback, Per
 
             // Set the component's render mode
             locationComponent.setRenderMode(RenderMode.COMPASS);
+
 
             initLocationEngine();
         } else {

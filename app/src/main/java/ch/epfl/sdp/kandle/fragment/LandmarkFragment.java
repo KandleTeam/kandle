@@ -1,20 +1,17 @@
 package ch.epfl.sdp.kandle.fragment;
 
-import android.net.Uri;
 import android.os.Bundle;
-
-import androidx.fragment.app.Fragment;
-
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.squareup.picasso.Picasso;
 
 import java.util.List;
 
+import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import ch.epfl.sdp.kandle.Post;
@@ -26,20 +23,24 @@ public class LandmarkFragment extends Fragment {
 
 
     private String title;
-    private Uri imageUri;
+    private String imageUri;
     private List<Post> posts;
     private PostAdapter postAdapter;
 
-    private EditText titleView;
+    private TextView titleView;
     private RecyclerView postsListView;
     private ImageView imageLandmark;
 
     public final static int LANDMARK_IMAGE = 31;
 
-    public LandmarkFragment( String title, Uri imageUri, List<Post> posts) {
+    public LandmarkFragment( String title, String imageUri, List<Post> posts) {
         this.title = title;
         this.imageUri = imageUri;
-        this.posts = posts;
+        if (posts.size()>5) {
+            this.posts = posts.subList(0, 5);
+        }else {
+            this.posts = posts;
+        }
     }
 
 
