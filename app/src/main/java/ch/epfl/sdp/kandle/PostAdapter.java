@@ -91,6 +91,33 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder> {
         final ImageButton editPostView = holder.mEditButton;
         final ImageButton deletePostView = holder.mDeleteButton;
 
+        if (post.getType()!=null && post.getType().equals(Post.EVENT)) {
+            holder.mlikeButton.setBackgroundResource(R.drawable.ic_event_black_24dp);
+            holder.mlikeButton.setOnClickListener(v -> {
+
+                if (post.getLikers().contains(userId)) {
+                    database.unlikePost(userId, post.getPostId()).addOnCompleteListener(task -> {
+                        if (task.isSuccessful()) {
+                            post.unlikePost(userId);
+                            likeView.setText(String.valueOf(post.getLikes()));
+                        } else {
+                            Toast.makeText(this.mContext, task.getException().getMessage(), Toast.LENGTH_LONG).show();
+                        }
+                    });
+
+                } else {
+                    database.likePost(userId, post.getPostId()).addOnCompleteListener(task -> {
+                        if (task.isSuccessful()) {
+                            post.likePost(userId);
+                            likeView.setText(String.valueOf(post.getLikes()));
+                        } else {
+                            Toast.makeText(this.mContext, task.getException().getMessage(), Toast.LENGTH_LONG).show();
+                        }
+                    });
+                }
+            });
+        }
+
         ImageView postImageView = holder.mPostImage;
         if (post.getImageURL() != null) {
             postImageView.setVisibility(View.VISIBLE);
@@ -119,31 +146,6 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder> {
                 }
 
 
-            }
-        });
-
-
-        holder.mlikeButton.setOnClickListener(v -> {
-
-            if (post.getLikers().contains(userId)) {
-                database.unlikePost(userId, post.getPostId()).addOnCompleteListener(task -> {
-                    if (task.isSuccessful()) {
-                        post.unlikePost(userId);
-                        likeView.setText(String.valueOf(post.getLikes()));
-                    } else {
-                        Toast.makeText(this.mContext, task.getException().getMessage(), Toast.LENGTH_LONG).show();
-                    }
-                });
-
-            } else {
-                database.likePost(userId, post.getPostId()).addOnCompleteListener(task -> {
-                    if (task.isSuccessful()) {
-                        post.likePost(userId);
-                        likeView.setText(String.valueOf(post.getLikes()));
-                    } else {
-                        Toast.makeText(this.mContext, task.getException().getMessage(), Toast.LENGTH_LONG).show();
-                    }
-                });
             }
         });
 
@@ -178,7 +180,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder> {
             if (task.isSuccessful()) {
                 fragmentManager.beginTransaction().replace(R.id.flContent, ListUsersFragment.newInstance(
                         task.getResult(),
-                        "Likes",
+                        post.getType() != null && post.getType().equals(Post.EVENT)? "Participants" : "Likes",
                         Integer.toString(task.getResult().size())
                 )).setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
                         .addToBackStack(null)

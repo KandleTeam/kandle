@@ -7,15 +7,19 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.TimePicker;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.squareup.picasso.Picasso;
 
+import java.util.Calendar;
 import java.util.Date;
 import java.util.Random;
 
@@ -37,12 +41,17 @@ public class PostActivity extends AppCompatActivity {
     private Button mPostButton;
     private ImageButton mBackButton;
     private ImageButton mGalleryButton, mCameraButton;
+    private ImageButton mMessageButton, mEventButton;
     private ImageView mPostImage;
     private Post p;
     private Authentication auth;
     private Database database;
     private PostCamera postCamera;
     private Uri imageUri;
+    private LinearLayout mDateAndTime;
+    private boolean isEvent = false;
+    private DatePicker mDatePicker;
+    private TimePicker mTimePicker;
 
     private Post editPost;
 
@@ -72,6 +81,13 @@ public class PostActivity extends AppCompatActivity {
         mCameraButton = findViewById(R.id.cameraButton);
         mPostImage = findViewById(R.id.postImage);
         mBackButton = findViewById(R.id.backButton);
+        mMessageButton = findViewById(R.id.selectMessageButton);
+        mEventButton = findViewById(R.id.selectEventButton);
+        mDateAndTime = findViewById(R.id.eventDateTimeSelector);
+        mDatePicker = findViewById(R.id.dateSelector);
+        mTimePicker = findViewById(R.id.timeSelector);
+        mTimePicker.setIs24HourView(true);
+
         postCamera = new PostCamera(this);
 
         auth = DependencyManager.getAuthSystem();
@@ -86,6 +102,16 @@ public class PostActivity extends AppCompatActivity {
                     mPostImage.setVisibility(View.VISIBLE);
                     mPostImage.setTag(YourPostListFragment.POST_IMAGE);
                     Picasso.get().load(p.getImageURL()).into(mPostImage);
+                    mMessageButton.setVisibility(View.GONE);
+                    mEventButton.setVisibility(View.GONE);
+                    if (p.getType()!=null && p.getType().equals(Post.EVENT)) {
+                        Calendar cal = Calendar.getInstance();
+                        cal.setTime(p.getDate());
+                        setEventAppearance();
+                        mDatePicker.updateDate(cal.get(Calendar.YEAR), cal.get(Calendar.MONTH), cal.get(Calendar.DAY_OF_MONTH));
+                        mTimePicker.setCurrentHour(cal.get(Calendar.HOUR));
+                        mTimePicker.setCurrentMinute(cal.get(Calendar.MINUTE));
+                    }
                 }
             });
 
@@ -119,11 +145,19 @@ public class PostActivity extends AppCompatActivity {
                                         p.setLatitude(p.getLatitude());
                                         p.setLongitude(p.getLongitude());
                                         p.setLikers(p.getLikers());
+                                        p.setType(p.getType());
+                                        if (p.getType()!= null && p.getType().equals(Post.EVENT)) {
+                                            p.setDate(getDateFromPicker());
+                                        }
                                         editPost(p, postId);
                                     }
                                 });
                             } else {
                                 p = new Post(postText, downloadUri.toString(), new Date(), auth.getCurrentUser().getId(), longitude, latitude);
+                                if (isEvent) {
+                                    p.setDate(getDateFromPicker());
+                                    p.setType(Post.EVENT);
+                                }
                                 post(p);
                             }
                         }
@@ -140,11 +174,19 @@ public class PostActivity extends AppCompatActivity {
                             p.setLatitude(p.getLatitude());
                             p.setLongitude(p.getLongitude());
                             p.setLikers(p.getLikers());
+                            p.setType(p.getType());
+                            if (p.getType().equals(Post.EVENT)) {
+                                p.setDate(getDateFromPicker());
+                            }
                             editPost(p, postId);
                         }
                     });
                 } else {
                     p = new Post(postText, null, new Date(), auth.getCurrentUser().getId(), longitude, latitude);
+                    if (isEvent) {
+                        p.setDate(getDateFromPicker());
+                        p.setType(Post.EVENT);
+                    }
                     post(p);
                 }
             }
@@ -155,8 +197,26 @@ public class PostActivity extends AppCompatActivity {
 
         mCameraButton.setOnClickListener(v -> postCamera.openCamera());
 
-
         mGalleryButton.setOnClickListener(v -> ImagePicker.openImage(this));
+
+        mMessageButton.setOnClickListener(v -> {
+            isEvent = false;
+            mMessageButton.setClickable(false);
+            mEventButton.setClickable(true);
+            mDateAndTime.setVisibility(View.GONE);
+            mMessageButton.setBackgroundResource(R.drawable.add_background);
+            mEventButton.setBackgroundResource(R.drawable.add_background_grey);
+            mPostText.setHint(getResources().getString(R.string.message_hint));
+        });
+
+        mEventButton.setOnClickListener(v -> {
+            isEvent = true;
+            mEventButton.setClickable(false);
+            mMessageButton.setClickable(true);
+            mEventButton.setBackgroundResource(R.drawable.add_background);
+            mMessageButton.setBackgroundResource(R.drawable.add_background_grey);
+            setEventAppearance();
+        });
     }
 
     private void post(Post p) {
@@ -181,6 +241,25 @@ public class PostActivity extends AppCompatActivity {
 
             }
         });
+    }
+
+    /**
+     * set text hint and display date and time pickers
+     */
+    private void setEventAppearance() {
+        mPostText.setHint(getResources().getString(R.string.event_hint));
+        mDateAndTime.setVisibility(View.VISIBLE);
+    }
+
+    /**
+     * get date and time picked in picker
+     * @return date and time picked in picker
+     */
+    private Date getDateFromPicker() {
+        Calendar cal = Calendar.getInstance();
+        cal.set(mDatePicker.getYear(), mDatePicker.getMonth(), mDatePicker.getDayOfMonth(),
+                mTimePicker.getCurrentHour(), mTimePicker.getCurrentMinute());
+        return cal.getTime();
     }
 
     @Override

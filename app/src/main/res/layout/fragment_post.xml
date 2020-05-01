@@ -77,6 +77,21 @@
         app:layout_constraintEnd_toEndOf="parent" />
 
     <TextView
+        android:id="@+id/postDateTime"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        android:text="Date : Time"
+        android:textAppearance="@style/TextAppearance.Compat.Notification.Time"
+        android:textSize="15sp"
+        app:layout_constraintBottom_toTopOf="@+id/postFragmentLikeButton"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/postFragmentUsername"
+        app:layout_constraintVertical_bias="0.167"
+        />
+
+    <TextView
         android:id="@+id/postFragmentDescription"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -86,7 +101,7 @@
         app:layout_constraintBottom_toTopOf="@+id/postFragmentLikeButton"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/postFragmentUsername"
+        app:layout_constraintTop_toBottomOf="@+id/postDateTime"
         app:layout_constraintVertical_bias="0.167" />
 
     <ImageView
@@ -103,14 +118,14 @@
         app:layout_constraintBottom_toTopOf="@+id/postFragmentLikeButton"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/postFragmentDescription" />
+        app:layout_constraintTop_toBottomOf="@+id/post_description" />
 
     <ImageView
         android:id="@+id/postFragmentDistanceImage"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:src="@drawable/ic_place_red_50dp"
-        app:layout_constraintBottom_toTopOf="@+id/postFragmentDescription"
+        app:layout_constraintBottom_toTopOf="@+id/postDateTime"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.481"
         app:layout_constraintStart_toEndOf="@+id/postFragmentProfilePicture"
@@ -125,7 +140,7 @@
         android:textAlignment="viewStart"
         android:textSize="20sp"
         android:textStyle="bold"
-        app:layout_constraintBottom_toTopOf="@+id/postFragmentDescription"
+        app:layout_constraintBottom_toTopOf="@+id/postDateTime"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toEndOf="@+id/postFragmentDistanceImage"
