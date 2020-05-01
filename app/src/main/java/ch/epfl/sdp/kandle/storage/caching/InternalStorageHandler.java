@@ -85,7 +85,7 @@ public class InternalStorageHandler implements InternalStorage {
      * @Author Marc Egli
      */
     @Override
-    public void saveUserAtLoginOrRegister(@NonNull User user) throws IllegalArgumentException {
+    public void saveUserAtLoginOrRegister(@NonNull User user)  {
 
         User storedUser = getCurrentUser();
         if (storedUser == null) {
@@ -107,7 +107,7 @@ public class InternalStorageHandler implements InternalStorage {
      */
 
     @Override
-    public void updateUser(@NonNull User user) throws IllegalArgumentException {
+    public void updateUser(@NonNull User user)  {
         deleteUser();
         storeUser(user);
 

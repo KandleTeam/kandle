@@ -90,6 +90,7 @@ public class MapViewFragmentTest {
     @After
     public void clearCurrentUser() {
         LoggedInUser.clear();
+        localDatabase.close();
     }
 
     @Test

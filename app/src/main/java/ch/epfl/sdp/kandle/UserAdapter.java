@@ -61,8 +61,8 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.ViewHolder> {
 
         ImageView mImageProfile = holder.image_profile;
         if (user.getImageURL() != null) {
-            mImageProfile.setTag(PROFILE_PICTURE_TAG);
-            Picasso.get().load(user.getImageURL()).into(mImageProfile);
+           mImageProfile.setTag(PROFILE_PICTURE_TAG);
+           Picasso.get().load(user.getImageURL()).into(mImageProfile);
         }
 
         final Authentication authentication = DependencyManager.getAuthSystem();
@@ -70,7 +70,6 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.ViewHolder> {
         final CachedFirestoreDatabase database = new CachedFirestoreDatabase();
 
 
-        Log.i("TAG", Thread.currentThread().getName());
         if (user.getId().equals(currentUser.getId())) {
             holder.mFollowBtn.setVisibility(View.GONE);
         } else {

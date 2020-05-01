@@ -95,6 +95,7 @@ public class FollowingPostsTest {
     @After
     public void clearCurrentUser(){
         LoggedInUser.clear();
+        localDatabase.close();
     }
 
     @Before
