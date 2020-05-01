@@ -16,6 +16,7 @@ import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 
+import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 
@@ -65,12 +66,21 @@ public class MapViewFragmentTest {
                     closePost.setLatitude(0.00015);
                     closePost.setLongitude(0.00015);
                     Post farPost = new Post("farPostDesciption", "image", new Date(), "user1Id", "farPostId");
+
                     farPost.setLatitude(0.0015);
                     farPost.setLongitude(0.0015);
+                    Calendar cal = Calendar.getInstance();
+                    cal.set(2099, 12, 31, 12, 59);
+                    Post event = new Post("eventDescription", "image", cal.getTime(), "user1Id", "eventId");
+                    event.setType(Post.EVENT);
+                    event.setLatitude(0.0015);
+                    event.setLongitude(0.0015);
                     LoggedInUser.getInstance().addPostId(closePost.getPostId());
                     user1.addPostId(farPost.getPostId());
+                    user1.addPostId(event.getPostId());
                     posts.put(closePost.getPostId(), closePost);
                     posts.put(farPost.getPostId(), farPost);
+                    posts.put(event.getPostId(), event);
                     MockDatabase db = new MockDatabase(true, users, followMap, posts);
                     MockAuthentication authentication = new MockAuthentication(true, accounts, "password");
                     MockStorage storage = new MockStorage();
@@ -129,6 +139,16 @@ public class MapViewFragmentTest {
         onView(withId(R.id.postFragmentLikeButton)).perform(click());
         onView(withId(R.id.postFragmentNumberOfLikes)).check(matches(withText("0")));
 
+    }
+
+    @Test
+    public void clickOnEvent() throws Throwable {
+        uiDevice.wait(Until.hasObject(By.desc("MAP READY")), 2000);
+        Thread.sleep(2000);
+        ((MapViewFragment) intentsRule.getActivity().getCurrentFragment()).goToPostFragment("eventId", new Location("mock"));
+        onView(withId(R.id.postFragmentNumberOfLikes)).check(matches(withText("0")));
+        onView(withId(R.id.postFragmentLikeButton)).perform(click());
+        onView(withId(R.id.postFragmentNumberOfLikes)).check(matches(withText("1")));
     }
 
 

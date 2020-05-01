@@ -31,7 +31,6 @@ public class CachedFirestoreDatabase implements Database {
     private final LocalDatabase localDatabase = DependencyManager.getLocalDatabase();
     private final UserDao userDao;
     private final PostDao postDao;
-    private final Executor executor = command -> new Thread(command).start();
 
     public CachedFirestoreDatabase() {
         userDao = localDatabase.userDao();
@@ -44,7 +43,7 @@ public class CachedFirestoreDatabase implements Database {
     public Task<User> getUserByName(String username) {
 
         if (DependencyManager.getNetworkStateSystem().isConnected()) {
-            return database.getUserByName(username).addOnCompleteListener(executor, v -> {
+            return database.getUserByName(username).addOnCompleteListener( v -> {
                 if (v.isSuccessful() && v.getResult() != null) {
                     insertAndResizeUserLocalDb(v.getResult());
                 }
@@ -61,7 +60,7 @@ public class CachedFirestoreDatabase implements Database {
     public Task<User> getUserById(String userId) {
 
         if (DependencyManager.getNetworkStateSystem().isConnected()) {
-            return database.getUserById(userId).addOnCompleteListener(executor, v -> {
+            return database.getUserById(userId).addOnCompleteListener( v -> {
                 if (v.isSuccessful()) {
                     insertAndResizeUserLocalDb(v.getResult());
                 }
@@ -108,7 +107,7 @@ public class CachedFirestoreDatabase implements Database {
 
     @Override
     public Task<Void> createUser(User user) {
-        return database.createUser(user).addOnCompleteListener(executor, v -> {
+        return database.createUser(user).addOnCompleteListener( v -> {
             if (v.isSuccessful()) {
                 userDao.insertUser(user);
             }
@@ -153,7 +152,7 @@ public class CachedFirestoreDatabase implements Database {
 
     @Override
     public Task<Void> addPost(Post post) {
-        return database.addPost(post).addOnCompleteListener(executor, v -> {
+        return database.addPost(post).addOnCompleteListener(v -> {
             if (v.isSuccessful()) {
                 insertAndResizePostLocalDb(post);
             }
@@ -163,7 +162,7 @@ public class CachedFirestoreDatabase implements Database {
     @Override
     public Task<Void> editPost(Post p, String postId) {
         if (DependencyManager.getNetworkStateSystem().isConnected()) {
-            return database.editPost(p, postId).addOnCompleteListener(executor, v -> {
+            return database.editPost(p, postId).addOnCompleteListener(v -> {
                 if (v.isSuccessful()) {
                     postDao.updatePost(p);
                 }
@@ -200,7 +199,7 @@ public class CachedFirestoreDatabase implements Database {
     @Override
     public Task<Void> likePost(String userId, String postId) {
         if (DependencyManager.getNetworkStateSystem().isConnected()) {
-            return database.likePost(userId, postId).addOnCompleteListener(executor, v -> {
+            return database.likePost(userId, postId).addOnCompleteListener( v -> {
                 Post toUpdate = postDao.getPostFromPostId(postId);
                 if (toUpdate != null) {
                     List<String> newLikers = new ArrayList<>();
@@ -229,7 +228,7 @@ public class CachedFirestoreDatabase implements Database {
     @Override
     public Task<Void> unlikePost(String userId, String postId) {
         if (DependencyManager.getNetworkStateSystem().isConnected()) {
-            return database.unlikePost(userId, postId).addOnCompleteListener(executor, v -> {
+            return database.unlikePost(userId, postId).addOnCompleteListener(v -> {
                 Post toUpdate = postDao.getPostFromPostId(postId);
                 if (toUpdate != null) {
                     List<String> newLikers = new ArrayList<>();
@@ -250,7 +249,7 @@ public class CachedFirestoreDatabase implements Database {
     public Task<List<User>> getLikers(String postId) {
 
         if (DependencyManager.getNetworkStateSystem().isConnected()) {
-            return database.getLikers(postId).addOnCompleteListener(executor, v -> {
+            return database.getLikers(postId).addOnCompleteListener(v -> {
                 if (v.isSuccessful()) {
                     userDao.insertAllUsers(v.getResult());
                 }
@@ -279,7 +278,7 @@ public class CachedFirestoreDatabase implements Database {
     @Override
     public Task<List<Post>> getPostsByUserId(String userId) {
         if (DependencyManager.getNetworkStateSystem().isConnected()) {
-            return database.getPostsByUserId(userId).addOnCompleteListener(executor, v -> {
+            return database.getPostsByUserId(userId).addOnCompleteListener( v -> {
                 if (v.isSuccessful()) {
                     postDao.insertPostList(v.getResult());
                 }
@@ -300,7 +299,7 @@ public class CachedFirestoreDatabase implements Database {
 
         if (DependencyManager.getNetworkStateSystem().isConnected()) {
             List<Post> posts = new ArrayList<>();
-            return database.getNearbyPosts(latitude, longitude, distance).addOnCompleteListener(executor, v -> {
+            return database.getNearbyPosts(latitude, longitude, distance).addOnCompleteListener( v -> {
                 if (v.isSuccessful()) {
                     postDao.insertPostList(v.getResult());
                 }
@@ -327,7 +326,7 @@ public class CachedFirestoreDatabase implements Database {
     public Task<Post> getPostByPostId(String postId) {
         Post p;
         if (DependencyManager.getNetworkStateSystem().isConnected()) {
-            return database.getPostByPostId(postId).addOnCompleteListener(executor, v -> {
+            return database.getPostByPostId(postId).addOnCompleteListener( v -> {
                 if (v.isSuccessful()) {
                     postDao.insertPost(v.getResult());
                 }
@@ -345,7 +344,7 @@ public class CachedFirestoreDatabase implements Database {
     @Override
     public Task<Void> updateProfilePicture(String uri) {
         if (DependencyManager.getNetworkStateSystem().isConnected()) {
-            return database.updateProfilePicture(uri).addOnCompleteListener(executor, v -> {
+            return database.updateProfilePicture(uri).addOnCompleteListener( v -> {
                 if (v.isSuccessful()) {
                     LoggedInUser.getInstance().setImageURL(uri);
                     User user = internalStorage.getCurrentUser();
@@ -363,7 +362,7 @@ public class CachedFirestoreDatabase implements Database {
     @Override
     public Task<Void> updateNickname(String nickname) {
         if (DependencyManager.getNetworkStateSystem().isConnected()) {
-            return database.updateNickname(nickname).addOnCompleteListener(executor, v -> {
+            return database.updateNickname(nickname).addOnCompleteListener(v -> {
                 if (v.isSuccessful()) {
                     LoggedInUser.getInstance().setNickname(nickname);
                     User user = internalStorage.getCurrentUser();
