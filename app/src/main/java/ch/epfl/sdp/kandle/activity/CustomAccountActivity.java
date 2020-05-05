@@ -54,7 +54,6 @@ public class CustomAccountActivity extends AppCompatActivity {
                 ProgressDialog pd = new ProgressDialog(CustomAccountActivity.this);
                 pd.setMessage("Finalizing your account");
                 pd.show();
-                System.out.println(imageUri.toString());
                 Task<Void> task;
                 if (imageUri != null) {
                     task = ProfilePicPicker.setProfilePicture(imageUri);
