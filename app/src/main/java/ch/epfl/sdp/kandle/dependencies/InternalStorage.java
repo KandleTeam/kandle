@@ -1,6 +1,11 @@
 package ch.epfl.sdp.kandle.dependencies;
 
+import android.graphics.Bitmap;
+
 import androidx.annotation.NonNull;
+
+import java.io.File;
+import java.io.FileNotFoundException;
 
 import ch.epfl.sdp.kandle.User;
 
@@ -15,5 +20,8 @@ public interface InternalStorage {
 
     void deleteUser();
 
+    void saveImageToInternalStorage(Bitmap imageBitMap,String id);
+
+    File getImageFileById(String id) ;
 
 }

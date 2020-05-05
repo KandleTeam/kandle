@@ -1,6 +1,14 @@
 package ch.epfl.sdp.kandle.dependencies;
 
+import android.graphics.Bitmap;
+
 import androidx.annotation.NonNull;
+
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.util.HashMap;
+import java.util.Map;
 
 import ch.epfl.sdp.kandle.User;
 
@@ -12,6 +20,7 @@ import ch.epfl.sdp.kandle.User;
 public class MockInternalStorage implements InternalStorage {
     private static boolean userSavedLocally;
     private static User storedUser;
+    private Map<String,File> images = new HashMap<>();
 
     public MockInternalStorage(boolean userSavedLocally) {
         MockInternalStorage.userSavedLocally = userSavedLocally;
@@ -58,5 +67,22 @@ public class MockInternalStorage implements InternalStorage {
     @Override
     public void deleteUser() {
         storedUser = null;
+    }
+
+    @Override
+    public void saveImageToInternalStorage(Bitmap imageBitMap, String id)  {
+        File image = new File("user");
+        try {
+            FileOutputStream fos = new FileOutputStream(image);
+            imageBitMap.compress(Bitmap.CompressFormat.PNG, 100, fos);
+            images.put(id, image);
+        }catch(Exception e){
+            e.printStackTrace();
+        }
+    }
+
+    @Override
+    public File getImageFileById(String id) {
+        return images.get(id);
     }
 }

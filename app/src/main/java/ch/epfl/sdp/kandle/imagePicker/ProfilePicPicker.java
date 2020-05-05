@@ -1,9 +1,20 @@
 package ch.epfl.sdp.kandle.imagePicker;
 
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.ImageDecoder;
 import android.net.Uri;
+import android.os.Build;
+import android.provider.MediaStore;
+
+import androidx.annotation.RequiresApi;
 
 import com.google.android.gms.tasks.Task;
 
+import java.io.FileNotFoundException;
+import java.io.IOException;
+
+import ch.epfl.sdp.kandle.Kandle;
 import ch.epfl.sdp.kandle.dependencies.Authentication;
 import ch.epfl.sdp.kandle.dependencies.DependencyManager;
 import ch.epfl.sdp.kandle.storage.caching.CachedFirestoreDatabase;
@@ -24,7 +35,12 @@ public class ProfilePicPicker extends ImagePicker {
         if (url != null) {
             DependencyManager.getStorageSystem().delete(url);
         }
-
+        try {
+            Bitmap bitmap = MediaStore.Images.Media.getBitmap(Kandle.getContext().getContentResolver(), imageUri);
+            DependencyManager.getInternalStorageSystem().saveImageToInternalStorage(bitmap, auth.getCurrentUser().getId());
+        }catch (Exception e){
+            e.printStackTrace();
+        }
 
         return uploadImage(imageUri).continueWithTask(task -> {
             String sUri = null;

@@ -155,7 +155,6 @@ public class PostFragment extends Fragment {
 
     private View.OnClickListener followButtonListener(User currUser) {
         return v -> {
-            System.out.println(followButton.getText().toString());
             if (followButton.getText().toString().equals(getString(R.string.followBtnNotFollowing))) {
                 database.follow(currUser.getId(), user.getId()).addOnCompleteListener(task -> {
                     if (task.isSuccessful()) {

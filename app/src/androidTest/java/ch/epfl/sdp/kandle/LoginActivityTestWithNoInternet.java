@@ -22,7 +22,7 @@ import ch.epfl.sdp.kandle.dependencies.MockAuthentication;
 import ch.epfl.sdp.kandle.dependencies.MockDatabase;
 import ch.epfl.sdp.kandle.dependencies.MockInternalStorage;
 import ch.epfl.sdp.kandle.dependencies.MockNetwork;
-import ch.epfl.sdp.kandle.dependencies.MockStorage;
+import ch.epfl.sdp.kandle.dependencies.MockImageStorage;
 import static androidx.test.espresso.Espresso.onView;
 import static androidx.test.espresso.action.ViewActions.click;
 import static androidx.test.espresso.action.ViewActions.closeSoftKeyboard;
@@ -49,7 +49,7 @@ public class LoginActivityTestWithNoInternet {
                     users.put(alreadyHasAnAccount.getId(),alreadyHasAnAccount);
                     MockDatabase db = new MockDatabase(false, users, null, null);
                     MockAuthentication authentication = new MockAuthentication(false, accounts, "password");
-                    MockStorage storage = new MockStorage();
+                    MockImageStorage storage = new MockImageStorage();
                     MockInternalStorage internalStorage = new MockInternalStorage(false);
                     MockNetwork network = new MockNetwork(false);
                     localDatabase = Room.inMemoryDatabaseBuilder(Kandle.getContext(), LocalDatabase.class).allowMainThreadQueries().build();
