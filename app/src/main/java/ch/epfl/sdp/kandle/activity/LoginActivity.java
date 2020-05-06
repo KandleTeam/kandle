@@ -56,7 +56,7 @@ public class LoginActivity extends AppCompatActivity {
         mEmail = findViewById(R.id.email);
         mPassword = findViewById(R.id.password);
         mSignUpBtn = findViewById(R.id.loginBtn);
-        mGameButton = findViewById(R.id.virusButton);
+        mGameButton = findViewById(R.id.startOfflineGameButton);
 
         mSignUpBtn.setOnClickListener(v -> {
             String email = mEmail.getText().toString().trim();
@@ -70,7 +70,6 @@ public class LoginActivity extends AppCompatActivity {
             mGameButton.setVisibility(View.VISIBLE);
             mGameButton.setOnClickListener(v -> {
                 startActivity(new Intent(getApplicationContext(), OfflineGameActivity.class));
-                finish();
             });
         }
     }

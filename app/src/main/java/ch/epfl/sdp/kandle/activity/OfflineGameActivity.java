@@ -21,12 +21,25 @@ public class OfflineGameActivity extends AppCompatActivity {
 
     private ImageButton mVirusButton;
     private ImageButton mStartButton;
+    private ImageButton mBackButton;
     private TextView mStartText;
-    private TextView mScoreText;
     private TextView mEndText;
+    private TextView mScore;
+    private TextView mScoreText;
+    private TextView mMaxScore;
     private TextView mMaxScoreText;
 
-    private int[] nbPoints = {0, 0, 0}; //max nb we could have at a given time, actual nb we have, and Max score
+
+    /**
+     *     we create an array in order to be able to modify its values inside a clickListener
+     *
+     *     it contains :
+     *     - the total number of images already displayed
+     *     - the number of images we clicked on (thus nb of points)
+     *     - the max score we have
+     *
+     */
+    private int[] nbPoints = {0, 0, 0};
 
     private Timer timer;
 
@@ -37,18 +50,23 @@ public class OfflineGameActivity extends AppCompatActivity {
 
         mVirusButton = findViewById(R.id.virusButton);
         mStartButton = findViewById(R.id.startButton);
+        mBackButton = findViewById(R.id.backButton);
         mStartText = findViewById(R.id.startText);
-        mScoreText = findViewById(R.id.scoreText);
         mEndText = findViewById(R.id.endText);
+        mScore = findViewById(R.id.score);
+        mScoreText = findViewById(R.id.scoreText);
+        mMaxScore = findViewById(R.id.maxScore);
         mMaxScoreText = findViewById(R.id.maxScoreText);
 
         mVirusButton.setVisibility(View.GONE);
         mStartText.setText("Stay at home and click on the virus to kill it and thus limit the spread of the pandemic ! Ready ?");
-        mScoreText.setText("0");
-        mMaxScoreText.setText("0");
         mEndText.setText("FINISH");
+        mEndText.setVisibility(View.GONE);
+        mScoreText.setText("score :");
+        mScore.setText("0");
+        mMaxScoreText.setText("record :");
+        mMaxScore.setText("0");
 
-        timer = new Timer();
 
         mStartButton.setOnClickListener(v -> {
 
@@ -60,49 +78,26 @@ public class OfflineGameActivity extends AppCompatActivity {
             resetScore(nbPoints);
             resetMaxPossibleScore(nbPoints);
 
-            mScoreText.setText(Integer.toString(nbPoints[1]));
+            mScore.setText(Integer.toString(nbPoints[1]));
 
+            timer = new Timer();
             timer.schedule(new GameTimerTask(), APPEARING_TIME);
 
-            ConstraintLayout.LayoutParams params = (ConstraintLayout.LayoutParams) mVirusButton.getLayoutParams();
-            params.horizontalBias = 0.0f;
-            params.verticalBias = 0.0f;
-            mVirusButton.setLayoutParams(params);
-            mVirusButton.setVisibility(View.VISIBLE);
-
-            //augmenter le numéro de l'image, faire apparaitre l'image a un endroit random pdt temps
-            //random, et au bout d'un certain temps ou au click, image disparait, si clique : +1 pt
-            //sinon rien.
+            setRandomVirusButtonPositionAndDisplay();
+            incrementMaxPossiblePoints(nbPoints);
 
         });
 
-        mVirusButton.setOnClickListener(v2 -> {
+        mVirusButton.setOnClickListener(v -> {
             timer.cancel();
-            mVirusButton.setVisibility(View.GONE);
             updateScore(nbPoints);
-            mScoreText.setText(Integer.toString(nbPoints[1]));
-            if (getMaxPossiblePoints(nbPoints) < MAX_POINTS) {
-                System.out.println(nbPoints[0]);
-                incrementMaxPossiblePoints(nbPoints);
-                System.out.println(nbPoints[0]);
-                timer = new Timer();
-                timer.schedule(new GameTimerTask(), APPEARING_TIME);
-                ConstraintLayout.LayoutParams params = (ConstraintLayout.LayoutParams) mVirusButton.getLayoutParams();
-                params.horizontalBias = 0.2f;
-                params.verticalBias = 0.1f;
-                mVirusButton.setLayoutParams(params);
-                mVirusButton.setVisibility(View.VISIBLE);
-            } else {
-                System.out.println(nbPoints[0]);
-                if (nbPoints[1] > nbPoints[2]) {
-                    nbPoints[2] = nbPoints[1];
-                    mMaxScoreText.setText(Integer.toString(nbPoints[2]));
-                }
-                mEndText.setVisibility(View.VISIBLE);
-                mStartButton.setVisibility(View.VISIBLE);
-            }
+            mScore.setText(Integer.toString(nbPoints[1]));
+            handlingVirusDisappearing();
         });
 
+        mBackButton.setOnClickListener(v -> {
+            finish();
+        });
 
     }
 
@@ -130,33 +125,42 @@ public class OfflineGameActivity extends AppCompatActivity {
         nbPoints[2] = max;
     }
 
+    private void setRandomVirusButtonPositionAndDisplay(){
+        ConstraintLayout.LayoutParams params = (ConstraintLayout.LayoutParams) mVirusButton.getLayoutParams();
+        double horizontal_pos = Math.random();
+        double vertical_pos = Math.random();
+        params.horizontalBias = (float) horizontal_pos;
+        params.verticalBias = (float) vertical_pos;
+        mVirusButton.setLayoutParams(params);
+        mVirusButton.setVisibility(View.VISIBLE);
+    }
+
+    private void handlingVirusDisappearing(){
+        mVirusButton.setVisibility(View.GONE);
+        if (getMaxPossiblePoints(nbPoints) < MAX_POINTS) {
+            incrementMaxPossiblePoints(nbPoints);
+            timer = new Timer();
+            timer.schedule(new GameTimerTask(), APPEARING_TIME);
+            setRandomVirusButtonPositionAndDisplay();
+        } else {
+            if (nbPoints[1] > nbPoints[2]) {
+                nbPoints[2] = nbPoints[1];
+                mMaxScore.setText(Integer.toString(nbPoints[2]));
+            }
+            mEndText.setVisibility(View.VISIBLE);
+            mStartButton.setVisibility(View.VISIBLE);
+        }
+    }
 
     private class GameTimerTask extends TimerTask {
 
         @Override
         public void run() {
+            // we have to run on UI Thread otherwise we couldn't access the virus button
             runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
-                    mVirusButton.setVisibility(View.GONE);
-                    if (getMaxPossiblePoints(nbPoints) < MAX_POINTS) {
-                        incrementMaxPossiblePoints(nbPoints);
-                        timer = new Timer();
-                        timer.schedule(new GameTimerTask(), APPEARING_TIME);
-
-                        ConstraintLayout.LayoutParams params = (ConstraintLayout.LayoutParams) mVirusButton.getLayoutParams();
-                        params.horizontalBias = 0.5f;
-                        params.verticalBias = 0.5f;
-                        mVirusButton.setLayoutParams(params);
-                        mVirusButton.setVisibility(View.VISIBLE);
-                    }else{
-                        if (nbPoints[1] > nbPoints[2]) {
-                            nbPoints[2] = nbPoints[1];
-                            mMaxScoreText.setText(Integer.toString(nbPoints[2]));
-                        }
-                        mEndText.setVisibility(View.VISIBLE);
-                        mStartButton.setVisibility(View.VISIBLE);
-                    }
+                    handlingVirusDisappearing();
                 }
             });
         }

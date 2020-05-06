@@ -101,7 +101,7 @@
         app:layout_constraintTop_toBottomOf="@+id/loginBtn" />
 
     <ImageButton
-        android:id="@+id/virusButton"
+        android:id="@+id/startOfflineGameButton"
         android:layout_width="94dp"
         android:layout_height="72dp"
         android:visibility="gone"
