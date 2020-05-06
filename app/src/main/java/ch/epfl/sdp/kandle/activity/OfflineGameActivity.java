@@ -15,7 +15,7 @@ import ch.epfl.sdp.kandle.R;
 
 public class OfflineGameActivity extends AppCompatActivity {
 
-    public final int MAX_POINTS = 2;
+    public final static int MAX_POINTS = 2;
     public final int APPEARING_TIME = 3000; //in miliseconds
 
 

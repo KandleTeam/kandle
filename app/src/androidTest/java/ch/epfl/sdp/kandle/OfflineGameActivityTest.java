@@ -11,6 +11,7 @@ import org.junit.runner.RunWith;
 
 
 import ch.epfl.sdp.kandle.activity.LoginActivity;
+import ch.epfl.sdp.kandle.activity.OfflineGameActivity;
 import ch.epfl.sdp.kandle.dependencies.MockNetwork;
 
 import static androidx.test.espresso.Espresso.onView;
@@ -45,8 +46,9 @@ public class OfflineGameActivityTest {
     @Test
     public void startGameAndClickOnVirusUpdateScore(){
         onView(withId(R.id.startButton)).perform(click());
-        onView(withId(R.id.virusButton)).perform(click());
-        onView(withId(R.id.virusButton)).perform(click());
+        for(int i=0; i < OfflineGameActivity.MAX_POINTS; i++){
+            onView(withId(R.id.virusButton)).perform(click());
+        }
         onView(withId(R.id.score)).check(matches(not(withText(is("0")))));
         onView(withId(R.id.maxScore)).check(matches((withText(is("2")))));
     }
