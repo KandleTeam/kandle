@@ -47,24 +47,33 @@ public class OfflineGameActivityTest {
 
     @Before
     public void navigateToOfflineGame() {
-
-    }
-
-    @Test
-    public void startGameAndClickOnVirusUpdateScore(){
         try {
             Thread.sleep(2000);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
         onView(withId(R.id.startOfflineGameButton)).perform(click());
+    }
+
+    @Test
+    public void startGameAndClickOnVirusUpdateScore(){
         onView(withId(R.id.startButton)).perform(click());
         onView(withId(R.id.virusButton)).perform(click());
         onView(withId(R.id.virusButton)).perform(click());
-
         onView(withId(R.id.score)).check(matches(not(withText(is("0")))));
-
+        onView(withId(R.id.maxScore)).check(matches((withText(is("2")))));
     }
 
+
+    @Test
+    public void startGameAndNoClickOnVirus(){
+        onView(withId(R.id.startButton)).perform(click());
+        try {
+            Thread.sleep(7000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        onView(withId(R.id.score)).check(matches((withText(is("0")))));
+    }
 
 }
