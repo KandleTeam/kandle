@@ -7,12 +7,19 @@ import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.location.Location;
+import android.net.Uri;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.Toast;
+
+import androidx.annotation.NonNull;
+import androidx.core.content.res.ResourcesCompat;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.maps.android.SphericalUtil;
@@ -26,7 +33,6 @@ import com.mapbox.android.core.permissions.PermissionsManager;
 import com.mapbox.mapboxsdk.Mapbox;
 import com.mapbox.mapboxsdk.annotations.Icon;
 import com.mapbox.mapboxsdk.annotations.IconFactory;
-import com.mapbox.mapboxsdk.annotations.Marker;
 import com.mapbox.mapboxsdk.annotations.MarkerOptions;
 import com.mapbox.mapboxsdk.geometry.LatLng;
 import com.mapbox.mapboxsdk.location.LocationComponent;
@@ -40,39 +46,28 @@ import com.mapbox.mapboxsdk.maps.OnMapReadyCallback;
 import com.mapbox.mapboxsdk.maps.Style;
 import com.mapbox.mapboxsdk.utils.BitmapUtils;
 
+import java.util.Date;
 import java.util.List;
 
-import androidx.annotation.NonNull;
-import androidx.core.content.res.ResourcesCompat;
-import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentTransaction;
-
-import ch.epfl.sdp.kandle.Storage.caching.CachedFirestoreDatabase;
-import ch.epfl.sdp.kandle.User;
-import ch.epfl.sdp.kandle.activity.PostActivity;
+import ch.epfl.sdp.kandle.LoggedInUser;
+import ch.epfl.sdp.kandle.Post;
 import ch.epfl.sdp.kandle.R;
+import ch.epfl.sdp.kandle.activity.PostActivity;
 import ch.epfl.sdp.kandle.dependencies.Authentication;
-import ch.epfl.sdp.kandle.dependencies.Database;
 import ch.epfl.sdp.kandle.dependencies.DependencyManager;
 import ch.epfl.sdp.kandle.dependencies.MyLocationProvider;
-import ch.epfl.sdp.kandle.Post;
-import okhttp3.Cache;
+import ch.epfl.sdp.kandle.storage.caching.CachedFirestoreDatabase;
 
 public class MapViewFragment extends Fragment implements OnMapReadyCallback, PermissionsListener {
-
-    public int numMarkers;
 
     private static final String MARKER_SOURCE = "markers-source";
     private static final String MARKER_STYLE_LAYER = "markers-style-layer";
     private static final String MARKER_IMAGE = "custom-marker";
-
     private static final long DEFAULT_INTERVAL_IN_MILLISECONDS = 1000L;
     private static final long DEFAULT_MAX_WAIT_TIME = DEFAULT_INTERVAL_IN_MILLISECONDS * 5;
-
     private static final int RADIUS = 2000;
     private static final int LOCATION_PERMISSION_REQUEST_CODE = 1;
-
+    public int numMarkers;
     private CachedFirestoreDatabase database;
     private Authentication authentication;
 
@@ -114,14 +109,19 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback, Per
         authentication = DependencyManager.getAuthSystem();
 
         ImageButton mNewPostButton = view.findViewById(R.id.newPostButton);
-        mNewPostButton.setOnClickListener(v -> {
-            Intent intent = new Intent(getContext(), PostActivity.class);
-            if (currentLocation != null) {
-                intent.putExtra("latitude", currentLocation.getLatitude());
-                intent.putExtra("longitude", currentLocation.getLongitude());
-            }
-            startActivity(intent);
-        });
+        if (LoggedInUser.isGuestMode()) {
+            mNewPostButton.setVisibility(View.GONE);
+        } else {
+            mNewPostButton.setOnClickListener(v -> {
+                Intent intent = new Intent(getContext(), PostActivity.class);
+                if (currentLocation != null) {
+                    intent.putExtra("latitude", currentLocation.getLatitude());
+                    intent.putExtra("longitude", currentLocation.getLongitude());
+                }
+                startActivity(intent);
+            });
+        }
+
 
         mapView = view.findViewById(R.id.mapView);
         mapView.onCreate(savedInstanceState);
@@ -138,7 +138,7 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback, Per
 
 
         locationProvider.getLocation(this.getActivity()).addOnCompleteListener(task -> {
-
+            IconFactory iconFactory = IconFactory.getInstance(MapViewFragment.this.getActivity());
             if (task.isSuccessful()) {
 
                 if (task.getResult() != null) {
@@ -147,10 +147,13 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback, Per
                     mapboxMap.setStyle(Style.MAPBOX_STREETS, style -> {
 
                         Drawable drawable = ResourcesCompat.getDrawable(MapViewFragment.this.getResources(), R.drawable.ic_whatshot_24dp, null);
+
                         Bitmap mBitmap = BitmapUtils.getBitmapFromDrawable(drawable);
+
                         //style.addImage(MARKER_IMAGE, mBitmap);
-                        IconFactory iconFactory = IconFactory.getInstance(MapViewFragment.this.getActivity());
+
                         Icon icon = iconFactory.fromBitmap(mBitmap);
+
                         enableLocationComponent(style);
                         currentLocation = task.getResult();
                         //addPostMarkers(style);
@@ -158,30 +161,40 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback, Per
                         database.getNearbyPosts(currentLocation.getLongitude(), currentLocation.getLatitude(), RADIUS).addOnSuccessListener(posts -> {
                             for (Post p : posts) {
                                 numMarkers++;
-                                mapboxMap.addMarker(new MarkerOptions()
-                                        .position(new LatLng(p.getLatitude(), p.getLongitude()))
-                                        .title("A post !")
-                                        .icon(icon))
-                                        .setSnippet(p.getPostId());
+                                if (p.getType() == null || !p.equals(Post.EVENT) || p.getDate().getTime() < new Date().getTime()) {
+                                    mapboxMap.addMarker(new MarkerOptions()
+                                            .position(new LatLng(p.getLatitude(), p.getLongitude()))
+                                            .title("A post !")
+                                            .icon(icon))
+                                            .setSnippet(p.getPostId());
+                                }
                             }
                         });
                     });
+                    Drawable drawableLandMark = ResourcesCompat.getDrawable(MapViewFragment.this.getResources(), R.drawable.ic_place_red_50dp, null);
+                    Bitmap mBitmapLandmark = BitmapUtils.getBitmapFromDrawable(drawableLandMark);
+                    Icon iconLandmark = iconFactory.fromBitmap(mBitmapLandmark);
+                    mapboxMap.addMarker(new MarkerOptions()
+                            .position (new LatLng(46.5190, 6.5667))
+                            .title("EPFL")
+                            .icon(iconLandmark))
+                            .setSnippet("EPFL Landmark");
 
                     mapboxMap.setOnMarkerClickListener(marker -> {
-                        goToPostFragment(marker.getSnippet(), task.getResult());
-                        return true;
-
+                        if (marker.getSnippet().equals("EPFL Landmark")){
+                            goToEpflLandmarkFragment();
+                            return true;
+                        }else {
+                            goToPostFragment(marker.getSnippet(), task.getResult());
+                            return true;
+                        }
                     });
 
                     mapView.setContentDescription("MAP READY");
-                }
-
-                else {
+                } else {
                     Toast.makeText(this.getActivity(), "Enable GPS", Toast.LENGTH_LONG).show();
                 }
-            }
-
-            else {
+            } else {
                 permissionsManager = new PermissionsManager(this);
                 permissionsManager.requestLocationPermissions(this.getActivity());
                 //Toast.makeText(this.getActivity(), "An error has occurred : " + task.getException().getMessage(), Toast.LENGTH_LONG).show();
@@ -190,18 +203,32 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback, Per
         });
     }
 
-    public void goToPostFragment (String postId, Location location){
+    public void goToEpflLandmarkFragment() {
+        final FragmentManager fragmentManager = this.getActivity().getSupportFragmentManager();
+        database.getNearbyPosts(6.5667, 46.5190, 1000 ).addOnSuccessListener(posts -> {
+            fragmentManager.beginTransaction()
+                    .replace(R.id.flContent, new LandmarkFragment("EPFL", "image", posts))
+                    .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
+                    .addToBackStack(null)
+                    .commit();
+        });
+
+
+
+    }
+
+    public void goToPostFragment(String postId, Location location) {
         final FragmentManager fragmentManager = this.getActivity().getSupportFragmentManager();
         database.getPostByPostId(postId).addOnSuccessListener(post -> database.getUserById(post.getUserId()).addOnSuccessListener(
                 user -> fragmentManager.beginTransaction()
-                .replace(R.id.flContent, PostFragment.newInstance(post, location, user
-                        , comptuteDistance(location.getLatitude(), location.getLongitude(), post.getLatitude(), post.getLongitude())))
-                .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
-                .addToBackStack(null)
-                .commit()));
+                        .replace(R.id.flContent, PostFragment.newInstance(post, location, user
+                                , computeDistance(location.getLatitude(), location.getLongitude(), post.getLatitude(), post.getLongitude())))
+                        .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
+                        .addToBackStack(null)
+                        .commit()));
     }
 
-    private int comptuteDistance(double userLatitude, double userLongitude, double postLatitude, double postLongitude) {
+    private int computeDistance(double userLatitude, double userLongitude, double postLatitude, double postLongitude) {
 
         com.google.android.gms.maps.model.LatLng startLatLng = new com.google.android.gms.maps.model.LatLng(userLatitude, userLongitude);
         com.google.android.gms.maps.model.LatLng endLatLng = new com.google.android.gms.maps.model.LatLng(postLatitude, postLongitude);
@@ -277,6 +304,7 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback, Per
             // Set the component's render mode
             locationComponent.setRenderMode(RenderMode.COMPASS);
 
+
             initLocationEngine();
         } else {
             permissionsManager = new PermissionsManager(this);
@@ -302,7 +330,6 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback, Per
     }
 
 
-
     @Override
     public void onExplanationNeeded(List<String> permissionsToExplain) {
         Toast.makeText(this.getActivity(), "You have to grant location permission to see nearby posts", Toast.LENGTH_LONG).show();
@@ -311,7 +338,7 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback, Per
     @Override
     public void onPermissionResult(boolean granted) {
         if (granted) {
-            mapboxMap.getStyle(style -> enableLocationComponent(style));
+            mapboxMap.getStyle(this::enableLocationComponent);
         }
     }
 
@@ -340,7 +367,7 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback, Per
     }
 
     @Override
-    public void onSaveInstanceState(Bundle outState) {
+    public void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);
         mapView.onSaveInstanceState(outState);
     }

@@ -6,21 +6,19 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import java.util.List;
-
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import java.util.List;
+
 import ch.epfl.sdp.kandle.R;
 import ch.epfl.sdp.kandle.User;
 import ch.epfl.sdp.kandle.UserAdapter;
 import ch.epfl.sdp.kandle.dependencies.Authentication;
-import ch.epfl.sdp.kandle.Storage.caching.CachedFirestoreDatabase;
 import ch.epfl.sdp.kandle.dependencies.Database;
-import ch.epfl.sdp.kandle.dependencies.DependencyManager;
 
 
 public class ListUsersFragment extends Fragment {
@@ -64,8 +62,7 @@ public class ListUsersFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_list_users, container, false);
 
         getViews(view);
-        auth = DependencyManager.getAuthSystem();
-        database = new CachedFirestoreDatabase();
+
 
         mNumber.setText(number);
         mTitle.setText(title);

@@ -1,4 +1,4 @@
-package ch.epfl.sdp.kandle.Storage.firebase;
+package ch.epfl.sdp.kandle.storage.firebase;
 
 import android.net.Uri;
 
@@ -19,17 +19,13 @@ public class CloudStorage implements Storage {
         return INSTANCE;
     }
 
+
     @Override
     public Task<Uri> storeAndGetDownloadUrl(String fileExtension, Uri fileUri) {
         String path = System.currentTimeMillis() + "." + fileExtension;
         final StorageReference fileReference = STORAGE_REFERENCE.child(path);
         UploadTask uploadTask = fileReference.putFile(fileUri);
-        return uploadTask.continueWithTask(task -> {
-            if (!task.isSuccessful()) {
-                throw task.getException() != null ? task.getException() : new Exception("Unknown error");
-            }
-            return fileReference.getDownloadUrl();
-        });
+        return uploadTask.continueWithTask(task -> fileReference.getDownloadUrl());
     }
 
     @Override

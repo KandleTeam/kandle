@@ -13,6 +13,7 @@ import android.widget.Toast;
 
 import androidx.fragment.app.Fragment;
 
+import ch.epfl.sdp.kandle.LoggedInUser;
 import ch.epfl.sdp.kandle.R;
 import ch.epfl.sdp.kandle.dependencies.Authentication;
 import ch.epfl.sdp.kandle.dependencies.DependencyManager;
@@ -40,9 +41,13 @@ public class SettingsFragment extends Fragment {
         auth = DependencyManager.getAuthSystem();
 
         mModifyPasswordLayout.setOnClickListener(v ->
-        {
-            extendOnClick(mModifyPasswordContent, mExpandPassword);
-        });
+                extendOnClick(mModifyPasswordContent, mExpandPassword)
+        );
+        if (LoggedInUser.isGuestMode()) {
+            mModifyPasswordLayout.setVisibility(View.GONE);
+        }
+
+
         mOtherSettingsLayout.setOnClickListener(v -> {
             extendOnClick(mOtherSettingsContent, mExpandOtherSettings);
         });
@@ -68,7 +73,7 @@ public class SettingsFragment extends Fragment {
                                 mOldPassword.setText("");
                                 mNewPassword.setText("");
                                 mNewPasswordConfirm.setText("");
-                                Toast.makeText(getContext(), "Your password has been succesfully updated", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(getContext(), "Your password has been successfully updated", Toast.LENGTH_SHORT).show();
                                 pd.dismiss();
                             }
                         });

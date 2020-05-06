@@ -7,14 +7,13 @@ public class Kandle extends Application {
 
     private static Kandle mContext;
 
+    public static Kandle getContext() {
+        return mContext;
+    }
 
     public void onCreate() {
         super.onCreate();
         mContext = this;
-    }
-
-    public static Kandle getContext() {
-        return mContext;
     }
 
 }

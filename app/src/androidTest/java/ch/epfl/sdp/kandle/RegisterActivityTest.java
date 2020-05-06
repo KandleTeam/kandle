@@ -12,7 +12,7 @@ import androidx.test.espresso.intent.rule.IntentsTestRule;
 import androidx.test.rule.GrantPermissionRule;
 import java.util.HashMap;
 
-import ch.epfl.sdp.kandle.Storage.room.LocalDatabase;
+import ch.epfl.sdp.kandle.storage.room.LocalDatabase;
 import ch.epfl.sdp.kandle.activity.CustomAccountActivity;
 import ch.epfl.sdp.kandle.activity.LoginActivity;
 import ch.epfl.sdp.kandle.activity.RegisterActivity;

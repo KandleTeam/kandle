@@ -209,7 +209,6 @@ public class MockDatabase implements Database {
     }
 
 
-
     @Override
     public Task<Void> updateNickname(String nickname) {
         TaskCompletionSource<Void> source = new TaskCompletionSource<>();
@@ -218,7 +217,6 @@ public class MockDatabase implements Database {
         source.setResult(null);
         return source.getTask();
     }
-
 
 
     @Override
@@ -314,7 +312,11 @@ public class MockDatabase implements Database {
     public Task<List<Post>> getNearbyPosts(double latitude, double longitude, double distance) {
         TaskCompletionSource<List<Post>> source = new TaskCompletionSource<>();
         List<Post> posts = new ArrayList<>();
-        posts.add(new Post("mock post", null, new Date(), "mock user id", 0.0001, 0.0001));
+        posts.add(new Post("nearby post 1 ", null, new Date(), "mock user id", 0.0001, 0.0001));
+        posts.add(new Post("nearby post 2 ", null, new Date(), "mock user id", 0.0001, 0.0001));
+        posts.add(new Post("nearby post 3 ", null, new Date(), "mock user id", 0.0001, 0.0001));
+        posts.add(new Post("nearby post 4 ", null, new Date(), "mock user id", 0.0001, 0.0001));
+        posts.add(new Post("nearby post 5 ", null, new Date(), "mock user id", 0.0001, 0.0001));
         source.setResult(posts);
         return source.getTask();
     }

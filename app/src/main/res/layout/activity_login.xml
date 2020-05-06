@@ -11,10 +11,10 @@
         android:id="@+id/connectionBar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginBottom="5dp"
         android:background="@android:color/transparent"
         app:layout_constraintBottom_toTopOf="@+id/logo"
         app:layout_constraintTop_toTopOf="parent"
-        android:layout_marginBottom="5dp"
         app:layout_constraintVertical_bias="0.0"
         tools:layout_editor_absoluteX="0dp" />
 
@@ -96,7 +96,8 @@
         android:textAlignment="center"
         android:textColor="#ABF44336"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/guestModeLink"
+        app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/loginBtn" />
 
@@ -112,5 +113,20 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.0"
         app:srcCompat="@drawable/biohazard" />
+  
+    <TextView
+        android:id="@+id/guestModeLink"
+        android:layout_width="wrap_content"
+        android:layout_height="19dp"
+        android:clickable="true"
+        android:focusable="true"
+        android:text="@string/login_guestmode_btn_text"
+        android:textAlignment="center"
+        android:textColor="#ABF44336"
+        app:layout_constraintBottom_toBottomOf="@+id/signUpLink"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toEndOf="@+id/signUpLink"
+        app:layout_constraintTop_toTopOf="@+id/signUpLink" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

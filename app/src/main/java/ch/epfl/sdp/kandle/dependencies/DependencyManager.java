@@ -1,12 +1,12 @@
 package ch.epfl.sdp.kandle.dependencies;
 
-import ch.epfl.sdp.kandle.Storage.firebase.CloudStorage;
-import ch.epfl.sdp.kandle.Storage.firebase.FirebaseAuthentication;
-import ch.epfl.sdp.kandle.Storage.firebase.FirestoreDatabase;
-import ch.epfl.sdp.kandle.Storage.room.LocalDatabase;
 import ch.epfl.sdp.kandle.network.NetworkState;
 import ch.epfl.sdp.kandle.network.UserNetworkStatus;
-import ch.epfl.sdp.kandle.Storage.caching.InternalStorageHandler;
+import ch.epfl.sdp.kandle.storage.caching.InternalStorageHandler;
+import ch.epfl.sdp.kandle.storage.firebase.CloudStorage;
+import ch.epfl.sdp.kandle.storage.firebase.FirebaseAuthentication;
+import ch.epfl.sdp.kandle.storage.firebase.FirestoreDatabase;
+import ch.epfl.sdp.kandle.storage.room.LocalDatabase;
 
 public final class DependencyManager {
 
@@ -19,6 +19,10 @@ public final class DependencyManager {
     private static LocalDatabase localDatabase = LocalDatabase.getInstance();
     private static Authentication auth = FirebaseAuthentication.getInstance();
 
+
+    private DependencyManager() {
+
+    }
 
     public static void setFreshTestDependencies(Authentication auth, Database db, Storage storage, InternalStorage internalStorage, NetworkState networkState, LocalDatabase localDatabase) {
         setAuthSystem(auth);
@@ -85,11 +89,6 @@ public final class DependencyManager {
 
     public static void setLocalDatabase(LocalDatabase localDatabase) {
         DependencyManager.localDatabase = localDatabase;
-    }
-
-
-    private DependencyManager() {
-
     }
 
 }

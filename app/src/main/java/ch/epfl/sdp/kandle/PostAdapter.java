@@ -6,17 +6,10 @@ import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
-import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
-
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.List;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -26,27 +19,22 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.squareup.picasso.Picasso;
 
-import ch.epfl.sdp.kandle.activity.MainActivity;
-import ch.epfl.sdp.kandle.activity.RegisterActivity;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.List;
 
 import ch.epfl.sdp.kandle.activity.PostActivity;
 import ch.epfl.sdp.kandle.dependencies.Authentication;
-import ch.epfl.sdp.kandle.Storage.caching.CachedFirestoreDatabase;
 import ch.epfl.sdp.kandle.dependencies.Database;
 import ch.epfl.sdp.kandle.dependencies.DependencyManager;
 import ch.epfl.sdp.kandle.fragment.ListUsersFragment;
-import ch.epfl.sdp.kandle.fragment.ProfileFragment;
-import ch.epfl.sdp.kandle.fragment.YourPostListFragment;
+import ch.epfl.sdp.kandle.storage.caching.CachedFirestoreDatabase;
 import de.hdodenhof.circleimageview.CircleImageView;
 
 public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder> {
 
     public final static int POST_IMAGE = 10;
 
-    public final int EDITABLE_TIME = 5; //you can edit your posts within 5 minutes
-    public final int MILISEC_IN_MINUTE = 60000;
-
-    private static ClickListener clickListener;
     private List<Post> mPosts;
     private Context mContext;
     private ViewHolder viewHolder;
@@ -59,11 +47,6 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder> {
     public PostAdapter(List<Post> posts, Context context) {
         mPosts = posts;
         mContext = context;
-    }
-
-
-    public void setOnItemClickListener(ClickListener clickListener) {
-        PostAdapter.clickListener = clickListener;
     }
 
     @NonNull
@@ -80,7 +63,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder> {
         return viewHolder;
     }
 
-    public void setPost(List<Post> posts){
+    public void setPost(List<Post> posts) {
         this.mPosts = posts;
         notifyDataSetChanged();
     }
@@ -108,6 +91,33 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder> {
         final ImageButton editPostView = holder.mEditButton;
         final ImageButton deletePostView = holder.mDeleteButton;
 
+        if (post.getType()!=null && post.getType().equals(Post.EVENT)) {
+            holder.mlikeButton.setBackgroundResource(R.drawable.ic_event_black_24dp);
+            holder.mlikeButton.setOnClickListener(v -> {
+
+                if (post.getLikers().contains(userId)) {
+                    database.unlikePost(userId, post.getPostId()).addOnCompleteListener(task -> {
+                        if (task.isSuccessful()) {
+                            post.unlikePost(userId);
+                            likeView.setText(String.valueOf(post.getLikes()));
+                        } else {
+                            Toast.makeText(this.mContext, task.getException().getMessage(), Toast.LENGTH_LONG).show();
+                        }
+                    });
+
+                } else {
+                    database.likePost(userId, post.getPostId()).addOnCompleteListener(task -> {
+                        if (task.isSuccessful()) {
+                            post.likePost(userId);
+                            likeView.setText(String.valueOf(post.getLikes()));
+                        } else {
+                            Toast.makeText(this.mContext, task.getException().getMessage(), Toast.LENGTH_LONG).show();
+                        }
+                    });
+                }
+            });
+        }
+
         ImageView postImageView = holder.mPostImage;
         if (post.getImageURL() != null) {
             postImageView.setVisibility(View.VISIBLE);
@@ -126,40 +136,16 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder> {
                 nicknameView.setText(user.getNickname());
 
                 //milliseconds
-                long different = new Date().getTime() - post.getDate().getTime();
-                long minutes = different / MILISEC_IN_MINUTE;
+
+
                 if (user.getId().equals(userId)) {
                     deletePostView.setVisibility(View.VISIBLE);
-                    if (minutes >= EDITABLE_TIME) {
-                        post.setEditable(false);
-                    }
                     if (post.isEditable()) {
                         editPostView.setVisibility(View.VISIBLE);
                     }
                 }
 
 
-            }
-        });
-
-
-        holder.mlikeButton.setOnClickListener(v -> {
-
-            if (post.getLikers().contains(userId)) {
-                database.unlikePost(userId, post.getPostId()).addOnCompleteListener(task -> {
-                    if (task.isSuccessful()) {
-                        post.unlikePost(userId);
-                        likeView.setText(String.valueOf(post.getLikes()));
-                    }
-                });
-
-            } else {
-                database.likePost(userId, post.getPostId()).addOnCompleteListener(task -> {
-                    if (task.isSuccessful()) {
-                        post.likePost(userId);
-                        likeView.setText(String.valueOf(post.getLikes()));
-                    }
-                });
             }
         });
 
@@ -194,7 +180,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder> {
             if (task.isSuccessful()) {
                 fragmentManager.beginTransaction().replace(R.id.flContent, ListUsersFragment.newInstance(
                         task.getResult(),
-                        "Likes",
+                        post.getType() != null && post.getType().equals(Post.EVENT)? "Participants" : "Likes",
                         Integer.toString(task.getResult().size())
                 )).setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
                         .addToBackStack(null)
@@ -214,7 +200,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder> {
     }
 
 
-    public static class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+    public static class ViewHolder extends RecyclerView.ViewHolder {
 
         public TextView mtitleText;
         public TextView mlikes;
@@ -230,10 +216,9 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder> {
 
         public ViewHolder(View itemView) {
             super(itemView);
-            itemView.setOnClickListener(this);
-            mtitleText = (TextView) itemView.findViewById(R.id.title);
-            mlikes = (TextView) itemView.findViewById(R.id.flames);
-            mdate = (TextView) itemView.findViewById(R.id.date_and_time);
+            mtitleText = itemView.findViewById(R.id.title);
+            mlikes = itemView.findViewById(R.id.flames);
+            mdate = itemView.findViewById(R.id.date_and_time);
             mlikeButton = itemView.findViewById(R.id.likeButton);
             mDeleteButton = itemView.findViewById(R.id.deleteButton);
             mEditButton = itemView.findViewById(R.id.editButton);
@@ -243,11 +228,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder> {
             mNickname = itemView.findViewById(R.id.nicknameInPost);
         }
 
-        @Override
-        public void onClick(View v) {
-            clickListener.onItemClick(getAdapterPosition(), v);
-        }
-
     }
+
 
 }

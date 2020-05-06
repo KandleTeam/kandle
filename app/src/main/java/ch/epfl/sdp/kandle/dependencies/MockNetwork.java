@@ -7,7 +7,7 @@ public class MockNetwork implements NetworkState {
     private static boolean isOnline;
 
     public MockNetwork(boolean isOnline) {
-        this.isOnline = isOnline;
+        MockNetwork.isOnline = isOnline;
     }
 
     @Override
@@ -17,6 +17,6 @@ public class MockNetwork implements NetworkState {
 
 
     public void setIsOnline(boolean isOnline) {
-        this.isOnline = isOnline;
+        MockNetwork.isOnline = isOnline;
     }
 }

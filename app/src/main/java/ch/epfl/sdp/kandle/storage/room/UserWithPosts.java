@@ -1,4 +1,4 @@
-package ch.epfl.sdp.kandle.Storage.room;
+package ch.epfl.sdp.kandle.storage.room;
 
 import androidx.room.Embedded;
 import androidx.room.Relation;

@@ -45,7 +45,7 @@ public class MockAuthentication implements Authentication {
 
         TaskCompletionSource source = new TaskCompletionSource<User>();
 
-        if (accounts.keySet().contains(email)) {
+        if (accounts.containsKey(email)) {
             source.setException(new Exception("You already have an account"));
         } else {
             String newId = "newId";
@@ -65,7 +65,7 @@ public class MockAuthentication implements Authentication {
 
         TaskCompletionSource source = new TaskCompletionSource<User>();
 
-        if (accounts.keySet().contains(email)) {
+        if (accounts.containsKey(email)) {
             isConnected = true;
             User user = DependencyManager.getDatabaseSystem().getUserById(accounts.get(email)).getResult();
             LoggedInUser.init(user);

@@ -1,4 +1,4 @@
-package ch.epfl.sdp.kandle.Storage.firebase;
+package ch.epfl.sdp.kandle.storage.firebase;
 
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.tasks.Task;
@@ -299,7 +299,7 @@ public class FirestoreDatabase implements Database {
                             source.setException(new Exception(task2.getException().getMessage()));
                         }
                     });
-                }else{
+                } else {
                     source.setResult(new ArrayList<User>());
                 }
             } else {
@@ -550,6 +550,7 @@ public class FirestoreDatabase implements Database {
 
                             for (QueryDocumentSnapshot documentSnapshot : task2.getResult()) {
                                 String postId = (String) documentSnapshot.get("postId");
+                                System.out.println(task.getResult() == null);
                                 if (task.getResult().contains(postId)) {
                                     posts.add(documentSnapshot.toObject(Post.class));
                                 }
@@ -574,7 +575,6 @@ public class FirestoreDatabase implements Database {
     @Override
     public Task<List<Post>> getNearbyPosts(double longitude, double latitude, double distance) {
         TaskCompletionSource<List<Post>> source = new TaskCompletionSource<>();
-
         POSTS.get().addOnCompleteListener(task -> {
             if (task.isSuccessful()) {
                 List<Post> posts = new ArrayList<>();
@@ -586,7 +586,6 @@ public class FirestoreDatabase implements Database {
                         double postLongitude = (double) documentSnapshot.get("longitude");
                         List<String> likers = (List<String>) documentSnapshot.get("likers");
 
-                        DateFormat df = DateFormat.getDateInstance();
                         Date postDate = ((Timestamp) documentSnapshot.get("date")).toDate();
                         Date now = new Date();
                         long numDays = TimeUnit.DAYS.convert(Math.abs(now.getTime() - postDate.getTime()), TimeUnit.MILLISECONDS);
@@ -599,7 +598,7 @@ public class FirestoreDatabase implements Database {
                     }
 
                 }
-
+                Collections.sort(posts, (o1, o2) -> o2.getLikers().size() - o1.getLikers().size());
                 source.setResult(posts);
 
             } else {

@@ -20,7 +20,7 @@
             android:title="Follow" />
 
         <item
-            android:id="@+id/light"
+            android:id="@+id/achievements"
             android:icon="@drawable/ic_light"
             android:title="Your Achievements" />
 

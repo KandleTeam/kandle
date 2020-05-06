@@ -1,15 +1,5 @@
 package ch.epfl.sdp.kandle.activity;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.coordinatorlayout.widget.CoordinatorLayout;
-import androidx.core.content.ContextCompat;
-
-import ch.epfl.sdp.kandle.R;
-import ch.epfl.sdp.kandle.User;
-import ch.epfl.sdp.kandle.dependencies.Authentication;
-import ch.epfl.sdp.kandle.dependencies.DependencyManager;
-
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
@@ -20,9 +10,16 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.coordinatorlayout.widget.CoordinatorLayout;
+import androidx.core.content.ContextCompat;
+
 import com.google.android.material.snackbar.Snackbar;
+
+import ch.epfl.sdp.kandle.LoggedInUser;
+import ch.epfl.sdp.kandle.R;
+import ch.epfl.sdp.kandle.dependencies.Authentication;
+import ch.epfl.sdp.kandle.dependencies.DependencyManager;
 
 public class LoginActivity extends AppCompatActivity {
 
@@ -44,12 +41,10 @@ public class LoginActivity extends AppCompatActivity {
         setContentView(R.layout.activity_login);
         auth = DependencyManager.getAuthSystem();
 
-
         if (auth.getCurrentUserAtApplicationStart()) {
             startActivity(new Intent(getApplicationContext(), MainActivity.class));
             finish();
         }
-
 
         mSignIn = findViewById(R.id.signUpLink);
         mSignIn.setOnClickListener(v -> startActivity(new Intent(getApplicationContext(), RegisterActivity.class)));
@@ -57,6 +52,7 @@ public class LoginActivity extends AppCompatActivity {
         mPassword = findViewById(R.id.password);
         mSignUpBtn = findViewById(R.id.loginBtn);
         mGameButton = findViewById(R.id.startOfflineGameButton);
+        TextView mGuestMode = findViewById(R.id.guestModeLink);
 
         mSignUpBtn.setOnClickListener(v -> {
             String email = mEmail.getText().toString().trim();
@@ -72,6 +68,12 @@ public class LoginActivity extends AppCompatActivity {
                 startActivity(new Intent(getApplicationContext(), OfflineGameActivity.class));
             });
         }
+
+        mGuestMode.setOnClickListener(v -> {
+            LoggedInUser.initGuestMode();
+            startActivity(new Intent(getApplicationContext(), MainActivity.class));
+        });
+
     }
 
 
@@ -92,7 +94,7 @@ public class LoginActivity extends AppCompatActivity {
 
     private boolean checkForInternetConnection() {
         if (!DependencyManager.getNetworkStateSystem().isConnected()) {
-            CNetworkBar = (CoordinatorLayout) findViewById(R.id.connectionBar);
+            CNetworkBar = findViewById(R.id.connectionBar);
             Snackbar snackbar = Snackbar.make(CNetworkBar, R.string.no_connexion, Snackbar.LENGTH_SHORT);
             snackbar.setTextColor(ContextCompat.getColor(this, R.color.white));
             CNetworkBar.setBackgroundColor(ContextCompat.getColor(this, R.color.colorAccent));
@@ -108,19 +110,16 @@ public class LoginActivity extends AppCompatActivity {
         final ProgressDialog pd = new ProgressDialog(LoginActivity.this);
         pd.setMessage(getString(R.string.login_in_progress));
         pd.show();
-        auth.signInWithEmailAndPassword(email, password).addOnCompleteListener(new OnCompleteListener<User>() {
-            @Override
-            public void onComplete(@NonNull Task<User> task) {
-                if (task.isSuccessful()) {
-                    pd.dismiss();
-                    Toast.makeText(LoginActivity.this, getString(R.string.login_success), Toast.LENGTH_SHORT).show();
-                    startActivity(new Intent(getApplicationContext(), MainActivity.class));
-                    finish();
-                } else {
-                    pd.dismiss();
-                    Toast.makeText(LoginActivity.this, "An error has occurred : " + task.getException().getMessage(), Toast.LENGTH_SHORT).show();
-                    task.getException().printStackTrace();
-                }
+        auth.signInWithEmailAndPassword(email, password).addOnCompleteListener(task -> {
+            if (task.isSuccessful()) {
+                pd.dismiss();
+                Toast.makeText(LoginActivity.this, getString(R.string.login_success), Toast.LENGTH_SHORT).show();
+                startActivity(new Intent(getApplicationContext(), MainActivity.class));
+                finish();
+            } else {
+                pd.dismiss();
+                Toast.makeText(LoginActivity.this, "An error has occurred : " + task.getException().getMessage(), Toast.LENGTH_SHORT).show();
+                task.getException().printStackTrace();
             }
         });
 
