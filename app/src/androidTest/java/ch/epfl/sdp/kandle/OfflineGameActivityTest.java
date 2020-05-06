@@ -1,9 +1,5 @@
 package ch.epfl.sdp.kandle;
 
-import android.content.res.Resources;
-
-import androidx.room.Room;
-import androidx.test.core.app.ApplicationProvider;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 import androidx.test.rule.ActivityTestRule;
 
@@ -12,16 +8,10 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import java.util.HashMap;
 
-import ch.epfl.sdp.kandle.Storage.room.LocalDatabase;
+
 import ch.epfl.sdp.kandle.activity.LoginActivity;
-import ch.epfl.sdp.kandle.dependencies.DependencyManager;
-import ch.epfl.sdp.kandle.dependencies.MockAuthentication;
-import ch.epfl.sdp.kandle.dependencies.MockDatabase;
-import ch.epfl.sdp.kandle.dependencies.MockInternalStorage;
 import ch.epfl.sdp.kandle.dependencies.MockNetwork;
-import ch.epfl.sdp.kandle.dependencies.MockStorage;
 
 import static androidx.test.espresso.Espresso.onView;
 import static androidx.test.espresso.action.ViewActions.click;
@@ -33,9 +23,6 @@ import static org.hamcrest.Matchers.not;
 
 @RunWith(AndroidJUnit4.class)
 public class OfflineGameActivityTest {
-
-    private LocalDatabase localDatabase;
-    private User alreadyHasAnAccount;
     @Rule
     public ActivityTestRule<LoginActivity> intentsRule =
             new ActivityTestRule<LoginActivity>(LoginActivity.class, true, true){
