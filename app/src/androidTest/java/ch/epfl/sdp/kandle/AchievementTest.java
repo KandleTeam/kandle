@@ -66,6 +66,7 @@ public class AchievementTest {
             new ActivityTestRule<MainActivity>(MainActivity.class,true,true){
                 @Override
                 protected void beforeActivityLaunched() {
+                    LoggedInUser.init(new User("loggedInUserId","LoggedInUser","loggedInUser@kandle.ch","nickname","image"));
                     user1 = new User("user1Id", "user1", "user1@kandle.ch", null,  null);
                     user2 = new User("user2Id", "user2", "user2@kandle.ch", null,  null);
                     user3 = new User("user3Id", "user3", "user3@kandle.ch", null,  null);
@@ -74,7 +75,6 @@ public class AchievementTest {
                     p3 =  new Post("My", null, new Date(), "loggedInUserId", "post3Id");
                     p4 =  new Post("You", null, new Date(), "loggedInUserId", "post4Id");
                     p5 =  new Post("Are", null, new Date(), "loggedInUserId", "post5Id");
-                    LoggedInUser.init(new User("loggedInUserId","LoggedInUser","loggedInUser@kandle.ch","nickname","image"));
                     LoggedInUser.getInstance().addPostId(p1.getPostId());
                     LoggedInUser.getInstance().addPostId(p2.getPostId());
                     LoggedInUser.getInstance().addPostId(p3.getPostId());

@@ -25,6 +25,7 @@ import com.squareup.picasso.Picasso;
 
 import java.util.List;
 
+import ch.epfl.sdp.kandle.Achievement;
 import ch.epfl.sdp.kandle.LoggedInUser;
 import ch.epfl.sdp.kandle.R;
 import ch.epfl.sdp.kandle.User;
@@ -40,7 +41,7 @@ public class ProfileFragment extends Fragment {
     public final static int PROFILE_PICTURE_BEFORE = 6;
     public final static int PROFILE_PICTURE_AFTER = 7;
     private User user;
-    private ImageView mProfilePicture, mEditPicture, mProfilePictureInMenu, mEditName;
+    private ImageView mProfilePicture, mEditPicture, mProfilePictureInMenu, mEditName, mBadge;
     private TextView mNumberOfFollowers, mNumberOfFollowing, mUsername, mNicknameView, mNickNameInMenu;
     private EditText mNicknameEdit;
     private ViewSwitcher mNickname;
@@ -48,9 +49,13 @@ public class ProfileFragment extends Fragment {
     private Authentication auth;
     private Database database;
     private Uri imageUri;
+    private List<Achievement> achievements;
+    private static int nbValidatedAchievements;
 
     private ProfileFragment(User user) {
         this.user = user;
+        this.achievements = AchievementFragment.getAchievements();
+        nbValidatedAchievements = 0;
     }
 
 
@@ -72,6 +77,7 @@ public class ProfileFragment extends Fragment {
         mEditName = parent.findViewById(R.id.profileEditNameButton);
         mValidateNameButton = parent.findViewById(R.id.profileValidateNameButton);
         mValidatePictureButton = parent.findViewById(R.id.profileValidatePictureButton);
+        mBadge = parent.findViewById(R.id.badgePicture);
     }
 
 
@@ -80,6 +86,7 @@ public class ProfileFragment extends Fragment {
                              Bundle savedInstanceState) {
 
         View view = inflater.inflate(R.layout.fragment_profile, container, false);
+
 
         auth = DependencyManager.getAuthSystem();
         database = new CachedFirestoreDatabase();
@@ -101,6 +108,13 @@ public class ProfileFragment extends Fragment {
             });
 
         }
+
+        for(Achievement achievement: achievements){
+            achievement.setProfileFragment(this);
+            achievement.checkAchievement(false);
+        }
+
+       changeBadge();
 
         mEditName.setOnClickListener(v -> {
             mEditName.setVisibility(View.GONE);
@@ -255,5 +269,32 @@ public class ProfileFragment extends Fragment {
             mValidatePictureButton.setVisibility(View.VISIBLE);
         }
     }
+
+    public void notifyChange(){
+        nbValidatedAchievements++;
+        changeBadge();
+    }
+
+    private void changeBadge(){
+        if(nbValidatedAchievements >= 0 && nbValidatedAchievements <= 2){
+            mBadge.setImageResource(R.drawable.ic_icons2_medal_64);
+            mBadge.setTag(R.drawable.ic_icons2_medal_64);
+        }
+        else if (nbValidatedAchievements <= 4){
+            mBadge.setImageResource(R.drawable.ic_icons1_medal_64);
+            mBadge.setTag(R.drawable.ic_icons1_medal_64);
+
+        }
+        else if (nbValidatedAchievements <= 6){
+            mBadge.setImageResource(R.drawable.icons8_medal_64_1);
+            mBadge.setTag(R.drawable.icons8_medal_64_1);
+        }
+        else if(nbValidatedAchievements > 6){
+            mBadge.setImageResource(R.drawable.icons8_medal_64_2);
+            mBadge.setTag(R.drawable.icons8_medal_64_2);
+        }
+    }
+
+
 }
 
