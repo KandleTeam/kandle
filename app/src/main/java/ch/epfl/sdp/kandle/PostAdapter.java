@@ -116,6 +116,9 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder> {
                     });
                 }
             });
+            if(post.getIsForCloseFollowers()){
+                holder.mIsForCloseFollowers.setVisibility(View.VISIBLE);
+            }
         }
 
         ImageView postImageView = holder.mPostImage;
@@ -212,6 +215,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder> {
         public ImageView mPostImage;
         public TextView mUsername;
         public TextView mNickname;
+        public ImageView mIsForCloseFollowers;
 
 
         public ViewHolder(View itemView) {
@@ -226,6 +230,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder> {
             mPostImage = itemView.findViewById(R.id.postImageInPost);
             mUsername = itemView.findViewById(R.id.usernameinPost);
             mNickname = itemView.findViewById(R.id.nicknameInPost);
+            mIsForCloseFollowers = itemView.findViewById(R.id.isPostForCloseFollowers);
         }
 
     }

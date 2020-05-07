@@ -69,7 +69,6 @@ public class YourProfileFragmentTest {
                     LoggedInUser.init(new User("loggedInUserId","LoggedInUser","loggedInUser@kandle.ch","nickname","image"));
                     user1 = new User("user1Id","user1","user1@kandle.ch","user1",null);
                     user2 = new User("user2Id","user2","user2@kandle.ch","user2",null);
-
                     HashMap<String, String> accounts = new HashMap<>();
                     HashMap<String,User> users = new HashMap<>();
                     accounts.put(user1.getEmail(), user1.getId());

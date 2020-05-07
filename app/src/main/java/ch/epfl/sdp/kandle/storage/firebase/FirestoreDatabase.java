@@ -46,8 +46,11 @@ public class FirestoreDatabase implements Database {
     // Array fields of the documents in collection 'follow'
     private static final String FOLLOWERS = "followers";
     private static final String FOLLOWING = "following";
+    private static final String CLOSE_FOLLOWERS = "close_followers";
     private Map<String, Object> mapDeleteFollowing = (Map<String, Object>) new HashMap<>().put("following", FieldValue.delete());
     private Map<String, Object> mapDeleteFollowers = (Map<String, Object>) new HashMap<>().put("followers", FieldValue.delete());
+    private Map<String, Object> mapDeleteCloseFollowers = (Map<String, Object>) new HashMap<>().put("close_followers", FieldValue.delete());
+
 
     private FirestoreDatabase() {
         // For now, disable caching
@@ -232,6 +235,68 @@ public class FirestoreDatabase implements Database {
                 });
     }
 
+    @Override
+    public Task<Void> setCloseFollower(final String userFollowing, final String userFollowed) {
+        final DocumentReference userFollowingDoc = FOLLOW.document(userFollowing);
+        final DocumentReference userFollowedDoc = FOLLOW.document(userFollowed);
+
+        return FIRESTORE
+                .runTransaction(transaction -> {
+
+                    DocumentSnapshot userFollowingSnapshot = transaction.get(userFollowingDoc);
+                    DocumentSnapshot userFollowedSnapshot = transaction.get(userFollowedDoc);
+
+                    //List<String> following = (List<String>) userFollowingSnapshot.get(FOLLOWING);
+                    List<String> followers = (List<String>) userFollowedSnapshot.get(FOLLOWERS);
+                    List<String> closeFollowers = (List<String>) userFollowedSnapshot.get(CLOSE_FOLLOWERS);
+
+                    if (closeFollowers != null) {
+                        if (followers.contains(userFollowing) && !closeFollowers.contains(userFollowing)) {
+
+                            Map<String, Object> mapCloseFollowed = new HashMap<>();
+                            closeFollowers.add(userFollowing);
+                            mapCloseFollowed.put(CLOSE_FOLLOWERS, closeFollowers);
+                            transaction.set(userFollowedDoc, mapCloseFollowed, SetOptions.merge());
+                        }
+                    } else {
+                        Map<String, Object> mapCloseFollowed = new HashMap<>();
+                        mapCloseFollowed.put(CLOSE_FOLLOWERS, Arrays.asList(userFollowing));
+
+                        transaction.set(userFollowedDoc, mapCloseFollowed, SetOptions.merge());
+                    }
+
+                    return null;
+                });
+    }
+
+
+    @Override
+    public Task<Void> unsetCloseFollower(final String userFollowing, final String userFollowed) {
+        final DocumentReference userFollowingDoc = FOLLOW.document(userFollowing);
+        final DocumentReference userFollowedDoc = FOLLOW.document(userFollowed);
+
+        return FIRESTORE
+                .runTransaction(transaction -> {
+
+                    DocumentSnapshot userFollowingSnapshot = transaction.get(userFollowingDoc);
+                    DocumentSnapshot userFollowedSnapshot = transaction.get(userFollowedDoc);
+
+                    List<String> closeFollowers = (List<String>) userFollowedSnapshot.get(CLOSE_FOLLOWERS);
+
+                    if (closeFollowers != null) {
+                        if (closeFollowers.contains(userFollowing)) {
+
+                            Map<String, Object> mapFollowed = new HashMap<>();
+                            closeFollowers.remove(userFollowing);
+                            mapFollowed.put(CLOSE_FOLLOWERS, closeFollowers);
+                            transaction.set(userFollowedDoc, mapFollowed, SetOptions.merge());
+                        }
+                    }
+
+                    return null;
+                });
+    }
+
     /**
      * Returns a list of userIds of the users followed by the specified user, or following the
      * specified user, depending on the `field` parameter
@@ -272,6 +337,12 @@ public class FirestoreDatabase implements Database {
     public Task<List<String>> userIdFollowersList(String userId) {
         return getFollowerOrFollowedListTask(userId, FOLLOWERS);
     }
+
+    @Override
+    public Task<List<String>> userIdCloseFollowersList(String userId) {
+        return getFollowerOrFollowedListTask(userId, CLOSE_FOLLOWERS);
+    }
+
 
     @Override
     public Task<List<User>> userFollowingList(String userId) {
@@ -317,6 +388,43 @@ public class FirestoreDatabase implements Database {
         TaskCompletionSource<List<User>> source = new TaskCompletionSource<>();
 
         userIdFollowersList(userId).addOnCompleteListener(task -> {
+
+            if (task.isSuccessful()) {
+
+                if (task.getResult() != null) {
+
+                    USERS.get().addOnCompleteListener(task2 -> {
+                        if (task2.isSuccessful()) {
+                            List<User> users = new ArrayList<>();
+                            for (QueryDocumentSnapshot document : task2.getResult()) {
+                                String id = (String) document.get("id");
+                                if (task.getResult().contains(id)) {
+                                    users.add(document.toObject(User.class));
+                                }
+                            }
+
+                            source.setResult(users);
+                        } else {
+                            source.setException(new Exception(task2.getException().getMessage()));
+                        }
+
+                    });
+                } else {
+                    source.setResult(new ArrayList<User>());
+                }
+            } else {
+                source.setException(new Exception(task.getException().getMessage()));
+            }
+        });
+
+        return source.getTask();
+    }
+
+    @Override
+    public Task<List<User>> userCloseFollowersList(String userId) {
+        TaskCompletionSource<List<User>> source = new TaskCompletionSource<>();
+
+        userIdCloseFollowersList(userId).addOnCompleteListener(task -> {
 
             if (task.isSuccessful()) {
 

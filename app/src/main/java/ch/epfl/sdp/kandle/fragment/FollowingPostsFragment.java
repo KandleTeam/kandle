@@ -61,8 +61,28 @@ public class FollowingPostsFragment extends Fragment {
                             database.getPostsByUserId(user.getId()).addOnCompleteListener(task1 -> {
                                 if (task1.isSuccessful()) {
                                     if (task1.getResult() != null) {
-                                        posts.addAll(task1.getResult());
-                                        adapter.setPost(posts);
+                                        database.userCloseFollowersList(user.getId()).addOnCompleteListener(task2-> {
+                                            if(task2.isSuccessful()) {
+                                                if (task2.getResult() != null) {
+                                                    if(task2.getResult().contains(userId)){
+                                                        posts.addAll(task1.getResult());
+                                                    }
+                                                    else {
+                                                        for(Post post : task1.getResult()){
+                                                            if(post.getIsForCloseFollowers())
+                                                                posts.add(post);
+                                                        }
+                                                    }
+                                                    adapter.setPost(posts);
+
+                                                }
+                                            }
+                                            else {
+                                                System.out.println(task2.getException().getMessage());
+                                            }
+                                        });
+
+
                                     }
                                 } else {
                                     System.out.println(task1.getException().getMessage());

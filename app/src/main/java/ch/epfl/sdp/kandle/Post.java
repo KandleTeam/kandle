@@ -20,6 +20,7 @@ import static ch.epfl.sdp.kandle.storage.room.PostDao.POST_ATTR_DATE;
 import static ch.epfl.sdp.kandle.storage.room.PostDao.POST_ATTR_DESCRIPTION;
 import static ch.epfl.sdp.kandle.storage.room.PostDao.POST_ATTR_EDITABLE;
 import static ch.epfl.sdp.kandle.storage.room.PostDao.POST_ATTR_IMAGE_URL;
+import static ch.epfl.sdp.kandle.storage.room.PostDao.POST_ATTR_IS_CLOSE_FOLLOWERS;
 import static ch.epfl.sdp.kandle.storage.room.PostDao.POST_ATTR_LATITUDE;
 import static ch.epfl.sdp.kandle.storage.room.PostDao.POST_ATTR_LIKERS_LIST;
 import static ch.epfl.sdp.kandle.storage.room.PostDao.POST_ATTR_LONGITUDE;
@@ -41,7 +42,6 @@ public class Post {
     @PrimaryKey
     @NonNull
     private String postId;
-
     @ColumnInfo(name = POST_ATTR_USER_ID)
     @NonNull
     private String userId;
@@ -63,13 +63,15 @@ public class Post {
     private Date date;
     @ColumnInfo(name = POST_ATTR_TYPE)
     private String type;
+    @ColumnInfo(name = POST_ATTR_IS_CLOSE_FOLLOWERS)
+    private boolean isForCloseFollowers;
 
     @Ignore
     public Post() {
 
     }
 
-    public Post(String description, String imageURL, Date date, @NonNull String userId, double longitude, double latitude) {
+    public Post(String description, String imageURL, Date date, @NonNull String userId, double longitude, double latitude, boolean isForCloseFollowers) {
         this.latitude = latitude;
         this.longitude = longitude;
         this.description = description;
@@ -80,6 +82,13 @@ public class Post {
         this.imageURL = imageURL;
         this.editable = true;
         this.type = MESSAGE;
+        this.isForCloseFollowers = isForCloseFollowers;
+    }
+
+    //Useful for test
+    @Ignore
+    public Post(String description, String imageURL, Date date, @NonNull String userId, double longitude, double latitude) {
+        new Post(description, imageURL, date, userId, longitude, latitude, false);
     }
 
     //Useful for tests
@@ -94,6 +103,7 @@ public class Post {
         this.userId = userId;
         this.imageURL = imageURL;
         this.editable = true;
+        this.isForCloseFollowers = false;
     }
 
     public int getLikes() {
@@ -197,4 +207,11 @@ public class Post {
         return otherPost.getPostId().equals(getPostId());
     }
 
+    public boolean getIsForCloseFollowers(){
+        return this.isForCloseFollowers;
+    }
+
+    public void setIsForCloseFollowers(boolean isForCloseFollowers){
+        this.isForCloseFollowers = isForCloseFollowers;
+    }
 }

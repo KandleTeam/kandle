@@ -42,6 +42,7 @@ public class PostActivity extends AppCompatActivity {
     private ImageButton mBackButton;
     private ImageButton mGalleryButton, mCameraButton;
     private ImageButton mMessageButton, mEventButton;
+    private ImageButton mIsForCloseFollowers;
     private ImageView mPostImage;
     private Post p;
     private Authentication auth;
@@ -50,6 +51,7 @@ public class PostActivity extends AppCompatActivity {
     private Uri imageUri;
     private LinearLayout mDateAndTime;
     private boolean isEvent = false;
+    private boolean isForCloseFollowers = false;
     private DatePicker mDatePicker;
     private TimePicker mTimePicker;
 
@@ -87,6 +89,8 @@ public class PostActivity extends AppCompatActivity {
         mDatePicker = findViewById(R.id.dateSelector);
         mTimePicker = findViewById(R.id.timeSelector);
         mTimePicker.setIs24HourView(true);
+        mIsForCloseFollowers = findViewById(R.id.closeFriends);
+
 
         postCamera = new PostCamera(this);
 
@@ -146,6 +150,7 @@ public class PostActivity extends AppCompatActivity {
                                         p.setLongitude(p.getLongitude());
                                         p.setLikers(p.getLikers());
                                         p.setType(p.getType());
+                                        p.setIsForCloseFollowers(p.getIsForCloseFollowers());
                                         if (p.getType()!= null && p.getType().equals(Post.EVENT)) {
                                             p.setDate(getDateFromPicker());
                                         }
@@ -153,10 +158,13 @@ public class PostActivity extends AppCompatActivity {
                                     }
                                 });
                             } else {
-                                p = new Post(postText, downloadUri.toString(), new Date(), auth.getCurrentUser().getId(), longitude, latitude);
+                                p = new Post(postText, downloadUri.toString(), new Date(), auth.getCurrentUser().getId(), longitude, latitude, isForCloseFollowers);
                                 if (isEvent) {
                                     p.setDate(getDateFromPicker());
                                     p.setType(Post.EVENT);
+                                }
+                                if(isForCloseFollowers){
+                                    p.setIsForCloseFollowers(isForCloseFollowers);
                                 }
                                 post(p);
                             }
@@ -175,6 +183,7 @@ public class PostActivity extends AppCompatActivity {
                             p.setLongitude(p.getLongitude());
                             p.setLikers(p.getLikers());
                             p.setType(p.getType());
+                            p.setIsForCloseFollowers(p.getIsForCloseFollowers());
                             if (p.getType().equals(Post.EVENT)) {
                                 p.setDate(getDateFromPicker());
                             }
@@ -182,10 +191,13 @@ public class PostActivity extends AppCompatActivity {
                         }
                     });
                 } else {
-                    p = new Post(postText, null, new Date(), auth.getCurrentUser().getId(), longitude, latitude);
+                    p = new Post(postText, null, new Date(), auth.getCurrentUser().getId(), longitude, latitude, isForCloseFollowers);
                     if (isEvent) {
                         p.setDate(getDateFromPicker());
                         p.setType(Post.EVENT);
+                    }
+                    if(isForCloseFollowers){
+                        p.setIsForCloseFollowers(isForCloseFollowers);
                     }
                     post(p);
                 }
@@ -216,6 +228,17 @@ public class PostActivity extends AppCompatActivity {
             mEventButton.setBackgroundResource(R.drawable.add_background);
             mMessageButton.setBackgroundResource(R.drawable.add_background_grey);
             setEventAppearance();
+        });
+
+        mIsForCloseFollowers.setOnClickListener(v -> {
+            if(!isForCloseFollowers){
+                isForCloseFollowers = true;
+                mIsForCloseFollowers.setBackgroundResource(R.drawable.add_background);
+            }
+            else {
+                isForCloseFollowers = false;
+                mIsForCloseFollowers.setBackgroundResource(R.drawable.add_background_grey);
+            }
         });
     }
 
