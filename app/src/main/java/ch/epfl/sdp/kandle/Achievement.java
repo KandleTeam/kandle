@@ -93,8 +93,6 @@ public class Achievement {
     public void checkFollowers(boolean isAchievementFragment) {
         database.userIdFollowersList(auth.getCurrentUser().getId()).addOnCompleteListener(task -> {
             if (task.isSuccessful()) {
-                if(task.getResult() == null){
-                }
                 if (task.getResult().size() >= goal_value) {
                     state_achievement = true;
                     if(isAchievementFragment){
@@ -117,9 +115,11 @@ public class Achievement {
                 if (task.getResult().size() >= goal_value) {
                     state_achievement = true;
                     if(isAchievementFragment){
+
                         achievementAdapter.notifyChange();
                     }
                     else{
+                        System.out.println(getWayToComplete());
                         fragment.notifyChange();
                     }
                 }
@@ -139,6 +139,7 @@ public class Achievement {
                         achievementAdapter.notifyChange();
                     }
                     else{
+                        System.out.println(getWayToComplete());
                         fragment.notifyChange();
                     }
                 }
@@ -159,9 +160,11 @@ public class Achievement {
                 if (number_likes >= goal_value) {
                     state_achievement = true;
                     if(isAchievementFragment){
+
                         achievementAdapter.notifyChange();
                     }
                     else{
+                        System.out.println(getWayToComplete());
                         fragment.notifyChange();
                     }
                 }
@@ -182,6 +185,8 @@ public class Achievement {
                             achievementAdapter.notifyChange();
                         }
                         else{
+                            System.out.println(getWayToComplete());
+
                             fragment.notifyChange();
                         }
 
@@ -192,6 +197,10 @@ public class Achievement {
                 System.out.println(task.getException().getMessage());
             }
         });
+    }
+
+    public void setAdapter(AchievementAdapter achievementAdapter) {
+        this.achievementAdapter = achievementAdapter;
     }
 
     //the number is the number of followers, followings, posts, likes achieved in one posts or in total in order to succeed one achievement

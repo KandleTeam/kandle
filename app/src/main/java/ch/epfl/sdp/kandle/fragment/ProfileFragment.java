@@ -108,8 +108,9 @@ public class ProfileFragment extends Fragment {
             });
 
         }
-
+        nbValidatedAchievements = 0;
         for(Achievement achievement: achievements){
+            System.out.println("????????????????" + achievement.getDescription());
             achievement.setProfileFragment(this);
             achievement.checkAchievement(false);
         }
@@ -276,16 +277,18 @@ public class ProfileFragment extends Fragment {
     }
 
     private void changeBadge(){
-        if(nbValidatedAchievements >= 0 && nbValidatedAchievements <= 2){
+        mBadge.setTag(R.drawable.ic_icons2_medal_64);
+        System.out.println("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!" + nbValidatedAchievements);
+        if(nbValidatedAchievements > 0 && nbValidatedAchievements <= 2){
             mBadge.setImageResource(R.drawable.ic_icons2_medal_64);
             mBadge.setTag(R.drawable.ic_icons2_medal_64);
         }
-        else if (nbValidatedAchievements <= 4){
+        else if (nbValidatedAchievements <= 4 && nbValidatedAchievements > 2){
             mBadge.setImageResource(R.drawable.ic_icons1_medal_64);
             mBadge.setTag(R.drawable.ic_icons1_medal_64);
 
         }
-        else if (nbValidatedAchievements <= 6){
+        else if (nbValidatedAchievements <= 6 && nbValidatedAchievements > 4){
             mBadge.setImageResource(R.drawable.icons8_medal_64_1);
             mBadge.setTag(R.drawable.icons8_medal_64_1);
         }
@@ -293,6 +296,7 @@ public class ProfileFragment extends Fragment {
             mBadge.setImageResource(R.drawable.icons8_medal_64_2);
             mBadge.setTag(R.drawable.icons8_medal_64_2);
         }
+
     }
 
 

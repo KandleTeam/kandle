@@ -27,26 +27,32 @@ public class AchievementFragment extends Fragment {
 
 
     public AchievementFragment() {
-        achievements = new ArrayList<>();
-        createAchievements(3, 5, Achievement.Achievement_type.NB_POSTS, achievementAdapter);
-        createAchievements(2, 3, Achievement.Achievement_type.FOLLOWING, achievementAdapter);
-        createAchievements(2, 3, Achievement.Achievement_type.FOLLOWERS, achievementAdapter);
-        createAchievements(2, 3, Achievement.Achievement_type.NB_LIKES_POST, achievementAdapter);
-        createAchievements(2, 5, Achievement.Achievement_type.NB_LIKES_POSTS_TOTAL, achievementAdapter);
+        if(achievements.isEmpty()) {
+            createAchievements(3, 5, Achievement.Achievement_type.NB_POSTS, null);
+            createAchievements(2, 3, Achievement.Achievement_type.FOLLOWING, null);
+            createAchievements(2, 3, Achievement.Achievement_type.FOLLOWERS, null);
+            createAchievements(2, 3, Achievement.Achievement_type.NB_LIKES_POST, null);
+            createAchievements(2, 5, Achievement.Achievement_type.NB_LIKES_POSTS_TOTAL, null);
+        }
     }
 
     public static List<Achievement> getAchievements(){
-        createAchievements(3, 5, Achievement.Achievement_type.NB_POSTS, null);
-        createAchievements(2, 3, Achievement.Achievement_type.FOLLOWING, null);
-        createAchievements(2, 3, Achievement.Achievement_type.FOLLOWERS, null);
-        createAchievements(2, 3, Achievement.Achievement_type.NB_LIKES_POST, null);
-        createAchievements(2, 5, Achievement.Achievement_type.NB_LIKES_POSTS_TOTAL, null);
+        if(achievements.isEmpty()) {
+            createAchievements(3, 5, Achievement.Achievement_type.NB_POSTS, null);
+            createAchievements(2, 3, Achievement.Achievement_type.FOLLOWING, null);
+            createAchievements(2, 3, Achievement.Achievement_type.FOLLOWERS, null);
+            createAchievements(2, 3, Achievement.Achievement_type.NB_LIKES_POST, null);
+            createAchievements(2, 5, Achievement.Achievement_type.NB_LIKES_POSTS_TOTAL, null);
+        }
         return achievements;
     }
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        for(Achievement achievement : achievements){
+            achievement.setAdapter(achievementAdapter);
+        }
         view = inflater.inflate(R.layout.fragment_achievement, container, false);
         achievementAdapter.changeList(achievements);
         flAchievements = view.findViewById(R.id.flAchievements);

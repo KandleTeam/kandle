@@ -26,6 +26,8 @@
     <string name="achievement_posts">Do 10 posts </string>
     <string name="achievement_following">Follow 3 persons </string>
     <string name="achievement_followers">Have 3 followers </string>
+    <string name="badge_default">Badge Default</string>
+
 
 
     <!-- TODO: Remove or change this placeholder text -->

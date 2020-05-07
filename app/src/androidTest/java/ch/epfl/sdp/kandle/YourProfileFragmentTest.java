@@ -8,6 +8,7 @@ import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
+import android.nfc.Tag;
 import android.view.Gravity;
 import android.view.View;
 import android.widget.ImageView;
@@ -68,6 +69,9 @@ public class YourProfileFragmentTest {
     public static User user1;
     public static User user2;
     public static User user3;
+    public static User user4;
+    public static User user5;
+    public static User user6;
     public static Post p1;
     public static Post p2;
     public static Post p3;
@@ -86,6 +90,9 @@ public class YourProfileFragmentTest {
                     user1 = new User("user1Id","user1","user1@kandle.ch","user1",null);
                     user2 = new User("user2Id","user2","user2@kandle.ch","user2",null);
                     user3 = new User("user3Id", "user3", "user3@kandle.ch", null,  null);
+                    user4 = new User("user4Id", "user4", "user4@kandle.ch", null,  null);
+                    user5 = new User("user5Id", "user5", "user5@kandle.ch", null,  null);
+                    user6 = new User("user6Id", "user6", "user6@kandle.ch", null,  null);
                     p1 =  new Post("Hello", null, new Date(), "loggedInUserId", "post1Id");
                     p2 = new Post("There", "null", new Date(), "loggedInUserId", "post2Id");
                     p3 =  new Post("My", null, new Date(), "loggedInUserId", "post3Id");
@@ -96,6 +103,9 @@ public class YourProfileFragmentTest {
                     accounts.put(user1.getEmail(), user1.getId());
                     accounts.put(user2.getEmail(), user2.getId());
                     accounts.put(user3.getEmail(), user3.getId());
+                    accounts.put(user4.getEmail(), user4.getId());
+                    accounts.put(user5.getEmail(), user5.getId());
+                    accounts.put(user6.getEmail(), user6.getId());
                     HashMap<String, MockDatabase.Follow> followMap = new HashMap<>();
                     HashMap<String, Post> posts = new HashMap<>();
                     posts.put(p1.getPostId(),p1);
@@ -112,6 +122,10 @@ public class YourProfileFragmentTest {
                     DependencyManager.setFreshTestDependencies(authentication, db, storage,internalStorage,network,localDatabase);
                     getDatabaseSystem().createUser(user1);
                     getDatabaseSystem().createUser(user2);
+                    getDatabaseSystem().createUser(user3);
+                    getDatabaseSystem().createUser(user4);
+                    getDatabaseSystem().createUser(user5);
+                    getDatabaseSystem().createUser(user6);
                     getDatabaseSystem().follow(user1.getId(),LoggedInUser.getInstance().getId());
                     getDatabaseSystem().follow(LoggedInUser.getInstance().getId(),user1.getId());
                     getDatabaseSystem().follow(user2.getId(),LoggedInUser.getInstance().getId());
@@ -128,6 +142,30 @@ public class YourProfileFragmentTest {
     public void clearCurrentUserAndLocalDb(){
         LoggedInUser.clear();
         localDatabase.close();
+    }
+
+    @Test
+    public void testImageViewIsEmpty(){
+        onView(withId(R.id.badgePicture)).check(matches(withTagValue(equalTo(R.drawable.ic_icons2_medal_64))));
+    }
+
+    @Test
+    public void testImageViewForSuccesses(){
+        DependencyManager.getDatabaseSystem().addPost(p5);
+        onView(withId(R.id.badgePicture)).check(matches(withTagValue(equalTo(R.drawable.ic_icons2_medal_64))));
+        DependencyManager.getDatabaseSystem().follow(user3.getId(),LoggedInUser.getInstance().getId());
+        DependencyManager.getDatabaseSystem().follow(LoggedInUser.getInstance().getId(), user2.getId());
+        DependencyManager.getDatabaseSystem().follow(LoggedInUser.getInstance().getId(), user3.getId());
+        loadFragment();
+        onView(withId(R.id.badgePicture)).check(matches(withTagValue(equalTo(R.drawable.ic_icons1_medal_64))));
+        DependencyManager.getDatabaseSystem().follow(user4.getId(),LoggedInUser.getInstance().getId());
+        DependencyManager.getDatabaseSystem().follow(user5.getId(),LoggedInUser.getInstance().getId());
+        DependencyManager.getDatabaseSystem().follow(user6.getId(),LoggedInUser.getInstance().getId());
+        DependencyManager.getDatabaseSystem().follow(LoggedInUser.getInstance().getId(), user4.getId());
+        DependencyManager.getDatabaseSystem().follow(LoggedInUser.getInstance().getId(), user5.getId());
+        DependencyManager.getDatabaseSystem().follow(LoggedInUser.getInstance().getId(), user6.getId());
+        loadFragment();
+        onView(withId(R.id.badgePicture)).check(matches(withTagValue(equalTo(R.drawable.icons8_medal_64_1))));
     }
 
     @Test
@@ -176,18 +214,9 @@ public class YourProfileFragmentTest {
         onView(withId(R.id.text_view)).check(matches(withText("New Nickname")));
     }
 
-    @Test
-    public void testImageViewIsEmpty(){
-        onView(withId(R.id.badgePicture)).check(matches(withTagValue(equalTo(R.drawable.ic_icons2_medal_64))));
-        getDatabaseSystem().addPost(p5);
-        onView(withId(R.id.badgePicture)).check(matches(withTagValue(equalTo(R.drawable.ic_icons2_medal_64))));
 
-        getDatabaseSystem().follow(user1.getId(), LoggedInUser.getInstance().getId());
-        getDatabaseSystem().follow(user2.getId(),LoggedInUser.getInstance().getId());
-        getDatabaseSystem().follow(LoggedInUser.getInstance().getId(), user1.getId());
-        getDatabaseSystem().follow(LoggedInUser.getInstance().getId(), user2.getId());
 
-    }
+
 
 
     public static ViewAction clickChildViewWithId(final int id) {
