@@ -89,7 +89,7 @@ public class GuestModeTest {
                     MockDatabase db = new MockDatabase(true, users, followMap, posts);
                     MockAuthentication authentication = new MockAuthentication(false, accounts, null);
                     MockImageStorage storage = new MockImageStorage();
-                    MockInternalStorage internalStorage = new MockInternalStorage();
+                    MockInternalStorage internalStorage = new MockInternalStorage(new HashMap<>());
                     MockNetwork network = new MockNetwork(true);
                     localDatabase = Room.inMemoryDatabaseBuilder(Kandle.getContext(), LocalDatabase.class).allowMainThreadQueries().build();
                     DependencyManager.setFreshTestDependencies(authentication, db, storage, internalStorage, network, localDatabase);

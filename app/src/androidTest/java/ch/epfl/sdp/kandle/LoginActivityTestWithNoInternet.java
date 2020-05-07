@@ -50,7 +50,7 @@ public class LoginActivityTestWithNoInternet {
                     MockDatabase db = new MockDatabase(false, users, null, null);
                     MockAuthentication authentication = new MockAuthentication(false, accounts, "password");
                     MockImageStorage storage = new MockImageStorage();
-                    MockInternalStorage internalStorage = new MockInternalStorage(false);
+                    MockInternalStorage internalStorage = new MockInternalStorage(false,new HashMap<>());
                     MockNetwork network = new MockNetwork(false);
                     localDatabase = Room.inMemoryDatabaseBuilder(Kandle.getContext(), LocalDatabase.class).allowMainThreadQueries().build();
                     DependencyManager.setFreshTestDependencies(authentication, db, storage,internalStorage,network,localDatabase);

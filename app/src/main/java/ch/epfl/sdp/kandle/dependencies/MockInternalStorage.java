@@ -22,16 +22,18 @@ public class MockInternalStorage implements InternalStorage {
     private static User storedUser;
     private Map<String,File> images = new HashMap<>();
 
-    public MockInternalStorage(boolean userSavedLocally) {
+    public MockInternalStorage(boolean userSavedLocally,Map<String,File> images) {
         MockInternalStorage.userSavedLocally = userSavedLocally;
+        this.images = images;
         if (userSavedLocally) {
             storedUser = new User("loggedInUserId", "LoggedInUser", "loggedInUser@kandle.ch", "nickname", "image")
             ;
         }
     }
 
-    public MockInternalStorage() {
+    public MockInternalStorage(Map<String,File> images) {
         userSavedLocally = false;
+        this.images = images;
     }
 
     @Override

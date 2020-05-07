@@ -99,7 +99,7 @@ public class YourPostsListTest {
                     MockDatabase db = new MockDatabase(true, users, followMap, posts);
                     MockAuthentication authentication = new MockAuthentication(true, accounts, "password");
                     MockImageStorage storage = new MockImageStorage();
-                    MockInternalStorage internalStorage = new MockInternalStorage();
+                    MockInternalStorage internalStorage = new MockInternalStorage(new HashMap<>());
                     network = new MockNetwork(true);
                     localDatabase = Room.inMemoryDatabaseBuilder(Kandle.getContext(), LocalDatabase.class).allowMainThreadQueries().build();
                     localDatabase.postDao().insertPost(p1);

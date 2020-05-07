@@ -49,7 +49,7 @@ public class LoginActivityTestAlreadyLoggedIn {
                     MockDatabase db = new MockDatabase(false, users, followMap, posts);
                     MockAuthentication authentication = new MockAuthentication(true, accounts, "password");
                     MockImageStorage storage = new MockImageStorage();
-                    MockInternalStorage internalStorage = new MockInternalStorage(true);
+                    MockInternalStorage internalStorage = new MockInternalStorage(true,new HashMap<>());
                     MockNetwork network = new MockNetwork(false);
                     localDatabase = Room.inMemoryDatabaseBuilder(Kandle.getContext(), LocalDatabase.class).allowMainThreadQueries().build();
                     DependencyManager.setFreshTestDependencies(authentication, db, storage,internalStorage,network,localDatabase);

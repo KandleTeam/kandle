@@ -62,7 +62,7 @@ public class RegisterActivityTest {
                     MockDatabase db = new MockDatabase(false, users, followMap, posts);
                     MockAuthentication authentication = new MockAuthentication(false, accounts, "password");
                     MockImageStorage storage = new MockImageStorage();
-                    MockInternalStorage internalStorage = new MockInternalStorage();
+                    MockInternalStorage internalStorage = new MockInternalStorage(new HashMap<>());
                     network = new MockNetwork(true);
                     localDatabase = Room.inMemoryDatabaseBuilder(Kandle.getContext(), LocalDatabase.class).allowMainThreadQueries().build();
                     DependencyManager.setFreshTestDependencies(authentication, db, storage,internalStorage,network,localDatabase);
