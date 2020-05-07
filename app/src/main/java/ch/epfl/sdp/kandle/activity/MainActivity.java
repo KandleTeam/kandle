@@ -41,10 +41,8 @@ public class MainActivity extends AppCompatActivity {
     private Fragment fragment;
     private FragmentManager fragmentManager;
     private ImageView mProfilePic;
-    private TextView mUsername;
     private TextView mNickname;
     private Authentication auth;
-    private ActionBarDrawerToggle drawerToggle;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,7 +55,7 @@ public class MainActivity extends AppCompatActivity {
         mDrawerLayout = findViewById(R.id.drawer_layout);
         mNavigationView = findViewById(R.id.navigation_view);
         mProfilePic = mNavigationView.getHeaderView(0).findViewById(R.id.profilePicInMenu);
-        mUsername = mNavigationView.getHeaderView(0).findViewById(R.id.username);
+        TextView mUsername = mNavigationView.getHeaderView(0).findViewById(R.id.username);
         mNickname = mNavigationView.getHeaderView(0).findViewById(R.id.nicknameInMenu);
         mUsername = mNavigationView.getHeaderView(0).findViewById(R.id.usernameInMenu);
         mUsername.setText("@" + auth.getCurrentUser().getUsername());
@@ -65,7 +63,7 @@ public class MainActivity extends AppCompatActivity {
 
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        drawerToggle = new ActionBarDrawerToggle(this, mDrawerLayout, toolbar, R.string.drawer_open, R.string.drawer_close);
+        ActionBarDrawerToggle drawerToggle = new ActionBarDrawerToggle(this, mDrawerLayout, toolbar, R.string.drawer_open, R.string.drawer_close);
         drawerToggle.setDrawerIndicatorEnabled(true);
         setupDrawerContent(mNavigationView);
         drawerToggle.syncState();

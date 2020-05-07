@@ -54,4 +54,6 @@
     <!-- Guest mode -->
     <string name="guestModeCannotAccess">You need to be logged in to do that!</string>
 
+    <!--Custom Account Activity-->
+    <string name="customAccountFinalization">Finalizing your account</string>
 </resources>
