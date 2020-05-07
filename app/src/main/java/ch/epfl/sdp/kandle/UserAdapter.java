@@ -14,6 +14,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.squareup.picasso.Picasso;
 
+import java.io.File;
 import java.util.List;
 
 import ch.epfl.sdp.kandle.dependencies.Authentication;
@@ -61,8 +62,14 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.ViewHolder> {
 
         ImageView mImageProfile = holder.image_profile;
         if (user.getImageURL() != null) {
-            mImageProfile.setTag(PROFILE_PICTURE_TAG);
-            Picasso.get().load(user.getImageURL()).into(mImageProfile);
+           mImageProfile.setTag(PROFILE_PICTURE_TAG);
+           File image = DependencyManager.getInternalStorageSystem().getImageFileById(user.getId());
+           if(image != null) {
+               System.out.println("Fetched from internal storage in UserAdatper");
+               Picasso.get().load(image).into(mImageProfile);
+           }else {
+               Picasso.get().load(user.getImageURL()).into(mImageProfile);
+           }
         }
 
         final Authentication authentication = DependencyManager.getAuthSystem();
@@ -70,7 +77,6 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.ViewHolder> {
         final CachedFirestoreDatabase database = new CachedFirestoreDatabase();
 
 
-        Log.i("TAG", Thread.currentThread().getName());
         if (user.getId().equals(currentUser.getId())) {
             holder.mFollowBtn.setVisibility(View.GONE);
         } else {

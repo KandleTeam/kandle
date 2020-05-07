@@ -92,7 +92,6 @@ public class FirestoreDatabase implements Database {
                 .continueWith(task -> {
                     User user = Objects.requireNonNull(task.getResult()).toObject(User.class);
                     assert (user != null);
-                    System.out.println(user.getId());
                     if (!user.getId().equals(userId))
                         throw new AssertionError("We done goofed somewhere! Unexpected uid");
 
@@ -550,7 +549,6 @@ public class FirestoreDatabase implements Database {
 
                             for (QueryDocumentSnapshot documentSnapshot : task2.getResult()) {
                                 String postId = (String) documentSnapshot.get("postId");
-                                System.out.println(task.getResult() == null);
                                 if (task.getResult().contains(postId)) {
                                     posts.add(documentSnapshot.toObject(Post.class));
                                 }

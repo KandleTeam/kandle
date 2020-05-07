@@ -1,6 +1,5 @@
 package ch.epfl.sdp.kandle;
 
-import android.Manifest;
 import android.view.Gravity;
 import android.view.View;
 
@@ -40,7 +39,7 @@ import ch.epfl.sdp.kandle.dependencies.MockAuthentication;
 import ch.epfl.sdp.kandle.dependencies.MockDatabase;
 import ch.epfl.sdp.kandle.dependencies.MockInternalStorage;
 import ch.epfl.sdp.kandle.dependencies.MockNetwork;
-import ch.epfl.sdp.kandle.dependencies.MockStorage;
+import ch.epfl.sdp.kandle.dependencies.MockImageStorage;
 
 
 public class AchievementTest {
@@ -93,8 +92,8 @@ public class AchievementTest {
                     posts.put(p4.getPostId(),p4);
                      db = new MockDatabase(true, users, followMap, posts);
                     MockAuthentication authentication = new MockAuthentication(true, accounts, "password");
-                    MockStorage storage = new MockStorage();
-                    MockInternalStorage internalStorage = new MockInternalStorage();
+                    MockImageStorage storage = new MockImageStorage();
+                    MockInternalStorage internalStorage = new MockInternalStorage(new HashMap<>());
                     MockNetwork network = new MockNetwork(true);
                     localDatabase = Room.inMemoryDatabaseBuilder(Kandle.getContext(), LocalDatabase.class).allowMainThreadQueries().build();
                     DependencyManager.setFreshTestDependencies(authentication, db, storage,internalStorage,network,localDatabase);

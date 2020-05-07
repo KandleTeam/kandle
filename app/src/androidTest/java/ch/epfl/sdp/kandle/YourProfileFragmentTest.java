@@ -3,6 +3,7 @@ package ch.epfl.sdp.kandle;
 import android.app.Activity;
 import android.app.Instrumentation;
 import android.content.Intent;
+import android.net.Network;
 import android.net.Uri;
 import android.view.Gravity;
 import android.view.View;
@@ -28,6 +29,7 @@ import androidx.test.rule.GrantPermissionRule;
 import java.util.HashMap;
 import java.util.LinkedList;
 
+import ch.epfl.sdp.kandle.network.NetworkState;
 import ch.epfl.sdp.kandle.storage.room.LocalDatabase;
 import ch.epfl.sdp.kandle.activity.MainActivity;
 import ch.epfl.sdp.kandle.dependencies.DependencyManager;
@@ -35,7 +37,7 @@ import ch.epfl.sdp.kandle.dependencies.MockAuthentication;
 import ch.epfl.sdp.kandle.dependencies.MockDatabase;
 import ch.epfl.sdp.kandle.dependencies.MockInternalStorage;
 import ch.epfl.sdp.kandle.dependencies.MockNetwork;
-import ch.epfl.sdp.kandle.dependencies.MockStorage;
+import ch.epfl.sdp.kandle.dependencies.MockImageStorage;
 import ch.epfl.sdp.kandle.fragment.ProfileFragment;
 import static androidx.test.espresso.Espresso.onView;
 import static androidx.test.espresso.action.ViewActions.clearText;
@@ -58,6 +60,7 @@ public class YourProfileFragmentTest {
     public static User user1;
     public static User user2;
     private LocalDatabase localDatabase;
+    private MockNetwork network;
     @Rule
     public GrantPermissionRule permissionRule = GrantPermissionRule.grant(android.Manifest.permission.ACCESS_FINE_LOCATION);
     @Rule
@@ -79,9 +82,9 @@ public class YourProfileFragmentTest {
                     followMap.put(LoggedInUser.getInstance().getId(),new MockDatabase.Follow(new LinkedList<>(),new LinkedList<>()));
                     MockDatabase db = new MockDatabase(true, users, followMap, posts);
                     MockAuthentication authentication = new MockAuthentication(true, accounts, "password");
-                    MockStorage storage = new MockStorage();
-                    MockInternalStorage internalStorage = new MockInternalStorage(true);
-                    MockNetwork network = new MockNetwork(true);
+                    MockImageStorage storage = new MockImageStorage();
+                    MockInternalStorage internalStorage = new MockInternalStorage(true,new HashMap<>());
+                    network = new MockNetwork(true);
                     localDatabase = Room.inMemoryDatabaseBuilder(Kandle.getContext(), LocalDatabase.class).allowMainThreadQueries().build();
                     DependencyManager.setFreshTestDependencies(authentication, db, storage,internalStorage,network,localDatabase);
                     DependencyManager.getDatabaseSystem().createUser(user1);
@@ -144,6 +147,23 @@ public class YourProfileFragmentTest {
         onView(withId(R.id.profileValidatePictureButton)).perform(click());
     }
 
+    @Test
+    public void getPictureLocally(){
+        Intent resultData = new Intent();
+        resultData.setAction(Intent.ACTION_GET_CONTENT);
+        Uri imageUri = Uri.parse("android.resource://ch.epfl.sdp.kandle/drawable/ic_launcher_background.xml");
+        resultData.setData(imageUri);
+        Instrumentation.ActivityResult result = new Instrumentation.ActivityResult(Activity.RESULT_OK, resultData);
+        intending(hasAction(Intent.ACTION_GET_CONTENT)).respondWith(result);
+
+        onView(withId(R.id.profileEditPictureButton)).perform(click());
+        onView(withId(R.id.profilePicture)).check(matches(withTagValue(is(ProfileFragment.PROFILE_PICTURE_AFTER))));
+
+        onView(withId(R.id.profileValidatePictureButton)).perform(click());
+        network.setIsOnline(false);
+        loadFragment();
+        loadFragment();
+    }
     @Test
     public void editNickname(){
         onView(withId(R.id.profileEditNameButton)).perform(click());
