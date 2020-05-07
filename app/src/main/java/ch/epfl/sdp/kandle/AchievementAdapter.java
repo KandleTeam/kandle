@@ -41,7 +41,7 @@ public class AchievementAdapter extends RecyclerView.Adapter<AchievementAdapter.
     @Override
     public void onBindViewHolder(@NonNull final ViewHolder holder, int position) {
         final Achievement achievement = mAchievemnts.get(position);
-        achievement.checkAchievement();
+        achievement.checkAchievement(true);
 
         // Set item views based on your views and data model
         ImageView imageView = holder.mImageView;
@@ -60,13 +60,10 @@ public class AchievementAdapter extends RecyclerView.Adapter<AchievementAdapter.
         return mAchievemnts.size();
     }
 
-    public void notifyChange() {
-        notifyDataSetChanged();
-    }
 
     public void changeList(List<Achievement> achievements) {
         this.mAchievemnts = achievements;
-        notifyChange();
+        notifyDataSetChanged();
     }
 
 
