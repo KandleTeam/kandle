@@ -19,6 +19,7 @@ import org.junit.runner.RunWith;
 
 import java.util.HashMap;
 
+import ch.epfl.sdp.kandle.activity.PhotoEditorActivity;
 import ch.epfl.sdp.kandle.storage.room.LocalDatabase;
 import ch.epfl.sdp.kandle.activity.PostActivity;
 import ch.epfl.sdp.kandle.dependencies.DependencyManager;
@@ -35,6 +36,7 @@ import static androidx.test.espresso.action.ViewActions.typeText;
 import static androidx.test.espresso.assertion.ViewAssertions.matches;
 import static androidx.test.espresso.intent.Intents.intending;
 import static androidx.test.espresso.intent.matcher.IntentMatchers.hasAction;
+import static androidx.test.espresso.intent.matcher.IntentMatchers.toPackage;
 import static androidx.test.espresso.matcher.ViewMatchers.hasErrorText;
 import static androidx.test.espresso.matcher.ViewMatchers.withId;
 import static androidx.test.espresso.matcher.ViewMatchers.withTagValue;
@@ -168,5 +170,19 @@ public class PostActivityTest {
     public void eventThenMessage() {
         onView(withId(R.id.selectEventButton)).perform(click());
         onView(withId(R.id.selectMessageButton)).perform(click());
+    }
+
+    @Test
+    public void canEditImage(){
+        Intent resultData = new Intent();
+        resultData.setAction(Intent.ACTION_GET_CONTENT);
+        Uri imageUri = Uri.parse("android.resource://ch.epfl.sdp.kandle/drawable/ic_launcher_background.xml");
+        resultData.setData(imageUri);
+        Instrumentation.ActivityResult result = new Instrumentation.ActivityResult(Activity.RESULT_OK, resultData);
+        intending(hasAction(Intent.ACTION_GET_CONTENT)).respondWith(result);
+
+        onView(withId(R.id.galleryButton)).perform(click());
+
+        onView(withId(R.id.postImageEdit)).perform(click());
     }
 }
