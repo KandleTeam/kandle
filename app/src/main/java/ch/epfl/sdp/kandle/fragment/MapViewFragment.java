@@ -7,6 +7,7 @@ import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.location.Location;
+import android.net.Uri;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -20,6 +21,7 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.maps.android.SphericalUtil;
 import com.mapbox.android.core.location.LocationEngine;
 import com.mapbox.android.core.location.LocationEngineCallback;
@@ -44,6 +46,7 @@ import com.mapbox.mapboxsdk.maps.OnMapReadyCallback;
 import com.mapbox.mapboxsdk.maps.Style;
 import com.mapbox.mapboxsdk.utils.BitmapUtils;
 
+import java.util.Date;
 import java.util.List;
 
 import ch.epfl.sdp.kandle.LoggedInUser;
@@ -135,7 +138,7 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback, Per
 
 
         locationProvider.getLocation(this.getActivity()).addOnCompleteListener(task -> {
-
+            IconFactory iconFactory = IconFactory.getInstance(MapViewFragment.this.getActivity());
             if (task.isSuccessful()) {
 
                 if (task.getResult() != null) {
@@ -144,10 +147,13 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback, Per
                     mapboxMap.setStyle(Style.MAPBOX_STREETS, style -> {
 
                         Drawable drawable = ResourcesCompat.getDrawable(MapViewFragment.this.getResources(), R.drawable.ic_whatshot_24dp, null);
+
                         Bitmap mBitmap = BitmapUtils.getBitmapFromDrawable(drawable);
+
                         //style.addImage(MARKER_IMAGE, mBitmap);
-                        IconFactory iconFactory = IconFactory.getInstance(MapViewFragment.this.getActivity());
+
                         Icon icon = iconFactory.fromBitmap(mBitmap);
+
                         enableLocationComponent(style);
                         currentLocation = task.getResult();
                         //addPostMarkers(style);
@@ -155,19 +161,33 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback, Per
                         database.getNearbyPosts(currentLocation.getLongitude(), currentLocation.getLatitude(), RADIUS).addOnSuccessListener(posts -> {
                             for (Post p : posts) {
                                 numMarkers++;
-                                mapboxMap.addMarker(new MarkerOptions()
-                                        .position(new LatLng(p.getLatitude(), p.getLongitude()))
-                                        .title("A post !")
-                                        .icon(icon))
-                                        .setSnippet(p.getPostId());
+                                if (p.getType() == null || !p.equals(Post.EVENT) || p.getDate().getTime() < new Date().getTime()) {
+                                    mapboxMap.addMarker(new MarkerOptions()
+                                            .position(new LatLng(p.getLatitude(), p.getLongitude()))
+                                            .title("A post !")
+                                            .icon(icon))
+                                            .setSnippet(p.getPostId());
+                                }
                             }
                         });
                     });
+                    Drawable drawableLandMark = ResourcesCompat.getDrawable(MapViewFragment.this.getResources(), R.drawable.ic_place_red_50dp, null);
+                    Bitmap mBitmapLandmark = BitmapUtils.getBitmapFromDrawable(drawableLandMark);
+                    Icon iconLandmark = iconFactory.fromBitmap(mBitmapLandmark);
+                    mapboxMap.addMarker(new MarkerOptions()
+                            .position (new LatLng(46.5190, 6.5667))
+                            .title("EPFL")
+                            .icon(iconLandmark))
+                            .setSnippet("EPFL Landmark");
 
                     mapboxMap.setOnMarkerClickListener(marker -> {
-                        goToPostFragment(marker.getSnippet(), task.getResult());
-                        return true;
-
+                        if (marker.getSnippet().equals("EPFL Landmark")){
+                            goToEpflLandmarkFragment();
+                            return true;
+                        }else {
+                            goToPostFragment(marker.getSnippet(), task.getResult());
+                            return true;
+                        }
                     });
 
                     mapView.setContentDescription("MAP READY");
@@ -181,6 +201,20 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback, Per
             }
 
         });
+    }
+
+    public void goToEpflLandmarkFragment() {
+        final FragmentManager fragmentManager = this.getActivity().getSupportFragmentManager();
+        database.getNearbyPosts(6.5667, 46.5190, 1000 ).addOnSuccessListener(posts -> {
+            fragmentManager.beginTransaction()
+                    .replace(R.id.flContent, new LandmarkFragment("EPFL", "image", posts))
+                    .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
+                    .addToBackStack(null)
+                    .commit();
+        });
+
+
+
     }
 
     public void goToPostFragment(String postId, Location location) {
@@ -269,6 +303,7 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback, Per
 
             // Set the component's render mode
             locationComponent.setRenderMode(RenderMode.COMPASS);
+
 
             initLocationEngine();
         } else {

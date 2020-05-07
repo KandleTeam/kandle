@@ -3,6 +3,8 @@ package ch.epfl.sdp.kandle.fragment;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.ImageDecoder;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -23,6 +25,7 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.material.navigation.NavigationView;
 import com.squareup.picasso.Picasso;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -88,7 +91,6 @@ public class ProfileFragment extends Fragment {
 
         AchievementFragment.getAchievements(achievements);
         View view = inflater.inflate(R.layout.fragment_profile, container, false);
-
 
         auth = DependencyManager.getAuthSystem();
         database = new CachedFirestoreDatabase();
@@ -166,7 +168,13 @@ public class ProfileFragment extends Fragment {
         mUsername.setText(String.format("@%s", user.getUsername()));
         if (user.getImageURL() != null) {
             mProfilePicture.setTag(PROFILE_PICTURE_BEFORE);
-            Picasso.get().load(user.getImageURL()).into(mProfilePicture);
+            File image = DependencyManager.getInternalStorageSystem().getImageFileById(user.getId());
+            if(image != null) {
+                Picasso.get().load(image).into(mProfilePicture);
+                System.out.println("Fetched from internal storage");
+            }else {
+                Picasso.get().load(user.getImageURL()).into(mProfilePicture);
+            }
         }
 
         setNumberOfFollowers();

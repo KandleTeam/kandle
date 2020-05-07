@@ -3,6 +3,7 @@ package ch.epfl.sdp.kandle.imagePicker;
 import android.app.Activity;
 import android.content.ContentResolver;
 import android.content.Intent;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.webkit.MimeTypeMap;
 
@@ -12,7 +13,7 @@ import com.google.android.gms.tasks.Task;
 
 import ch.epfl.sdp.kandle.Kandle;
 import ch.epfl.sdp.kandle.dependencies.DependencyManager;
-import ch.epfl.sdp.kandle.dependencies.Storage;
+import ch.epfl.sdp.kandle.dependencies.ImageStorage;
 
 import static android.app.Activity.RESULT_OK;
 
@@ -47,7 +48,7 @@ public class ImagePicker {
         return intent;
     }
 
-    private static String getFileExtension(Uri uri) {
+    protected static String getFileExtension(Uri uri) {
         ContentResolver contentResolver = Kandle.getContext().getContentResolver();
         return MimeTypeMap.getSingleton().getExtensionFromMimeType(contentResolver.getType(uri));
     }
@@ -77,7 +78,7 @@ public class ImagePicker {
      * @return a download url to get the image from the storage system
      */
     public static Task<Uri> uploadImage(Uri imageUri) {
-        Storage storage = DependencyManager.getStorageSystem();
-        return storage.storeAndGetDownloadUrl(getFileExtension(imageUri), imageUri);
+        ImageStorage imageStorage = DependencyManager.getStorageSystem();
+        return imageStorage.storeAndGetDownloadUrl(getFileExtension(imageUri), imageUri);
     }
 }

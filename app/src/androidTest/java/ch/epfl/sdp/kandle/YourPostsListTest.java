@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.app.Instrumentation;
 import android.content.Intent;
 import android.net.Uri;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 
@@ -44,8 +43,7 @@ import ch.epfl.sdp.kandle.dependencies.MockAuthentication;
 import ch.epfl.sdp.kandle.dependencies.MockDatabase;
 import ch.epfl.sdp.kandle.dependencies.MockInternalStorage;
 import ch.epfl.sdp.kandle.dependencies.MockNetwork;
-import ch.epfl.sdp.kandle.dependencies.MockStorage;
-import ch.epfl.sdp.kandle.fragment.YourPostListFragment;
+import ch.epfl.sdp.kandle.dependencies.MockImageStorage;
 
 import static androidx.test.espresso.Espresso.onView;
 import static androidx.test.espresso.action.ViewActions.click;
@@ -81,7 +79,9 @@ public class YourPostsListTest {
                     user2 = new User("user2Id", "user2", "user2@kandle.ch", "user2", null);
                     LoggedInUser.init(new User("loggedInUserId", "LoggedInUser", "loggedInUser@kandle.ch", "nickname", "image"));
                     p1 = new Post("Hello", null, new Date(), LoggedInUser.getInstance().getId(), "post1Id");
+                    p1.setType(Post.EVENT);
                     p2 = new Post("There", "image", new Date(), LoggedInUser.getInstance().getId(), "post2Id");
+                    p2.setType(Post.EVENT);
                     ArrayList<String> likers = new ArrayList<>();
                     likers.add(user1.getId());
                     likers.add(user2.getId());
@@ -98,8 +98,8 @@ public class YourPostsListTest {
                     users.put(LoggedInUser.getInstance().getId(), LoggedInUser.getInstance());
                     MockDatabase db = new MockDatabase(true, users, followMap, posts);
                     MockAuthentication authentication = new MockAuthentication(true, accounts, "password");
-                    MockStorage storage = new MockStorage();
-                    MockInternalStorage internalStorage = new MockInternalStorage();
+                    MockImageStorage storage = new MockImageStorage();
+                    MockInternalStorage internalStorage = new MockInternalStorage(new HashMap<>());
                     network = new MockNetwork(true);
                     localDatabase = Room.inMemoryDatabaseBuilder(Kandle.getContext(), LocalDatabase.class).allowMainThreadQueries().build();
                     localDatabase.postDao().insertPost(p1);
@@ -125,16 +125,6 @@ public class YourPostsListTest {
         onView(withId(R.id.drawer_layout)).check(matches(isClosed(Gravity.LEFT))).perform(DrawerActions.open());
         onView(withId(R.id.navigation_view)).perform(NavigationViewActions.navigateTo(R.id.your_posts));
         onView(withId(R.id.drawer_layout)).perform(DrawerActions.close());
-    }
-
-
-    @Test
-    public void canClickOnAlreadyCreatedPostToSeeDescriptionAndRemoveDescription() {
-        onView(withId(R.id.rvPosts)).perform(RecyclerViewActions.actionOnItemAtPosition(0, click()));
-        onView(withId(R.id.post_content)).perform(click());
-        onView(withId(R.id.rvPosts)).perform(RecyclerViewActions.actionOnItemAtPosition(1, click()));
-        onView(withId(R.id.post_content)).perform(click());
-
     }
 
 
@@ -312,15 +302,18 @@ public class YourPostsListTest {
         resultData.setData(imageUri);
         Instrumentation.ActivityResult result = new Instrumentation.ActivityResult(Activity.RESULT_OK, resultData);
         intending(hasAction(Intent.ACTION_GET_CONTENT)).respondWith(result);
+
+        Thread.sleep(500);
+
         onView(withId(R.id.galleryButton)).perform(click());
         onView(withId(R.id.postImage)).check(matches(withTagValue(is(PostActivity.POST_IMAGE_TAG))));
         onView(withId(R.id.postButton)).perform(click());
 
         loadPostView();
 
-        onView(withId(R.id.rvPosts)).perform(RecyclerViewActions.actionOnItemAtPosition(1, click()));
-        onView(withId(R.id.postImage)).check(matches(withTagValue(is(YourPostListFragment.POST_IMAGE))));
-        onView(withId(R.id.post_content)).perform(click());
+        onView(new RecyclerViewMatcher(R.id.rvPosts)
+                .atPositionOnView(1, R.id.postImageInPost))
+                .check(matches(withTagValue(is(PostAdapter.POST_IMAGE))));
     }
 
     @Test
@@ -333,9 +326,9 @@ public class YourPostsListTest {
 
         loadPostView();
 
-        onView(withId(R.id.rvPosts)).perform(RecyclerViewActions.actionOnItemAtPosition(0, click()));
-        onView(withId(R.id.post_content)).check(matches(withText(is("Salut Salut"))));
-        onView(withId(R.id.post_content)).perform(click());
+        onView(new RecyclerViewMatcher(R.id.rvPosts)
+                .atPositionOnView(0, R.id.title))
+                .check(matches(withText(is("Salut Salut"))));
 
     }
 

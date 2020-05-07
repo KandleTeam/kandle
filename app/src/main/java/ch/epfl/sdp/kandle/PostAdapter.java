@@ -3,6 +3,7 @@ package ch.epfl.sdp.kandle;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,6 +20,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.squareup.picasso.Picasso;
 
+import java.io.File;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.List;
@@ -35,8 +37,6 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder> {
 
     public final static int POST_IMAGE = 10;
 
-
-    private static ClickListener clickListener;
     private List<Post> mPosts;
     private Context mContext;
     private ViewHolder viewHolder;
@@ -49,11 +49,6 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder> {
     public PostAdapter(List<Post> posts, Context context) {
         mPosts = posts;
         mContext = context;
-    }
-
-
-    public void setOnItemClickListener(ClickListener clickListener) {
-        PostAdapter.clickListener = clickListener;
     }
 
     @NonNull
@@ -98,6 +93,33 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder> {
         final ImageButton editPostView = holder.mEditButton;
         final ImageButton deletePostView = holder.mDeleteButton;
 
+        if (post.getType()!=null && post.getType().equals(Post.EVENT)) {
+            holder.mlikeButton.setBackgroundResource(R.drawable.ic_event_black_24dp);
+            holder.mlikeButton.setOnClickListener(v -> {
+
+                if (post.getLikers().contains(userId)) {
+                    database.unlikePost(userId, post.getPostId()).addOnCompleteListener(task -> {
+                        if (task.isSuccessful()) {
+                            post.unlikePost(userId);
+                            likeView.setText(String.valueOf(post.getLikes()));
+                        } else {
+                            Toast.makeText(this.mContext, task.getException().getMessage(), Toast.LENGTH_LONG).show();
+                        }
+                    });
+
+                } else {
+                    database.likePost(userId, post.getPostId()).addOnCompleteListener(task -> {
+                        if (task.isSuccessful()) {
+                            post.likePost(userId);
+                            likeView.setText(String.valueOf(post.getLikes()));
+                        } else {
+                            Toast.makeText(this.mContext, task.getException().getMessage(), Toast.LENGTH_LONG).show();
+                        }
+                    });
+                }
+            });
+        }
+
         ImageView postImageView = holder.mPostImage;
         if (post.getImageURL() != null) {
             postImageView.setVisibility(View.VISIBLE);
@@ -110,7 +132,12 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder> {
                 User user = task.getResult();
 
                 if (user.getImageURL() != null) {
-                    Picasso.get().load(user.getImageURL()).into(profilePicView);
+                    File image = DependencyManager.getInternalStorageSystem().getImageFileById(user.getId());
+                    if(image != null) {
+                        Picasso.get().load(image).into(profilePicView);
+                    }else {
+                        Picasso.get().load(user.getImageURL()).into(profilePicView);
+                    }
                 }
                 usernameView.setText("@" + user.getUsername());
                 nicknameView.setText(user.getNickname());
@@ -119,37 +146,13 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder> {
 
 
                 if (user.getId().equals(userId)) {
+                    deletePostView.setVisibility(View.VISIBLE);
                     if (post.isEditable()) {
                         editPostView.setVisibility(View.VISIBLE);
                     }
                 }
 
 
-            }
-        });
-
-
-        holder.mlikeButton.setOnClickListener(v -> {
-
-            if (post.getLikers().contains(userId)) {
-                database.unlikePost(userId, post.getPostId()).addOnCompleteListener(task -> {
-                    if (task.isSuccessful()) {
-                        post.unlikePost(userId);
-                        likeView.setText(String.valueOf(post.getLikes()));
-                    } else {
-                        Toast.makeText(this.mContext, task.getException().getMessage(), Toast.LENGTH_LONG).show();
-                    }
-                });
-
-            } else {
-                database.likePost(userId, post.getPostId()).addOnCompleteListener(task -> {
-                    if (task.isSuccessful()) {
-                        post.likePost(userId);
-                        likeView.setText(String.valueOf(post.getLikes()));
-                    } else {
-                        Toast.makeText(this.mContext, task.getException().getMessage(), Toast.LENGTH_LONG).show();
-                    }
-                });
             }
         });
 
@@ -184,7 +187,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder> {
             if (task.isSuccessful()) {
                 fragmentManager.beginTransaction().replace(R.id.flContent, ListUsersFragment.newInstance(
                         task.getResult(),
-                        "Likes",
+                        post.getType() != null && post.getType().equals(Post.EVENT)? "Participants" : "Likes",
                         Integer.toString(task.getResult().size())
                 )).setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
                         .addToBackStack(null)
@@ -204,7 +207,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder> {
     }
 
 
-    public static class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+    public static class ViewHolder extends RecyclerView.ViewHolder {
 
         public TextView mtitleText;
         public TextView mlikes;
@@ -220,7 +223,6 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder> {
 
         public ViewHolder(View itemView) {
             super(itemView);
-            itemView.setOnClickListener(this);
             mtitleText = itemView.findViewById(R.id.title);
             mlikes = itemView.findViewById(R.id.flames);
             mdate = itemView.findViewById(R.id.date_and_time);
@@ -233,12 +235,10 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder> {
             mNickname = itemView.findViewById(R.id.nicknameInPost);
         }
 
-        @Override
-        public void onClick(View v) {
-            clickListener.onItemClick(getAdapterPosition(), v);
-        }
-
     }
+
+
+
 
 
 }

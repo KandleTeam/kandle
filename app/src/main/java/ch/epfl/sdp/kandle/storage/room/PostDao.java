@@ -24,6 +24,7 @@ public interface PostDao {
     String POST_ATTR_DESCRIPTION = "description";
     String POST_ATTR_EDITABLE = "editable";
     String POST_ATTR_DATE = "date";
+    String POST_ATTR_TYPE = "type";
 
 
     @Query("SELECT * from Posts")

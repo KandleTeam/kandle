@@ -35,6 +35,8 @@
         />
     </RelativeLayout>
 
+
+
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -44,13 +46,39 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            >
+
+
+            <LinearLayout
+                android:id="@+id/eventDateTimeSelector"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:visibility="gone">
+                <DatePicker
+                    android:id="@+id/dateSelector"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:datePickerMode="spinner"
+                    android:calendarViewShown="false"/>
+
+                <TimePicker
+                    android:id="@+id/timeSelector"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:timePickerMode="spinner"
+                    />
+            </LinearLayout>
+
+
+
             <EditText
                 android:id="@+id/postText"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_margin="20dp"
-                android:hint="What's on your mind today ? "
+                android:hint="@string/message_hint"
                 android:importantForAutofill="no"
                 android:inputType="textMultiLine"/>
 
@@ -89,6 +117,33 @@
             android:layout_toEndOf="@+id/galleryButton"
             android:contentDescription="Camera icon"
             app:srcCompat="@drawable/ic_menu_camera" />
+
+        <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_centerVertical="true">
+
+            <ImageButton
+                android:id="@+id/selectMessageButton"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:layout_margin="5dp"
+                android:clickable="false"
+                android:src="@drawable/ic_whatshot_24dp"
+                android:background="@drawable/add_background"/>
+
+            <ImageButton
+                android:id="@+id/selectEventButton"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:layout_margin="5dp"
+                android:layout_toEndOf="@+id/selectMessageButton"
+                android:src="@drawable/ic_event_black_24dp"
+                android:background="@drawable/add_background_grey"/>
+
+        </RelativeLayout>
+
 
         <Button
             android:id="@+id/postButton"

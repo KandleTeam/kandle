@@ -19,6 +19,7 @@ import com.google.maps.android.SphericalUtil;
 import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -91,7 +92,6 @@ public class FirestoreDatabase implements Database {
                 .continueWith(task -> {
                     User user = Objects.requireNonNull(task.getResult()).toObject(User.class);
                     assert (user != null);
-                    System.out.println(user.getId());
                     if (!user.getId().equals(userId))
                         throw new AssertionError("We done goofed somewhere! Unexpected uid");
 
@@ -549,7 +549,6 @@ public class FirestoreDatabase implements Database {
 
                             for (QueryDocumentSnapshot documentSnapshot : task2.getResult()) {
                                 String postId = (String) documentSnapshot.get("postId");
-                                System.out.println(task.getResult() == null);
                                 if (task.getResult().contains(postId)) {
                                     posts.add(documentSnapshot.toObject(Post.class));
                                 }
@@ -585,7 +584,6 @@ public class FirestoreDatabase implements Database {
                         double postLongitude = (double) documentSnapshot.get("longitude");
                         List<String> likers = (List<String>) documentSnapshot.get("likers");
 
-                        DateFormat df = DateFormat.getDateInstance();
                         Date postDate = ((Timestamp) documentSnapshot.get("date")).toDate();
                         Date now = new Date();
                         long numDays = TimeUnit.DAYS.convert(Math.abs(now.getTime() - postDate.getTime()), TimeUnit.MILLISECONDS);
@@ -598,7 +596,7 @@ public class FirestoreDatabase implements Database {
                     }
 
                 }
-
+                Collections.sort(posts, (o1, o2) -> o2.getLikers().size() - o1.getLikers().size());
                 source.setResult(posts);
 
             } else {
