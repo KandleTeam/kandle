@@ -3,6 +3,7 @@ package ch.epfl.sdp.kandle;
 import android.app.Activity;
 import android.app.Instrumentation;
 import android.content.Intent;
+import android.net.Network;
 import android.net.Uri;
 import android.view.Gravity;
 import android.view.View;
@@ -28,6 +29,7 @@ import androidx.test.rule.GrantPermissionRule;
 import java.util.HashMap;
 import java.util.LinkedList;
 
+import ch.epfl.sdp.kandle.network.NetworkState;
 import ch.epfl.sdp.kandle.storage.room.LocalDatabase;
 import ch.epfl.sdp.kandle.activity.MainActivity;
 import ch.epfl.sdp.kandle.dependencies.DependencyManager;
@@ -58,6 +60,7 @@ public class YourProfileFragmentTest {
     public static User user1;
     public static User user2;
     private LocalDatabase localDatabase;
+    private MockNetwork network;
     @Rule
     public GrantPermissionRule permissionRule = GrantPermissionRule.grant(android.Manifest.permission.ACCESS_FINE_LOCATION);
     @Rule
@@ -81,7 +84,7 @@ public class YourProfileFragmentTest {
                     MockAuthentication authentication = new MockAuthentication(true, accounts, "password");
                     MockImageStorage storage = new MockImageStorage();
                     MockInternalStorage internalStorage = new MockInternalStorage(true,new HashMap<>());
-                    MockNetwork network = new MockNetwork(true);
+                    network = new MockNetwork(true);
                     localDatabase = Room.inMemoryDatabaseBuilder(Kandle.getContext(), LocalDatabase.class).allowMainThreadQueries().build();
                     DependencyManager.setFreshTestDependencies(authentication, db, storage,internalStorage,network,localDatabase);
                     DependencyManager.getDatabaseSystem().createUser(user1);
@@ -142,12 +145,10 @@ public class YourProfileFragmentTest {
         onView(withId(R.id.profilePicture)).check(matches(withTagValue(is(ProfileFragment.PROFILE_PICTURE_AFTER))));
 
         onView(withId(R.id.profileValidatePictureButton)).perform(click());
-
-
     }
 
     @Test
-    public void saveImageToInternalStorageAndRetrieveItFromThere(){
+    public void getPictureLocally(){
         Intent resultData = new Intent();
         resultData.setAction(Intent.ACTION_GET_CONTENT);
         Uri imageUri = Uri.parse("android.resource://ch.epfl.sdp.kandle/drawable/ic_launcher_background.xml");
@@ -159,11 +160,10 @@ public class YourProfileFragmentTest {
         onView(withId(R.id.profilePicture)).check(matches(withTagValue(is(ProfileFragment.PROFILE_PICTURE_AFTER))));
 
         onView(withId(R.id.profileValidatePictureButton)).perform(click());
+        network.setIsOnline(false);
         loadFragment();
         loadFragment();
-
     }
-
     @Test
     public void editNickname(){
         onView(withId(R.id.profileEditNameButton)).perform(click());

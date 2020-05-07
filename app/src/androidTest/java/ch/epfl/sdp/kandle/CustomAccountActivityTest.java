@@ -5,7 +5,6 @@ import android.app.Activity;
 import android.app.Instrumentation.ActivityResult;
 import android.content.Intent;
 import android.net.Uri;
-import android.provider.MediaStore;
 
 import androidx.room.Room;
 import androidx.test.espresso.intent.rule.IntentsTestRule;
@@ -15,8 +14,6 @@ import org.junit.After;
 import org.junit.Rule;
 import org.junit.Test;
 
-import java.io.File;
-import java.io.IOException;
 import java.util.HashMap;
 
 import ch.epfl.sdp.kandle.storage.room.LocalDatabase;
@@ -63,7 +60,7 @@ public class CustomAccountActivityTest {
                     MockDatabase db = new MockDatabase(true, users, followMap, posts);
                     MockAuthentication authentication = new MockAuthentication(true, accounts, "password");
                     MockImageStorage storage = new MockImageStorage();
-                    MockInternalStorage internalStorage = new MockInternalStorage(true,new HashMap<String, File>());
+                    MockInternalStorage internalStorage = new MockInternalStorage(true,new HashMap<>());
                     MockNetwork network = new MockNetwork(true);
                     localDatabase = Room.inMemoryDatabaseBuilder(Kandle.getContext(), LocalDatabase.class).allowMainThreadQueries().build();
                     DependencyManager.setFreshTestDependencies(authentication, db, storage,internalStorage,network,localDatabase);
@@ -99,6 +96,7 @@ public class CustomAccountActivityTest {
         Intent resultData = new Intent();
         resultData.setAction(Intent.ACTION_GET_CONTENT);
         Uri imageUri = Uri.parse("android.resource://ch.epfl.sdp.kandle/drawable/ic_launcher_background.xml");
+        resultData.setData(imageUri);
         ActivityResult result = new ActivityResult(Activity.RESULT_OK, resultData);
         intending(hasAction(Intent.ACTION_GET_CONTENT)).respondWith(result);
         onView(withId(R.id.button)).perform(click());
@@ -109,6 +107,9 @@ public class CustomAccountActivityTest {
         assertThat(uri, is(not(equalTo(null))));
 
     }
+
+
+
 
     @Test
     public void badResultDoesNotChangePicture() {

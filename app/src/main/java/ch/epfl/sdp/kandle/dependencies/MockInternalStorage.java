@@ -20,20 +20,19 @@ import ch.epfl.sdp.kandle.User;
 public class MockInternalStorage implements InternalStorage {
     private static boolean userSavedLocally;
     private static User storedUser;
-    private Map<String,File> images = new HashMap<>();
+    private Map<String,File> images;
 
-    public MockInternalStorage(boolean userSavedLocally,Map<String,File> images) {
+    public MockInternalStorage(boolean userSavedLocally,HashMap<String,File> images) {
         MockInternalStorage.userSavedLocally = userSavedLocally;
         this.images = images;
         if (userSavedLocally) {
-            storedUser = new User("loggedInUserId", "LoggedInUser", "loggedInUser@kandle.ch", "nickname", "image")
-            ;
+            storedUser = new User("loggedInUserId", "LoggedInUser", "loggedInUser@kandle.ch", "nickname", "image");
         }
     }
 
-    public MockInternalStorage(Map<String,File> images) {
-        userSavedLocally = false;
+    public MockInternalStorage(HashMap<String,File> images) {
         this.images = images;
+        userSavedLocally = false;
     }
 
     @Override
