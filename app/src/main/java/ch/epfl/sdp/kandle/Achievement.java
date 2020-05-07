@@ -1,114 +1,123 @@
 package ch.epfl.sdp.kandle;
 
-import android.app.Activity;
+import android.annotation.SuppressLint;
 
 import ch.epfl.sdp.kandle.dependencies.Authentication;
 import ch.epfl.sdp.kandle.dependencies.Database;
-import ch.epfl.sdp.kandle.dependencies.DependencyManager;
-import ch.epfl.sdp.kandle.fragment.PostFragment;
 import ch.epfl.sdp.kandle.fragment.ProfileFragment;
-import ch.epfl.sdp.kandle.storage.caching.CachedFirestoreDatabase;
+
+import static ch.epfl.sdp.kandle.dependencies.DependencyManager.getAuthSystem;
+import static ch.epfl.sdp.kandle.dependencies.DependencyManager.getDatabaseSystem;
 
 public class Achievement {
 
-    Achievement_type type;
-    int goal_value;
-    private Authentication auth;
-    private Database database;
+    private final Achievement_type type;
+    private final int goalValue;
+    private final Authentication auth;
+    private final Database database;
     private AchievementAdapter achievementAdapter;
     private boolean state_achievement;
     private ProfileFragment fragment;
 
-    public Achievement(Achievement_type type, int goal_value, AchievementAdapter adapter, ProfileFragment fragment) {
+    public Achievement(Achievement_type type, int goalValue, AchievementAdapter adapter, ProfileFragment fragment) {
         this.type = type;
-        this.goal_value = goal_value;
+        this.goalValue = goalValue;
         this.achievementAdapter = adapter;
         state_achievement = false;
-        auth = DependencyManager.getAuthSystem();
-        database = DependencyManager.getDatabaseSystem();
+        auth = getAuthSystem();
+        database = getDatabaseSystem();
         this.fragment = fragment;
-        if(auth.getCurrentUser() == null){
+        if (auth.getCurrentUser() == null) {
         }
     }
 
+    /**
+     * Says if the achievement is completed
+     * @return a string explaining if it is completed or not
+     */
     public String getDescription() {
         return state_achievement ? "Achievement Completed !" : "Still Not Completed !";
     }
 
-    public void setProfileFragment(ProfileFragment fragment){
+    /**
+     * Changes the profile fragment that is linked with the achievement
+     * @param fragment
+     */
+    public void setProfileFragment(ProfileFragment fragment) {
         this.fragment = fragment;
     }
 
+    /**
+     * This checks which is the way to complete an achievement
+     * @return a string explaining how to complete an achievement
+     */
+    @SuppressLint("DefaultLocale")
     public String getWayToComplete() {
-        StringBuilder sb = new StringBuilder();
-        sb.append("You need to ");
         switch (type) {
             case FOLLOWERS:
-                return sb.append("have ").append(goal_value).append(" followers").toString();
-
+                return String.format("You need to have %d followers", goalValue);
             case FOLLOWING:
-                return sb.append("follow ").append(goal_value).append(" people").toString();
-
+                return String.format("You need to follow %d people", goalValue);
             case NB_POSTS:
-                return sb.append("make ").append(goal_value).append(" posts").toString();
-
+                return String.format("You need to make %d posts", goalValue);
             case NB_LIKES_POST:
-                return sb.append("have a post with ").append(goal_value).append(" likes").toString();
-
+                return String.format("You need to have a post with %d likes", goalValue);
             case NB_LIKES_POSTS_TOTAL:
-                return sb.append("have in total ").append(goal_value).append(" likes in your posts").toString();
+                return String.format("You need to have in total with %d likes in a post", goalValue);
             //THIS CASE IS NEVER REACHED
             default:
-                return sb.toString();
+                return String.format("");
         }
     }
 
+    /**
+     * checks if an achievement is completed
+     * @return true if it is or false if it is not
+     */
     public boolean checkAchievementState() {
         return state_achievement;
     }
 
+    /**
+     * checks if the achievement is completed or not by checking in the database
+     * @param isAchievementFragment
+     */
     public void checkAchievement(boolean isAchievementFragment) {
-            if(state_achievement){
+        if (state_achievement) {
+        } else {
+            switch (type) {
+                case FOLLOWERS:
+                    checkFollowers(isAchievementFragment);
+                    break;
+
+                case FOLLOWING:
+                    checkFollowing(isAchievementFragment);
+                    break;
+
+                case NB_POSTS:
+                    checkPosts(isAchievementFragment);
+                    break;
+
+                case NB_LIKES_POST:
+                    checkOnePostLikes(isAchievementFragment);
+                    break;
+
+                case NB_LIKES_POSTS_TOTAL:
+                    checkPostsLikes(isAchievementFragment);
+                    break;
             }
-            else {
-                switch (type) {
-                    case FOLLOWERS:
-                        checkFollowers(isAchievementFragment);
-                        break;
-
-                    case FOLLOWING:
-                        checkFollowing(isAchievementFragment);
-                        break;
-
-                    case NB_POSTS:
-                        checkPosts(isAchievementFragment);
-                        break;
-
-                    case NB_LIKES_POST:
-                        checkOnePostLikes(isAchievementFragment);
-                        break;
-
-                    case NB_LIKES_POSTS_TOTAL:
-                        checkPostsLikes(isAchievementFragment);
-                        break;
-                }
-            }
+        }
     }
 
-    public AchievementAdapter getAchievementAdapter(){
-        return this.achievementAdapter;
-    }
 
-    public void checkFollowers(boolean isAchievementFragment) {
+    private void checkFollowers(boolean isAchievementFragment) {
         database.userIdFollowersList(auth.getCurrentUser().getId()).addOnCompleteListener(task -> {
             if (task.isSuccessful()) {
-                System.out.println("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!¨¨  " +  task.getResult().size());
-                if (task.getResult().size() >= goal_value) {
+                if (task.getResult().size() >= goalValue) {
                     state_achievement = true;
-                    if(isAchievementFragment){
+                    if (isAchievementFragment) {
                         achievementAdapter.notifyDataSetChanged();
-                    }
-                    else{
+                    } else {
                         fragment.notifyChange();
                     }
                 }
@@ -119,15 +128,14 @@ public class Achievement {
         });
     }
 
-    public void checkFollowing(boolean isAchievementFragment) {
+    private void checkFollowing(boolean isAchievementFragment) {
         database.userIdFollowingList(auth.getCurrentUser().getId()).addOnCompleteListener(task -> {
             if (task.isSuccessful()) {
-                if (task.getResult().size() >= goal_value) {
+                if (task.getResult().size() >= goalValue) {
                     state_achievement = true;
-                    if(isAchievementFragment){
+                    if (isAchievementFragment) {
                         achievementAdapter.notifyDataSetChanged();
-                    }
-                    else{
+                    } else {
                         fragment.notifyChange();
                     }
                 }
@@ -138,16 +146,15 @@ public class Achievement {
         });
     }
 
-    public void checkPosts(boolean isAchievementFragment) {
+    private void checkPosts(boolean isAchievementFragment) {
         database.getPostsByUserId(auth.getCurrentUser().getId()).addOnCompleteListener(task -> {
             if (task.isSuccessful()) {
 
-                if (task.getResult().size() >= goal_value) {
+                if (task.getResult().size() >= goalValue) {
                     state_achievement = true;
-                    if(isAchievementFragment){
+                    if (isAchievementFragment) {
                         achievementAdapter.notifyDataSetChanged();
-                    }
-                    else{
+                    } else {
                         fragment.notifyChange();
                     }
                 }
@@ -158,20 +165,19 @@ public class Achievement {
         });
     }
 
-    public void checkPostsLikes(boolean isAchievementFragment) {
+    private void checkPostsLikes(boolean isAchievementFragment) {
         database.getPostsByUserId(auth.getCurrentUser().getId()).addOnCompleteListener(task -> {
             if (task.isSuccessful()) {
                 int number_likes = 0;
                 for (int i = 0; i < task.getResult().size(); i++) {
                     number_likes += task.getResult().get(i).getLikes();
                 }
-                if (number_likes >= goal_value) {
+                if (number_likes >= goalValue) {
                     state_achievement = true;
-                    if(isAchievementFragment){
+                    if (isAchievementFragment) {
 
                         achievementAdapter.notifyDataSetChanged();
-                    }
-                    else{
+                    } else {
                         fragment.notifyChange();
                     }
                 }
@@ -181,17 +187,16 @@ public class Achievement {
         });
     }
 
-    public void checkOnePostLikes(boolean isAchievementFragment) {
+    private void checkOnePostLikes(boolean isAchievementFragment) {
         database.getPostsByUserId(auth.getCurrentUser().getId()).addOnCompleteListener(task -> {
             if (task.isSuccessful()) {
                 for (int i = 0; i < task.getResult().size(); i++) {
-                    if (task.getResult().get(i).getLikes() >= goal_value) {
+                    if (task.getResult().get(i).getLikes() >= goalValue) {
                         state_achievement = true;
                         i = task.getResult().size();
-                        if(isAchievementFragment){
+                        if (isAchievementFragment) {
                             achievementAdapter.notifyDataSetChanged();
-                        }
-                        else{
+                        } else {
                             fragment.notifyChange();
                         }
 
@@ -202,10 +207,6 @@ public class Achievement {
                 System.out.println(task.getException().getMessage());
             }
         });
-    }
-
-    public void setAdapter(AchievementAdapter achievementAdapter) {
-        this.achievementAdapter = achievementAdapter;
     }
 
     //the number is the number of followers, followings, posts, likes achieved in one posts or in total in order to succeed one achievement

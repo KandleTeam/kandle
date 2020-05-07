@@ -19,23 +19,19 @@ import ch.epfl.sdp.kandle.Post;
 import ch.epfl.sdp.kandle.PostAdapter;
 import ch.epfl.sdp.kandle.R;
 import ch.epfl.sdp.kandle.User;
-import ch.epfl.sdp.kandle.dependencies.Authentication;
 import ch.epfl.sdp.kandle.dependencies.Database;
-import ch.epfl.sdp.kandle.dependencies.DependencyManager;
 import ch.epfl.sdp.kandle.storage.caching.CachedFirestoreDatabase;
 
 public class FollowingPostsFragment extends Fragment {
 
     //TODO should not be able to delete posts other users made
 
-    View rootView;
-    private String userId;
     private List<User> following;
     private List<Post> posts;
-    private RecyclerView flPosts;
-    private Authentication auth;
-    private Database database;
 
+    /**
+     * Creates a FollowingPostFragment Object
+     */
     public FollowingPostsFragment() {
         posts = new ArrayList<>();
         following = new ArrayList<>();
@@ -44,12 +40,11 @@ public class FollowingPostsFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
-        auth = DependencyManager.getAuthSystem();
-        database = new CachedFirestoreDatabase();
-        rootView = inflater.inflate(R.layout.fragment_following_posts, container, false);
-        flPosts = rootView.findViewById(R.id.flPosts);
+        Database database = new CachedFirestoreDatabase();
+        View rootView = inflater.inflate(R.layout.fragment_following_posts, container, false);
+        RecyclerView flPosts = rootView.findViewById(R.id.flPosts);
         flPosts.setLayoutManager(new LinearLayoutManager(this.getContext()));
-        userId = LoggedInUser.getInstance().getId();
+        String userId = LoggedInUser.getInstance().getId();
         PostAdapter adapter = new PostAdapter(posts, this.getContext());
 
         database.userFollowingList(userId).addOnCompleteListener(task -> {
@@ -70,17 +65,13 @@ public class FollowingPostsFragment extends Fragment {
                             });
                         }
                     }
-
                 }
             } else {
                 System.out.println(task.getException().getMessage());
             }
 
         });
-
-
         flPosts.setAdapter(adapter);
         return rootView;
     }
-
 }

@@ -56,4 +56,17 @@
     <!-- Guest mode -->
     <string name="guestModeCannotAccess">You need to be logged in to do that!</string>
 
+    <!-- SettingsFragment -->
+    <string name="updating_password">Updating password</string>
+    <string name="chose_password_length">Please choose a password of more than 8 characters !</string>
+    <string name="password_no_match">Your passwords do not match !</string>
+    <string name="successfull_update_password">Your password has been successfully updated</string>
+    <string name="password_incorrect">Unable to authenticate, please check that your password is correct</string>
+
+    <!-- Achievement -->
+    <string name="achievement_completed">Achievement Completed !</string>
+
+
+
+
 </resources>

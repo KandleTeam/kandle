@@ -1,54 +1,63 @@
 package ch.epfl.sdp.kandle.fragment;
 
-import android.app.Activity;
-import android.content.Context;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+
 import java.util.ArrayList;
 import java.util.List;
+
 import ch.epfl.sdp.kandle.Achievement;
 import ch.epfl.sdp.kandle.AchievementAdapter;
 import ch.epfl.sdp.kandle.R;
 
 public class AchievementFragment extends Fragment {
 
+    final static int NUMBER_FOLLOWERS_ACHIEVEMENTS = 2;
+    final static int NUMBER_FOLLOWING_ACHIEVEMENTS = 2;
+    final static int NUMBER_POSTS_ACHIEVEMENTS = 3;
+    final static int NUMBER_LIKES_TOTAL_ACHIEVEMENTS = 2;
+    final static int NUMBER_LIKES_POST_ACHIEVEMENTS = 2;
+    final static int SCALE_FOLLOWERS_ACHIEVEMENTS = 3;
+    final static int SCALE_FOLLOWING_ACHIEVEMENTS = 3;
+    final static int SCALE_POSTS_ACHIEVEMENTS = 5;
+    final static int SCALE_LIKES_TOTAL_ACHIEVEMENTS = 5;
+    final static int SCALE_LIKES_POST_ACHIEVEMENTS = 3;
 
-    private static List<Achievement> achievements;
-    private RecyclerView flAchievements;
-    private View view;
+    /**
+     * Creates an AchievementFragment object
+     */
+    public AchievementFragment(){}
 
-
-    public AchievementFragment() {
-        achievements = new ArrayList<>();
-    }
-
-    public static void getAchievements(List<Achievement> achievements){
-            createAchievements(achievements,3, 5, Achievement.Achievement_type.NB_POSTS, null);
-            createAchievements(achievements,2, 3, Achievement.Achievement_type.FOLLOWING, null);
-            createAchievements(achievements,2, 3, Achievement.Achievement_type.FOLLOWERS, null);
-            createAchievements(achievements,2, 3, Achievement.Achievement_type.NB_LIKES_POST, null);
-            createAchievements(achievements,2, 5, Achievement.Achievement_type.NB_LIKES_POSTS_TOTAL, null);
+    /**
+     * inserts Achievements in the list achievements
+     * @param achievements
+     * @param achievementAdapter
+     */
+    public static void getAchievements(List<Achievement> achievements, AchievementAdapter achievementAdapter) {
+        createAchievements(achievements, NUMBER_POSTS_ACHIEVEMENTS, SCALE_POSTS_ACHIEVEMENTS, Achievement.Achievement_type.NB_POSTS, achievementAdapter);
+        createAchievements(achievements, NUMBER_FOLLOWING_ACHIEVEMENTS, SCALE_FOLLOWING_ACHIEVEMENTS, Achievement.Achievement_type.FOLLOWING, achievementAdapter);
+        createAchievements(achievements, NUMBER_FOLLOWERS_ACHIEVEMENTS, SCALE_FOLLOWERS_ACHIEVEMENTS, Achievement.Achievement_type.FOLLOWERS, achievementAdapter);
+        createAchievements(achievements, NUMBER_LIKES_POST_ACHIEVEMENTS, SCALE_LIKES_POST_ACHIEVEMENTS, Achievement.Achievement_type.NB_LIKES_POST, achievementAdapter);
+        createAchievements(achievements, NUMBER_LIKES_TOTAL_ACHIEVEMENTS, SCALE_LIKES_TOTAL_ACHIEVEMENTS, Achievement.Achievement_type.NB_LIKES_POSTS_TOTAL, achievementAdapter);
     }
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        AchievementAdapter achievementAdapter =  new AchievementAdapter(achievements, this.getContext());
-        createAchievements(achievements,3, 5, Achievement.Achievement_type.NB_POSTS, achievementAdapter);
-        createAchievements(achievements,2, 3, Achievement.Achievement_type.FOLLOWING, achievementAdapter);
-        createAchievements(achievements,2, 3, Achievement.Achievement_type.FOLLOWERS, achievementAdapter);
-        createAchievements(achievements,2, 3, Achievement.Achievement_type.NB_LIKES_POST, achievementAdapter);
-        createAchievements(achievements,2, 5, Achievement.Achievement_type.NB_LIKES_POSTS_TOTAL, achievementAdapter);
-        view = inflater.inflate(R.layout.fragment_achievement, container, false);
+        List<Achievement> achievements = new ArrayList<>();
+        AchievementAdapter achievementAdapter = new AchievementAdapter(achievements, this.getContext());
+        getAchievements(achievements, achievementAdapter);
+        View view = inflater.inflate(R.layout.fragment_achievement, container, false);
         achievementAdapter.changeList(achievements);
-        flAchievements = view.findViewById(R.id.flAchievements);
+        RecyclerView flAchievements = view.findViewById(R.id.flAchievements);
         flAchievements.setLayoutManager(new LinearLayoutManager(this.getContext()));
         flAchievements.setAdapter(achievementAdapter);
         return view;

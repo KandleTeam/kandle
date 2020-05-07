@@ -10,15 +10,15 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import androidx.fragment.app.Fragment;
-
 import ch.epfl.sdp.kandle.LoggedInUser;
 import ch.epfl.sdp.kandle.R;
 import ch.epfl.sdp.kandle.dependencies.Authentication;
-import ch.epfl.sdp.kandle.dependencies.DependencyManager;
+import static ch.epfl.sdp.kandle.dependencies.DependencyManager.getAuthSystem;
 
 public class SettingsFragment extends Fragment {
+
+    private final int PASSWORD_LENGTH = 8;
 
     private LinearLayout mModifyPasswordLayout;
     private LinearLayout mOtherSettingsLayout;
@@ -28,18 +28,15 @@ public class SettingsFragment extends Fragment {
     private ImageView mExpandPassword, mExpandOtherSettings;
     private Button mPasswordButton;
 
-    private Authentication auth;
+
 
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_settings, container, false);
-
         getViews(view);
-
-        auth = DependencyManager.getAuthSystem();
-
+        Authentication auth = getAuthSystem();
         mModifyPasswordLayout.setOnClickListener(v ->
                 extendOnClick(mModifyPasswordContent, mExpandPassword)
         );
@@ -55,17 +52,17 @@ public class SettingsFragment extends Fragment {
         mPasswordButton.setOnClickListener(v -> {
             String oldPassword = mOldPassword.getText().toString();
             ProgressDialog pd = new ProgressDialog(getContext());
-            pd.setMessage("Updating password");
+            pd.setMessage(getString(R.string.updating_password));
             pd.show();
             auth.reAuthenticate(oldPassword).addOnCompleteListener(task -> {
                 if (task.isSuccessful()) {
                     String newPassword = mNewPassword.getText().toString();
                     String newPasswordConfirm = mNewPasswordConfirm.getText().toString();
-                    if (newPassword.length() < 8) {
-                        mNewPassword.setError("Please choose a password of more than 8 characters !");
+                    if (newPassword.length() < PASSWORD_LENGTH) {
+                        mNewPassword.setError(getString(R.string.chose_password_length));
                         pd.dismiss();
                     } else if (!newPassword.equals(newPasswordConfirm)) {
-                        mNewPasswordConfirm.setError("Your passwords do not match !");
+                        mNewPasswordConfirm.setError(getString(R.string.password_no_match));
                         pd.dismiss();
                     } else {
                         auth.updatePassword(newPassword).addOnCompleteListener(task1 -> {
@@ -73,13 +70,13 @@ public class SettingsFragment extends Fragment {
                                 mOldPassword.setText("");
                                 mNewPassword.setText("");
                                 mNewPasswordConfirm.setText("");
-                                Toast.makeText(getContext(), "Your password has been successfully updated", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(getContext(), getString(R.string.successfull_update_password), Toast.LENGTH_SHORT).show();
                                 pd.dismiss();
                             }
                         });
                     }
                 } else {
-                    mOldPassword.setError("Unable to authenticate, please check that your password is correct");
+                    mOldPassword.setError(getString(R.string.password_incorrect));
                     pd.dismiss();
                 }
             });

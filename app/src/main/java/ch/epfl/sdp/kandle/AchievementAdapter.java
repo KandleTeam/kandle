@@ -15,14 +15,14 @@ import java.util.List;
 
 public class AchievementAdapter extends RecyclerView.Adapter<AchievementAdapter.ViewHolder> {
     private List<Achievement> mAchievemnts;
-    private Context mContext;
-    private ViewHolder viewHolder;
 
-    public AchievementAdapter(List<Achievement> achievements, Context context) {
+    /**
+     * Creates an AchievementAdapter Object
+     * @param achievements
+     */
+    public AchievementAdapter(List<Achievement> achievements) {
         mAchievemnts = achievements;
-        mContext = context;
     }
-
 
     @NonNull
     @Override
@@ -34,7 +34,7 @@ public class AchievementAdapter extends RecyclerView.Adapter<AchievementAdapter.
         View achievementsView = inflater.inflate(R.layout.achievement_item, parent, false);
 
         // Return a new holder instance
-        viewHolder = new ViewHolder(achievementsView);
+        ViewHolder viewHolder = new ViewHolder(achievementsView);
         return viewHolder;
     }
 
@@ -61,6 +61,10 @@ public class AchievementAdapter extends RecyclerView.Adapter<AchievementAdapter.
     }
 
 
+    /**
+     * Updates the list of achievements
+     * @param achievements
+     */
     public void changeList(List<Achievement> achievements) {
         this.mAchievemnts = achievements;
         notifyDataSetChanged();
@@ -68,12 +72,14 @@ public class AchievementAdapter extends RecyclerView.Adapter<AchievementAdapter.
 
 
     public static class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
-
         public TextView mtitleText;
         public TextView mHowToGetIt;
         public ImageView mImageView;
 
-
+        /**
+         * Creates a ViewHolder Object
+         * @param itemView
+         */
         public ViewHolder(View itemView) {
             super(itemView);
             itemView.setOnClickListener(this);
