@@ -23,6 +23,7 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.material.navigation.NavigationView;
 import com.squareup.picasso.Picasso;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import ch.epfl.sdp.kandle.Achievement;
@@ -54,7 +55,7 @@ public class ProfileFragment extends Fragment {
 
     private ProfileFragment(User user) {
         this.user = user;
-        this.achievements = AchievementFragment.getAchievements();
+        this.achievements = new ArrayList<>();
         nbValidatedAchievements = 0;
     }
 
@@ -85,6 +86,7 @@ public class ProfileFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
+        AchievementFragment.getAchievements(achievements);
         View view = inflater.inflate(R.layout.fragment_profile, container, false);
 
 
@@ -110,7 +112,7 @@ public class ProfileFragment extends Fragment {
         }
         nbValidatedAchievements = 0;
         for(Achievement achievement: achievements){
-            System.out.println("????????????????" + achievement.getDescription());
+
             achievement.setProfileFragment(this);
             achievement.checkAchievement(false);
         }
@@ -278,7 +280,6 @@ public class ProfileFragment extends Fragment {
 
     private void changeBadge(){
         mBadge.setTag(R.drawable.ic_icons2_medal_64);
-        System.out.println("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!" + nbValidatedAchievements);
         if(nbValidatedAchievements > 0 && nbValidatedAchievements <= 2){
             mBadge.setImageResource(R.drawable.ic_icons2_medal_64);
             mBadge.setTag(R.drawable.ic_icons2_medal_64);

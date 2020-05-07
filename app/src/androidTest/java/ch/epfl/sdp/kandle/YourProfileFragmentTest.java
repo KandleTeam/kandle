@@ -152,6 +152,7 @@ public class YourProfileFragmentTest {
     @Test
     public void testImageViewForSuccesses(){
         DependencyManager.getDatabaseSystem().addPost(p5);
+        loadFragment();
         onView(withId(R.id.badgePicture)).check(matches(withTagValue(equalTo(R.drawable.ic_icons2_medal_64))));
         DependencyManager.getDatabaseSystem().follow(user3.getId(),LoggedInUser.getInstance().getId());
         DependencyManager.getDatabaseSystem().follow(LoggedInUser.getInstance().getId(), user2.getId());

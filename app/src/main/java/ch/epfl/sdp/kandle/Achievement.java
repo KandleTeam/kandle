@@ -7,6 +7,7 @@ import ch.epfl.sdp.kandle.dependencies.Database;
 import ch.epfl.sdp.kandle.dependencies.DependencyManager;
 import ch.epfl.sdp.kandle.fragment.PostFragment;
 import ch.epfl.sdp.kandle.fragment.ProfileFragment;
+import ch.epfl.sdp.kandle.storage.caching.CachedFirestoreDatabase;
 
 public class Achievement {
 
@@ -67,36 +68,45 @@ public class Achievement {
     }
 
     public void checkAchievement(boolean isAchievementFragment) {
-            switch (type) {
-                case FOLLOWERS:
-                    checkFollowers(isAchievementFragment);
-                    break;
-
-                case FOLLOWING:
-                    checkFollowing(isAchievementFragment);
-                    break;
-
-                case NB_POSTS:
-                    checkPosts(isAchievementFragment);
-                    break;
-
-                case NB_LIKES_POST:
-                    checkOnePostLikes(isAchievementFragment);
-                    break;
-
-                case NB_LIKES_POSTS_TOTAL:
-                    checkPostsLikes(isAchievementFragment);
-                    break;
+            if(state_achievement){
             }
+            else {
+                switch (type) {
+                    case FOLLOWERS:
+                        checkFollowers(isAchievementFragment);
+                        break;
+
+                    case FOLLOWING:
+                        checkFollowing(isAchievementFragment);
+                        break;
+
+                    case NB_POSTS:
+                        checkPosts(isAchievementFragment);
+                        break;
+
+                    case NB_LIKES_POST:
+                        checkOnePostLikes(isAchievementFragment);
+                        break;
+
+                    case NB_LIKES_POSTS_TOTAL:
+                        checkPostsLikes(isAchievementFragment);
+                        break;
+                }
+            }
+    }
+
+    public AchievementAdapter getAchievementAdapter(){
+        return this.achievementAdapter;
     }
 
     public void checkFollowers(boolean isAchievementFragment) {
         database.userIdFollowersList(auth.getCurrentUser().getId()).addOnCompleteListener(task -> {
             if (task.isSuccessful()) {
+                System.out.println("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!¨¨  " +  task.getResult().size());
                 if (task.getResult().size() >= goal_value) {
                     state_achievement = true;
                     if(isAchievementFragment){
-                        achievementAdapter.notifyChange();
+                        achievementAdapter.notifyDataSetChanged();
                     }
                     else{
                         fragment.notifyChange();
@@ -115,11 +125,9 @@ public class Achievement {
                 if (task.getResult().size() >= goal_value) {
                     state_achievement = true;
                     if(isAchievementFragment){
-
-                        achievementAdapter.notifyChange();
+                        achievementAdapter.notifyDataSetChanged();
                     }
                     else{
-                        System.out.println(getWayToComplete());
                         fragment.notifyChange();
                     }
                 }
@@ -133,13 +141,13 @@ public class Achievement {
     public void checkPosts(boolean isAchievementFragment) {
         database.getPostsByUserId(auth.getCurrentUser().getId()).addOnCompleteListener(task -> {
             if (task.isSuccessful()) {
+
                 if (task.getResult().size() >= goal_value) {
                     state_achievement = true;
                     if(isAchievementFragment){
-                        achievementAdapter.notifyChange();
+                        achievementAdapter.notifyDataSetChanged();
                     }
                     else{
-                        System.out.println(getWayToComplete());
                         fragment.notifyChange();
                     }
                 }
@@ -161,10 +169,9 @@ public class Achievement {
                     state_achievement = true;
                     if(isAchievementFragment){
 
-                        achievementAdapter.notifyChange();
+                        achievementAdapter.notifyDataSetChanged();
                     }
                     else{
-                        System.out.println(getWayToComplete());
                         fragment.notifyChange();
                     }
                 }
@@ -182,11 +189,9 @@ public class Achievement {
                         state_achievement = true;
                         i = task.getResult().size();
                         if(isAchievementFragment){
-                            achievementAdapter.notifyChange();
+                            achievementAdapter.notifyDataSetChanged();
                         }
                         else{
-                            System.out.println(getWayToComplete());
-
                             fragment.notifyChange();
                         }
 

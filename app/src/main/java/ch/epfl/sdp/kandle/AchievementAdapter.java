@@ -60,13 +60,10 @@ public class AchievementAdapter extends RecyclerView.Adapter<AchievementAdapter.
         return mAchievemnts.size();
     }
 
-    public void notifyChange() {
-        notifyDataSetChanged();
-    }
 
     public void changeList(List<Achievement> achievements) {
         this.mAchievemnts = achievements;
-        notifyChange();
+        notifyDataSetChanged();
     }
 
 
