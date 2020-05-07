@@ -158,13 +158,13 @@ public class PostActivity extends AppCompatActivity {
                                     }
                                 });
                             } else {
-                                p = new Post(postText, downloadUri.toString(), new Date(), auth.getCurrentUser().getId(), longitude, latitude, isForCloseFollowers);
+                                p = new Post(postText, downloadUri.toString(), new Date(), auth.getCurrentUser().getId(), longitude, latitude);
                                 if (isEvent) {
                                     p.setDate(getDateFromPicker());
                                     p.setType(Post.EVENT);
                                 }
                                 if(isForCloseFollowers){
-                                    p.setIsForCloseFollowers(isForCloseFollowers);
+                                    p.setIsForCloseFollowers(Post.CLOSE_FOLLOWER);
                                 }
                                 post(p);
                             }
@@ -191,13 +191,13 @@ public class PostActivity extends AppCompatActivity {
                         }
                     });
                 } else {
-                    p = new Post(postText, null, new Date(), auth.getCurrentUser().getId(), longitude, latitude, isForCloseFollowers);
+                    p = new Post(postText, null, new Date(), auth.getCurrentUser().getId(), longitude, latitude);
                     if (isEvent) {
                         p.setDate(getDateFromPicker());
                         p.setType(Post.EVENT);
                     }
                     if(isForCloseFollowers){
-                        p.setIsForCloseFollowers(isForCloseFollowers);
+                        p.setIsForCloseFollowers(Post.CLOSE_FOLLOWER);
                     }
                     post(p);
                 }

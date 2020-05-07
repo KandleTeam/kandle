@@ -116,7 +116,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder> {
                     });
                 }
             });
-            if(post.getIsForCloseFollowers()){
+            if(post.getIsForCloseFollowers() != null && post.getIsForCloseFollowers().equals(Post.CLOSE_FOLLOWER)){
                 holder.mIsForCloseFollowers.setVisibility(View.VISIBLE);
             }
         }

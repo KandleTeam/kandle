@@ -69,7 +69,7 @@ public class FollowingPostsFragment extends Fragment {
                                                     }
                                                     else {
                                                         for(Post post : task1.getResult()){
-                                                            if(post.getIsForCloseFollowers())
+                                                            if(post.getIsForCloseFollowers() != null && post.getIsForCloseFollowers().equals(Post.NOT_CLOSE_FOLLOWER))
                                                                 posts.add(post);
                                                         }
                                                     }

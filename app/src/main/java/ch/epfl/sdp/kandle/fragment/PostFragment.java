@@ -151,7 +151,7 @@ public class PostFragment extends Fragment {
             likeButton.setClickable(false);
             followButton.setVisibility(View.GONE);
         }
-        if(post.getIsForCloseFollowers()){
+        if(post.getIsForCloseFollowers() != null && post.getIsForCloseFollowers().equals(Post.CLOSE_FOLLOWER)){
             isCloseFollowers.setVisibility(View.VISIBLE);
         }
 

@@ -39,6 +39,10 @@ public class Post {
     @Ignore
     public static final String EVENT = "event";
 
+    @Ignore
+    public static final String NOT_CLOSE_FOLLOWER = "not close follower";
+    @Ignore
+    public static final String CLOSE_FOLLOWER = "close follower";
     @PrimaryKey
     @NonNull
     private String postId;
@@ -64,14 +68,14 @@ public class Post {
     @ColumnInfo(name = POST_ATTR_TYPE)
     private String type;
     @ColumnInfo(name = POST_ATTR_IS_CLOSE_FOLLOWERS)
-    private boolean isForCloseFollowers;
+    private String isForCloseFollowers;
 
     @Ignore
     public Post() {
 
     }
 
-    public Post(String description, String imageURL, Date date, @NonNull String userId, double longitude, double latitude, boolean isForCloseFollowers) {
+    public Post(String description, String imageURL, Date date, @NonNull String userId, double longitude, double latitude, String isForCloseFollowers) {
         this.latitude = latitude;
         this.longitude = longitude;
         this.description = description;
@@ -88,7 +92,7 @@ public class Post {
     //Useful for test
     @Ignore
     public Post(String description, String imageURL, Date date, @NonNull String userId, double longitude, double latitude) {
-        new Post(description, imageURL, date, userId, longitude, latitude, false);
+        new Post(description, imageURL, date, userId, longitude, latitude, NOT_CLOSE_FOLLOWER);
     }
 
     //Useful for tests
@@ -103,7 +107,7 @@ public class Post {
         this.userId = userId;
         this.imageURL = imageURL;
         this.editable = true;
-        this.isForCloseFollowers = false;
+        this.isForCloseFollowers = null;
     }
 
     public int getLikes() {
@@ -207,11 +211,11 @@ public class Post {
         return otherPost.getPostId().equals(getPostId());
     }
 
-    public boolean getIsForCloseFollowers(){
+    public String getIsForCloseFollowers(){
         return this.isForCloseFollowers;
     }
 
-    public void setIsForCloseFollowers(boolean isForCloseFollowers){
+    public void setIsForCloseFollowers(String isForCloseFollowers){
         this.isForCloseFollowers = isForCloseFollowers;
     }
 }
