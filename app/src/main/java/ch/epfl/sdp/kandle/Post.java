@@ -107,7 +107,7 @@ public class Post {
         this.userId = userId;
         this.imageURL = imageURL;
         this.editable = true;
-        this.isForCloseFollowers = null;
+        this.isForCloseFollowers = NOT_CLOSE_FOLLOWER;
     }
 
     public int getLikes() {
