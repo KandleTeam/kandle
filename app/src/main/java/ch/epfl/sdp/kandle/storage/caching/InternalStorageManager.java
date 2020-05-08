@@ -1,12 +1,20 @@
 package ch.epfl.sdp.kandle.storage.caching;
 
 import android.content.Context;
+import android.content.ContextWrapper;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.os.Build;
+import android.os.Environment;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.RequiresApi;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 
@@ -18,14 +26,15 @@ import ch.epfl.sdp.kandle.dependencies.InternalStorage;
  * @Author Marc Egli
  * This class handles the internal storage accesses
  */
-@SuppressWarnings("ResultOfMethodCallIgnored")
-public class InternalStorageHandler implements InternalStorage {
 
-    private static final InternalStorageHandler INSTANCE = new InternalStorageHandler();
-    private final String USER_DATA_PATH = "userData";
+public class InternalStorageManager implements InternalStorage {
+
+    private static final InternalStorageManager INSTANCE = new InternalStorageManager();
+    private final String USER_DATA_PATH = "localUserDir";
+    private final String IMAGE_DATA_PATH = "imagesDir";
     private final Context context;
 
-    public InternalStorageHandler() {
+    public InternalStorageManager() {
         this.context = Kandle.getContext();
     }
 
@@ -38,13 +47,14 @@ public class InternalStorageHandler implements InternalStorage {
      * This is a private method and can only be used by this class to ensure good behavior
      *
      * @param user
-     * @throws IllegalArgumentException
      * @Author Marc Egli
      */
     private void storeUser(@NonNull User user) {
 
         try {
-            FileOutputStream file = context.openFileOutput(USER_DATA_PATH, Context.MODE_PRIVATE);
+            File localUserDirectory = context.getDir(IMAGE_DATA_PATH,Context.MODE_PRIVATE);
+            File localUserPath = new File(localUserDirectory,"localUser");
+            FileOutputStream file = new FileOutputStream(localUserPath);
             ObjectOutputStream out = new ObjectOutputStream(file);
             out.writeObject(user);
             out.close();
@@ -53,6 +63,7 @@ public class InternalStorageHandler implements InternalStorage {
             e.printStackTrace();
         }
     }
+
 
     /**
      * Retrieves the user instance from the internal storage
@@ -65,7 +76,9 @@ public class InternalStorageHandler implements InternalStorage {
 
         User user = null;
         try {
-            FileInputStream file = context.openFileInput(USER_DATA_PATH);
+            File localUserDirectory = context.getDir(IMAGE_DATA_PATH,Context.MODE_PRIVATE);
+            File localUserPath = new File(localUserDirectory,"localUser");
+            FileInputStream file = new FileInputStream(localUserPath);
             ObjectInputStream in = new ObjectInputStream(file);
             user = (User) in.readObject();
             in.close();
@@ -81,11 +94,10 @@ public class InternalStorageHandler implements InternalStorage {
      * The condition to save the user relies on short circuit evaluation
      *
      * @param user
-     * @throws IllegalArgumentException
      * @Author Marc Egli
      */
     @Override
-    public void saveUserAtLoginOrRegister(@NonNull User user) throws IllegalArgumentException {
+    public void saveUserAtLoginOrRegister(@NonNull User user)  {
 
         User storedUser = getCurrentUser();
         if (storedUser == null) {
@@ -107,7 +119,7 @@ public class InternalStorageHandler implements InternalStorage {
      */
 
     @Override
-    public void updateUser(@NonNull User user) throws IllegalArgumentException {
+    public void updateUser(@NonNull User user)  {
         deleteUser();
         storeUser(user);
 
@@ -122,9 +134,40 @@ public class InternalStorageHandler implements InternalStorage {
      */
     @Override
     public void deleteUser() {
-        File user = context.getFileStreamPath(USER_DATA_PATH);
-        user.delete();
+        File localUserDirectory = context.getDir(IMAGE_DATA_PATH,Context.MODE_PRIVATE);
+        File localUserPath = new File(localUserDirectory,"localUser");
+        localUserPath.delete();
 
+    }
+
+
+
+    public void saveImageToInternalStorage(Bitmap imageBitMap,String id) {
+        File imageDirectory = context.getDir(IMAGE_DATA_PATH,Context.MODE_PRIVATE);
+        File imagePath = new File(imageDirectory,id);
+        FileOutputStream fos = null;
+        try {
+            fos = new FileOutputStream(imagePath);
+            imageBitMap.compress(Bitmap.CompressFormat.PNG, 100, fos);
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                fos.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+
+
+    public File getImageFileById(String id) {
+        File imagePath = null;
+        File imageDirectory = context.getDir(IMAGE_DATA_PATH, Context.MODE_PRIVATE);
+        imagePath = new File(imageDirectory, id);
+        System.out.println(new File(String.valueOf(context.getDir(IMAGE_DATA_PATH,Context.MODE_PRIVATE))).listFiles()[0]);
+        return imagePath;
     }
 
 }

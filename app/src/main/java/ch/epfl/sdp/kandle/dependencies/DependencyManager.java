@@ -2,8 +2,8 @@ package ch.epfl.sdp.kandle.dependencies;
 
 import ch.epfl.sdp.kandle.network.NetworkState;
 import ch.epfl.sdp.kandle.network.UserNetworkStatus;
-import ch.epfl.sdp.kandle.storage.caching.InternalStorageHandler;
-import ch.epfl.sdp.kandle.storage.firebase.CloudStorage;
+import ch.epfl.sdp.kandle.storage.caching.InternalStorageManager;
+import ch.epfl.sdp.kandle.storage.firebase.FirebaseImageStorage;
 import ch.epfl.sdp.kandle.storage.firebase.FirebaseAuthentication;
 import ch.epfl.sdp.kandle.storage.firebase.FirestoreDatabase;
 import ch.epfl.sdp.kandle.storage.room.LocalDatabase;
@@ -12,10 +12,10 @@ public final class DependencyManager {
 
     //Do not touch order
     private static Database db = FirestoreDatabase.getInstance();
-    private static Storage storage = CloudStorage.getInstance();
+    private static ImageStorage storage = FirebaseImageStorage.getInstance();
     private static MyLocationProvider locationProvider = new GoogleLocationServices();
     private static NetworkState networkState = UserNetworkStatus.getInstance();
-    private static InternalStorage internalStorage = InternalStorageHandler.getInstance();
+    private static InternalStorage internalStorage = InternalStorageManager.getInstance();
     private static LocalDatabase localDatabase = LocalDatabase.getInstance();
     private static Authentication auth = FirebaseAuthentication.getInstance();
 
@@ -24,7 +24,7 @@ public final class DependencyManager {
 
     }
 
-    public static void setFreshTestDependencies(Authentication auth, Database db, Storage storage, InternalStorage internalStorage, NetworkState networkState, LocalDatabase localDatabase) {
+    public static void setFreshTestDependencies(Authentication auth, Database db, ImageStorage storage, InternalStorage internalStorage, NetworkState networkState, LocalDatabase localDatabase) {
         setAuthSystem(auth);
         setDatabaseSystem(db);
         setStorageSystem(storage);
@@ -59,11 +59,11 @@ public final class DependencyManager {
         DependencyManager.db = db;
     }
 
-    public static Storage getStorageSystem() {
+    public static ImageStorage getStorageSystem() {
         return storage;
     }
 
-    public static void setStorageSystem(Storage storage) {
+    public static void setStorageSystem(ImageStorage storage) {
         DependencyManager.storage = storage;
     }
 

@@ -3,8 +3,10 @@ package ch.epfl.sdp.kandle.activity;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -25,8 +27,10 @@ public class LoginActivity extends AppCompatActivity {
     private TextView mSignIn;
     private EditText mEmail, mPassword;
     private Button mSignUpBtn;
+    private ImageButton mGameButton;
     private Authentication auth;
     private CoordinatorLayout CNetworkBar;
+
 
 
     @Override
@@ -47,6 +51,7 @@ public class LoginActivity extends AppCompatActivity {
         mEmail = findViewById(R.id.email);
         mPassword = findViewById(R.id.password);
         mSignUpBtn = findViewById(R.id.loginBtn);
+        mGameButton = findViewById(R.id.startOfflineGameButton);
         TextView mGuestMode = findViewById(R.id.guestModeLink);
 
         mSignUpBtn.setOnClickListener(v -> {
@@ -56,6 +61,13 @@ public class LoginActivity extends AppCompatActivity {
                 attemptLogin(email, password);
             }
         });
+
+        if(!checkForInternetConnection()){
+            mGameButton.setVisibility(View.VISIBLE);
+            mGameButton.setOnClickListener(v -> {
+                startActivity(new Intent(getApplicationContext(), OfflineGameActivity.class));
+            });
+        }
 
         mGuestMode.setOnClickListener(v -> {
             LoggedInUser.initGuestMode();

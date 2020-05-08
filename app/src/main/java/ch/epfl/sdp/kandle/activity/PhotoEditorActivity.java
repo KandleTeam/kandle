@@ -63,7 +63,8 @@ public class PhotoEditorActivity extends AppCompatActivity {
                              "image", "edited from Kandle");
 
                     Intent i = new Intent();
-                    i.setData(Uri.parse(path));
+                    if (path != null)
+                        i.setData(Uri.parse(path));
                     setResult(RESULT_OK, i);
                     finish();
                 }

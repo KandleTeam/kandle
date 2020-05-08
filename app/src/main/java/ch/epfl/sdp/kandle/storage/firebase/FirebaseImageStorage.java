@@ -3,19 +3,18 @@ package ch.epfl.sdp.kandle.storage.firebase;
 import android.net.Uri;
 
 import com.google.android.gms.tasks.Task;
-import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
-import ch.epfl.sdp.kandle.dependencies.Storage;
+import ch.epfl.sdp.kandle.dependencies.ImageStorage;
 
-public class CloudStorage implements Storage {
+public class FirebaseImageStorage implements ImageStorage {
 
 
-    private static final StorageReference STORAGE_REFERENCE = FirebaseStorage.getInstance().getReferenceFromUrl("gs://kandle-1b646.appspot.com");
-    private static final CloudStorage INSTANCE = new CloudStorage();
+    private static final StorageReference STORAGE_REFERENCE = com.google.firebase.storage.FirebaseStorage.getInstance().getReferenceFromUrl("gs://kandle-1b646.appspot.com");
+    private static final FirebaseImageStorage INSTANCE = new FirebaseImageStorage();
 
-    public static CloudStorage getInstance() {
+    public static FirebaseImageStorage getInstance() {
         return INSTANCE;
     }
 
@@ -30,7 +29,7 @@ public class CloudStorage implements Storage {
 
     @Override
     public Task<Void> delete(String path) {
-        final StorageReference reference = FirebaseStorage.getInstance().getReferenceFromUrl(path);
+        final StorageReference reference = com.google.firebase.storage.FirebaseStorage.getInstance().getReferenceFromUrl(path);
         return reference.delete();
     }
 }

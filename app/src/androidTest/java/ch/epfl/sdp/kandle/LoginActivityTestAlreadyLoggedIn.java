@@ -18,7 +18,7 @@ import ch.epfl.sdp.kandle.dependencies.MockAuthentication;
 import ch.epfl.sdp.kandle.dependencies.MockDatabase;
 import ch.epfl.sdp.kandle.dependencies.MockInternalStorage;
 import ch.epfl.sdp.kandle.dependencies.MockNetwork;
-import ch.epfl.sdp.kandle.dependencies.MockStorage;
+import ch.epfl.sdp.kandle.dependencies.MockImageStorage;
 
 import static androidx.test.espresso.Espresso.onView;
 import static androidx.test.espresso.assertion.ViewAssertions.matches;
@@ -48,8 +48,8 @@ public class LoginActivityTestAlreadyLoggedIn {
                     HashMap<String, Post> posts = new HashMap<>();
                     MockDatabase db = new MockDatabase(false, users, followMap, posts);
                     MockAuthentication authentication = new MockAuthentication(true, accounts, "password");
-                    MockStorage storage = new MockStorage();
-                    MockInternalStorage internalStorage = new MockInternalStorage(true);
+                    MockImageStorage storage = new MockImageStorage();
+                    MockInternalStorage internalStorage = new MockInternalStorage(true,new HashMap<>());
                     MockNetwork network = new MockNetwork(false);
                     localDatabase = Room.inMemoryDatabaseBuilder(Kandle.getContext(), LocalDatabase.class).allowMainThreadQueries().build();
                     DependencyManager.setFreshTestDependencies(authentication, db, storage,internalStorage,network,localDatabase);

@@ -3,11 +3,20 @@ package ch.epfl.sdp.kandle;
 import android.app.Activity;
 import android.app.Instrumentation;
 import android.content.Intent;
+import android.content.res.Resources;
+import android.graphics.Bitmap;
+import android.graphics.Canvas;
+import android.graphics.drawable.Drawable;
+import android.net.Network;
 import android.net.Uri;
+import android.nfc.Tag;
 import android.view.Gravity;
 import android.view.View;
+import android.widget.ImageView;
+
 import org.hamcrest.Description;
 import org.hamcrest.Matcher;
+import org.hamcrest.TypeSafeMatcher;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Rule;
@@ -25,9 +34,11 @@ import androidx.test.espresso.matcher.ViewMatchers;
 import androidx.test.rule.GrantPermissionRule;
 
 
+import java.util.Date;
 import java.util.HashMap;
 import java.util.LinkedList;
 
+import ch.epfl.sdp.kandle.network.NetworkState;
 import ch.epfl.sdp.kandle.storage.room.LocalDatabase;
 import ch.epfl.sdp.kandle.activity.MainActivity;
 import ch.epfl.sdp.kandle.dependencies.DependencyManager;
@@ -35,7 +46,7 @@ import ch.epfl.sdp.kandle.dependencies.MockAuthentication;
 import ch.epfl.sdp.kandle.dependencies.MockDatabase;
 import ch.epfl.sdp.kandle.dependencies.MockInternalStorage;
 import ch.epfl.sdp.kandle.dependencies.MockNetwork;
-import ch.epfl.sdp.kandle.dependencies.MockStorage;
+import ch.epfl.sdp.kandle.dependencies.MockImageStorage;
 import ch.epfl.sdp.kandle.fragment.ProfileFragment;
 import static androidx.test.espresso.Espresso.onView;
 import static androidx.test.espresso.action.ViewActions.clearText;
@@ -51,13 +62,25 @@ import static androidx.test.espresso.matcher.ViewMatchers.withEffectiveVisibilit
 import static androidx.test.espresso.matcher.ViewMatchers.withId;
 import static androidx.test.espresso.matcher.ViewMatchers.withTagValue;
 import static androidx.test.espresso.matcher.ViewMatchers.withText;
+import static ch.epfl.sdp.kandle.dependencies.DependencyManager.getDatabaseSystem;
+import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
 
 public class YourProfileFragmentTest {
 
     public static User user1;
     public static User user2;
+    public static User user3;
+    public static User user4;
+    public static User user5;
+    public static User user6;
+    public static Post p1;
+    public static Post p2;
+    public static Post p3;
+    public static Post p4;
+    public static Post p5;
     private LocalDatabase localDatabase;
+    private MockNetwork network;
     @Rule
     public GrantPermissionRule permissionRule = GrantPermissionRule.grant(android.Manifest.permission.ACCESS_FINE_LOCATION);
     @Rule
@@ -69,27 +92,46 @@ public class YourProfileFragmentTest {
                     LoggedInUser.init(new User("loggedInUserId","LoggedInUser","loggedInUser@kandle.ch","nickname","image"));
                     user1 = new User("user1Id","user1","user1@kandle.ch","user1",null);
                     user2 = new User("user2Id","user2","user2@kandle.ch","user2",null);
-
+                    user3 = new User("user3Id", "user3", "user3@kandle.ch", null,  null);
+                    user4 = new User("user4Id", "user4", "user4@kandle.ch", null,  null);
+                    user5 = new User("user5Id", "user5", "user5@kandle.ch", null,  null);
+                    user6 = new User("user6Id", "user6", "user6@kandle.ch", null,  null);
+                    p1 =  new Post("Hello", null, new Date(), "loggedInUserId", "post1Id");
+                    p2 = new Post("There", "null", new Date(), "loggedInUserId", "post2Id");
+                    p3 =  new Post("My", null, new Date(), "loggedInUserId", "post3Id");
+                    p4 =  new Post("You", null, new Date(), "loggedInUserId", "post4Id");
+                    p5 =  new Post("Are", null, new Date(), "loggedInUserId", "post5Id");
                     HashMap<String, String> accounts = new HashMap<>();
                     HashMap<String,User> users = new HashMap<>();
                     accounts.put(user1.getEmail(), user1.getId());
                     accounts.put(user2.getEmail(), user2.getId());
+                    accounts.put(user3.getEmail(), user3.getId());
+                    accounts.put(user4.getEmail(), user4.getId());
+                    accounts.put(user5.getEmail(), user5.getId());
+                    accounts.put(user6.getEmail(), user6.getId());
                     HashMap<String, MockDatabase.Follow> followMap = new HashMap<>();
                     HashMap<String, Post> posts = new HashMap<>();
+                    posts.put(p1.getPostId(),p1);
+                    posts.put(p2.getPostId(),p2);
+                    posts.put(p3.getPostId(),p3);
+                    posts.put(p4.getPostId(),p4);
                     followMap.put(LoggedInUser.getInstance().getId(),new MockDatabase.Follow(new LinkedList<>(),new LinkedList<>()));
                     MockDatabase db = new MockDatabase(true, users, followMap, posts);
                     MockAuthentication authentication = new MockAuthentication(true, accounts, "password");
-                    MockStorage storage = new MockStorage();
-                    MockInternalStorage internalStorage = new MockInternalStorage(true);
-                    MockNetwork network = new MockNetwork(true);
+                    MockImageStorage storage = new MockImageStorage();
+                    MockInternalStorage internalStorage = new MockInternalStorage(true,new HashMap<>());
+                    network = new MockNetwork(true);
                     localDatabase = Room.inMemoryDatabaseBuilder(Kandle.getContext(), LocalDatabase.class).allowMainThreadQueries().build();
                     DependencyManager.setFreshTestDependencies(authentication, db, storage,internalStorage,network,localDatabase);
-                    DependencyManager.getDatabaseSystem().createUser(user1);
-                    DependencyManager.getDatabaseSystem().createUser(user2);
-                    DependencyManager.getDatabaseSystem().follow(user1.getId(),LoggedInUser.getInstance().getId());
-                    DependencyManager.getDatabaseSystem().follow(LoggedInUser.getInstance().getId(),user1.getId());
-                    DependencyManager.getDatabaseSystem().follow(user2.getId(),LoggedInUser.getInstance().getId());
-
+                    getDatabaseSystem().createUser(user1);
+                    getDatabaseSystem().createUser(user2);
+                    getDatabaseSystem().createUser(user3);
+                    getDatabaseSystem().createUser(user4);
+                    getDatabaseSystem().createUser(user5);
+                    getDatabaseSystem().createUser(user6);
+                    getDatabaseSystem().follow(user1.getId(),LoggedInUser.getInstance().getId());
+                    getDatabaseSystem().follow(LoggedInUser.getInstance().getId(),user1.getId());
+                    getDatabaseSystem().follow(user2.getId(),LoggedInUser.getInstance().getId());
                 }
             };
 
@@ -107,6 +149,31 @@ public class YourProfileFragmentTest {
     public void clearCurrentUserAndLocalDb(){
         LoggedInUser.clear();
         localDatabase.close();
+    }
+
+    @Test
+    public void testImageViewIsEmpty(){
+        onView(withId(R.id.badgePicture)).check(matches(withTagValue(equalTo(R.drawable.ic_icons2_medal_64))));
+    }
+
+    @Test
+    public void testImageViewForSuccesses(){
+        DependencyManager.getDatabaseSystem().addPost(p5);
+        loadFragment();
+        onView(withId(R.id.badgePicture)).check(matches(withTagValue(equalTo(R.drawable.ic_icons2_medal_64))));
+        DependencyManager.getDatabaseSystem().follow(user3.getId(),LoggedInUser.getInstance().getId());
+        DependencyManager.getDatabaseSystem().follow(LoggedInUser.getInstance().getId(), user2.getId());
+        DependencyManager.getDatabaseSystem().follow(LoggedInUser.getInstance().getId(), user3.getId());
+        loadFragment();
+        onView(withId(R.id.badgePicture)).check(matches(withTagValue(equalTo(R.drawable.ic_icons1_medal_64))));
+        DependencyManager.getDatabaseSystem().follow(user4.getId(),LoggedInUser.getInstance().getId());
+        DependencyManager.getDatabaseSystem().follow(user5.getId(),LoggedInUser.getInstance().getId());
+        DependencyManager.getDatabaseSystem().follow(user6.getId(),LoggedInUser.getInstance().getId());
+        DependencyManager.getDatabaseSystem().follow(LoggedInUser.getInstance().getId(), user4.getId());
+        DependencyManager.getDatabaseSystem().follow(LoggedInUser.getInstance().getId(), user5.getId());
+        DependencyManager.getDatabaseSystem().follow(LoggedInUser.getInstance().getId(), user6.getId());
+        loadFragment();
+        onView(withId(R.id.badgePicture)).check(matches(withTagValue(equalTo(R.drawable.icons8_medal_64_1))));
     }
 
     @Test
@@ -144,6 +211,23 @@ public class YourProfileFragmentTest {
         onView(withId(R.id.profileValidatePictureButton)).perform(click());
     }
 
+    @Test
+    public void getPictureLocally(){
+        Intent resultData = new Intent();
+        resultData.setAction(Intent.ACTION_GET_CONTENT);
+        Uri imageUri = Uri.parse("android.resource://ch.epfl.sdp.kandle/drawable/ic_launcher_background.xml");
+        resultData.setData(imageUri);
+        Instrumentation.ActivityResult result = new Instrumentation.ActivityResult(Activity.RESULT_OK, resultData);
+        intending(hasAction(Intent.ACTION_GET_CONTENT)).respondWith(result);
+
+        onView(withId(R.id.profileEditPictureButton)).perform(click());
+        onView(withId(R.id.profilePicture)).check(matches(withTagValue(is(ProfileFragment.PROFILE_PICTURE_AFTER))));
+
+        onView(withId(R.id.profileValidatePictureButton)).perform(click());
+        network.setIsOnline(false);
+        loadFragment();
+        loadFragment();
+    }
     @Test
     public void editNickname(){
         onView(withId(R.id.profileEditNameButton)).perform(click());
