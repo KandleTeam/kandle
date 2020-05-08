@@ -1,11 +1,20 @@
 package ch.epfl.sdp.kandle.storage.firebase;
 
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.gms.tasks.TaskCompletionSource;
 import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.EmailAuthProvider;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.SetOptions;
+import com.google.firebase.iid.FirebaseInstanceId;
+import com.google.firebase.iid.InstanceIdResult;
+
+import java.util.HashMap;
+import java.util.Map;
+import java.util.UUID;
 
 import ch.epfl.sdp.kandle.LoggedInUser;
 import ch.epfl.sdp.kandle.User;
@@ -109,6 +118,17 @@ public class FirebaseAuthentication implements Authentication {
                     User user = task1.getResult();
                     LoggedInUser.init(user);
                     DependencyManager.getInternalStorageSystem().saveUserAtLoginOrRegister(user);
+
+                    FirebaseInstanceId.getInstance().getInstanceId().addOnSuccessListener(instanceIdResult -> {
+                        String token = instanceIdResult.getToken();
+                        Map<String, Object> deviceMap = new HashMap<>();
+                        deviceMap.put("deviceId", token );
+                        FirebaseFirestore.getInstance().collection("users").document(userId).set(deviceMap, SetOptions.merge());
+                    });
+
+                    //Map<String, Object> deviceMap = new HashMap<>();
+                    //deviceMap.put("deviceId", FirebaseInstanceId.getInstance().getToken() );
+                    //FirebaseFirestore.getInstance().collection("users").document(userId).set(deviceMap, SetOptions.merge());
                     return user;
                 });
             } else {
