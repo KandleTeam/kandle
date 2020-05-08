@@ -1,6 +1,7 @@
 package ch.epfl.sdp.kandle.storage.firebase;
 
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.gms.tasks.TaskCompletionSource;
 import com.google.firebase.Timestamp;
@@ -14,6 +15,8 @@ import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.FirebaseFirestoreSettings;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.SetOptions;
+import com.google.firebase.iid.FirebaseInstanceId;
+import com.google.firebase.iid.InstanceIdResult;
 import com.google.maps.android.SphericalUtil;
 
 import java.text.DateFormat;
@@ -25,6 +28,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Set;
+import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
 import ch.epfl.sdp.kandle.Post;
@@ -118,12 +123,22 @@ public class FirestoreDatabase implements Database {
                         throw new FirebaseFirestoreException("Username already taken!", FirebaseFirestoreException.Code.ALREADY_EXISTS);
                     } else {
 
-                        Map<String, Object> map = new HashMap<>();
-                        map.put("username", user.getUsername());
+                        Map<String, Object> usernameMap = new HashMap<>();
+                        usernameMap.put("username", user.getUsername());
+                        transaction.set(usernameDoc, usernameMap);
 
+                        //Map<String, Object> deviceMap = new HashMap<>();
+                        //deviceMap.put("deviceId", FirebaseInstanceId.getInstance().getToken() );
 
-                        transaction.set(usernameDoc, map);
                         transaction.set(userDoc, user);
+
+                        FirebaseInstanceId.getInstance().getInstanceId().addOnSuccessListener(instanceIdResult -> {
+                            String token = instanceIdResult.getToken();
+                            Map<String, Object> deviceMap = new HashMap<>();
+                            deviceMap.put("deviceId", token );
+                            FirebaseFirestore.getInstance().collection("users").document(user.getId()).set(deviceMap, SetOptions.merge());
+                        });
+                       // transaction.set(userDoc, deviceMap, SetOptions.merge());
                     }
 
                     return null;
@@ -166,11 +181,13 @@ public class FirestoreDatabase implements Database {
                             following.add(userFollowed);
                             mapFollowing.put(FOLLOWING, following);
                             transaction.set(userFollowingDoc, mapFollowing, SetOptions.merge());
+                            sendNotification(userFollowed);
                         }
                     } else {
                         Map<String, Object> mapFollowing = new HashMap<>();
                         mapFollowing.put(FOLLOWING, Arrays.asList(userFollowed));
                         transaction.set(userFollowingDoc, mapFollowing, SetOptions.merge());
+                        sendNotification(userFollowed);
                     }
 
 
@@ -192,6 +209,21 @@ public class FirestoreDatabase implements Database {
 
                     return null;
                 });
+    }
+
+
+    private void sendNotification(String userFollowedId){
+        USERS.document(userFollowedId).get().addOnSuccessListener(documentSnapshot -> {
+            String deviceId = (String) documentSnapshot.get("deviceId");
+            if (deviceId != null) {
+                Map<String, String> notificationData = new HashMap<>();
+                notificationData.put("toUserId", userFollowedId);
+                notificationData.put("toDeviceId", deviceId);
+                FirebaseFirestore.getInstance().collection("notification").document(UUID.randomUUID().toString()).set(notificationData);
+            }
+        });
+
+
     }
 
     @Override

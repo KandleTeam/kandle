@@ -104,7 +104,7 @@
         android:id="@+id/startOfflineGameButton"
         android:layout_width="98dp"
         android:layout_height="83dp"
-        android:visibility="visible"
+        android:visibility="gone"
         android:background="@android:color/transparent"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
