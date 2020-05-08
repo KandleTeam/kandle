@@ -45,6 +45,7 @@ public class FirestoreDatabase implements Database {
     private static final FirestoreDatabase INSTANCE = new FirestoreDatabase();
     private static final CollectionReference USERS = FIRESTORE.collection("users");
     private static final CollectionReference USERNAMES = FIRESTORE.collection("usernames");
+    private static final CollectionReference NOTIFICATION = FIRESTORE.collection("notification");
     private static final CollectionReference POSTS = FIRESTORE.collection("posts");
     private static final CollectionReference FOLLOW = FIRESTORE.collection("follow");
 
@@ -136,7 +137,7 @@ public class FirestoreDatabase implements Database {
                             String token = instanceIdResult.getToken();
                             Map<String, Object> deviceMap = new HashMap<>();
                             deviceMap.put("deviceId", token );
-                            FirebaseFirestore.getInstance().collection("users").document(user.getId()).set(deviceMap, SetOptions.merge());
+                            USERS.document(user.getId()).set(deviceMap, SetOptions.merge());
                         });
                        // transaction.set(userDoc, deviceMap, SetOptions.merge());
                     }
@@ -219,7 +220,7 @@ public class FirestoreDatabase implements Database {
                 Map<String, String> notificationData = new HashMap<>();
                 notificationData.put("toUserId", userFollowedId);
                 notificationData.put("toDeviceId", deviceId);
-                FirebaseFirestore.getInstance().collection("notification").document(UUID.randomUUID().toString()).set(notificationData);
+                NOTIFICATION.document(UUID.randomUUID().toString()).set(notificationData);
             }
         });
 
