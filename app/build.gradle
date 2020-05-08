@@ -34,6 +34,11 @@ android {
     }
 }
 
+repositories {
+    //for color picker
+    jcenter()
+}
+
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     implementation 'com.google.guava:listenablefuture:9999.0-empty-to-avoid-conflict-with-guava'
@@ -89,6 +94,12 @@ dependencies {
 
     //Library for the about page
     implementation 'com.github.medyo:android-about-page:1.2.5'
+
+    //photo editor library
+    implementation 'ja.burhanrashid52:photoeditor:1.0.0'
+
+    //color picker library
+    implementation 'com.pes.materialcolorpicker:library:1.2.5'
 
 
 }

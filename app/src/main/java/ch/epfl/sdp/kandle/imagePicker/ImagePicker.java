@@ -50,6 +50,7 @@ public class ImagePicker {
 
     protected static String getFileExtension(Uri uri) {
         ContentResolver contentResolver = Kandle.getContext().getContentResolver();
+        String tmp = contentResolver.getType(uri);
         return MimeTypeMap.getSingleton().getExtensionFromMimeType(contentResolver.getType(uri));
     }
 

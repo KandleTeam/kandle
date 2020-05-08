@@ -82,14 +82,29 @@
                 android:importantForAutofill="no"
                 android:inputType="textMultiLine"/>
 
-            <ImageView
-                android:id="@+id/postImage"
-                android:visibility="gone"
-                android:layout_width="match_parent"
+            <RelativeLayout
+                android:id="@+id/postImageLayout"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_margin="10dp"
-                android:contentDescription="Posted image"
-                android:scaleType="centerInside"/>
+                android:visibility="gone">
+
+                <ImageView
+                    android:id="@+id/postImage"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="10dp"
+                    android:contentDescription="Posted image"
+                    android:scaleType="centerInside"/>
+
+                <ImageButton
+                    android:id="@+id/postImageEdit"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignEnd="@+id/postImage"
+                    android:layout_alignTop="@+id/postImage"
+                    android:src="@drawable/ic_brush_black_24dp"/>
+            </RelativeLayout>
+
         </LinearLayout>
 
     </ScrollView>
