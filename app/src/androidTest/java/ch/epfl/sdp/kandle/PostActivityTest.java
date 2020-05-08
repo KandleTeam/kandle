@@ -34,8 +34,10 @@ import static androidx.test.espresso.action.ViewActions.click;
 import static androidx.test.espresso.action.ViewActions.closeSoftKeyboard;
 import static androidx.test.espresso.action.ViewActions.typeText;
 import static androidx.test.espresso.assertion.ViewAssertions.matches;
+import static androidx.test.espresso.intent.Intents.intended;
 import static androidx.test.espresso.intent.Intents.intending;
 import static androidx.test.espresso.intent.matcher.IntentMatchers.hasAction;
+import static androidx.test.espresso.intent.matcher.IntentMatchers.hasComponent;
 import static androidx.test.espresso.intent.matcher.IntentMatchers.toPackage;
 import static androidx.test.espresso.matcher.ViewMatchers.hasErrorText;
 import static androidx.test.espresso.matcher.ViewMatchers.withId;
@@ -183,6 +185,12 @@ public class PostActivityTest {
 
         onView(withId(R.id.galleryButton)).perform(click());
 
+        Intent resultEdit = new Intent();
+        resultEdit.setData(imageUri);
+        Instrumentation.ActivityResult result2 =  new Instrumentation.ActivityResult(Activity.RESULT_OK, resultEdit);
+        intending(hasComponent(PhotoEditorActivity.class.getName())).respondWith(result2);
         onView(withId(R.id.postImageEdit)).perform(click());
+
+        onView(withId(R.id.postImage)).check(matches(withTagValue(is(PostActivity.POST_EDITED_IMAGE_TAG))));
     }
 }
