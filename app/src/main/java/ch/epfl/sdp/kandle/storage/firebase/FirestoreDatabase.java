@@ -16,6 +16,7 @@ import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.FirebaseFirestoreSettings;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.SetOptions;
+import com.google.firebase.firestore.Transaction;
 import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.firebase.iid.InstanceIdResult;
 import com.google.maps.android.SphericalUtil;
@@ -227,34 +228,27 @@ public class FirestoreDatabase implements Database {
 
         return FIRESTORE
                 .runTransaction(transaction -> {
-
                     DocumentSnapshot userUnFollowingSnapshot = transaction.get(userUnFollowingDoc);
                     DocumentSnapshot userUnFollowedSnapshot = transaction.get(userUnFollowedDoc);
-
                     List<String> following = (List<String>) userUnFollowingSnapshot.get(FOLLOWING);
                     List<String> followers = (List<String>) userUnFollowedSnapshot.get(FOLLOWERS);
 
-                    if (following != null) {
-                        if (following.contains(userUnFollowed)) {
-                            Map<String, Object> mapFollowing = new HashMap<>();
-                            following.remove(userUnFollowed);
-                            mapFollowing.put(FOLLOWING, following);
-                            transaction.set(userUnFollowingDoc, mapFollowing, SetOptions.merge());
-                        }
-                    }
+                    deleteFollow(userUnFollowed, userUnFollowingDoc, transaction, following, FOLLOWING);
+                    deleteFollow(userUnFollowing, userUnFollowedDoc, transaction, followers, FOLLOWERS);
 
-                    if (followers != null) {
-
-                        if (followers.contains(userUnFollowing)) {
-
-                            Map<String, Object> mapFollowed = new HashMap<>();
-                            followers.remove(userUnFollowing);
-                            mapFollowed.put(FOLLOWERS, followers);
-                            transaction.set(userUnFollowedDoc, mapFollowed, SetOptions.merge());
-                        }
-                    }
                     return null;
                 });
+    }
+
+    private void deleteFollow(String userId, DocumentReference userDoc, Transaction transaction, List<String> followList, String process) {
+        if (followList != null) {
+            if (followList.contains(userId)) {
+                Map<String, Object> mapFollow = new HashMap<>();
+                followList.remove(userId);
+                mapFollow.put(process, followList);
+                transaction.set(userDoc, mapFollow, SetOptions.merge());
+            }
+        }
     }
 
     /**
@@ -470,16 +464,6 @@ public class FirestoreDatabase implements Database {
                 });
     }
 
-    /*
-    @Override
-    public Task<List<String>> likers(String postId) {
-        return posts
-                .document(postId)
-                .get()
-                .continueWith(task -> (List<String>)  task.getResult().get("likers"));
-    }
-    */
-
     @Override
     public Task<List<User>> getLikers(String postId) {
         TaskCompletionSource<List<User>> source = new TaskCompletionSource<>();
@@ -550,9 +534,6 @@ public class FirestoreDatabase implements Database {
                 .continueWith(task -> {
                     Post post = Objects.requireNonNull(task.getResult()).toObject(Post.class);
                     assert (post != null);
-                    System.out.println(post.getPostId());
-                    if (!post.getPostId().equals(postId))
-                        throw new AssertionError("We done goofed somewhere! Unexpected pid");
                     return post;
                 });
     }
