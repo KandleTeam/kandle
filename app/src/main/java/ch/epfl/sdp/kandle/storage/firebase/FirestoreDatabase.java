@@ -71,13 +71,6 @@ public class FirestoreDatabase implements Database {
         return INSTANCE;
     }
 
-    public static boolean nearby(double latitude, double longitude, double postLatitude, double postLongitude, double distance, int numLikes, long numDays) {
-
-        LatLng startLatLng = new LatLng(latitude, longitude);
-        LatLng endLatLng = new LatLng(postLatitude, postLongitude);
-        return SphericalUtil.computeDistanceBetween(startLatLng, endLatLng) <= distance + numLikes * LIKE_BONUS_DISTANCE - numDays * DATE_MALUS_DISTANCE;
-
-    }
 
     private DocumentReference loggedInUser() {
         return USERS.document(FirebaseAuth.getInstance().getCurrentUser().getUid());
@@ -279,11 +272,11 @@ public class FirestoreDatabase implements Database {
         return getFollowerOrFollowedListTask(userId, FOLLOWERS);
     }
 
-    private OnCompleteListener<List<String>> listCompleteListener(TaskCompletionSource source, CollectionReference collectionReference){
+    private OnCompleteListener<List<String>> userListCompleteListener(TaskCompletionSource source){
         return task -> {
             if (task.isSuccessful()) {
                 if (task.getResult() != null) {
-                    collectionReference.get().addOnCompleteListener(task2 -> {
+                    USERS.get().addOnCompleteListener(task2 -> {
                         if (task2.isSuccessful()) {
                             List<User> users = new ArrayList<>();
                             for (QueryDocumentSnapshot document : task2.getResult()) {
@@ -309,14 +302,14 @@ public class FirestoreDatabase implements Database {
     @Override
     public Task<List<User>> userFollowingList(String userId) {
         TaskCompletionSource<List<User>> source = new TaskCompletionSource<>();
-        userIdFollowingList(userId).addOnCompleteListener(listCompleteListener(source, USERS));
+        userIdFollowingList(userId).addOnCompleteListener(userListCompleteListener(source));
         return source.getTask();
     }
 
     @Override
     public Task<List<User>> userFollowersList(String userId) {
         TaskCompletionSource<List<User>> source = new TaskCompletionSource<>();
-        userIdFollowersList(userId).addOnCompleteListener(listCompleteListener(source, USERS));
+        userIdFollowersList(userId).addOnCompleteListener(userListCompleteListener(source));
         return source.getTask();
     }
 
@@ -442,7 +435,7 @@ public class FirestoreDatabase implements Database {
                 .get()
                 .continueWith(task -> (List<String>) task.getResult().get("likers"));
 
-        getLikersIdTask.addOnCompleteListener(listCompleteListener(source, USERS));
+        getLikersIdTask.addOnCompleteListener(userListCompleteListener(source));
         return source.getTask();
     }
 
@@ -454,13 +447,34 @@ public class FirestoreDatabase implements Database {
                 .continueWith(task -> (List<String>) task.getResult().get("postsIds"));
 
         TaskCompletionSource<List<Post>> source = new TaskCompletionSource<>();
-        taskListPostId.addOnCompleteListener(listCompleteListener(source, POSTS));
-
+        taskListPostId.addOnCompleteListener(task -> {
+            if (task.isSuccessful()) {
+                POSTS.get().addOnCompleteListener(task2 -> {
+                    if (task2.isSuccessful()) {
+                        List<Post> posts = new ArrayList<>();
+                        if (task2.getResult() != null) {
+                            for (QueryDocumentSnapshot documentSnapshot : task2.getResult()) {
+                                String postId = (String) documentSnapshot.get("postId");
+                                if (task.getResult().contains(postId)) {
+                                    posts.add(documentSnapshot.toObject(Post.class));
+                                }
+                            }
+                        }
+                        source.setResult(posts);
+                    } else {
+                        source.setException(new Exception(task2.getException().getMessage()));
+                    }
+                });
+            } else {
+                source.setException(new Exception(task.getException().getMessage()));
+            }
+        });
         return source.getTask();
     }
 
     @Override
     public Task<List<Post>> getNearbyPosts(double longitude, double latitude, double distance) {
+
         TaskCompletionSource<List<Post>> source = new TaskCompletionSource<>();
         POSTS.get().addOnCompleteListener(task -> {
             if (task.isSuccessful()) {
@@ -493,6 +507,14 @@ public class FirestoreDatabase implements Database {
             }
         });
         return source.getTask();
+
+    }
+
+    public static boolean nearby(double latitude, double longitude, double postLatitude, double postLongitude, double distance, int numLikes, long numDays) {
+
+        LatLng startLatLng = new LatLng(latitude, longitude);
+        LatLng endLatLng = new LatLng(postLatitude, postLongitude);
+        return SphericalUtil.computeDistanceBetween(startLatLng, endLatLng) <= distance + numLikes * LIKE_BONUS_DISTANCE - numDays * DATE_MALUS_DISTANCE;
 
     }
 
