@@ -35,6 +35,7 @@ import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import ch.epfl.sdp.kandle.Post;
 import ch.epfl.sdp.kandle.User;
 import ch.epfl.sdp.kandle.dependencies.Database;
@@ -182,14 +183,13 @@ public class FirestoreDatabase implements Database {
                 followList.add(userId);
                 mapFollowing.put(process, followList);
                 transaction.set(userDoc, mapFollowing, SetOptions.merge());
-                if (process == FOLLOWING) sendNotification(userId);
-
+                if (process.equals(FOLLOWING)) sendNotification(userId);
             }
         } else {
             Map<String, Object> mapFollowing = new HashMap<>();
             mapFollowing.put(process, Arrays.asList(userId));
             transaction.set(userDoc, mapFollowing, SetOptions.merge());
-            if (process == FOLLOWING) sendNotification(userId);
+            if (process.equals(FOLLOWING)) sendNotification(userId);
         }
     }
 
@@ -406,27 +406,7 @@ public class FirestoreDatabase implements Database {
         final DocumentReference likedPostDoc = POSTS.document(postId);
 
         return FIRESTORE
-                .runTransaction(transaction -> {
-
-                    DocumentSnapshot likedPostSnapchot = transaction.get(likedPostDoc);
-
-                    List<String> likers = (List<String>) likedPostSnapchot.get("likers");
-                    // int numberOfLikes = (int)likedPostSnapchot.get("likes");
-
-                    if (likers != null) {
-                        if (!likers.contains(userId)) {
-                            Map<String, Object> mapLikers = new HashMap<>();
-                            likers.add(userId);
-                            mapLikers.put("likers", likers);
-                            //numberOfLikes++;
-                            //mapLikers.put("likes", numberOfLikes);
-                            transaction.set(likedPostDoc, mapLikers, SetOptions.merge());
-                        }
-                    }
-
-                    return null;
-                });
-
+                .runTransaction(likePostTransaction(likedPostDoc, userId, "like"));
     }
 
     @Override
@@ -434,21 +414,24 @@ public class FirestoreDatabase implements Database {
         final DocumentReference unlikedPostDoc = POSTS.document(postId);
 
         return FIRESTORE
-                .runTransaction(transaction -> {
+                .runTransaction(likePostTransaction(unlikedPostDoc, userId, "unlike"));
+    }
 
-                    DocumentSnapshot unlikedPostSnapchot = transaction.get(unlikedPostDoc);
-
-                    List<String> likers = (List<String>) unlikedPostSnapchot.get("likers");
-                    if (likers != null) {
-                        if (likers.contains(userId)) {
-                            Map<String, Object> mapLikers = new HashMap<>();
-                            likers.remove(userId);
-                            mapLikers.put("likers", likers);
-                            transaction.set(unlikedPostDoc, mapLikers, SetOptions.merge());
-                        }
-                    }
-                    return null;
-                });
+    private Transaction.Function<Void> likePostTransaction (DocumentReference postDoc, String userId, String process) {
+        return transaction -> {
+            DocumentSnapshot postSnapchot = transaction.get(postDoc);
+            List<String> likers = (List<String>) postSnapchot.get("likers");
+            if (likers != null) {
+                if (!likers.contains(userId)) {
+                    Map<String, Object> mapLikers = new HashMap<>();
+                    if (process.equals("like")) likers.add(userId);
+                    else likers.remove(userId);
+                    mapLikers.put("likers", likers);
+                    transaction.set(postDoc, mapLikers, SetOptions.merge());
+                }
+            }
+            return null;
+        };
     }
 
     @Override
