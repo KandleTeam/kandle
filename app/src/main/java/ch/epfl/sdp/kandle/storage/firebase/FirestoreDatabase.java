@@ -298,11 +298,11 @@ public class FirestoreDatabase implements Database {
         return getFollowerOrFollowedListTask(userId, FOLLOWERS);
     }
 
-    private OnCompleteListener<List<String>> followCompleteListener(TaskCompletionSource<List<User>> source){
+    private OnCompleteListener<List<String>> listCompleteListener(TaskCompletionSource source, CollectionReference collectionReference){
         return task -> {
             if (task.isSuccessful()) {
                 if (task.getResult() != null) {
-                    USERS.get().addOnCompleteListener(task2 -> {
+                    collectionReference.get().addOnCompleteListener(task2 -> {
                         if (task2.isSuccessful()) {
                             List<User> users = new ArrayList<>();
                             for (QueryDocumentSnapshot document : task2.getResult()) {
@@ -328,14 +328,14 @@ public class FirestoreDatabase implements Database {
     @Override
     public Task<List<User>> userFollowingList(String userId) {
         TaskCompletionSource<List<User>> source = new TaskCompletionSource<>();
-        userIdFollowingList(userId).addOnCompleteListener(followCompleteListener(source));
+        userIdFollowingList(userId).addOnCompleteListener(listCompleteListener(source, USERS));
         return source.getTask();
     }
 
     @Override
     public Task<List<User>> userFollowersList(String userId) {
         TaskCompletionSource<List<User>> source = new TaskCompletionSource<>();
-        userIdFollowersList(userId).addOnCompleteListener(followCompleteListener(source));
+        userIdFollowersList(userId).addOnCompleteListener(listCompleteListener(source, USERS));
         return source.getTask();
     }
 
@@ -488,7 +488,7 @@ public class FirestoreDatabase implements Database {
                 .get()
                 .continueWith(task -> (List<String>) task.getResult().get("likers"));
 
-        getLikersIdTask.addOnCompleteListener(followCompleteListener(source));
+        getLikersIdTask.addOnCompleteListener(listCompleteListener(source, USERS));
         return source.getTask();
     }
 
@@ -500,35 +500,7 @@ public class FirestoreDatabase implements Database {
                 .continueWith(task -> (List<String>) task.getResult().get("postsIds"));
 
         TaskCompletionSource<List<Post>> source = new TaskCompletionSource<>();
-        taskListPostId.addOnCompleteListener(task -> {
-
-            if (task.isSuccessful()) {
-                POSTS.get().addOnCompleteListener(task2 -> {
-
-                    if (task2.isSuccessful()) {
-                        List<Post> posts = new ArrayList<>();
-
-                        if (task2.getResult() != null) {
-
-                            for (QueryDocumentSnapshot documentSnapshot : task2.getResult()) {
-                                String postId = (String) documentSnapshot.get("postId");
-                                if (task.getResult().contains(postId)) {
-                                    posts.add(documentSnapshot.toObject(Post.class));
-                                }
-                            }
-                        }
-
-                        source.setResult(posts);
-                    } else {
-                        source.setException(new Exception(task2.getException().getMessage()));
-                    }
-
-                });
-
-            } else {
-                source.setException(new Exception(task.getException().getMessage()));
-            }
-        });
+        taskListPostId.addOnCompleteListener(listCompleteListener(source, POSTS));
 
         return source.getTask();
     }
