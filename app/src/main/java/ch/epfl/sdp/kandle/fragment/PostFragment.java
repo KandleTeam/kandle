@@ -120,7 +120,7 @@ public class PostFragment extends Fragment {
                             post.unlikePost(currentUserId);
                             numberOfLikes.setText(String.valueOf(post.getLikes()));
                         } else {
-                            Toast.makeText(PostFragment.this.getContext(), R.string.no_connexion, Toast.LENGTH_SHORT).show();
+                            Toast.makeText(PostFragment.this.getContext(), R.string.noConnexion, Toast.LENGTH_SHORT).show();
                         }
                     });
 
