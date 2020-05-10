@@ -1,36 +1,42 @@
 package ch.epfl.sdp.kandle;
 
 import android.content.Context;
-import android.util.Log;
+import android.content.res.Resources;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
-
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
-
 import com.squareup.picasso.Picasso;
-
 import java.io.File;
 import java.util.List;
-
 import ch.epfl.sdp.kandle.dependencies.Authentication;
-import ch.epfl.sdp.kandle.dependencies.DependencyManager;
 import ch.epfl.sdp.kandle.storage.caching.CachedFirestoreDatabase;
 import de.hdodenhof.circleimageview.CircleImageView;
+import static ch.epfl.sdp.kandle.dependencies.DependencyManager.getAuthSystem;
+import static ch.epfl.sdp.kandle.dependencies.DependencyManager.getInternalStorageSystem;
 
 public class UserAdapter extends RecyclerView.Adapter<UserAdapter.ViewHolder> {
 
-    public final static int PROFILE_PICTURE_TAG = 9;
+    private final static int PROFILE_PICTURE_TAG = 9;
     private static ClickListener clickListener;
     private List<User> mUsers;
+
+    /**
+     * Creates a UserAdapter object
+     * @param mUsers
+     */
     public UserAdapter(List<User> mUsers) {
         this.mUsers = mUsers;
     }
 
+    /**
+     * Sets a clickLister
+     * @param clickListener
+     */
     public void setOnItemClickListener(ClickListener clickListener) {
         UserAdapter.clickListener = clickListener;
     }
@@ -58,21 +64,20 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.ViewHolder> {
         mFullname.setText(user.getNickname());
 
         TextView mUsername = holder.mUsername;
-        mUsername.setText("@" + user.getUsername());
+        mUsername.setText(String.format("@%s", user.getUsername()));
 
         ImageView mImageProfile = holder.image_profile;
         if (user.getImageURL() != null) {
-           mImageProfile.setTag(PROFILE_PICTURE_TAG);
-           File image = DependencyManager.getInternalStorageSystem().getImageFileById(user.getId());
-           if(image != null) {
-               System.out.println("Fetched from internal storage in UserAdatper");
-               Picasso.get().load(image).into(mImageProfile);
-           }else {
-               Picasso.get().load(user.getImageURL()).into(mImageProfile);
-           }
+            mImageProfile.setTag(PROFILE_PICTURE_TAG);
+            File image = getInternalStorageSystem().getImageFileById(user.getId());
+            if (image != null) {
+                Picasso.get().load(image).into(mImageProfile);
+            } else {
+                Picasso.get().load(user.getImageURL()).into(mImageProfile);
+            }
         }
 
-        final Authentication authentication = DependencyManager.getAuthSystem();
+        final Authentication authentication = getAuthSystem();
         final User currentUser = authentication.getCurrentUser();
         final CachedFirestoreDatabase database = new CachedFirestoreDatabase();
 
@@ -92,10 +97,6 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.ViewHolder> {
                     }
 
                 }
-            /*else {
-                System.out.println(task.getException().getMessage());
-            }*/
-
             });
 
 
@@ -140,13 +141,17 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.ViewHolder> {
 
     public static class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
-        public TextView mNickname;
-        public TextView mUsername;
-        public CircleImageView image_profile;
-        public Button mFollowBtn;
+        private TextView mNickname;
+        private TextView mUsername;
+        private CircleImageView image_profile;
+        private Button mFollowBtn;
 
 
-        public ViewHolder(@NonNull View itemView) {
+        /**
+         * Creates a ViewHolder for the RecycleView
+         * @param itemView
+         */
+        private ViewHolder(@NonNull View itemView) {
             super(itemView);
             itemView.setOnClickListener(this);
 

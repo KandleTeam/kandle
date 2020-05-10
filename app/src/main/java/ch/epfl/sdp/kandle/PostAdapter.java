@@ -3,7 +3,6 @@ package ch.epfl.sdp.kandle;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Bitmap;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,27 +10,24 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.RecyclerView;
-
 import com.squareup.picasso.Picasso;
-
 import java.io.File;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.List;
-
 import ch.epfl.sdp.kandle.activity.PostActivity;
 import ch.epfl.sdp.kandle.dependencies.Authentication;
 import ch.epfl.sdp.kandle.dependencies.Database;
-import ch.epfl.sdp.kandle.dependencies.DependencyManager;
 import ch.epfl.sdp.kandle.fragment.ListUsersFragment;
 import ch.epfl.sdp.kandle.storage.caching.CachedFirestoreDatabase;
 import de.hdodenhof.circleimageview.CircleImageView;
+import static ch.epfl.sdp.kandle.dependencies.DependencyManager.getAuthSystem;
+import static ch.epfl.sdp.kandle.dependencies.DependencyManager.getInternalStorageSystem;
 
 public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder> {
 
@@ -39,13 +35,15 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder> {
 
     private List<Post> mPosts;
     private Context mContext;
-    private ViewHolder viewHolder;
-
     private String userId;
-
-    private Authentication auth;
     private Database database;
 
+
+    /**
+     * Creates a PostAdapter
+     * @param posts
+     * @param context
+     */
     public PostAdapter(List<Post> posts, Context context) {
         mPosts = posts;
         mContext = context;
@@ -61,10 +59,14 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder> {
         View postsView = inflater.inflate(R.layout.post_item, parent, false);
 
         // Return a new holder instance
-        viewHolder = new ViewHolder(postsView);
+        ViewHolder viewHolder = new ViewHolder(postsView);
         return viewHolder;
     }
 
+    /**
+     * This changes the post list with the new one
+     * @param posts
+     */
     public void setPost(List<Post> posts) {
         this.mPosts = posts;
         notifyDataSetChanged();
@@ -74,7 +76,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder> {
     public void onBindViewHolder(@NonNull final ViewHolder holder, int position) {
         final Post post = mPosts.get(position);
 
-        auth = DependencyManager.getAuthSystem();
+        Authentication auth = getAuthSystem();
         database = new CachedFirestoreDatabase();
 
         userId = auth.getCurrentUser().getId();
@@ -93,7 +95,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder> {
         final ImageButton editPostView = holder.mEditButton;
         final ImageButton deletePostView = holder.mDeleteButton;
 
-        if (post.getType()!=null && post.getType().equals(Post.EVENT)) {
+        if (post.getType() != null && post.getType().equals(Post.EVENT)) {
             holder.mlikeButton.setBackgroundResource(R.drawable.ic_event_black_24dp);
             holder.mlikeButton.setOnClickListener(v -> {
 
@@ -132,14 +134,14 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder> {
                 User user = task.getResult();
 
                 if (user.getImageURL() != null) {
-                    File image = DependencyManager.getInternalStorageSystem().getImageFileById(user.getId());
-                    if(image != null) {
+                    File image = getInternalStorageSystem().getImageFileById(user.getId());
+                    if (image != null) {
                         Picasso.get().load(image).into(profilePicView);
-                    }else {
+                    } else {
                         Picasso.get().load(user.getImageURL()).into(profilePicView);
                     }
                 }
-                usernameView.setText("@" + user.getUsername());
+                usernameView.setText(String.format("@%s", user.getUsername()));
                 nicknameView.setText(user.getNickname());
 
                 //milliseconds
@@ -167,10 +169,10 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder> {
             AlertDialog.Builder alertDialog = new AlertDialog.Builder(mContext);
             alertDialog.setMessage("Do you really want to delete this post ?");
             alertDialog.setCancelable(false);
-            alertDialog.setNegativeButton("No", (dialog, which) -> {
+            alertDialog.setNegativeButton("no", (dialog, which) -> {
 
             });
-            alertDialog.setPositiveButton("Yes", (dialog, which) -> database.deletePost(post).addOnCompleteListener(task -> {
+            alertDialog.setPositiveButton("yes", (dialog, which) -> database.deletePost(post).addOnCompleteListener(task -> {
                 if (task.isSuccessful()) {
                     mPosts.remove(post);
                     holder.mEditButton.setVisibility(View.GONE);
@@ -187,7 +189,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder> {
             if (task.isSuccessful()) {
                 fragmentManager.beginTransaction().replace(R.id.flContent, ListUsersFragment.newInstance(
                         task.getResult(),
-                        post.getType() != null && post.getType().equals(Post.EVENT)? "Participants" : "Likes",
+                        post.getType() != null && post.getType().equals(Post.EVENT) ? "Participants" : "Likes",
                         Integer.toString(task.getResult().size())
                 )).setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
                         .addToBackStack(null)
@@ -202,26 +204,31 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder> {
 
     @Override
     public int getItemCount() {
-        //if (mPosts == null) return 0;
+        if (mPosts == null) return 0;
         return mPosts.size();
     }
 
 
+
     public static class ViewHolder extends RecyclerView.ViewHolder {
 
-        public TextView mtitleText;
-        public TextView mlikes;
-        public TextView mdate;
-        public ImageButton mlikeButton;
-        public ImageButton mDeleteButton;
-        public ImageButton mEditButton;
-        public CircleImageView mProfilePic;
-        public ImageView mPostImage;
-        public TextView mUsername;
-        public TextView mNickname;
+        private final TextView mtitleText;
+        private final TextView mlikes;
+        private final TextView mdate;
+        private final ImageButton mlikeButton;
+        private final ImageButton mDeleteButton;
+        private final ImageButton mEditButton;
+        private final CircleImageView mProfilePic;
+        private final ImageView mPostImage;
+        private final TextView mUsername;
+        private final TextView mNickname;
 
 
-        public ViewHolder(View itemView) {
+        /**
+         * This creates a view holder to have many in the RecycleView
+         * @param itemView
+         */
+        private ViewHolder(View itemView) {
             super(itemView);
             mtitleText = itemView.findViewById(R.id.title);
             mlikes = itemView.findViewById(R.id.flames);
@@ -236,9 +243,6 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder> {
         }
 
     }
-
-
-
 
 
 }

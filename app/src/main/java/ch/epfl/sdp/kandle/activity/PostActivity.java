@@ -266,7 +266,7 @@ public class PostActivity extends AppCompatActivity {
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == 0) {
-            Bitmap imageBitmap = postCamera.handleActivityResult(requestCode, resultCode, data);
+            Bitmap imageBitmap = postCamera.handleActivityResult(requestCode, resultCode);
             if (imageBitmap != null) {
                 mPostImage.setVisibility(View.VISIBLE);
                 mPostImage.setTag(POST_IMAGE_TAG);

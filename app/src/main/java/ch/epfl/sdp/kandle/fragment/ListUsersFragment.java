@@ -73,7 +73,7 @@ public class ListUsersFragment extends Fragment {
 
         final FragmentManager fragmentManager = this.getActivity().getSupportFragmentManager();
 
-        userAdapter.setOnItemClickListener((position, v) -> {
+        userAdapter.setOnItemClickListener((int position, View v) -> {
 
             final User user = users.get(position);
 

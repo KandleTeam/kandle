@@ -53,7 +53,7 @@ public class AchievementFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         List<Achievement> achievements = new ArrayList<>();
-        AchievementAdapter achievementAdapter = new AchievementAdapter(achievements, this.getContext());
+        AchievementAdapter achievementAdapter = new AchievementAdapter(achievements);
         getAchievements(achievements, achievementAdapter);
         View view = inflater.inflate(R.layout.fragment_achievement, container, false);
         achievementAdapter.changeList(achievements);
