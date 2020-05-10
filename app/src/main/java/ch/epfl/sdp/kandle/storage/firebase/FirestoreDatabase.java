@@ -1,6 +1,7 @@
 package ch.epfl.sdp.kandle.storage.firebase;
 
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.gms.tasks.TaskCompletionSource;
@@ -32,6 +33,7 @@ import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
+import androidx.annotation.NonNull;
 import ch.epfl.sdp.kandle.Post;
 import ch.epfl.sdp.kandle.User;
 import ch.epfl.sdp.kandle.dependencies.Database;
@@ -98,9 +100,6 @@ public class FirestoreDatabase implements Database {
                 .continueWith(task -> {
                     User user = Objects.requireNonNull(task.getResult()).toObject(User.class);
                     assert (user != null);
-                    if (!user.getId().equals(userId))
-                        throw new AssertionError("We done goofed somewhere! Unexpected uid");
-
                     return user;
                 });
     }
@@ -111,16 +110,12 @@ public class FirestoreDatabase implements Database {
         final DocumentReference usernameDoc = USERNAMES.document(user.getUsername());
         final DocumentReference userDoc = USERS.document(user.getId());
 
-
         return FIRESTORE
                 .runTransaction(transaction -> {
 
                     DocumentSnapshot usernameSnapshot = transaction.get(usernameDoc);
-                    DocumentSnapshot userSnapshot = transaction.get(userDoc);
 
-                    if (userSnapshot.exists()) {
-                        throw new FirebaseFirestoreException("User already exists!", FirebaseFirestoreException.Code.ALREADY_EXISTS);
-                    } else if (usernameSnapshot.exists()) {
+                    if (usernameSnapshot.exists()) {
                         throw new FirebaseFirestoreException("Username already taken!", FirebaseFirestoreException.Code.ALREADY_EXISTS);
                     } else {
 
@@ -151,7 +146,6 @@ public class FirestoreDatabase implements Database {
     public Task<List<User>> searchUsers(String prefix, int maxNumber) {
         char last = prefix.charAt(prefix.length() - 1);
         String upperBound = prefix.substring(0, prefix.length() - 1) + (char) (last + 1);
-
 
         return USERS
                 .whereGreaterThanOrEqualTo("username", prefix)
@@ -204,7 +198,6 @@ public class FirestoreDatabase implements Database {
                     } else {
                         Map<String, Object> mapFollowed = new HashMap<>();
                         mapFollowed.put(FOLLOWERS, Arrays.asList(userFollowing));
-
                         transaction.set(userFollowedDoc, mapFollowed, SetOptions.merge());
                     }
 
@@ -305,17 +298,10 @@ public class FirestoreDatabase implements Database {
         return getFollowerOrFollowedListTask(userId, FOLLOWERS);
     }
 
-    @Override
-    public Task<List<User>> userFollowingList(String userId) {
-
-        // Task<List<String>> taskUserIdFollowing = userIdFollowingList(userId);
-        TaskCompletionSource<List<User>> source = new TaskCompletionSource<>();
-
-        userIdFollowingList(userId).addOnCompleteListener(task -> {
-
+    private OnCompleteListener<List<String>> followCompleteListener(TaskCompletionSource<List<User>> source){
+        return task -> {
             if (task.isSuccessful()) {
                 if (task.getResult() != null) {
-
                     USERS.get().addOnCompleteListener(task2 -> {
                         if (task2.isSuccessful()) {
                             List<User> users = new ArrayList<>();
@@ -325,7 +311,6 @@ public class FirestoreDatabase implements Database {
                                     users.add(document.toObject(User.class));
                                 }
                             }
-
                             source.setResult(users);
                         } else {
                             source.setException(new Exception(task2.getException().getMessage()));
@@ -337,47 +322,20 @@ public class FirestoreDatabase implements Database {
             } else {
                 source.setException(new Exception(task.getException().getMessage()));
             }
-        });
+        };
+    }
 
+    @Override
+    public Task<List<User>> userFollowingList(String userId) {
+        TaskCompletionSource<List<User>> source = new TaskCompletionSource<>();
+        userIdFollowingList(userId).addOnCompleteListener(followCompleteListener(source));
         return source.getTask();
     }
 
     @Override
     public Task<List<User>> userFollowersList(String userId) {
-
-        // Task<List<String>> taskUserIdFollowers = userIdFollowersList(userId);
         TaskCompletionSource<List<User>> source = new TaskCompletionSource<>();
-
-        userIdFollowersList(userId).addOnCompleteListener(task -> {
-
-            if (task.isSuccessful()) {
-
-                if (task.getResult() != null) {
-
-                    USERS.get().addOnCompleteListener(task2 -> {
-                        if (task2.isSuccessful()) {
-                            List<User> users = new ArrayList<>();
-                            for (QueryDocumentSnapshot document : task2.getResult()) {
-                                String id = (String) document.get("id");
-                                if (task.getResult().contains(id)) {
-                                    users.add(document.toObject(User.class));
-                                }
-                            }
-
-                            source.setResult(users);
-                        } else {
-                            source.setException(new Exception(task2.getException().getMessage()));
-                        }
-
-                    });
-                } else {
-                    source.setResult(new ArrayList<User>());
-                }
-            } else {
-                source.setException(new Exception(task.getException().getMessage()));
-            }
-        });
-
+        userIdFollowersList(userId).addOnCompleteListener(followCompleteListener(source));
         return source.getTask();
     }
 
