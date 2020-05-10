@@ -56,4 +56,11 @@
     <!-- Guest mode -->
     <string name="guestModeCannotAccess">You need to be logged in to do that!</string>
 
+    <!-- CustomAccountActivity -->
+    <string name="accountFinalization">Finalizing your account</string>
+
+    <!-- MainActivity -->
+    <string name="yourProfile">Your Profile</string>
+
+
 </resources>
