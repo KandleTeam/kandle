@@ -164,46 +164,33 @@ public class FirestoreDatabase implements Database {
 
         return FIRESTORE
                 .runTransaction(transaction -> {
-
                     DocumentSnapshot userFollowingSnapshot = transaction.get(userFollowingDoc);
                     DocumentSnapshot userFollowedSnapshot = transaction.get(userFollowedDoc);
-
                     List<String> following = (List<String>) userFollowingSnapshot.get(FOLLOWING);
                     List<String> followers = (List<String>) userFollowedSnapshot.get(FOLLOWERS);
 
-                    if (following != null) {
-                        if (!following.contains(userFollowed)) {
-                            Map<String, Object> mapFollowing = new HashMap<>();
-                            following.add(userFollowed);
-                            mapFollowing.put(FOLLOWING, following);
-                            transaction.set(userFollowingDoc, mapFollowing, SetOptions.merge());
-                            sendNotification(userFollowed);
-                        }
-                    } else {
-                        Map<String, Object> mapFollowing = new HashMap<>();
-                        mapFollowing.put(FOLLOWING, Arrays.asList(userFollowed));
-                        transaction.set(userFollowingDoc, mapFollowing, SetOptions.merge());
-                        sendNotification(userFollowed);
-                    }
-
-
-                    if (followers != null) {
-
-                        if (!followers.contains(userFollowing)) {
-
-                            Map<String, Object> mapFollowed = new HashMap<>();
-                            followers.add(userFollowing);
-                            mapFollowed.put(FOLLOWERS, followers);
-                            transaction.set(userFollowedDoc, mapFollowed, SetOptions.merge());
-                        }
-                    } else {
-                        Map<String, Object> mapFollowed = new HashMap<>();
-                        mapFollowed.put(FOLLOWERS, Arrays.asList(userFollowing));
-                        transaction.set(userFollowedDoc, mapFollowed, SetOptions.merge());
-                    }
-
+                    addFollow(userFollowed, userFollowingDoc, transaction, following, FOLLOWING);
+                    addFollow(userFollowing, userFollowedDoc, transaction, followers, FOLLOWERS);
                     return null;
                 });
+    }
+
+    private void addFollow(String userId, DocumentReference userDoc, Transaction transaction, List<String> followList, String process) {
+        if (followList != null) {
+            if (!followList.contains(userId)) {
+                Map<String, Object> mapFollowing = new HashMap<>();
+                followList.add(userId);
+                mapFollowing.put(process, followList);
+                transaction.set(userDoc, mapFollowing, SetOptions.merge());
+                if (process == FOLLOWING) sendNotification(userId);
+
+            }
+        } else {
+            Map<String, Object> mapFollowing = new HashMap<>();
+            mapFollowing.put(process, Arrays.asList(userId));
+            transaction.set(userDoc, mapFollowing, SetOptions.merge());
+            if (process == FOLLOWING) sendNotification(userId);
+        }
     }
 
 
