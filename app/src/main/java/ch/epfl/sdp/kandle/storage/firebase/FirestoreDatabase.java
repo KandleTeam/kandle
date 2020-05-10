@@ -482,42 +482,14 @@ public class FirestoreDatabase implements Database {
 
     @Override
     public Task<List<User>> getLikers(String postId) {
-
         TaskCompletionSource<List<User>> source = new TaskCompletionSource<>();
-
         Task<List<String>> getLikersIdTask = POSTS
                 .document(postId)
                 .get()
                 .continueWith(task -> (List<String>) task.getResult().get("likers"));
 
-        getLikersIdTask.addOnCompleteListener(task -> {
-            if (task.isSuccessful()) {
-                USERS.get().addOnCompleteListener(task2 -> {
-                    if (task2.isSuccessful()) {
-                        List<User> users = new ArrayList<>();
-                        for (QueryDocumentSnapshot document : task2.getResult()) {
-                            String id = (String) document.get("id");
-                            if (task.getResult().contains(id)) {
-                                users.add(document.toObject(User.class));
-                            }
-                        }
-
-                        source.setResult(users);
-
-                    } else {
-                        source.setException(task.getException());
-                    }
-                });
-
-            } else {
-                source.setException(task.getException());
-            }
-        });
-
-
+        getLikersIdTask.addOnCompleteListener(followCompleteListener(source));
         return source.getTask();
-
-
     }
 
     @Override
