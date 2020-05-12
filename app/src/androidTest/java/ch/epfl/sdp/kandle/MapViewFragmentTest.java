@@ -119,6 +119,11 @@ public class MapViewFragmentTest {
         onView(withId(R.id.postFragmentNumberOfLikes)).check(matches(withText("1")));
         onView(withId(R.id.postFragmentLikeButton)).perform(click());
         onView(withId(R.id.postFragmentNumberOfLikes)).check(matches(withText("0")));
+        onView(withId(R.id.postFragmentLikeButton)).perform(click());
+
+        onView(withId(R.id.postFragmentNumberOfLikes)).perform(click());
+        onView(withId(R.id.list_user_number)).check(matches(withText("1")));
+        onView(withId(R.id.list_user_recycler_view)).check(new RecyclerViewItemCountAssertion(1));
     }
 
     @Test
