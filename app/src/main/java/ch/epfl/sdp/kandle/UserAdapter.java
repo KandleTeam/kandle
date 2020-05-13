@@ -1,7 +1,6 @@
 package ch.epfl.sdp.kandle;
 
 import android.content.Context;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -27,6 +26,7 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.ViewHolder> {
     public final static int PROFILE_PICTURE_TAG = 9;
     private static ClickListener clickListener;
     private List<User> mUsers;
+
     public UserAdapter(List<User> mUsers) {
         this.mUsers = mUsers;
     }
@@ -38,6 +38,7 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.ViewHolder> {
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+
         Context context = parent.getContext();
         LayoutInflater inflater = LayoutInflater.from(context);
         View userView = inflater.inflate(R.layout.search_user, parent, false);
@@ -52,8 +53,6 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.ViewHolder> {
     public void onBindViewHolder(@NonNull final ViewHolder holder, int position) {
 
         final User user = mUsers.get(position);
-
-
         TextView mFullname = holder.mNickname;
         mFullname.setText(user.getNickname());
 
@@ -62,14 +61,14 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.ViewHolder> {
 
         ImageView mImageProfile = holder.image_profile;
         if (user.getImageURL() != null) {
-           mImageProfile.setTag(PROFILE_PICTURE_TAG);
-           File image = DependencyManager.getInternalStorageSystem().getImageFileById(user.getId());
-           if(image != null) {
-               System.out.println("Fetched from internal storage in UserAdatper");
-               Picasso.get().load(image).into(mImageProfile);
-           }else {
-               Picasso.get().load(user.getImageURL()).into(mImageProfile);
-           }
+            mImageProfile.setTag(PROFILE_PICTURE_TAG);
+            File image = DependencyManager.getInternalStorageSystem().getImageFileById(user.getId());
+            if (image != null) {
+                System.out.println("Fetched from internal storage in UserAdatper");
+                Picasso.get().load(image).into(mImageProfile);
+            } else {
+                Picasso.get().load(user.getImageURL()).into(mImageProfile);
+            }
         }
 
         final Authentication authentication = DependencyManager.getAuthSystem();
@@ -92,9 +91,6 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.ViewHolder> {
                     }
 
                 }
-            /*else {
-                System.out.println(task.getException().getMessage());
-            }*/
 
             });
 
@@ -134,6 +130,11 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.ViewHolder> {
         return mUsers.size();
     }
 
+    public void notifyDataChange(List<User> mUsers) {
+        this.mUsers = mUsers;
+        notifyDataSetChanged();
+    }
+
     public interface ClickListener {
         void onItemClick(int position, View v);
     }
@@ -161,6 +162,5 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.ViewHolder> {
             clickListener.onItemClick(getAdapterPosition(), v);
         }
     }
-
 
 }

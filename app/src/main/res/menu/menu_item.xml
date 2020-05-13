@@ -29,6 +29,11 @@
             android:icon="@drawable/ic_group_black"
             android:title="Other Posts" />
 
+        <item
+            android:id="@+id/popularKandlers"
+            android:icon="@drawable/ic_emoji_events_24px"
+            android:title="Popular Kandlers" />
+
         <item android:title="Communication">
             <menu>
                 <group android:checkableBehavior="single">
