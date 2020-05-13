@@ -92,7 +92,7 @@ public class Post {
     //Useful for test
     @Ignore
     public Post(String description, String imageURL, Date date, @NonNull String userId, double longitude, double latitude) {
-        new Post(description, imageURL, date, userId, longitude, latitude, NOT_CLOSE_FOLLOWER);
+        this(description, imageURL, date, userId, longitude, latitude, NOT_CLOSE_FOLLOWER);
     }
 
     //Useful for tests
@@ -108,6 +108,20 @@ public class Post {
         this.imageURL = imageURL;
         this.editable = true;
         this.isForCloseFollowers = NOT_CLOSE_FOLLOWER;
+    }
+
+    @Ignore
+    public Post(String description, String imageURL, Date date, @NonNull String userId, @NonNull String postId, String isForCloseFollowers) {
+        this.latitude = 0;
+        this.longitude = 0;
+        this.description = description;
+        this.date = date;
+        this.likers = new ArrayList<String>();
+        this.postId = postId;
+        this.userId = userId;
+        this.imageURL = imageURL;
+        this.editable = true;
+        this.isForCloseFollowers = isForCloseFollowers;
     }
 
     public int getLikes() {

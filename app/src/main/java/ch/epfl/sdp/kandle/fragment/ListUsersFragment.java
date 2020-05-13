@@ -55,6 +55,10 @@ public class ListUsersFragment extends Fragment {
         mTitle = parent.findViewById(R.id.list_user_title);
     }
 
+    public String getTitle(){
+        return mTitle.getText().toString();
+    }
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -66,6 +70,9 @@ public class ListUsersFragment extends Fragment {
 
         mNumber.setText(number);
         mTitle.setText(title);
+
+        if(mTitle.getText().equals("Followers"))
+            userAdapter.setIsFollowersList(true);
 
         mRecyclerView.setAdapter(userAdapter);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(this.getContext()));

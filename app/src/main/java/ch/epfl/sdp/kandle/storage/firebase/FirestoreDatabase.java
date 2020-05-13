@@ -250,7 +250,11 @@ public class FirestoreDatabase implements Database {
                     List<String> followers = (List<String>) userFollowedSnapshot.get(FOLLOWERS);
                     List<String> closeFollowers = (List<String>) userFollowedSnapshot.get(CLOSE_FOLLOWERS);
 
-                    if (closeFollowers != null) {
+                    if (!closeFollowers.isEmpty()) {
+                        for(String s : closeFollowers){
+                            System.out.println("THHHHHHHHHHHE UUUUUUUUUUUSSSSSSSSEEEEEEEEERRRRRR IIIISSSS " + s);
+                        }
+                        System.out.println("CCCCCCCCCAAAAAAAAAAAAAAAAAAAAMMMMMMMMMMMMMAAAAAAAAAAARRRRRRRRRCCCCCCCCCCCHHHHHHHHHHHHHEEEEEEEE");
                         if (followers.contains(userFollowing) && !closeFollowers.contains(userFollowing)) {
 
                             Map<String, Object> mapCloseFollowed = new HashMap<>();

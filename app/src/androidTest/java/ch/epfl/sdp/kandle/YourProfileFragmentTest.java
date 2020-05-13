@@ -46,7 +46,10 @@ import static androidx.test.espresso.assertion.ViewAssertions.matches;
 import static androidx.test.espresso.contrib.DrawerMatchers.isClosed;
 import static androidx.test.espresso.intent.Intents.intending;
 import static androidx.test.espresso.intent.matcher.IntentMatchers.hasAction;
+import static androidx.test.espresso.matcher.ViewMatchers.hasBackground;
+import static androidx.test.espresso.matcher.ViewMatchers.hasContentDescription;
 import static androidx.test.espresso.matcher.ViewMatchers.hasDescendant;
+import static androidx.test.espresso.matcher.ViewMatchers.withContentDescription;
 import static androidx.test.espresso.matcher.ViewMatchers.withEffectiveVisibility;
 import static androidx.test.espresso.matcher.ViewMatchers.withId;
 import static androidx.test.espresso.matcher.ViewMatchers.withTagValue;
@@ -88,7 +91,7 @@ public class YourProfileFragmentTest {
                     DependencyManager.getDatabaseSystem().follow(user1.getId(),LoggedInUser.getInstance().getId());
                     DependencyManager.getDatabaseSystem().follow(LoggedInUser.getInstance().getId(),user1.getId());
                     DependencyManager.getDatabaseSystem().follow(user2.getId(),LoggedInUser.getInstance().getId());
-
+                    DependencyManager.getDatabaseSystem().setCloseFollower(user2.getId(), LoggedInUser.getInstance().getId());
                 }
             };
 
@@ -154,6 +157,18 @@ public class YourProfileFragmentTest {
         onView(withId(R.id.text_view)).check(matches(withText("New Nickname")));
     }
 
+    @Test
+    public void checkAddCloseFollowerWorks(){
+        onView(withId(R.id.profileNumberOfFollowers)).perform(click());
+        onView(new RecyclerViewMatcher(R.id.list_user_recycler_view)
+                .atPositionOnView(0, R.id.userCloseFriends)).check(matches(withContentDescription("Is close friend")));
+        onView(withId(R.id.list_user_recycler_view)).check(matches(atPosition(0, hasDescendant(withText("@" + user1.getUsername())))));
+
+        onView(new RecyclerViewMatcher(R.id.list_user_recycler_view)
+                .atPositionOnView(1, R.id.userCloseFriends)).check(matches(withContentDescription("Is not close friend")));
+        onView(withId(R.id.list_user_recycler_view)).check(matches(atPosition(1, hasDescendant(withText("@" + user2.getUsername())))));
+
+    }
 
     public static ViewAction clickChildViewWithId(final int id) {
         return new ViewAction() {

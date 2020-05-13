@@ -29,7 +29,7 @@ public class FollowingPostsFragment extends Fragment {
     //TODO should not be able to delete posts other users made
 
     View rootView;
-    private String userId;
+    private String currentUserId;
     private List<User> following;
     private List<Post> posts;
     private RecyclerView flPosts;
@@ -49,10 +49,10 @@ public class FollowingPostsFragment extends Fragment {
         rootView = inflater.inflate(R.layout.fragment_following_posts, container, false);
         flPosts = rootView.findViewById(R.id.flPosts);
         flPosts.setLayoutManager(new LinearLayoutManager(this.getContext()));
-        userId = LoggedInUser.getInstance().getId();
+        currentUserId = LoggedInUser.getInstance().getId();
         PostAdapter adapter = new PostAdapter(posts, this.getContext());
 
-        database.userFollowingList(userId).addOnCompleteListener(task -> {
+        database.userFollowingList(currentUserId).addOnCompleteListener(task -> {
             if (task.isSuccessful()) {
                 if (task.getResult() != null) {
                     following = task.getResult();
@@ -63,26 +63,30 @@ public class FollowingPostsFragment extends Fragment {
                                     if (task1.getResult() != null) {
                                         database.userCloseFollowersList(user.getId()).addOnCompleteListener(task2-> {
                                             if(task2.isSuccessful()) {
-                                                if (task2.getResult() != null) {
-                                                    if(task2.getResult().contains(userId)){
-                                                        posts.addAll(task1.getResult());
-                                                    }
-                                                    else {
-                                                        for(Post post : task1.getResult()){
-                                                            if(post.getIsForCloseFollowers() != null && post.getIsForCloseFollowers().equals(Post.NOT_CLOSE_FOLLOWER))
+                                                boolean isCloseFollower = false;
+                                                    if (task2.getResult() != null) {
+                                                        for (User user1 : task2.getResult()) {
+                                                            if (user1.getId().equals(currentUserId)) {
+                                                                posts.addAll(task1.getResult());
+                                                                isCloseFollower = true;
+                                                            }
+                                                        }
+
+
+                                                }
+                                                    if (!isCloseFollower) {
+                                                        for (Post post : task1.getResult()) {
+                                                            if (post.getIsForCloseFollowers() == null || (post.getIsForCloseFollowers() != null && post.getIsForCloseFollowers().equals(Post.NOT_CLOSE_FOLLOWER))) {
                                                                 posts.add(post);
+                                                            }
                                                         }
                                                     }
                                                     adapter.setPost(posts);
-
                                                 }
-                                            }
                                             else {
                                                 System.out.println(task2.getException().getMessage());
                                             }
                                         });
-
-
                                     }
                                 } else {
                                     System.out.println(task1.getException().getMessage());

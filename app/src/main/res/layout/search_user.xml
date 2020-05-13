@@ -44,7 +44,7 @@
 
     <ImageButton
         android:id="@+id/userCloseFriends"
-        android:visibility="visible"
+        android:visibility="invisible"
         android:layout_width="48dp"
         android:layout_height="48dp"
         android:layout_centerVertical="true"

@@ -105,7 +105,7 @@ public class FollowingPostsTest {
     }
 
     @Test
-    public void ChecksOnePostHasAnImageNotTheOther() throws Throwable {
+    public void ChecksOnePostHasAnImageNotTheOther() {
 
         //2 posts should be displayed
         onView(withId(R.id.flPosts)).check(new FollowingPostsTest.RecyclerViewItemCountAssertion(2));
