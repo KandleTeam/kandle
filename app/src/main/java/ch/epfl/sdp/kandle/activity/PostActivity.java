@@ -244,7 +244,6 @@ public class PostActivity extends AppCompatActivity {
     }
 
     private void post(Post p) {
-        System.out.println("CHECK IS NULLLLLLL  " + p.getPostId() + "   " + p.getIsForCloseFollowers() + "   " + p.getType());
         database.addPost(p).addOnCompleteListener(task -> {
             if (task.isSuccessful()) {
 
