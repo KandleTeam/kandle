@@ -181,6 +181,8 @@ public class PostActivityTest {
     @Test
     public void createCloseFollowerPost() {
         onView(withId(R.id.closeFriends)).perform(click());
+        onView(withId(R.id.closeFriends)).perform(click());
+        onView(withId(R.id.closeFriends)).perform(click());
         onView(withId(R.id.postText)).perform(typeText("   Post close followers  "));
         onView(withId (R.id.postText)).perform(closeSoftKeyboard());
         onView(withId(R.id.postButton)).perform(click());

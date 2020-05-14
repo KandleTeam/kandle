@@ -55,10 +55,6 @@ public class ListUsersFragment extends Fragment {
         mTitle = parent.findViewById(R.id.list_user_title);
     }
 
-    public String getTitle(){
-        return mTitle.getText().toString();
-    }
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
