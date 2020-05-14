@@ -423,7 +423,6 @@ public class FirestoreDatabase implements Database {
         return transaction -> {
             DocumentSnapshot postSnapchot = transaction.get(postDoc);
             List<String> likers = (List<String>) postSnapchot.get("likers");
-            System.out.println("like");
             Map<String, Object> mapLikers = new HashMap<>();
             if (process.equals("like")){
                 likers.add(userId);
