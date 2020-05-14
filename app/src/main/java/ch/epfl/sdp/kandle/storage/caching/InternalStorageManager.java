@@ -168,4 +168,11 @@ public class InternalStorageManager implements InternalStorage {
         return imageFile.length() == 0 ? null : imageFile;
     }
 
+    public void deleteAllPictures() {
+        File imageDirectory = context.getDir(IMAGE_DATA_PATH,Context.MODE_PRIVATE);
+        for (File file : imageDirectory.listFiles()){
+            file.delete();
+        }
+    }
+
 }
