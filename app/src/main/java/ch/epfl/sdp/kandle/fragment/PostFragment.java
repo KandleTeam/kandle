@@ -11,6 +11,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 
 import com.squareup.picasso.Picasso;
@@ -18,6 +19,8 @@ import com.squareup.picasso.Picasso;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 import ch.epfl.sdp.kandle.LoggedInUser;
 import ch.epfl.sdp.kandle.Post;
 import ch.epfl.sdp.kandle.R;
@@ -111,6 +114,20 @@ public class PostFragment extends Fragment {
 
         numberOfLikes.setText(String.valueOf(post.getLikes()));
 
+        final FragmentManager fragmentManager = this.getActivity().getSupportFragmentManager();
+        numberOfLikes.setOnClickListener(v -> database.getLikers(post.getPostId()).addOnCompleteListener(task -> {
+            if (task.isSuccessful()) {
+                fragmentManager.beginTransaction().replace(R.id.flContent, ListUsersFragment.newInstance(
+                        task.getResult(),
+                        post.getType() != null && post.getType().equals(Post.EVENT)? "Participants" : "Likes",
+                        Integer.toString(task.getResult().size())
+                )).setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
+                        .addToBackStack(null)
+                        .commit();
+
+            }
+        }));
+
         if (post.getType()!=null && post.getType().equals(Post.EVENT) || distance <= 30) {
             likeButton.setOnClickListener(v -> {
 
@@ -170,4 +187,6 @@ public class PostFragment extends Fragment {
             }
         };
     }
+
+
 }
