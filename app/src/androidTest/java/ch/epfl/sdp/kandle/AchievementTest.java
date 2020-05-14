@@ -1,6 +1,5 @@
 package ch.epfl.sdp.kandle;
 
-import android.Manifest;
 import android.view.Gravity;
 import android.view.View;
 
@@ -22,6 +21,7 @@ import static androidx.test.espresso.matcher.ViewMatchers.hasDescendant;
 import static androidx.test.espresso.matcher.ViewMatchers.withId;
 import static androidx.test.espresso.matcher.ViewMatchers.withText;
 import static ch.epfl.sdp.kandle.YourProfileFragmentTest.atPosition;
+import static ch.epfl.sdp.kandle.dependencies.DependencyManager.getDatabaseSystem;
 import static junit.framework.TestCase.assertEquals;
 
 
@@ -40,7 +40,7 @@ import ch.epfl.sdp.kandle.dependencies.MockAuthentication;
 import ch.epfl.sdp.kandle.dependencies.MockDatabase;
 import ch.epfl.sdp.kandle.dependencies.MockInternalStorage;
 import ch.epfl.sdp.kandle.dependencies.MockNetwork;
-import ch.epfl.sdp.kandle.dependencies.MockStorage;
+import ch.epfl.sdp.kandle.dependencies.MockImageStorage;
 
 
 public class AchievementTest {
@@ -64,6 +64,7 @@ public class AchievementTest {
             new ActivityTestRule<MainActivity>(MainActivity.class,true,true){
                 @Override
                 protected void beforeActivityLaunched() {
+                    LoggedInUser.init(new User("loggedInUserId","LoggedInUser","loggedInUser@kandle.ch","nickname","image"));
                     user1 = new User("user1Id", "user1", "user1@kandle.ch", null,  null);
                     user2 = new User("user2Id", "user2", "user2@kandle.ch", null,  null);
                     user3 = new User("user3Id", "user3", "user3@kandle.ch", null,  null);
@@ -72,7 +73,6 @@ public class AchievementTest {
                     p3 =  new Post("My", null, new Date(), "loggedInUserId", "post3Id");
                     p4 =  new Post("You", null, new Date(), "loggedInUserId", "post4Id");
                     p5 =  new Post("Are", null, new Date(), "loggedInUserId", "post5Id");
-                    LoggedInUser.init(new User("loggedInUserId","LoggedInUser","loggedInUser@kandle.ch","nickname","image"));
                     LoggedInUser.getInstance().addPostId(p1.getPostId());
                     LoggedInUser.getInstance().addPostId(p2.getPostId());
                     LoggedInUser.getInstance().addPostId(p3.getPostId());
@@ -93,22 +93,22 @@ public class AchievementTest {
                     posts.put(p4.getPostId(),p4);
                      db = new MockDatabase(true, users, followMap, posts);
                     MockAuthentication authentication = new MockAuthentication(true, accounts, "password");
-                    MockStorage storage = new MockStorage();
-                    MockInternalStorage internalStorage = new MockInternalStorage();
+                    MockImageStorage storage = new MockImageStorage();
+                    MockInternalStorage internalStorage = new MockInternalStorage(new HashMap<>());
                     MockNetwork network = new MockNetwork(true);
                     localDatabase = Room.inMemoryDatabaseBuilder(Kandle.getContext(), LocalDatabase.class).allowMainThreadQueries().build();
                     DependencyManager.setFreshTestDependencies(authentication, db, storage,internalStorage,network,localDatabase);
-                    DependencyManager.getDatabaseSystem().createUser(user1);
-                    DependencyManager.getDatabaseSystem().createUser(user2);
-                    DependencyManager.getDatabaseSystem().createUser(user3);
-                    DependencyManager.getDatabaseSystem().follow(user1.getId(), LoggedInUser.getInstance().getId());
-                    DependencyManager.getDatabaseSystem().follow(user2.getId(),LoggedInUser.getInstance().getId());
-                    DependencyManager.getDatabaseSystem().follow(LoggedInUser.getInstance().getId(), user1.getId());
-                    DependencyManager.getDatabaseSystem().follow(LoggedInUser.getInstance().getId(), user2.getId());
-                    DependencyManager.getDatabaseSystem().likePost(user1.getId(), p1.getPostId());
-                    DependencyManager.getDatabaseSystem().likePost(user2.getId(), p1.getPostId());
-                    DependencyManager.getDatabaseSystem().likePost(user1.getId(), p2.getPostId());
-                    DependencyManager.getDatabaseSystem().likePost(user2.getId(), p2.getPostId());
+                    getDatabaseSystem().createUser(user1);
+                    getDatabaseSystem().createUser(user2);
+                    getDatabaseSystem().createUser(user3);
+                    getDatabaseSystem().follow(user1.getId(), LoggedInUser.getInstance().getId());
+                    getDatabaseSystem().follow(user2.getId(),LoggedInUser.getInstance().getId());
+                    getDatabaseSystem().follow(LoggedInUser.getInstance().getId(), user1.getId());
+                    getDatabaseSystem().follow(LoggedInUser.getInstance().getId(), user2.getId());
+                    getDatabaseSystem().likePost(user1.getId(), p1.getPostId());
+                    getDatabaseSystem().likePost(user2.getId(), p1.getPostId());
+                    getDatabaseSystem().likePost(user1.getId(), p2.getPostId());
+                    getDatabaseSystem().likePost(user2.getId(), p2.getPostId());
                 }
             };
 
@@ -136,35 +136,35 @@ public class AchievementTest {
 
     @Test
     public void AchievementFollowingWorks() {
-        DependencyManager.getDatabaseSystem().follow(LoggedInUser.getInstance().getId(), user3.getId());
+        getDatabaseSystem().follow(LoggedInUser.getInstance().getId(), user3.getId());
         setFragment();
         onView(withId(R.id.flAchievements)).check(matches(atPosition(3, hasDescendant(withText("Achievement Completed !")))));
     }
 
     @Test
     public void AchievementFollowersWorks() {
-        DependencyManager.getDatabaseSystem().follow(user3.getId(), LoggedInUser.getInstance().getId());
+        getDatabaseSystem().follow(user3.getId(), LoggedInUser.getInstance().getId());
         setFragment();
         onView(withId(R.id.flAchievements)).perform(scrollToPosition(5)).check(matches(atPosition(5, hasDescendant(withText("Achievement Completed !")))));
     }
 
     @Test
     public void AchievementNumberPostsWorks() {
-        DependencyManager.getDatabaseSystem().addPost(p5);
+        getDatabaseSystem().addPost(p5);
         setFragment();
         onView(withId(R.id.flAchievements)).check(matches(atPosition(0, hasDescendant(withText("Achievement Completed !")))));
     }
 
     @Test
     public void AchievementLikesInPostWorks() {
-        DependencyManager.getDatabaseSystem().likePost(user3.getId(), p1.getPostId());
+        getDatabaseSystem().likePost(user3.getId(), p1.getPostId());
         setFragment();
         onView(withId(R.id.flAchievements)).perform(scrollToPosition(7)).check(matches(atPosition(7, hasDescendant(withText("Achievement Completed !")))));
     }
 
     @Test
     public void AchievementLikesAllPostWorks() {
-        DependencyManager.getDatabaseSystem().likePost(user3.getId(), p2.getPostId());
+        getDatabaseSystem().likePost(user3.getId(), p2.getPostId());
         setFragment();
         onView(withId(R.id.flAchievements)).perform(scrollToPosition(9)).check(matches(atPosition(9, hasDescendant(withText("Achievement Completed !")))));
     }

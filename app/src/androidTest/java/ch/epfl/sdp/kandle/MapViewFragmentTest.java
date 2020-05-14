@@ -27,7 +27,7 @@ import ch.epfl.sdp.kandle.dependencies.MockAuthentication;
 import ch.epfl.sdp.kandle.dependencies.MockDatabase;
 import ch.epfl.sdp.kandle.dependencies.MockInternalStorage;
 import ch.epfl.sdp.kandle.dependencies.MockNetwork;
-import ch.epfl.sdp.kandle.dependencies.MockStorage;
+import ch.epfl.sdp.kandle.dependencies.MockImageStorage;
 import ch.epfl.sdp.kandle.fragment.MapViewFragment;
 import ch.epfl.sdp.kandle.fragment.PostFragment;
 
@@ -83,8 +83,8 @@ public class MapViewFragmentTest {
                     posts.put(event.getPostId(), event);
                     MockDatabase db = new MockDatabase(true, users, followMap, posts);
                     MockAuthentication authentication = new MockAuthentication(true, accounts, "password");
-                    MockStorage storage = new MockStorage();
-                    MockInternalStorage internalStorage = new MockInternalStorage();
+                    MockImageStorage storage = new MockImageStorage();
+                    MockInternalStorage internalStorage = new MockInternalStorage(new HashMap<>());
                     MockNetwork network = new MockNetwork(true);
                     localDatabase = Room.inMemoryDatabaseBuilder(Kandle.getContext(), LocalDatabase.class).allowMainThreadQueries().build();
                     DependencyManager.setFreshTestDependencies(authentication, db, storage, internalStorage, network, localDatabase);
@@ -100,6 +100,7 @@ public class MapViewFragmentTest {
     @After
     public void clearCurrentUser() {
         LoggedInUser.clear();
+        localDatabase.close();
     }
 
     @Test
@@ -118,6 +119,11 @@ public class MapViewFragmentTest {
         onView(withId(R.id.postFragmentNumberOfLikes)).check(matches(withText("1")));
         onView(withId(R.id.postFragmentLikeButton)).perform(click());
         onView(withId(R.id.postFragmentNumberOfLikes)).check(matches(withText("0")));
+        onView(withId(R.id.postFragmentLikeButton)).perform(click());
+
+        onView(withId(R.id.postFragmentNumberOfLikes)).perform(click());
+        onView(withId(R.id.list_user_number)).check(matches(withText("1")));
+        onView(withId(R.id.list_user_recycler_view)).check(new RecyclerViewItemCountAssertion(1));
     }
 
     @Test

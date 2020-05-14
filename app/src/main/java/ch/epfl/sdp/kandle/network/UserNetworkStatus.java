@@ -13,6 +13,7 @@ public class UserNetworkStatus implements NetworkState {
 
     private static final UserNetworkStatus INSTANCE = new UserNetworkStatus();
 
+
     private UserNetworkStatus() {
 
     }
@@ -20,6 +21,7 @@ public class UserNetworkStatus implements NetworkState {
     public static UserNetworkStatus getInstance() {
         return INSTANCE;
     }
+
 
     public boolean isConnected() {
         boolean connected;
@@ -40,7 +42,12 @@ public class UserNetworkStatus implements NetworkState {
             connected = info != null && info.isConnectedOrConnecting();
         }
 
+
+
         return connected;
     }
+
+
+
 
 }

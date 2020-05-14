@@ -5,7 +5,6 @@ import android.app.Instrumentation;
 import android.content.Intent;
 import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
-
 import android.provider.MediaStore;
 import android.view.View;
 import android.widget.EditText;
@@ -19,6 +18,7 @@ import androidx.test.ext.junit.runners.AndroidJUnit4;
 import androidx.test.rule.GrantPermissionRule;
 
 import org.hamcrest.Matcher;
+
 import org.junit.After;
 import org.junit.Rule;
 import org.junit.Test;
@@ -27,14 +27,15 @@ import org.junit.runner.RunWith;
 
 import java.util.HashMap;
 
-import ch.epfl.sdp.kandle.storage.room.LocalDatabase;
+import ch.epfl.sdp.kandle.activity.PhotoEditorActivity;
 import ch.epfl.sdp.kandle.activity.PostActivity;
 import ch.epfl.sdp.kandle.dependencies.DependencyManager;
 import ch.epfl.sdp.kandle.dependencies.MockAuthentication;
 import ch.epfl.sdp.kandle.dependencies.MockDatabase;
 import ch.epfl.sdp.kandle.dependencies.MockInternalStorage;
 import ch.epfl.sdp.kandle.dependencies.MockNetwork;
-import ch.epfl.sdp.kandle.dependencies.MockStorage;
+import ch.epfl.sdp.kandle.storage.room.LocalDatabase;
+import ch.epfl.sdp.kandle.dependencies.MockImageStorage;
 
 import static androidx.test.espresso.Espresso.onView;
 import static androidx.test.espresso.action.ViewActions.click;
@@ -43,13 +44,13 @@ import static androidx.test.espresso.action.ViewActions.typeText;
 import static androidx.test.espresso.assertion.ViewAssertions.matches;
 import static androidx.test.espresso.intent.Intents.intending;
 import static androidx.test.espresso.intent.matcher.IntentMatchers.hasAction;
+import static androidx.test.espresso.intent.matcher.IntentMatchers.hasComponent;
 import static androidx.test.espresso.matcher.ViewMatchers.hasErrorText;
 import static androidx.test.espresso.matcher.ViewMatchers.withId;
 import static androidx.test.espresso.matcher.ViewMatchers.withTagValue;
-import static androidx.test.espresso.matcher.ViewMatchers.withText;
 import static org.hamcrest.CoreMatchers.not;
 import static org.hamcrest.Matchers.is;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertTrue;
 
 
 @RunWith(AndroidJUnit4.class)
@@ -68,8 +69,8 @@ public class PostActivityTest {
                     HashMap<String, Post> posts = new HashMap<>();
                     MockDatabase db = new MockDatabase(true, users, followMap, posts);
                     MockAuthentication authentication = new MockAuthentication(true, accounts, "password");
-                    MockStorage storage = new MockStorage();
-                    MockInternalStorage internalStorage = new MockInternalStorage();
+                    MockImageStorage storage = new MockImageStorage();
+                    MockInternalStorage internalStorage = new MockInternalStorage(new HashMap<>());
                     MockNetwork network = new MockNetwork(true);
                     localDatabase = Room.inMemoryDatabaseBuilder(Kandle.getContext(), LocalDatabase.class).allowMainThreadQueries().build();
                     DependencyManager.setFreshTestDependencies(authentication, db, storage,internalStorage,network,localDatabase);
@@ -176,6 +177,26 @@ public class PostActivityTest {
     public void eventThenMessage() {
         onView(withId(R.id.selectEventButton)).perform(click());
         onView(withId(R.id.selectMessageButton)).perform(click());
+    }
+
+    @Test
+    public void canEditImage(){
+        Intent resultData = new Intent();
+        resultData.setAction(Intent.ACTION_GET_CONTENT);
+        Uri imageUri = Uri.parse("android.resource://ch.epfl.sdp.kandle/drawable/ic_launcher_background.xml");
+        resultData.setData(imageUri);
+        Instrumentation.ActivityResult result = new Instrumentation.ActivityResult(Activity.RESULT_OK, resultData);
+        intending(hasAction(Intent.ACTION_GET_CONTENT)).respondWith(result);
+
+        onView(withId(R.id.galleryButton)).perform(click());
+
+        Intent resultEdit = new Intent();
+        resultEdit.setData(imageUri);
+        Instrumentation.ActivityResult result2 =  new Instrumentation.ActivityResult(Activity.RESULT_OK, resultEdit);
+        intending(hasComponent(PhotoEditorActivity.class.getName())).respondWith(result2);
+        onView(withId(R.id.postImageEdit)).perform(click());
+
+        onView(withId(R.id.postImage)).check(matches(withTagValue(is(PostActivity.POST_EDITED_IMAGE_TAG))));
     }
 
     @Test

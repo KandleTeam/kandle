@@ -278,10 +278,8 @@ public class CachedFirestoreDatabase implements Database {
             TaskCompletionSource<List<User>> source = new TaskCompletionSource<>();
             List<User> users = new ArrayList<>();
             Post p = postDao.getPostFromPostId(postId);
-            System.out.print(p == null);
             if (p != null) {
                 for (String userId : p.getLikers()) {
-                    System.out.print(userId);
                     User user = userDao.getUserFromUserId(userId);
                     if (user != null) {
                         users.add(user);
@@ -392,7 +390,7 @@ public class CachedFirestoreDatabase implements Database {
                 }
             });
         } else {
-            return NoInternetExpcetionTask();
+           return NoInternetExpcetionTask();
         }
     }
 

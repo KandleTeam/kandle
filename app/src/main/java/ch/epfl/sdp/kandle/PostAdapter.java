@@ -3,6 +3,7 @@ package ch.epfl.sdp.kandle;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,6 +20,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.squareup.picasso.Picasso;
 
+import java.io.File;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.List;
@@ -135,7 +137,12 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder> {
                 User user = task.getResult();
 
                 if (user.getImageURL() != null) {
-                    Picasso.get().load(user.getImageURL()).into(profilePicView);
+                    File image = DependencyManager.getInternalStorageSystem().getImageFileById(user.getId());
+                    if(image != null) {
+                        Picasso.get().load(image).into(profilePicView);
+                    }else {
+                        Picasso.get().load(user.getImageURL()).into(profilePicView);
+                    }
                 }
                 usernameView.setText("@" + user.getUsername());
                 nicknameView.setText(user.getNickname());
@@ -236,6 +243,9 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder> {
         }
 
     }
+
+
+
 
 
 }

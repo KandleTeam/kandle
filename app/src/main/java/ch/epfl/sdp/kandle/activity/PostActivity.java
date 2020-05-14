@@ -12,11 +12,13 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TimePicker;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.google.android.gms.tasks.Task;
 import com.squareup.picasso.Picasso;
 
 import java.util.Calendar;
@@ -36,12 +38,17 @@ import ch.epfl.sdp.kandle.storage.caching.CachedFirestoreDatabase;
 
 public class PostActivity extends AppCompatActivity {
 
+    public final static int EDIT_PIC_REQUEST = 2;
+
     public final static int POST_IMAGE_TAG = 42;
+    public final static int POST_EDITED_IMAGE_TAG = 24;
     private EditText mPostText;
     private Button mPostButton;
     private ImageButton mBackButton;
     private ImageButton mGalleryButton, mCameraButton;
     private ImageButton mMessageButton, mEventButton;
+    private ImageButton mPostImageEdit;
+    private RelativeLayout mPostImageLayout;
     private ImageButton mIsForCloseFollowers;
     private ImageView mPostImage;
     private Post p;
@@ -81,7 +88,9 @@ public class PostActivity extends AppCompatActivity {
         mPostButton = findViewById(R.id.postButton);
         mGalleryButton = findViewById(R.id.galleryButton);
         mCameraButton = findViewById(R.id.cameraButton);
+        mPostImageLayout = findViewById(R.id.postImageLayout);
         mPostImage = findViewById(R.id.postImage);
+        mPostImageEdit = findViewById(R.id.postImageEdit);
         mBackButton = findViewById(R.id.backButton);
         mMessageButton = findViewById(R.id.selectMessageButton);
         mEventButton = findViewById(R.id.selectEventButton);
@@ -103,7 +112,7 @@ public class PostActivity extends AppCompatActivity {
                     Post p = task.getResult();
                     mPostButton.setText("EDIT");
                     mPostText.setText(p.getDescription());
-                    mPostImage.setVisibility(View.VISIBLE);
+                    mPostImageLayout.setVisibility(View.VISIBLE);
                     mPostImage.setTag(YourPostListFragment.POST_IMAGE);
                     Picasso.get().load(p.getImageURL()).into(mPostImage);
                     mMessageButton.setVisibility(View.GONE);
@@ -170,6 +179,9 @@ public class PostActivity extends AppCompatActivity {
                             }
                         }
                     }
+                    else {
+                        Task t = task;
+                    }
                 });
 
             } else {
@@ -229,6 +241,12 @@ public class PostActivity extends AppCompatActivity {
             mEventButton.setBackgroundResource(R.drawable.add_background);
             mMessageButton.setBackgroundResource(R.drawable.add_background_grey);
             setEventAppearance();
+        });
+
+        mPostImageEdit.setOnClickListener(v -> {
+            Intent i = new Intent(PostActivity.this, PhotoEditorActivity.class);
+            i.setData(imageUri);
+            startActivityForResult(i, EDIT_PIC_REQUEST);
         });
 
         mIsForCloseFollowers.setOnClickListener(v -> {
@@ -292,15 +310,21 @@ public class PostActivity extends AppCompatActivity {
         if (requestCode == 0) {
             Bitmap imageBitmap = postCamera.handleActivityResult(requestCode, resultCode, data);
             if (imageBitmap != null) {
-                mPostImage.setVisibility(View.VISIBLE);
+                mPostImageLayout.setVisibility(View.VISIBLE);
                 mPostImage.setTag(POST_IMAGE_TAG);
                 mPostImage.setImageBitmap(imageBitmap);
             }
             imageUri = postCamera.getImageUri();
-        } else {
+        }
+        else if (requestCode == EDIT_PIC_REQUEST && resultCode == RESULT_OK && data!=null && data.getData()!=null) {
+            imageUri = data.getData();
+            mPostImage.setTag(POST_EDITED_IMAGE_TAG);
+            mPostImage.setImageURI(imageUri);
+        }
+        else {
             imageUri = ImagePicker.handleActivityResultAndGetUri(requestCode, resultCode, data);
             if (imageUri != null) {
-                mPostImage.setVisibility(View.VISIBLE);
+                mPostImageLayout.setVisibility(View.VISIBLE);
                 mPostImage.setTag(POST_IMAGE_TAG);
                 mPostImage.setImageURI(imageUri);
             }
