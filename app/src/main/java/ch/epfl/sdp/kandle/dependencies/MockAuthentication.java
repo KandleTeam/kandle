@@ -40,6 +40,7 @@ public class MockAuthentication implements Authentication {
         return false;
     }
 
+
     @Override
     public Task<User> createUserWithEmailAndPassword(String username, String email, String password) {
 
@@ -106,6 +107,17 @@ public class MockAuthentication implements Authentication {
     @Override
     public User getCurrentUser() {
         return LoggedInUser.getInstance();
+    }
+
+    @Override
+    public Task<Void> deleteUser() {
+        TaskCompletionSource source = new TaskCompletionSource<Void>();
+        isConnected = false;
+        DependencyManager.getInternalStorageSystem().deleteUser();
+        accounts.remove(LoggedInUser.getInstance().getEmail());
+        DependencyManager.getLocalDatabase().clearAllTables();
+        LoggedInUser.clear();
+        return source.getTask();
     }
 
 
