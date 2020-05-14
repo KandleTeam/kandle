@@ -24,4 +24,6 @@ public interface InternalStorage {
 
     File getImageFileById(String id) ;
 
+    void deleteAllPictures();
+
 }

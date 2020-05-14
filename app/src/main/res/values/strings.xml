@@ -30,7 +30,10 @@
     <string name="event_hint">Enter a description for your event… </string>
     <string name="badge_default">Badge Default</string>
 
-
+    <string name="confirm_message">Are your sure ? </string>
+    <string name="alert_title">Delete Account</string>
+    <string name="alert_box_confirm">Confirm </string>
+    <string name="alert_box_cancel">Cancel</string>
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_addPost_fragment">Add a Post</string>

@@ -369,7 +369,9 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback, Per
     @Override
     public void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);
-        mapView.onSaveInstanceState(outState);
+        if(mapView != null) {
+            mapView.onSaveInstanceState(outState);
+        }
     }
 
     @Override
@@ -384,7 +386,9 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback, Per
         if (locationEngine != null) {
             locationEngine.removeLocationUpdates(callback);
         }
-        mapView.onDestroy();
+        if(mapView != null) {
+            mapView.onDestroy();
+        }
     }
 
 }

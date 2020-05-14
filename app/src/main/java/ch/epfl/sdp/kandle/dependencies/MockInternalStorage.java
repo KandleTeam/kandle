@@ -86,4 +86,9 @@ public class MockInternalStorage implements InternalStorage {
     public File getImageFileById(String id) {
         return images.get(id);
     }
+
+    @Override
+    public void deleteAllPictures() {
+        images.clear();
+    }
 }

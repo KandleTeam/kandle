@@ -42,7 +42,12 @@ public class UserNetworkStatus implements NetworkState {
             connected = info != null && info.isConnectedOrConnecting();
         }
 
+
+
         return connected;
     }
+
+
+
 
 }
