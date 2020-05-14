@@ -179,7 +179,7 @@ public class MockDatabase implements Database {
     public Task<Void> unsetCloseFollower(String userFollowing, String userFollowed) {
         Follow follow2 = followMap.get(userFollowed);
 
-        if (!follow2.closeFollowers.contains(userFollowing)) {
+        if (follow2.closeFollowers.contains(userFollowing)) {
             follow2.removeCLoseFollower(userFollowing);
             followMap.put(userFollowed, follow2);
         }
