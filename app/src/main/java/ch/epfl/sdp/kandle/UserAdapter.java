@@ -38,7 +38,6 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.ViewHolder> {
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-
         Context context = parent.getContext();
         LayoutInflater inflater = LayoutInflater.from(context);
         View userView = inflater.inflate(R.layout.search_user, parent, false);
@@ -70,7 +69,6 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.ViewHolder> {
                 Picasso.get().load(user.getImageURL()).into(mImageProfile);
             }
         }
-
         final Authentication authentication = DependencyManager.getAuthSystem();
         final User currentUser = authentication.getCurrentUser();
         final CachedFirestoreDatabase database = new CachedFirestoreDatabase();

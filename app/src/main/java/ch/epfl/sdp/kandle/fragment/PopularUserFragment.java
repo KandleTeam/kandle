@@ -100,17 +100,13 @@ public class PopularUserFragment extends Fragment {
 
 
         final FragmentManager fragmentManager = this.getActivity().getSupportFragmentManager();
-
         userAdapter.setOnItemClickListener((position, v) -> {
-
             final User user = mUsers.get(position);
-
             fragmentManager.beginTransaction().replace(R.id.flContent, ProfileFragment.newInstance(user))
                     .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
                     .addToBackStack(null)
                     .commit();
         });
-
         return view;
     }
 
@@ -124,6 +120,8 @@ public class PopularUserFragment extends Fragment {
             return v2.compareTo(v1);
         }
     };
+
+
 
 }
 
