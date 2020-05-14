@@ -114,8 +114,6 @@ public class CloseFollowerFragmentTest {
                 }
 
             };
-
-
     @Rule
     public GrantPermissionRule permissionRule = GrantPermissionRule.grant(android.Manifest.permission.ACCESS_FINE_LOCATION);
 
