@@ -408,7 +408,6 @@ public class FirestoreDatabase implements Database {
     @Override
     public Task<Void> likePost(String userId, String postId) {
         final DocumentReference likedPostDoc = POSTS.document(postId);
-        sendNotification(userId, NOTIFICATION_LIKE_TITLE, NOTIFICATION_LIKE_TEXT);
         return FIRESTORE
                 .runTransaction(likePostTransaction(likedPostDoc, userId, "like"));
     }
@@ -416,7 +415,6 @@ public class FirestoreDatabase implements Database {
     @Override
     public Task<Void> unlikePost(String userId, String postId) {
         final DocumentReference unlikedPostDoc = POSTS.document(postId);
-
         return FIRESTORE
                 .runTransaction(likePostTransaction(unlikedPostDoc, userId, "unlike"));
     }
@@ -428,7 +426,10 @@ public class FirestoreDatabase implements Database {
             if (likers != null) {
                 if (!likers.contains(userId)) {
                     Map<String, Object> mapLikers = new HashMap<>();
-                    if (process.equals("like")) likers.add(userId);
+                    if (process.equals("like")){
+                        likers.add(userId);
+                        sendNotification((String) postSnapchot.get("userId"), NOTIFICATION_LIKE_TITLE, NOTIFICATION_LIKE_TEXT);
+                    }
                     else likers.remove(userId);
                     mapLikers.put("likers", likers);
                     transaction.set(postDoc, mapLikers, SetOptions.merge());
