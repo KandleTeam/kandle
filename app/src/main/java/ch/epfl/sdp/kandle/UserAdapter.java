@@ -84,13 +84,13 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.ViewHolder> {
                    for(User user1 : task.getResult()){
                        if(user1.getId().equals(user.getId())) {
                            holder.mIsCloseFriend.setBackground(Kandle.getContext().getDrawable(R.drawable.button_background));
-                           holder.mIsCloseFriend.setContentDescription("Is not close friend");
+                           holder.mIsCloseFriend.setContentDescription("Is close friend");
                            found_user = true;
                        }
                    }
                    if(!found_user) {
                        holder.mIsCloseFriend.setBackground(Kandle.getContext().getDrawable(R.drawable.add_background_grey));
-                       holder.mIsCloseFriend.setContentDescription("Is close friend");
+                       holder.mIsCloseFriend.setContentDescription("Is not close friend");
                    }
                }
             });
@@ -101,7 +101,6 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.ViewHolder> {
                     database.userCloseFollowersList(currentUser.getId()).addOnCompleteListener(task -> {
                         boolean found_user = false;
                         if(task.isSuccessful()){
-
                             for(User user1 : task.getResult()){
                                 if(user1.getId().equals(user.getId())) {
                                     holder.mIsCloseFriend.setBackground(Kandle.getContext().getDrawable(R.drawable.add_background_grey));

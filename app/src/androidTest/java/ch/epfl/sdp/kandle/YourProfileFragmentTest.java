@@ -158,12 +158,28 @@ public class YourProfileFragmentTest {
     }
 
     @Test
+    public void checkCloseFollowerWorks(){
+        onView(withId(R.id.profileNumberOfFollowers)).perform(click());
+        onView(new RecyclerViewMatcher(R.id.list_user_recycler_view)
+                .atPositionOnView(0, R.id.userCloseFriends)).check(matches(withContentDescription("Is not close friend")));
+        onView(withId(R.id.list_user_recycler_view)).check(matches(atPosition(0, hasDescendant(withText("@" + user1.getUsername())))));
+
+        onView(new RecyclerViewMatcher(R.id.list_user_recycler_view)
+                .atPositionOnView(1, R.id.userCloseFriends)).check(matches(withContentDescription("Is close friend")));
+        onView(withId(R.id.list_user_recycler_view)).check(matches(atPosition(1, hasDescendant(withText("@" + user2.getUsername())))));
+
+    }
+
+    @Test
     public void checkAddCloseFollowerWorks(){
         onView(withId(R.id.profileNumberOfFollowers)).perform(click());
         onView(new RecyclerViewMatcher(R.id.list_user_recycler_view)
+                .atPositionOnView(0, R.id.userCloseFriends)).perform(click());
+        onView(new RecyclerViewMatcher(R.id.list_user_recycler_view)
                 .atPositionOnView(0, R.id.userCloseFriends)).check(matches(withContentDescription("Is close friend")));
         onView(withId(R.id.list_user_recycler_view)).check(matches(atPosition(0, hasDescendant(withText("@" + user1.getUsername())))));
-
+        onView(new RecyclerViewMatcher(R.id.list_user_recycler_view)
+                .atPositionOnView(1, R.id.userCloseFriends)).perform(click());
         onView(new RecyclerViewMatcher(R.id.list_user_recycler_view)
                 .atPositionOnView(1, R.id.userCloseFriends)).check(matches(withContentDescription("Is not close friend")));
         onView(withId(R.id.list_user_recycler_view)).check(matches(atPosition(1, hasDescendant(withText("@" + user2.getUsername())))));
