@@ -56,6 +56,10 @@ public class FirestoreDatabase implements Database {
     // Array fields of the documents in collection 'follow'
     private static final String FOLLOWERS = "followers";
     private static final String FOLLOWING = "following";
+    private static final String NOTIFICATION_NEW_FOLLOWER_TITLE = "New Follower !";
+    private static final String NOTIFICATION_NEW_FOLLOWER_TEXT = "YOUHOU ! You have a new Follower !";
+    private static final String NOTIFICATION_LIKE_TITLE = "New like !";
+    private static final String NOTIFICATION_LIKE_TEXT = "YOUHOU ! Someone has liked your post !";
     private Map<String, Object> mapDeleteFollowing = (Map<String, Object>) new HashMap<>().put("following", FieldValue.delete());
     private Map<String, Object> mapDeleteFollowers = (Map<String, Object>) new HashMap<>().put("followers", FieldValue.delete());
 
@@ -181,24 +185,26 @@ public class FirestoreDatabase implements Database {
                 followList.add(userId);
                 mapFollowing.put(process, followList);
                 transaction.set(userDoc, mapFollowing, SetOptions.merge());
-                if (process.equals(FOLLOWING)) sendNotification(userId);
+                if (process.equals(FOLLOWING)) sendNotification(userId, NOTIFICATION_NEW_FOLLOWER_TITLE, NOTIFICATION_NEW_FOLLOWER_TEXT);
             }
         } else {
             Map<String, Object> mapFollowing = new HashMap<>();
             mapFollowing.put(process, Arrays.asList(userId));
             transaction.set(userDoc, mapFollowing, SetOptions.merge());
-            if (process.equals(FOLLOWING)) sendNotification(userId);
+            if (process.equals(FOLLOWING)) sendNotification(userId, NOTIFICATION_NEW_FOLLOWER_TITLE, NOTIFICATION_NEW_FOLLOWER_TEXT);
         }
     }
 
 
-    private void sendNotification(String userFollowedId){
+    private void sendNotification(String userFollowedId, String title, String text){
         USERS.document(userFollowedId).get().addOnSuccessListener(documentSnapshot -> {
             String deviceId = (String) documentSnapshot.get("deviceId");
             if (deviceId != null) {
                 Map<String, String> notificationData = new HashMap<>();
                 notificationData.put("toUserId", userFollowedId);
                 notificationData.put("toDeviceId", deviceId);
+                notificationData.put("title", title);
+                notificationData.put("text", text);
                 NOTIFICATION.document(UUID.randomUUID().toString()).set(notificationData);
             }
         });
@@ -402,7 +408,7 @@ public class FirestoreDatabase implements Database {
     @Override
     public Task<Void> likePost(String userId, String postId) {
         final DocumentReference likedPostDoc = POSTS.document(postId);
-
+        sendNotification(userId, NOTIFICATION_LIKE_TITLE, NOTIFICATION_LIKE_TEXT);
         return FIRESTORE
                 .runTransaction(likePostTransaction(likedPostDoc, userId, "like"));
     }
