@@ -1,9 +1,12 @@
 package ch.epfl.sdp.kandle.activity;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -46,6 +49,7 @@ public class MainActivity extends AppCompatActivity {
     private Authentication auth;
     private ActionBarDrawerToggle drawerToggle;
 
+    @SuppressLint("SetTextI18n")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -61,7 +65,6 @@ public class MainActivity extends AppCompatActivity {
         mNickname = mNavigationView.getHeaderView(0).findViewById(R.id.nicknameInMenu);
         mUsername = mNavigationView.getHeaderView(0).findViewById(R.id.usernameInMenu);
         mUsername.setText("@" + auth.getCurrentUser().getUsername());
-
 
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -86,7 +89,6 @@ public class MainActivity extends AppCompatActivity {
             mNavigationView.getCheckedItem().setChecked(false);
             mDrawerLayout.closeDrawers();
         });
-
     }
 
     @Override
@@ -119,6 +121,10 @@ public class MainActivity extends AppCompatActivity {
             navigationView.getMenu().findItem(R.id.follow).setVisible(false);
             navigationView.getMenu().findItem(R.id.following_posts).setVisible(false);
             navigationView.getMenu().findItem(R.id.achievements).setVisible(false);
+        }
+
+        if (!DependencyManager.getNetworkStateSystem().isConnected()) {
+            navigationView.getMenu().findItem(R.id.offlineGame).setVisible(true);
         }
 
         navigationView.setNavigationItemSelectedListener(
@@ -173,10 +179,13 @@ public class MainActivity extends AppCompatActivity {
                 fragmentClass = FollowingPostsFragment.class;
                 break;
 
+            case R.id.offlineGame:
+                startActivity(new Intent(getApplicationContext(), OfflineGameActivity.class));
+                break;
+
             default:
                 throw new IllegalArgumentException("There is a missing MenuItem case!");
         }
-
 
         openFragment(fragmentClass);
         setTitle(menuItem.getTitle());

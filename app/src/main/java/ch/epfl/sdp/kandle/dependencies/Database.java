@@ -190,4 +190,13 @@ public interface Database {
      */
     Task<Post> getPostByPostId(String postId);
 
+    /**
+     * Asynchronously retrieves the post with the corresponding postId
+     *
+     * @param highScore the user's new high score
+     * @return A void task
+     */
+    Task<Void> updateHighScore(int highScore);
+
+
 }

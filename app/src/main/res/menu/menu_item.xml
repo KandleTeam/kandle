@@ -29,6 +29,12 @@
             android:icon="@drawable/ic_group_black"
             android:title="Other Posts" />
 
+        <item
+            android:id="@+id/offlineGame"
+            android:icon="@drawable/ic_biohazard"
+            android:visible="false"
+            android:title="Offline Game" />
+
         <item android:title="Communication">
             <menu>
                 <group android:checkableBehavior="single">

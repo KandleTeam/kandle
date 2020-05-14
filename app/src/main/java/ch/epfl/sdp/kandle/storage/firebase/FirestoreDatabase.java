@@ -530,5 +530,13 @@ public class FirestoreDatabase implements Database {
                 });
     }
 
+    @Override
+    public Task<Void> updateHighScore(int highScore) {
+        HashMap<String, Object> map = new HashMap<>();
+        map.put("highScore", highScore);
+        System.out.println("and there");
+        return loggedInUser().update(map);
+    }
+
 
 }
