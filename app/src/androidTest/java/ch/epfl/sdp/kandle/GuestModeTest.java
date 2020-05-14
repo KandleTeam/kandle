@@ -112,7 +112,6 @@ public class GuestModeTest {
         onView(withId(R.id.drawer_layout)).check(matches(isClosed(Gravity.LEFT))).perform(DrawerActions.open());
         onView(withId(R.id.navigation_view)).perform(NavigationViewActions.navigateTo(R.id.logout));
         intended(hasComponent(LoginActivity.class.getName()));
-
         onView(withId(R.id.guestModeLink)).perform(click());
         intended(hasComponent(MainActivity.class.getName()));
         Intents.release();

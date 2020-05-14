@@ -14,6 +14,7 @@ import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.FirebaseFirestoreSettings;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.SetOptions;
+import com.google.firebase.firestore.Transaction;
 import com.google.maps.android.SphericalUtil;
 
 import java.text.DateFormat;
@@ -251,26 +252,29 @@ public class FirestoreDatabase implements Database {
                     List<String> closeFollowers = (List<String>) userFollowedSnapshot.get(CLOSE_FOLLOWERS);
 
                     if (!closeFollowers.isEmpty()) {
-                        for(String s : closeFollowers){
-                            System.out.println("THHHHHHHHHHHE UUUUUUUUUUUSSSSSSSSEEEEEEEEERRRRRR IIIISSSS " + s);
-                        }
-                        System.out.println("CCCCCCCCCAAAAAAAAAAAAAAAAAAAAMMMMMMMMMMMMMAAAAAAAAAAARRRRRRRRRCCCCCCCCCCCHHHHHHHHHHHHHEEEEEEEE");
                         if (followers.contains(userFollowing) && !closeFollowers.contains(userFollowing)) {
-
-                            Map<String, Object> mapCloseFollowed = new HashMap<>();
+                            /*Map<String, Object> mapCloseFollowed = new HashMap<>();
                             closeFollowers.add(userFollowing);
                             mapCloseFollowed.put(CLOSE_FOLLOWERS, closeFollowers);
-                            transaction.set(userFollowedDoc, mapCloseFollowed, SetOptions.merge());
+                            transaction.set(userFollowedDoc, mapCloseFollowed, SetOptions.merge());*/
+                            setCloseFollowers(userFollowing, userFollowedDoc, transaction, closeFollowers);
                         }
                     } else {
-                        Map<String, Object> mapCloseFollowed = new HashMap<>();
+                        /*Map<String, Object> mapCloseFollowed = new HashMap<>();
                         mapCloseFollowed.put(CLOSE_FOLLOWERS, Arrays.asList(userFollowing));
-
-                        transaction.set(userFollowedDoc, mapCloseFollowed, SetOptions.merge());
+                        transaction.set(userFollowedDoc, mapCloseFollowed, SetOptions.merge());*/
+                        setCloseFollowers(userFollowing, userFollowedDoc, transaction, new ArrayList<>());
                     }
 
                     return null;
                 });
+    }
+
+    private void setCloseFollowers(String userId, DocumentReference userDoc, Transaction transaction, List<String> closeFollowers){
+        Map<String, Object> mapCloseFollowed = new HashMap<>();
+        closeFollowers.add(userId);
+        mapCloseFollowed.put(CLOSE_FOLLOWERS, closeFollowers);
+        transaction.set(userDoc, mapCloseFollowed, SetOptions.merge());
     }
 
 
@@ -284,22 +288,19 @@ public class FirestoreDatabase implements Database {
 
                     DocumentSnapshot userFollowingSnapshot = transaction.get(userFollowingDoc);
                     DocumentSnapshot userFollowedSnapshot = transaction.get(userFollowedDoc);
-
                     List<String> closeFollowers = (List<String>) userFollowedSnapshot.get(CLOSE_FOLLOWERS);
-
                     if (closeFollowers != null) {
                         if (closeFollowers.contains(userFollowing)) {
-
                             Map<String, Object> mapFollowed = new HashMap<>();
                             closeFollowers.remove(userFollowing);
                             mapFollowed.put(CLOSE_FOLLOWERS, closeFollowers);
                             transaction.set(userFollowedDoc, mapFollowed, SetOptions.merge());
                         }
                     }
-
                     return null;
                 });
     }
+
 
     /**
      * Returns a list of userIds of the users followed by the specified user, or following the
