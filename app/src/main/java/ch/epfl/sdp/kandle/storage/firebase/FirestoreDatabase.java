@@ -155,6 +155,11 @@ public class FirestoreDatabase implements Database {
     }
 
     @Override
+    public Task<List<User>> usersList() {
+        return USERS.get().continueWith(task -> task.getResult().toObjects(User.class));
+    }
+
+    @Override
     public Task<Void> follow(final String userFollowing, final String userFollowed) {
         final DocumentReference userFollowingDoc = FOLLOW.document(userFollowing);
         final DocumentReference userFollowedDoc = FOLLOW.document(userFollowed);

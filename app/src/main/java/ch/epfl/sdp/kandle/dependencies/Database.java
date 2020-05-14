@@ -48,6 +48,13 @@ public interface Database {
     Task<List<User>> searchUsers(final String prefix, int maxNumber);
 
     /**
+     * Asynchronously retrieves maxNumber of users that have a username matching prefix
+     *
+     * @return A list of user of at most maxNUmber length that have their usernames matching the prefix
+     */
+    Task<List<User>> usersList();
+
+    /**
      * Asynchronously adds the userFollowing to the follow list of the userFollowed
      *
      * @param userFollowing
