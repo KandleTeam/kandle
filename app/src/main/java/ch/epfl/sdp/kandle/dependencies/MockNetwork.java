@@ -10,6 +10,7 @@ public class MockNetwork implements NetworkState {
 
     public MockNetwork(boolean isOnline) {
         MockNetwork.isOnline = isOnline;
+        MockNetwork.previouslyOnline = true;
     }
 
     @Override
