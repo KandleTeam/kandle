@@ -30,6 +30,7 @@ import ch.epfl.sdp.kandle.fragment.AboutFragment;
 import ch.epfl.sdp.kandle.fragment.AchievementFragment;
 import ch.epfl.sdp.kandle.fragment.FollowingPostsFragment;
 import ch.epfl.sdp.kandle.fragment.MapViewFragment;
+import ch.epfl.sdp.kandle.fragment.PopularUserFragment;
 import ch.epfl.sdp.kandle.fragment.ProfileFragment;
 import ch.epfl.sdp.kandle.fragment.SearchFragment;
 import ch.epfl.sdp.kandle.fragment.SettingsFragment;
@@ -176,6 +177,10 @@ public class MainActivity extends AppCompatActivity {
 
             case R.id.following_posts:
                 fragmentClass = FollowingPostsFragment.class;
+                break;
+
+            case R.id.popularKandlers:
+                fragmentClass = PopularUserFragment.class;
                 break;
 
             default:

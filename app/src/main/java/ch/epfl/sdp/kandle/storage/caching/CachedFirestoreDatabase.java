@@ -121,6 +121,11 @@ public class CachedFirestoreDatabase implements Database {
     }
 
     @Override
+    public Task<List<User>> usersList() {
+        return database.usersList();
+    }
+
+    @Override
     public Task<Void> follow(String userFollowing, String userFollowed) {
         return database.follow(userFollowing, userFollowed);
     }
