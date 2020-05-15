@@ -8,6 +8,7 @@ import androidx.test.espresso.contrib.NavigationViewActions;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 import androidx.test.rule.ActivityTestRule;
 
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -91,5 +92,10 @@ public class OfflineConnectedGameActivityTest {
         onView(withId(R.id.maxScore)).check(matches((withText(is("2")))));
     }
 
+    @After
+    public void clearCurrentUser() {
+        LoggedInUser.clear();
+        localDatabase.close();
+    }
 
 }

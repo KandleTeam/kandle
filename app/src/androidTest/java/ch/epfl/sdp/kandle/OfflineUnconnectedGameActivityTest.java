@@ -4,6 +4,7 @@ import androidx.room.Room;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 import androidx.test.rule.ActivityTestRule;
 
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -82,6 +83,11 @@ public class OfflineUnconnectedGameActivityTest {
             e.printStackTrace();
         }
         onView(withId(R.id.score)).check(matches((withText(is("0")))));
+    }
+
+    @After
+    public void clearCurrentUser() {
+        localDatabase.close();
     }
 
 }
