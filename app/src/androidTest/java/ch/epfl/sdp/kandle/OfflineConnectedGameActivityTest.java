@@ -84,12 +84,15 @@ public class OfflineConnectedGameActivityTest {
         onView(withId(R.id.maxScore)).check(matches((withText(is("2")))));
         onView(withId(R.id.backButton)).perform(click());
         network.setIsOnline(true);
+        network.setPreviouslyOnline(false);
         onView(withId(R.id.drawer_layout)).check(matches(isClosed(Gravity.LEFT))).perform(DrawerActions.open());
         onView(withId(R.id.navigation_view)).perform(NavigationViewActions.navigateTo(R.id.your_posts));
         onView(withId(R.id.drawer_layout)).perform(DrawerActions.close());
         network.setIsOnline(false);
+        network.setPreviouslyOnline(true);
         navigateToOfflineGame();
         onView(withId(R.id.maxScore)).check(matches((withText(is("2")))));
+
     }
 
     @After

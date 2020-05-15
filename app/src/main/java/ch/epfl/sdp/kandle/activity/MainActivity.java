@@ -51,7 +51,6 @@ public class MainActivity extends AppCompatActivity {
     private Authentication auth;
     private ActionBarDrawerToggle drawerToggle;
 
-    @SuppressLint("SetTextI18n")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

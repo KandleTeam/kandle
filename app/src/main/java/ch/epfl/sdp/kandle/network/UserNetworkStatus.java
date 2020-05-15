@@ -11,14 +11,11 @@ import ch.epfl.sdp.kandle.LoggedInUser;
 import ch.epfl.sdp.kandle.dependencies.Database;
 import ch.epfl.sdp.kandle.dependencies.DependencyManager;
 import ch.epfl.sdp.kandle.storage.caching.CachedFirestoreDatabase;
-import ch.epfl.sdp.kandle.storage.firebase.FirestoreDatabase;
-
 
 public class UserNetworkStatus implements NetworkState {
 
     private static boolean previouslyConnected = true;
     private static final UserNetworkStatus INSTANCE = new UserNetworkStatus();
-    private Database database = new CachedFirestoreDatabase();
     private UserNetworkStatus() {
 
     }

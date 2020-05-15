@@ -127,9 +127,7 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback, Per
             });
         }
 
-        System.out.println("before condition to setting button visible");
         if(!DependencyManager.getNetworkStateSystem().isConnected()){
-            System.out.println("setting button visible");
             mGameButton.setVisibility(View.VISIBLE);
             mGameButton.setOnClickListener(v -> {
                 startActivity(new Intent(getContext(), OfflineGameActivity.class));
