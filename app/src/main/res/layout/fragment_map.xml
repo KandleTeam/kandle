@@ -35,12 +35,14 @@
             android:id="@+id/startOfflineGameConnectedButton"
             android:layout_width="93dp"
             android:layout_height="83dp"
+            android:background="@android:color/transparent"
+            android:visibility="gone"
             android:src="@drawable/ic_biohazard"
             mapbox:layout_constraintBottom_toBottomOf="parent"
             mapbox:layout_constraintEnd_toEndOf="parent"
             mapbox:layout_constraintHorizontal_bias="1"
             mapbox:layout_constraintStart_toStartOf="parent"
             mapbox:layout_constraintTop_toTopOf="parent"
-            mapbox:layout_constraintVertical_bias="0.1" />
+            mapbox:layout_constraintVertical_bias="0" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

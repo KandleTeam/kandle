@@ -18,6 +18,7 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
+import com.google.android.gms.maps.internal.IGoogleMapDelegate;
 import com.google.android.material.navigation.NavigationView;
 import com.squareup.picasso.Picasso;
 
@@ -46,6 +47,7 @@ public class MainActivity extends AppCompatActivity {
     private ImageView mProfilePic;
     private TextView mUsername;
     private TextView mNickname;
+    private ImageButton mGameButton;
     private Authentication auth;
     private ActionBarDrawerToggle drawerToggle;
 
@@ -65,6 +67,7 @@ public class MainActivity extends AppCompatActivity {
         mNickname = mNavigationView.getHeaderView(0).findViewById(R.id.nicknameInMenu);
         mUsername = mNavigationView.getHeaderView(0).findViewById(R.id.usernameInMenu);
         mUsername.setText("@" + auth.getCurrentUser().getUsername());
+        mGameButton = findViewById(R.id.startOfflineGameConnectedButton);
 
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -89,6 +92,7 @@ public class MainActivity extends AppCompatActivity {
             mNavigationView.getCheckedItem().setChecked(false);
             mDrawerLayout.closeDrawers();
         });
+
     }
 
     @Override

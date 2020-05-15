@@ -157,7 +157,6 @@ public class OfflineGameActivity extends AppCompatActivity {
                 if(DependencyManager.getAuthSystem().getCurrentUser()!=null){
                     DependencyManager.getInternalStorageSystem().getCurrentUser().setHighScore(nbPoints[2]);
                     LoggedInUser.getInstance().setHighScore(nbPoints[2]);
-                    System.out.println("Passing here");
                 }
             }
             mEndText.setVisibility(View.VISIBLE);
