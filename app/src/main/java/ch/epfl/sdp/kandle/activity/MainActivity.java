@@ -47,7 +47,6 @@ public class MainActivity extends AppCompatActivity {
     private ImageView mProfilePic;
     private TextView mUsername;
     private TextView mNickname;
-    private ImageButton mGameButton;
     private Authentication auth;
     private ActionBarDrawerToggle drawerToggle;
 
@@ -67,7 +66,7 @@ public class MainActivity extends AppCompatActivity {
         mNickname = mNavigationView.getHeaderView(0).findViewById(R.id.nicknameInMenu);
         mUsername = mNavigationView.getHeaderView(0).findViewById(R.id.usernameInMenu);
         mUsername.setText("@" + auth.getCurrentUser().getUsername());
-        mGameButton = findViewById(R.id.startOfflineGameConnectedButton);
+
 
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -127,10 +126,6 @@ public class MainActivity extends AppCompatActivity {
             navigationView.getMenu().findItem(R.id.achievements).setVisible(false);
         }
 
-        if (!DependencyManager.getNetworkStateSystem().isConnected()) {
-            navigationView.getMenu().findItem(R.id.offlineGame).setVisible(true);
-        }
-
         navigationView.setNavigationItemSelectedListener(
                 menuItem -> {
                     selectDrawerItem(menuItem);
@@ -181,10 +176,6 @@ public class MainActivity extends AppCompatActivity {
 
             case R.id.following_posts:
                 fragmentClass = FollowingPostsFragment.class;
-                break;
-
-            case R.id.offlineGame:
-                startActivity(new Intent(getApplicationContext(), OfflineGameActivity.class));
                 break;
 
             default:
