@@ -20,4 +20,6 @@ public interface Authentication {
 
     boolean getCurrentUserAtApplicationStart();
 
+    Task<Void> deleteUser();
+
 }

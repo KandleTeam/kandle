@@ -44,7 +44,7 @@ public class FirebaseAuthentication implements Authentication {
      * @return boolean that indicates if there is a current user logged in or not
      */
     public boolean getCurrentUserAtApplicationStart() {
-        User localUser = DependencyManager.getInternalStorageSystem().getCurrentUser();
+        User localUser =DependencyManager.getInternalStorageSystem().getCurrentUser();
         if (LoggedInUser.getInstance() != null) {
             return true;
         }
@@ -61,7 +61,9 @@ public class FirebaseAuthentication implements Authentication {
             }
         }
         return false;
+
     }
+
 
 
     /**
@@ -168,6 +170,15 @@ public class FirebaseAuthentication implements Authentication {
     public User getCurrentUser() {
         return LoggedInUser.getInstance();
     }
+
+    @Override
+    public Task<Void> deleteUser() {
+        DependencyManager.getInternalStorageSystem().deleteUser();
+        LoggedInUser.clear();
+        DependencyManager.getLocalDatabase().clearAllTables();
+        return FAUTH.getCurrentUser().delete();
+    }
+
 
 
 }

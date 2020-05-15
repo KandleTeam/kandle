@@ -126,6 +126,15 @@ public class MockDatabase implements Database {
     }
 
     @Override
+    public Task<List<User>> usersList() {
+        List<User> results = new ArrayList<>();
+        results.addAll(users.values());
+        TaskCompletionSource<List<User>> source = new TaskCompletionSource<>();
+        source.setResult(new ArrayList<User>(results.subList(0, results.size())));
+        return source.getTask();
+    }
+
+    @Override
     public Task<Void> follow(String userFollowing, String userFollowed) {
 
         Follow follow = followMap.get(userFollowing);
