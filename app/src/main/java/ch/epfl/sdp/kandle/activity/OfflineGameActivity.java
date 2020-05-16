@@ -17,7 +17,7 @@ import ch.epfl.sdp.kandle.dependencies.DependencyManager;
 
 public class OfflineGameActivity extends AppCompatActivity {
 
-    public final static int MAX_POINTS = 2;
+    public final static int MAX_NB_VIRUS = 10;
     public final int APPEARING_TIME = 3000; //in miliseconds
 
 
@@ -145,7 +145,7 @@ public class OfflineGameActivity extends AppCompatActivity {
 
     private void handlingVirusDisappearing(){
         mVirusButton.setVisibility(View.GONE);
-        if (getMaxPossiblePoints(nbPoints) < MAX_POINTS) {
+        if (getMaxPossiblePoints(nbPoints) < MAX_NB_VIRUS) {
             incrementMaxPossiblePoints(nbPoints);
             timer = new Timer();
             timer.schedule(new GameTimerTask(), APPEARING_TIME);
