@@ -66,11 +66,11 @@ public class OfflineUnconnectedGameActivityTest {
     @Test
     public void startGameAndClickOnVirusUpdateScore(){
         onView(withId(R.id.startButton)).perform(click());
-        for(int i=0; i < OfflineGameActivity.MAX_POINTS; i++){
+        for(int i=0; i < OfflineGameActivity.MAX_NB_VIRUS; i++){
             onView(withId(R.id.virusButton)).perform(click());
         }
         onView(withId(R.id.score)).check(matches(not(withText(is("0")))));
-        onView(withId(R.id.maxScore)).check(matches((withText(is("2")))));
+        onView(withId(R.id.maxScore)).check(matches((withText(is(Integer.toString(OfflineGameActivity.MAX_NB_VIRUS))))));
     }
 
 

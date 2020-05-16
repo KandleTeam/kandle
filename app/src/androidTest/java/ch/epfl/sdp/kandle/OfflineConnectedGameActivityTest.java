@@ -78,10 +78,10 @@ public class OfflineConnectedGameActivityTest {
     @Test
     public void userPlayAndSetsRecordThenCached(){
         onView(withId(R.id.startButton)).perform(click());
-        for(int i=0; i < OfflineGameActivity.MAX_POINTS; i++){
+        for(int i=0; i < OfflineGameActivity.MAX_NB_VIRUS; i++){
             onView(withId(R.id.virusButton)).perform(click());
         }
-        onView(withId(R.id.maxScore)).check(matches((withText(is("2")))));
+        onView(withId(R.id.maxScore)).check(matches((withText(is(Integer.toString(OfflineGameActivity.MAX_NB_VIRUS))))));
         onView(withId(R.id.backButton)).perform(click());
         network.setIsOnline(true);
         network.setPreviouslyOnline(false);
@@ -91,8 +91,7 @@ public class OfflineConnectedGameActivityTest {
         network.setIsOnline(false);
         network.setPreviouslyOnline(true);
         navigateToOfflineGame();
-        onView(withId(R.id.maxScore)).check(matches((withText(is("2")))));
-
+        onView(withId(R.id.maxScore)).check(matches((withText(is(Integer.toString(OfflineGameActivity.MAX_NB_VIRUS))))));
     }
 
     @After
