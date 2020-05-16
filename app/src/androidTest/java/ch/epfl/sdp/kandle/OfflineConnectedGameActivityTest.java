@@ -91,7 +91,7 @@ public class OfflineConnectedGameActivityTest {
         network.setIsOnline(false);
         network.setPreviouslyOnline(true);
         navigateToOfflineGame();
-        onView(withId(R.id.maxScore)).check(matches((withText(is("2")))));
+        onView(withId(R.id.maxScore)).check(matches((withText(is(Integer.toString(OfflineGameActivity.MAX_NB_VIRUS))))));
     }
 
     @After

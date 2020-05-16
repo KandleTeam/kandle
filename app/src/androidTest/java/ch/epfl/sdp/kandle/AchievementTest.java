@@ -129,7 +129,7 @@ public class AchievementTest {
     @Test
     public void allTypesOfAchievementsNotDone(){
         setFragment();
-        onView(withId(R.id.flAchievements)).check(new AchievementTest.RecyclerViewItemCountAssertion(11));
+        onView(withId(R.id.flAchievements)).check(new AchievementTest.RecyclerViewItemCountAssertion(13));
         //onView(withId(R.id.flPosts)).perform(RecyclerViewActions.actionOnItemAtPosition(0, click()));
         onView(withId(R.id.flAchievements)).check(matches(atPosition(0, hasDescendant(withText("Still Not Completed !")))));
         onView(withId(R.id.flAchievements)).check(matches(atPosition(3, hasDescendant(withText("Still Not Completed !")))));
