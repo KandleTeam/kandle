@@ -7,13 +7,25 @@ import android.net.NetworkInfo;
 import android.os.Build;
 
 import ch.epfl.sdp.kandle.Kandle;
+<<<<<<< Updated upstream
+=======
+import ch.epfl.sdp.kandle.LoggedInUser;
+import ch.epfl.sdp.kandle.dependencies.Database;
+import ch.epfl.sdp.kandle.dependencies.DependencyManager;
+import ch.epfl.sdp.kandle.storage.caching.CachedFirestoreDatabase;
+import ch.epfl.sdp.kandle.storage.firebase.FirestoreDatabase;
+>>>>>>> Stashed changes
 
 
 public class UserNetworkStatus implements NetworkState {
 
     private static final UserNetworkStatus INSTANCE = new UserNetworkStatus();
+<<<<<<< Updated upstream
 
 
+=======
+    private Database database = new CachedFirestoreDatabase();
+>>>>>>> Stashed changes
     private UserNetworkStatus() {
 
     }
@@ -42,6 +54,7 @@ public class UserNetworkStatus implements NetworkState {
             connected = info != null && info.isConnectedOrConnecting();
         }
 
+<<<<<<< Updated upstream
 
 
         return connected;
@@ -49,5 +62,26 @@ public class UserNetworkStatus implements NetworkState {
 
 
 
+=======
+        System.out.println("Previously"+previouslyConnected);
+        System.out.println("Right now " + connected);
+
+        if(!previouslyConnected && connected){
+            System.out.println("Passing in the condition that we had false and true");
+            onNetworkChange();
+
+        }
+
+        if(previouslyConnected != connected) {
+            previouslyConnected = connected;
+        }
+        return connected;
+    }
+
+    private void onNetworkChange(){
+        DependencyManager.getDatabaseSystem().updateHighScore(LoggedInUser.getInstance().getHighScore());
+        System.out.println("yo");
+    }
+>>>>>>> Stashed changes
 
 }
