@@ -390,6 +390,15 @@ public class MockDatabase implements Database {
         return source.getTask();
     }
 
+    @Override
+    public Task<Void> updateHighScore(int highScore) {
+        TaskCompletionSource<Void> source = new TaskCompletionSource<>();
+        User user = users.get(LoggedInUser.getInstance().getId());
+        user.setHighScore(highScore);
+        source.setResult(null);
+        return source.getTask();
+    }
+
     public static class Follow {
         public List<String> following;
 

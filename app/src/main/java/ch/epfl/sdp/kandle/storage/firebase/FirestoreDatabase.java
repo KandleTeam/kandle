@@ -57,6 +57,10 @@ public class FirestoreDatabase implements Database {
     private static final String FOLLOWERS = "followers";
     private static final String FOLLOWING = "following";
     private static final String CLOSE_FOLLOWERS = "close_followers";
+    private static final String NOTIFICATION_NEW_FOLLOWER_TITLE = "New Follower !";
+    private static final String NOTIFICATION_NEW_FOLLOWER_TEXT = "YOUHOU ! You have a new Follower !";
+    private static final String NOTIFICATION_LIKE_TITLE = "New like !";
+    private static final String NOTIFICATION_LIKE_TEXT = "YOUHOU ! Someone has liked your post !";
     private Map<String, Object> mapDeleteFollowing = (Map<String, Object>) new HashMap<>().put("following", FieldValue.delete());
     private Map<String, Object> mapDeleteFollowers = (Map<String, Object>) new HashMap<>().put("followers", FieldValue.delete());
     private Map<String, Object> mapDeleteCloseFollowers = (Map<String, Object>) new HashMap<>().put("close_followers", FieldValue.delete());
@@ -184,24 +188,26 @@ public class FirestoreDatabase implements Database {
                 followList.add(userId);
                 mapFollowing.put(process, followList);
                 transaction.set(userDoc, mapFollowing, SetOptions.merge());
-                if (process.equals(FOLLOWING)) sendNotification(userId);
+                if (process.equals(FOLLOWING)) sendNotification(userId, NOTIFICATION_NEW_FOLLOWER_TITLE, NOTIFICATION_NEW_FOLLOWER_TEXT);
             }
         } else {
             Map<String, Object> mapFollowing = new HashMap<>();
             mapFollowing.put(process, Arrays.asList(userId));
             transaction.set(userDoc, mapFollowing, SetOptions.merge());
-            if (process.equals(FOLLOWING)) sendNotification(userId);
+            if (process.equals(FOLLOWING)) sendNotification(userId, NOTIFICATION_NEW_FOLLOWER_TITLE, NOTIFICATION_NEW_FOLLOWER_TEXT);
         }
     }
 
 
-    private void sendNotification(String userFollowedId){
+    private void sendNotification(String userFollowedId, String title, String text){
         USERS.document(userFollowedId).get().addOnSuccessListener(documentSnapshot -> {
             String deviceId = (String) documentSnapshot.get("deviceId");
             if (deviceId != null) {
                 Map<String, String> notificationData = new HashMap<>();
                 notificationData.put("toUserId", userFollowedId);
                 notificationData.put("toDeviceId", deviceId);
+                notificationData.put("title", title);
+                notificationData.put("text", text);
                 NOTIFICATION.document(UUID.randomUUID().toString()).set(notificationData);
             }
         });
@@ -482,7 +488,6 @@ public class FirestoreDatabase implements Database {
     @Override
     public Task<Void> likePost(String userId, String postId) {
         final DocumentReference likedPostDoc = POSTS.document(postId);
-
         return FIRESTORE
                 .runTransaction(likePostTransaction(likedPostDoc, userId, "like"));
     }
@@ -490,7 +495,6 @@ public class FirestoreDatabase implements Database {
     @Override
     public Task<Void> unlikePost(String userId, String postId) {
         final DocumentReference unlikedPostDoc = POSTS.document(postId);
-
         return FIRESTORE
                 .runTransaction(likePostTransaction(unlikedPostDoc, userId, "unlike"));
     }
@@ -499,15 +503,14 @@ public class FirestoreDatabase implements Database {
         return transaction -> {
             DocumentSnapshot postSnapchot = transaction.get(postDoc);
             List<String> likers = (List<String>) postSnapchot.get("likers");
-            if (likers != null) {
-                if (!likers.contains(userId)) {
-                    Map<String, Object> mapLikers = new HashMap<>();
-                    if (process.equals("like")) likers.add(userId);
-                    else likers.remove(userId);
-                    mapLikers.put("likers", likers);
-                    transaction.set(postDoc, mapLikers, SetOptions.merge());
-                }
+            Map<String, Object> mapLikers = new HashMap<>();
+            if (process.equals("like")){
+                likers.add(userId);
+                sendNotification((String) postSnapchot.get("userId"), NOTIFICATION_LIKE_TITLE, NOTIFICATION_LIKE_TEXT);
             }
+            else likers.remove(userId);
+            mapLikers.put("likers", likers);
+            transaction.set(postDoc, mapLikers, SetOptions.merge());
             return null;
         };
     }
@@ -613,6 +616,13 @@ public class FirestoreDatabase implements Database {
                     assert (post != null);
                     return post;
                 });
+    }
+
+    @Override
+    public Task<Void> updateHighScore(int highScore) {
+        HashMap<String, Object> map = new HashMap<>();
+        map.put("highScore", highScore);
+        return loggedInUser().update(map);
     }
 
 

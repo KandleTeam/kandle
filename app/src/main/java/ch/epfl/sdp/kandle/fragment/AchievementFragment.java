@@ -35,6 +35,7 @@ public class AchievementFragment extends Fragment {
             createAchievements(achievements,2, 3, Achievement.Achievement_type.FOLLOWERS, null);
             createAchievements(achievements,2, 3, Achievement.Achievement_type.NB_LIKES_POST, null);
             createAchievements(achievements,2, 5, Achievement.Achievement_type.NB_LIKES_POSTS_TOTAL, null);
+            createAchievements(achievements, 2, 5, Achievement.Achievement_type.OFFLINE_GAME_POINTS, null);
     }
 
     @Nullable
@@ -46,6 +47,7 @@ public class AchievementFragment extends Fragment {
         createAchievements(achievements,2, 3, Achievement.Achievement_type.FOLLOWERS, achievementAdapter);
         createAchievements(achievements,2, 3, Achievement.Achievement_type.NB_LIKES_POST, achievementAdapter);
         createAchievements(achievements,2, 5, Achievement.Achievement_type.NB_LIKES_POSTS_TOTAL, achievementAdapter);
+        createAchievements(achievements, 2, 5, Achievement.Achievement_type.OFFLINE_GAME_POINTS, achievementAdapter);
         view = inflater.inflate(R.layout.fragment_achievement, container, false);
         achievementAdapter.changeList(achievements);
         flAchievements = view.findViewById(R.id.flAchievements);
