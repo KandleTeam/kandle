@@ -177,6 +177,7 @@ public class FirestoreDatabase implements Database {
 
                     addFollow(userFollowed, userFollowingDoc, transaction, following, FOLLOWING);
                     addFollow(userFollowing, userFollowedDoc, transaction, followers, FOLLOWERS);
+
                     return null;
                 });
     }
@@ -256,11 +257,9 @@ public class FirestoreDatabase implements Database {
                     DocumentSnapshot userFollowingSnapshot = transaction.get(userFollowingDoc);
                     DocumentSnapshot userFollowedSnapshot = transaction.get(userFollowedDoc);
 
-                    //List<String> following = (List<String>) userFollowingSnapshot.get(FOLLOWING);
                     List<String> followers = (List<String>) userFollowedSnapshot.get(FOLLOWERS);
                     List<String> closeFollowers = (List<String>) userFollowedSnapshot.get(CLOSE_FOLLOWERS);
-
-                    if (!closeFollowers.isEmpty()) {
+                    if (closeFollowers != null) {
                         if (followers.contains(userFollowing) && !closeFollowers.contains(userFollowing)) {
                             /*Map<String, Object> mapCloseFollowed = new HashMap<>();
                             closeFollowers.add(userFollowing);

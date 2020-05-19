@@ -65,6 +65,7 @@ public class FollowingPostsFragment extends Fragment {
                                             if(task2.isSuccessful()) {
                                                 boolean isCloseFollower = false;
                                                     if (task2.getResult() != null) {
+                                                        System.out.println("IT WORKS !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!   " + task2.getResult().size());
                                                         for (User user1 : task2.getResult()) {
                                                             if (user1.getId().equals(currentUserId)) {
                                                                 posts.addAll(task1.getResult());

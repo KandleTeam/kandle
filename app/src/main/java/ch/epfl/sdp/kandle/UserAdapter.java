@@ -127,6 +127,9 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.ViewHolder> {
                 }
             });
         }
+        else{
+            holder.mIsCloseFriend.setVisibility(View.GONE);
+        }
         Log.i("TAG", Thread.currentThread().getName());
         if (user.getId().equals(currentUser.getId())) {
             holder.mFollowBtn.setVisibility(View.GONE);
