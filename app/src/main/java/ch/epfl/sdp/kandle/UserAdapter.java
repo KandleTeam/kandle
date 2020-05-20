@@ -2,6 +2,8 @@ package ch.epfl.sdp.kandle;
 
 import android.content.Context;
 import android.content.res.Resources;
+import android.graphics.Color;
+import android.content.res.Resources;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -65,8 +67,9 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.ViewHolder> {
         TextView mUsername = holder.mUsername;
         mUsername.setText("@" + user.getUsername());
 
-        ImageView mImageProfile = holder.image_profile;
+        CircleImageView mImageProfile = holder.image_profile;
         if (user.getImageURL() != null) {
+            mImageProfile.setBackgroundColor(Color.TRANSPARENT);
             mImageProfile.setTag(PROFILE_PICTURE_TAG);
             File image = DependencyManager.getInternalStorageSystem().getImageFileById(user.getId());
             if (image != null) {
@@ -75,6 +78,10 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.ViewHolder> {
             } else {
                 Picasso.get().load(user.getImageURL()).into(mImageProfile);
             }
+        }
+        else{
+            mImageProfile.setImageDrawable(Kandle.getContext().getDrawable(R.drawable.ic_launcher_foreground));
+            mImageProfile.setBackground(Kandle.getContext().getDrawable(R.drawable.ic_launcher_circle_background));
         }
         final Authentication authentication = DependencyManager.getAuthSystem();
         final User currentUser = authentication.getCurrentUser();
@@ -136,9 +143,7 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.ViewHolder> {
         } else {
 
             database.userIdFollowingList(currentUser.getId()).addOnCompleteListener(task -> {
-
                 if (task.isSuccessful()) {
-
                     if ((task.getResult() == null) || (!task.getResult().contains(user.getId()))) {
                         holder.mFollowBtn.setText("follow");
                     } else {
@@ -212,7 +217,6 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.ViewHolder> {
             mFollowBtn = itemView.findViewById(R.id.btn_follow);
             mIsCloseFriend = itemView.findViewById(R.id.userCloseFriends);
         }
-
 
         @Override
         public void onClick(View v) {
