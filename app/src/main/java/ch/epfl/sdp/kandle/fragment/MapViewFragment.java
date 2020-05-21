@@ -8,6 +8,7 @@ import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.location.Location;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -32,6 +33,7 @@ import com.mapbox.mapboxsdk.Mapbox;
 import com.mapbox.mapboxsdk.annotations.Icon;
 import com.mapbox.mapboxsdk.annotations.IconFactory;
 import com.mapbox.mapboxsdk.annotations.MarkerOptions;
+import com.mapbox.mapboxsdk.camera.CameraPosition;
 import com.mapbox.mapboxsdk.geometry.LatLng;
 import com.mapbox.mapboxsdk.location.LocationComponent;
 import com.mapbox.mapboxsdk.location.LocationComponentActivationOptions;
@@ -61,15 +63,21 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback, Per
     private static final String MARKER_SOURCE = "markers-source";
     private static final String MARKER_STYLE_LAYER = "markers-style-layer";
     private static final String MARKER_IMAGE = "custom-marker";
+
     private static final long DEFAULT_INTERVAL_IN_MILLISECONDS = 1000L;
     private static final long DEFAULT_MAX_WAIT_TIME = DEFAULT_INTERVAL_IN_MILLISECONDS * 5;
+
     private static final int RADIUS = 2000;
     private static final int LOCATION_PERMISSION_REQUEST_CODE = 1;
+    // Default map position, zoomed out over California
+    private static final CameraPosition defaultCameraPosition = new CameraPosition.Builder().zoom(3).target(new LatLng(37.144579, -121.905870)).build();
+
+
     private static Icon postIcon, landmarkIcon;
-    public int numMarkers;
+    private int numMarkers;
+
     private CachedFirestoreDatabase database;
     private Authentication authentication;
-
     private MyLocationProvider locationProvider;
     private Location currentLocation;
 
@@ -103,6 +111,16 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback, Per
         Mapbox.getInstance(this.getContext(), getString(R.string.mapbox_access_token));
         View view = inflater.inflate(R.layout.fragment_map, container, false);
 
+        // Load icons
+        IconFactory iconFactory = IconFactory.getInstance(MapViewFragment.this.getActivity());
+        Drawable drawable = ResourcesCompat.getDrawable(MapViewFragment.this.getResources(), R.drawable.ic_whatshot_24dp, null);
+        Bitmap mBitmap = BitmapUtils.getBitmapFromDrawable(drawable);
+        postIcon = iconFactory.fromBitmap(mBitmap);
+
+        Drawable drawableLandMark = ResourcesCompat.getDrawable(MapViewFragment.this.getResources(), R.drawable.ic_place_red_50dp, null);
+        Bitmap mBitmapLandmark = BitmapUtils.getBitmapFromDrawable(drawableLandMark);
+        landmarkIcon = iconFactory.fromBitmap(mBitmapLandmark);
+
         locationProvider = DependencyManager.getLocationProvider();
         database = new CachedFirestoreDatabase();
         authentication = DependencyManager.getAuthSystem();
@@ -135,51 +153,19 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback, Per
 
         this.mapboxMap = mapboxMap;
 
+        //mapboxMap.moveCamera(map -> defaultCameraPosition);
+        mapboxMap.setStyle(Style.MAPBOX_STREETS, this::enableLocationComponent);
 
-        locationProvider.getLocation(this.getActivity()).addOnCompleteListener(task -> {
-            IconFactory iconFactory = IconFactory.getInstance(MapViewFragment.this.getActivity());
-            if (task.isSuccessful()) {
-
-                if (task.getResult() != null) {
-
-
-                    mapboxMap.setStyle(Style.MAPBOX_STREETS, style -> {
-
-
-                        enableLocationComponent(style);
-                        currentLocation = task.getResult();
-
-                        Drawable drawable = ResourcesCompat.getDrawable(MapViewFragment.this.getResources(), R.drawable.ic_whatshot_24dp, null);
-                        Bitmap mBitmap = BitmapUtils.getBitmapFromDrawable(drawable);
-                        postIcon = iconFactory.fromBitmap(mBitmap);
-
-                        Drawable drawableLandMark = ResourcesCompat.getDrawable(MapViewFragment.this.getResources(), R.drawable.ic_place_red_50dp, null);
-                        Bitmap mBitmapLandmark = BitmapUtils.getBitmapFromDrawable(drawableLandMark);
-                        landmarkIcon = iconFactory.fromBitmap(mBitmapLandmark);
-
-                        populateWithMarkers();
-
-                    });
-
-                    mapView.setContentDescription("MAP READY");
-                } else {
-                    Toast.makeText(this.getActivity(), "Enable GPS", Toast.LENGTH_LONG).show();
-                }
-            } else {
-                permissionsManager = new PermissionsManager(this);
-                permissionsManager.requestLocationPermissions(this.getActivity());
-                //Toast.makeText(this.getActivity(), "An error has occurred : " + task.getException().getMessage(), Toast.LENGTH_LONG).show();
-            }
-
-        });
     }
 
     private void populateWithMarkers() {
         numMarkers = 0;
         mapboxMap.clear();
 
-        database.getNearbyPosts(currentLocation.getLongitude(), currentLocation.getLatitude(), RADIUS).addOnSuccessListener(posts -> {
+        database.getNearbyPosts(currentLocation.getLatitude(), currentLocation.getLongitude(), RADIUS).addOnSuccessListener(posts -> {
+            Log.w("Callback called", "Retrieved Posts at location " + currentLocation.toString());
             for (Post p : posts) {
+                Log.w("=>>", "a post");
                 numMarkers++;
                 if (p.getType() == null || !p.equals(Post.EVENT) || p.getDate().getTime() < new Date().getTime()) {
                     mapboxMap.addMarker(new MarkerOptions()
@@ -189,7 +175,7 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback, Per
                             .setSnippet(p.getPostId());
                 }
             }
-        });
+        }).addOnFailureListener(Throwable::printStackTrace);
 
         mapboxMap.addMarker(new MarkerOptions()
                 .position(new LatLng(46.5190, 6.5667))
@@ -240,37 +226,6 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback, Per
 
     }
 
-    /*private void addPostMarkers(Style loadedMapStyle) {
-        List<Feature> features = new ArrayList<>();
-        database.getNearbyPosts(currentLocation.getLongitude(), currentLocation.getLatitude(), RADIUS).addOnSuccessListener(new OnSuccessListener<List<Post>>() {
-            @Override
-            public void onSuccess(List<Post> posts) {
-                for (Post p : posts){
-                    features.add(Feature.fromGeometry(Point.fromLngLat(p.getLongitude(), p.getLatitude())));
-                }
-                // Source: A data source specifies the geographic coordinate where the image marker gets placed.
-
-                loadedMapStyle.addSource(new GeoJsonSource(MARKER_SOURCE, FeatureCollection.fromFeatures(features)));
-
-                // Style layer: A style layer ties together the source and image and specifies how they are displayed on the map.
-                loadedMapStyle.addLayer(new SymbolLayer(MARKER_STYLE_LAYER, MARKER_SOURCE)
-                        .withProperties(
-                                PropertyFactory.iconAllowOverlap(true),
-                                PropertyFactory.iconIgnorePlacement(true),
-                                PropertyFactory.iconImage(MARKER_IMAGE),
-                                // Adjust the second number of the Float array based on the height of your marker image.
-                                // This is because the bottom of the marker should be anchored to the coordinate point, rather
-                                // than the middle of the marker being the anchor point on the map.
-                                PropertyFactory.iconOffset(new Float[] {0f, -52f})
-                        ));
-
-            }
-        });
-
-    }
-
-     */
-
     /**
      * Initialize the Maps SDK's LocationComponent
      */
@@ -278,6 +233,7 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback, Per
     private void enableLocationComponent(@NonNull Style loadedMapStyle) {
         // Check if permissions are enabled and if not request
         if (PermissionsManager.areLocationPermissionsGranted(this.getContext())) {
+            Log.w("====", "enableLocationComponent success!");
 
             // Get an instance of the component
             LocationComponent locationComponent = mapboxMap.getLocationComponent();
@@ -303,17 +259,40 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback, Per
             locationComponent.setLocationComponentEnabled(true);
 
             // Set the component's camera mode
-            locationComponent.setCameraMode(CameraMode.TRACKING);
+            locationComponent.setCameraMode(CameraMode.TRACKING_COMPASS);
 
             // Set the component's render mode
             locationComponent.setRenderMode(RenderMode.COMPASS);
 
 
             initLocationEngine();
+
+            locationProvider.getLocation(this.getActivity()).addOnCompleteListener(task -> {
+                if (task.isSuccessful()) {
+
+                    if (task.getResult() != null) {
+
+                        currentLocation = task.getResult();
+
+                        populateWithMarkers();
+
+                    } else {
+                        Toast.makeText(this.getActivity(), "Retrieved location is null", Toast.LENGTH_LONG).show();
+                    }
+                } else {
+
+                    Toast.makeText(this.getActivity(), "Failed to retrieve location: " + task.getException().getMessage(), Toast.LENGTH_LONG).show();
+                }
+
+            });
+
         } else {
+            Log.w("====", "enableLocationComponent failure!");
+
             permissionsManager = new PermissionsManager(this);
             permissionsManager.requestLocationPermissions(this.getActivity());
         }
+
     }
 
 
@@ -328,21 +307,19 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback, Per
         locationEngine.getLastLocation(callback);
     }
 
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        permissionsManager.onRequestPermissionsResult(requestCode, permissions, grantResults);
-    }
-
 
     @Override
     public void onExplanationNeeded(List<String> permissionsToExplain) {
-        Toast.makeText(this.getActivity(), "You have to grant location permission to see nearby posts", Toast.LENGTH_LONG).show();
+        Toast.makeText(this.getActivity(), "Please enable location to see nearby posts", Toast.LENGTH_LONG).show();
     }
 
     @Override
     public void onPermissionResult(boolean granted) {
         if (granted) {
+            Toast.makeText(getContext(), "Thanks for enabling location", Toast.LENGTH_LONG).show();
             mapboxMap.getStyle(this::enableLocationComponent);
+        } else {
+            Toast.makeText(getContext(), "Please enable location to make full use of the app", Toast.LENGTH_LONG).show();
         }
     }
 
@@ -395,4 +372,7 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback, Per
         }
     }
 
+    public PermissionsManager getPermissionsManager() {
+        return permissionsManager   ;
+    }
 }
