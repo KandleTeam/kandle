@@ -245,9 +245,11 @@ public class MockDatabase implements Database {
     public Task<List<User>> userCloseFollowersList(String userId) {
         TaskCompletionSource<List<User>> source = new TaskCompletionSource<>();
         ArrayList<User> closeFollowers = new ArrayList<>();
+        if(followMap.get(userId) != null) {
             for (String id : followMap.get(userId).closeFollowers) {
                 closeFollowers.add(users.get(id));
             }
+        }
         source.setResult(closeFollowers);
         return source.getTask();
     }

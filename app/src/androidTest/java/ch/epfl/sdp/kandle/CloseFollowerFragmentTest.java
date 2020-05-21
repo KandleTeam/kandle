@@ -136,7 +136,7 @@ public class CloseFollowerFragmentTest {
         onView(new RecyclerViewMatcher(R.id.rvPosts)
                 .atPositionOnView(1, R.id.isPostForCloseFollowers)).check(matches(withEffectiveVisibility(ViewMatchers.Visibility.VISIBLE)));
         onView(new RecyclerViewMatcher(R.id.rvPosts)
-                .atPositionOnView(0, R.id.isPostForCloseFollowers)).check(matches(withEffectiveVisibility(ViewMatchers.Visibility.INVISIBLE)));
+                .atPositionOnView(0, R.id.isPostForCloseFollowers)).check(matches(withEffectiveVisibility(ViewMatchers.Visibility.GONE)));
     }
 
     @Test
@@ -148,7 +148,7 @@ public class CloseFollowerFragmentTest {
         onView(new RecyclerViewMatcher(R.id.flPosts)
                 .atPositionOnView(1, R.id.isPostForCloseFollowers)).check(matches(withEffectiveVisibility(ViewMatchers.Visibility.VISIBLE)));
         onView(new RecyclerViewMatcher(R.id.flPosts)
-                .atPositionOnView(0, R.id.isPostForCloseFollowers)).check(matches(withEffectiveVisibility(ViewMatchers.Visibility.INVISIBLE)));
+                .atPositionOnView(0, R.id.isPostForCloseFollowers)).check(matches(withEffectiveVisibility(ViewMatchers.Visibility.GONE)));
         getDatabaseSystem().unsetCloseFollower(LoggedInUser.getInstance().getId(), u2.getId());
         loadView(R.id.following_posts);
         onView(withId(R.id.flPosts)).check(new RecyclerViewItemCountAssertion(1));
