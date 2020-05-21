@@ -11,11 +11,13 @@ import android.widget.TextView;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import ch.epfl.sdp.kandle.LoggedInUser;
 import ch.epfl.sdp.kandle.R;
+import ch.epfl.sdp.kandle.dependencies.DependencyManager;
 
 public class OfflineGameActivity extends AppCompatActivity {
 
-    public final static int MAX_POINTS = 2;
+    public final static int MAX_NB_VIRUS = 10;
     public final int APPEARING_TIME = 3000; //in miliseconds
 
 
@@ -64,8 +66,14 @@ public class OfflineGameActivity extends AppCompatActivity {
         mEndText.setVisibility(View.GONE);
         mScoreText.setText("score :");
         mScore.setText("0");
+
+        if(DependencyManager.getAuthSystem().getCurrentUser()!=null){
+            nbPoints[2] = DependencyManager.getAuthSystem().getCurrentUser().getHighScore();
+        }
+
         mMaxScoreText.setText("record :");
-        mMaxScore.setText("0");
+        mMaxScore.setText(Integer.toString(nbPoints[2]));
+
 
 
         mStartButton.setOnClickListener(v -> {
@@ -137,7 +145,7 @@ public class OfflineGameActivity extends AppCompatActivity {
 
     private void handlingVirusDisappearing(){
         mVirusButton.setVisibility(View.GONE);
-        if (getMaxPossiblePoints(nbPoints) < MAX_POINTS) {
+        if (getMaxPossiblePoints(nbPoints) < MAX_NB_VIRUS) {
             incrementMaxPossiblePoints(nbPoints);
             timer = new Timer();
             timer.schedule(new GameTimerTask(), APPEARING_TIME);
@@ -146,6 +154,10 @@ public class OfflineGameActivity extends AppCompatActivity {
             if (nbPoints[1] > nbPoints[2]) {
                 nbPoints[2] = nbPoints[1];
                 mMaxScore.setText(Integer.toString(nbPoints[2]));
+                if(DependencyManager.getAuthSystem().getCurrentUser()!=null){
+                    DependencyManager.getInternalStorageSystem().getCurrentUser().setHighScore(nbPoints[2]);
+                    LoggedInUser.getInstance().setHighScore(nbPoints[2]);
+                }
             }
             mEndText.setVisibility(View.VISIBLE);
             mStartButton.setVisibility(View.VISIBLE);

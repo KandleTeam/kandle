@@ -3,9 +3,13 @@
     <color name="colorPrimary">#C1F44336</color>
     <color name="colorPrimaryDark">#00574B</color>
     <color name="colorAccent">#D81B60</color>
-    <color name = "backGroundRed">  #C1F44336</color>
+    <color name="backGroundRed">  #C1F44336</color>
     <color name="white"> #ffffff</color>
     <color name="black"> #000000</color>
     <color name="grey"> #dedede</color>
+    <color name="dark_grey"> #555555</color>
     <color name="hint_foreground_material_light">#00000000</color>
+
+
 </resources>
+

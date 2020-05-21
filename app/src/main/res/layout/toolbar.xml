@@ -7,4 +7,5 @@
     android:background="@color/backGroundRed"
     android:fitsSystemWindows="true"
     android:minHeight="?attr/actionBarSize"
+    android:textSize="35sp"
     app:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"></androidx.appcompat.widget.Toolbar>

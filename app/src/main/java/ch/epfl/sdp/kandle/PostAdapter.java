@@ -134,6 +134,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder> {
                 if (user.getImageURL() != null) {
                     File image = DependencyManager.getInternalStorageSystem().getImageFileById(user.getId());
                     if(image != null) {
+                        System.out.println("Load user image");
                         Picasso.get().load(image).into(profilePicView);
                     }else {
                         Picasso.get().load(user.getImageURL()).into(profilePicView);

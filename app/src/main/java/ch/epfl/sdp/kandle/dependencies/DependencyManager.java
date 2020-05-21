@@ -14,7 +14,6 @@ public final class DependencyManager {
     private static Database db = FirestoreDatabase.getInstance();
     private static ImageStorage storage = FirebaseImageStorage.getInstance();
     private static MyLocationProvider locationProvider = new GoogleLocationServices();
-
     private static InternalStorage internalStorage = InternalStorageManager.getInstance();
     private static LocalDatabase localDatabase = LocalDatabase.getInstance();
     private static Authentication auth = FirebaseAuthentication.getInstance();

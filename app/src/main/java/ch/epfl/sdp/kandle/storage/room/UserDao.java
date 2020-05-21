@@ -20,6 +20,7 @@ public interface UserDao {
     String USER_ATTR_NICKNAME = "nickname";
     String USER_ATTR_IMAGE_URL = "imageURL";
     String USER_ATTR_POSTS_LIST = "postIds";
+    String USER_ATTR_HIGH_SCORE = "highScore";
 
     @Query("SELECT * from Users")
     List<User> getUserList();
