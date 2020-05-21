@@ -481,7 +481,7 @@ public class FirestoreDatabase implements Database {
     }
 
     @Override
-    public Task<List<Post>> getNearbyPosts(double longitude, double latitude, double distance) {
+    public Task<List<Post>> getNearbyPosts(double latitude, double longitude, double distance) {
 
         TaskCompletionSource<List<Post>> source = new TaskCompletionSource<>();
         POSTS.get().addOnCompleteListener(task -> {
