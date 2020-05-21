@@ -1,15 +1,12 @@
 package ch.epfl.sdp.kandle.activity;
 
-import android.annotation.SuppressLint;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.view.MenuItem;
-import android.view.View;
-import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
@@ -18,7 +15,6 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
-import com.google.android.gms.maps.internal.IGoogleMapDelegate;
 import com.google.android.material.navigation.NavigationView;
 import com.squareup.picasso.Picasso;
 
@@ -211,25 +207,22 @@ public class MainActivity extends AppCompatActivity {
             e.printStackTrace();
         }
 
-
     }
 
-    /**
-     * @param requestCode
-     * @param permissions
-     * @param grantResults
-     */
-    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
-        switch (requestCode) {
-            case 1: {
-                // If request is cancelled, the result arrays are empty.
-                if (grantResults.length > 0
-                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                }
-                return;
-            }
-            // other 'case' lines to check for other
-            // permissions this app might request
+    // The PermissionManager works under the hood with `ActivityCompat.requestPermissions(activity, permissions, code)`
+    // i.e. the parent activity request the permission to the system, and receives the request result.
+    // We cannot get onRequestPermissionResult called on the fragment using the PermissionManager wrapper.
+    // (although the fragment can still be the listener to the PermissionManager if it implements PermissionListener,
+    // as the PermissionManager calls the specific callback PermissionListener.onPermissionResult)
+    // Workaround: receive the result in the activity on behalf of a specific fragment
+    //
+    // see https://github.com/mapbox/mapbox-events-android/issues/395
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        if (fragment instanceof MapViewFragment) {
+            ((MapViewFragment) fragment).getPermissionsManager().onRequestPermissionsResult(requestCode, permissions, grantResults);
         }
     }
+
+
 }

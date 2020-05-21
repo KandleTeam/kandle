@@ -55,6 +55,7 @@ public class SettingsFragment extends Fragment {
         );
         if (LoggedInUser.isGuestMode()) {
             mModifyPasswordLayout.setVisibility(View.GONE);
+            mDeleteAccount.setVisibility(View.GONE);
         }
 
 
