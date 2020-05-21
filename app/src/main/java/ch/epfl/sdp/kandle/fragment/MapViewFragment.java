@@ -52,6 +52,7 @@ import java.util.List;
 import ch.epfl.sdp.kandle.LoggedInUser;
 import ch.epfl.sdp.kandle.Post;
 import ch.epfl.sdp.kandle.R;
+import ch.epfl.sdp.kandle.activity.OfflineGameActivity;
 import ch.epfl.sdp.kandle.activity.PostActivity;
 import ch.epfl.sdp.kandle.dependencies.Authentication;
 import ch.epfl.sdp.kandle.dependencies.DependencyManager;
@@ -86,6 +87,8 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback, Per
     private PermissionsManager permissionsManager;
     private LocationEngine locationEngine;
     private LocationEngineCallback<LocationEngineResult> callback;
+
+    private ImageButton mGameButton;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -125,6 +128,8 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback, Per
         database = new CachedFirestoreDatabase();
         authentication = DependencyManager.getAuthSystem();
 
+        mGameButton = view.findViewById(R.id.startOfflineGameConnectedButton);
+
         ImageButton mNewPostButton = view.findViewById(R.id.newPostButton);
         if (LoggedInUser.isGuestMode()) {
             mNewPostButton.setVisibility(View.GONE);
@@ -139,6 +144,12 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback, Per
             });
         }
 
+        if(!DependencyManager.getNetworkStateSystem().isConnected()){
+            mGameButton.setVisibility(View.VISIBLE);
+            mGameButton.setOnClickListener(v -> {
+                startActivity(new Intent(getContext(), OfflineGameActivity.class));
+            });
+        }
 
         mapView = view.findViewById(R.id.mapView);
         mapView.onCreate(savedInstanceState);

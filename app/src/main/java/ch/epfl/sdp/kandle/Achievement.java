@@ -1,6 +1,7 @@
 package ch.epfl.sdp.kandle;
 
 import android.app.Activity;
+import android.util.Log;
 
 import ch.epfl.sdp.kandle.dependencies.Authentication;
 import ch.epfl.sdp.kandle.dependencies.Database;
@@ -8,6 +9,8 @@ import ch.epfl.sdp.kandle.dependencies.DependencyManager;
 import ch.epfl.sdp.kandle.fragment.PostFragment;
 import ch.epfl.sdp.kandle.fragment.ProfileFragment;
 import ch.epfl.sdp.kandle.storage.caching.CachedFirestoreDatabase;
+
+import static androidx.constraintlayout.widget.Constraints.TAG;
 
 public class Achievement {
 
@@ -57,6 +60,10 @@ public class Achievement {
 
             case NB_LIKES_POSTS_TOTAL:
                 return sb.append("have in total ").append(goal_value).append(" likes in your posts").toString();
+
+            case OFFLINE_GAME_POINTS:
+                return sb.append("have in total ").append(goal_value).append(" points in the Offline Game").toString();
+
             //THIS CASE IS NEVER REACHED
             default:
                 return sb.toString();
@@ -90,6 +97,13 @@ public class Achievement {
 
                     case NB_LIKES_POSTS_TOTAL:
                         checkPostsLikes(isAchievementFragment);
+                        break;
+
+                    case OFFLINE_GAME_POINTS:
+                        checkPointsOfflineGame(isAchievementFragment);
+                        break;
+
+                    default:
                         break;
                 }
             }
@@ -204,6 +218,22 @@ public class Achievement {
         });
     }
 
+    public void checkPointsOfflineGame(boolean isAchievementFragment){
+        if(auth.getCurrentUser().getHighScore() >= goal_value){
+            state_achievement = true;
+            if(isAchievementFragment){
+                try {
+                    achievementAdapter.notifyDataSetChanged();
+                } catch (Exception e) {
+                    Log.d(TAG, e.toString());
+                }
+            }
+            else{
+                fragment.notifyChange();
+            }
+        }
+    }
+
     public void setAdapter(AchievementAdapter achievementAdapter) {
         this.achievementAdapter = achievementAdapter;
     }
@@ -214,6 +244,7 @@ public class Achievement {
         FOLLOWING,
         NB_POSTS,
         NB_LIKES_POST,
-        NB_LIKES_POSTS_TOTAL
+        NB_LIKES_POSTS_TOTAL,
+        OFFLINE_GAME_POINTS
     }
 }
