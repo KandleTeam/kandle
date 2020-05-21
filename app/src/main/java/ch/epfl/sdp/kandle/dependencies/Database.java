@@ -73,6 +73,24 @@ public interface Database {
     Task<Void> unFollow(final String userUnFollowing, final String userUnFollowed);
 
     /**
+     * Asynchronously sets a UserFollowing as a Close UserFollowing
+     *
+     * @param userFollowing
+     * @param userFollowed
+     * @return A void task
+     */
+    Task<Void> setCloseFollower(final String userFollowing, final String userFollowed);
+
+    /**
+     * Asynchronously unsets a UserFollowing as a Close UserFollowing
+     *
+     * @param userFollowing
+     * @param userFollowed
+     * @return A void task
+     */
+    Task<Void> unsetCloseFollower(final String userFollowing, final String userFollowed);
+
+    /**
      * Asynchronously retrieves all the userIds that the target user is following
      *
      * @param userId The id of the target user
@@ -89,6 +107,14 @@ public interface Database {
     Task<List<String>> userIdFollowersList(String userId);
 
     /**
+     * Asynchronously retrieves all the users uds that are close followers to the target
+     *
+     * @param userId The id of the target user
+     * @return A list of user that the target user follows
+     */
+    Task<List<String>> userIdCloseFollowersList(String userId);
+
+    /**
      * Asynchronously retrieves all the users that the target user is following
      *
      * @param userId The id of the target user
@@ -103,6 +129,14 @@ public interface Database {
      * @return A list of user that are following the target user
      */
     Task<List<User>> userFollowersList(String userId);
+
+    /**
+     * Asynchronously retrieves all the users that are following the target user
+     *
+     * @param userId The id of the target user
+     * @return A list of user that are following the target user
+     */
+    Task<List<User>> userCloseFollowersList(String userId);
 
     /**
      * Asynchronously updates the current users profil picture URI

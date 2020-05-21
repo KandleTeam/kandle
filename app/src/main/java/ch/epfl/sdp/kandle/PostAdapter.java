@@ -118,6 +118,14 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder> {
                     });
                 }
             });
+
+        }
+
+        if(post.getIsForCloseFollowers() != null && post.getIsForCloseFollowers().equals(Post.CLOSE_FOLLOWER)){
+            holder.mIsForCloseFollowers.setVisibility(View.VISIBLE);
+        }
+        else{
+            holder.mIsForCloseFollowers.setVisibility(View.GONE);
         }
 
         ImageView postImageView = holder.mPostImage;
@@ -125,8 +133,11 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder> {
             postImageView.setVisibility(View.VISIBLE);
             postImageView.setTag(POST_IMAGE);
             Picasso.get().load(post.getImageURL()).into(postImageView);
-
         }
+        else{
+            postImageView.setVisibility(View.GONE);
+        }
+
         database.getUserById(post.getUserId()).addOnCompleteListener(task -> {
             if (task.isSuccessful() && task.getResult() != null) {
                 User user = task.getResult();
@@ -138,6 +149,10 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder> {
                     }else {
                         Picasso.get().load(user.getImageURL()).into(profilePicView);
                     }
+                }
+                else {
+                    profilePicView.setImageDrawable(Kandle.getContext().getDrawable(R.drawable.ic_launcher_foreground));
+                    profilePicView.setBackground(Kandle.getContext().getDrawable(R.drawable.ic_launcher_circle_background));
                 }
                 usernameView.setText("@" + user.getUsername());
                 nicknameView.setText(user.getNickname());
@@ -219,6 +234,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder> {
         public ImageView mPostImage;
         public TextView mUsername;
         public TextView mNickname;
+        public ImageView mIsForCloseFollowers;
 
 
         public ViewHolder(View itemView) {
@@ -233,6 +249,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder> {
             mPostImage = itemView.findViewById(R.id.postImageInPost);
             mUsername = itemView.findViewById(R.id.usernameinPost);
             mNickname = itemView.findViewById(R.id.nicknameInPost);
+            mIsForCloseFollowers = itemView.findViewById(R.id.isPostForCloseFollowers);
         }
 
     }

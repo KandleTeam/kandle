@@ -67,6 +67,9 @@ public class ListUsersFragment extends Fragment {
         mNumber.setText(number);
         mTitle.setText(title);
 
+        if(mTitle.getText().equals("Followers"))
+            userAdapter.setIsFollowersList(true);
+
         mRecyclerView.setAdapter(userAdapter);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(this.getContext()));
 

@@ -4,7 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".activity.PostActivity">
+    tools:context=".activity.PostActivity"
+    >
 
     <RelativeLayout
         android:id="@+id/backBar"
@@ -19,7 +20,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
-            android:background="@drawable/ic_arrow_back_black_24dp"
+            android:background="@drawable/ic_arrow_back_white_24dp"
             android:layout_marginStart="10dp"/>
 
         <TextView
@@ -27,16 +28,14 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
-            android:layout_marginStart="15dp"
-            android:layout_marginTop="15dp"
-            android:layout_marginEnd="15dp"
-            android:layout_marginBottom="15dp"
-            android:layout_toEndOf="@+id/backButton"
-            android:text="@string/postPageTitle"
-            android:textColor="@color/black"
-            android:textSize="24sp" />
+            android:text="Create new Post"
+            android:textColor="@color/white"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            android:layout_margin="15dp"/>
 
-        />
+
+
     </RelativeLayout>
 
 
@@ -135,6 +134,19 @@
             android:layout_toEndOf="@+id/galleryButton"
             android:contentDescription="Camera icon"
             app:srcCompat="@drawable/ic_menu_camera" />
+
+        <ImageButton
+            android:id="@+id/closeFriends"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:layout_centerVertical="true"
+            android:layout_marginEnd="4dp"
+            android:layout_toEndOf="@+id/cameraButton"
+            android:background="@drawable/add_background_grey"
+            android:contentDescription="Set to close friends"
+            app:srcCompat="@drawable/ic_people_outline_black_24dp" />
+
+
 
         <RelativeLayout
             android:layout_width="wrap_content"

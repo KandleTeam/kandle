@@ -4,9 +4,9 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginLeft="5dp"
+    android:layout_marginLeft="0dp"
     android:layout_marginTop="10dp"
-    android:layout_marginRight="5dp"
+    android:layout_marginRight="0dp"
     android:layout_marginBottom="10dp"
     android:orientation="vertical"
     >
@@ -49,6 +49,19 @@
             android:textSize="10dp"
             android:layout_toEndOf="@id/profilePicInPost"
             android:layout_below="@+id/nicknameInPost"/>
+
+        <ImageView
+            android:id="@+id/isPostForCloseFollowers"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_alignParentTop="true"
+            android:layout_marginStart="40dp"
+            android:layout_marginTop="7dp"
+            android:layout_toEndOf="@id/usernameinPost"
+            android:background="@drawable/add_background_grey"
+            android:contentDescription="Is close friend"
+            android:visibility="invisible"
+            app:srcCompat="@drawable/ic_people_outline_black_24dp" />
 
         <RelativeLayout
             android:layout_width="wrap_content"
@@ -101,7 +114,8 @@
     <RelativeLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal">
+        android:layout_gravity="center_horizontal"
+        android:layout_marginBottom="15dp">
 
         <ImageButton
             android:id="@+id/likeButton"
@@ -123,7 +137,24 @@
             android:textStyle="bold"
             android:layout_centerVertical="true"/>
 
+
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent">
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="2dp"
+            android:background="@color/dark_grey"
+            android:alpha="0.3"/>
     </RelativeLayout>
 
 
+
+
 </LinearLayout>
+
+

@@ -1,36 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginLeft="5dp"
+    android:orientation="vertical"
     android:layout_marginTop="10dp"
-    android:layout_marginRight="5dp"
-    android:layout_marginBottom="10dp"
-    android:background="@drawable/post_background"
-    android:orientation="horizontal"
-    >
-
-    <TextView
-        android:id="@+id/achievement_title"
-        android:layout_width="180dp"
-        android:layout_height="84dp"
-        android:layout_marginStart="25dp"
-        android:layout_marginTop="32dp"
-        android:paddingBottom="10dp"
-        android:text="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed non risus. Suspendisse lectus tortor, dignissim sit amet, adipiscing nec, ultricies sed, dolor. Cras elementum ultrices diam. Maecenas ligula massa, varius a, semper congue, euismod non, mi. Proin porttitor, orci nec nonummy molestie, enim est eleifend mi, non fermentum diam nisl sit amet erat. Duis semper."
-        android:textSize="18sp"
-        android:textStyle="bold"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+    android:layout_marginBottom="10dp">
 
     <TextView
         android:id="@+id/achievement_description"
         android:layout_width="181dp"
-        android:layout_height="27dp"
+        android:layout_height="21dp"
         android:layout_marginStart="25dp"
-
         android:layout_weight="1"
         android:text="Date : Time"
         android:textAppearance="@style/TextAppearance.Compat.Notification.Time"
@@ -40,17 +22,39 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.789" />
 
-    <ImageButton
-        android:id="@+id/achievement_trophy"
-        android:layout_width="56dp"
-        android:layout_height="129dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.482"
-        app:layout_constraintStart_toEndOf="@+id/achievement_title"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.0"
-        app:srcCompat="@drawable/ic_mood_bad_black_24dp" />
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="horizontal"
+        android:paddingTop="0dp">
+
+        <TextView
+            android:id="@+id/achievement_title"
+            android:layout_width="250dp"
+            android:layout_height="84dp"
+            android:layout_marginStart="25dp"
+            android:paddingBottom="10dp"
+            android:text="@string/place_holder_string"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <ImageView
+            android:id="@+id/achievement_trophy"
+            android:layout_width="117dp"
+            android:layout_height="49dp"
+            android:layout_weight="0.5"
+            android:src="@drawable/ic_trophy_none"
+            />
 
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+    </LinearLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="2dp"
+            android:background="@color/dark_grey"
+            android:alpha="0.3"/>
+
+</LinearLayout>

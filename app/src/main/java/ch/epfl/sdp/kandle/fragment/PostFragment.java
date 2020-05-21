@@ -21,6 +21,8 @@ import java.text.SimpleDateFormat;
 
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
+
+import ch.epfl.sdp.kandle.Kandle;
 import ch.epfl.sdp.kandle.LoggedInUser;
 import ch.epfl.sdp.kandle.Post;
 import ch.epfl.sdp.kandle.R;
@@ -42,7 +44,7 @@ public class PostFragment extends Fragment {
     private final int distance;
     //Views
     private TextView username, description, numberOfLikes, distanceView;
-    private ImageView profilePicture, postImage;
+    private ImageView profilePicture, postImage, isCloseFollowers;
     private Button followButton;
     private ImageButton likeButton;
     private TextView date;
@@ -77,6 +79,8 @@ public class PostFragment extends Fragment {
         likeButton = parent.findViewById(R.id.postFragmentLikeButton);
         distanceView = parent.findViewById(R.id.postFragmentDistanceText);
         date = parent.findViewById(R.id.postDateTime);
+        isCloseFollowers = parent.findViewById(R.id.postCloseFriends);
+
     }
 
     @Override
@@ -175,6 +179,9 @@ public class PostFragment extends Fragment {
         if (LoggedInUser.isGuestMode()) {
             likeButton.setClickable(false);
             followButton.setVisibility(View.GONE);
+        }
+        if(post.getIsForCloseFollowers() != null && post.getIsForCloseFollowers().equals(Post.CLOSE_FOLLOWER)){
+            isCloseFollowers.setVisibility(View.VISIBLE);
         }
 
         return view;

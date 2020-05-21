@@ -136,6 +136,16 @@ public class CachedFirestoreDatabase implements Database {
     }
 
     @Override
+    public Task<Void> setCloseFollower(String userFollowing, String userFollowed) {
+        return database.setCloseFollower(userFollowing, userFollowed);
+    }
+
+    @Override
+    public Task<Void> unsetCloseFollower(String userFollowing, String userFollowed) {
+        return database.unsetCloseFollower(userFollowing, userFollowed);
+    }
+
+    @Override
     public Task<List<String>> userIdFollowingList(String userId) {
         return database.userIdFollowingList(userId);
     }
@@ -146,6 +156,11 @@ public class CachedFirestoreDatabase implements Database {
     }
 
     @Override
+    public Task<List<String>> userIdCloseFollowersList(String userId) {
+        return null;
+    }
+
+    @Override
     public Task<List<User>> userFollowingList(String userId) {
         return database.userFollowingList(userId);
     }
@@ -153,6 +168,11 @@ public class CachedFirestoreDatabase implements Database {
     @Override
     public Task<List<User>> userFollowersList(String userId) {
         return database.userFollowersList(userId);
+    }
+
+    @Override
+    public Task<List<User>> userCloseFollowersList(String userId) {
+        return database.userCloseFollowersList(userId);
     }
 
     @Override

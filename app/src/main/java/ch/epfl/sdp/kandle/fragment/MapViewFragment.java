@@ -7,8 +7,8 @@ import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.location.Location;
+import android.net.Uri;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,6 +21,7 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.maps.android.SphericalUtil;
 import com.mapbox.android.core.location.LocationEngine;
 import com.mapbox.android.core.location.LocationEngineCallback;
@@ -32,9 +33,7 @@ import com.mapbox.android.core.permissions.PermissionsManager;
 import com.mapbox.mapboxsdk.Mapbox;
 import com.mapbox.mapboxsdk.annotations.Icon;
 import com.mapbox.mapboxsdk.annotations.IconFactory;
-import com.mapbox.mapboxsdk.annotations.Marker;
 import com.mapbox.mapboxsdk.annotations.MarkerOptions;
-import com.mapbox.mapboxsdk.camera.CameraPosition;
 import com.mapbox.mapboxsdk.geometry.LatLng;
 import com.mapbox.mapboxsdk.location.LocationComponent;
 import com.mapbox.mapboxsdk.location.LocationComponentActivationOptions;
@@ -53,6 +52,7 @@ import java.util.List;
 import ch.epfl.sdp.kandle.LoggedInUser;
 import ch.epfl.sdp.kandle.Post;
 import ch.epfl.sdp.kandle.R;
+import ch.epfl.sdp.kandle.User;
 import ch.epfl.sdp.kandle.activity.OfflineGameActivity;
 import ch.epfl.sdp.kandle.activity.PostActivity;
 import ch.epfl.sdp.kandle.dependencies.Authentication;
@@ -98,16 +98,15 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback, Per
 
                     Log.i("LocationEngine", "Location updated");
 
-
                     currentLocation = result.getLastLocation();
                     populateWithMarkers();
                     mapboxMap.getLocationComponent().forceLocationUpdate(result.getLastLocation());
-                } else {
                 }
             }
 
             @Override
             public void onFailure(@NonNull Exception exception) {
+                Log.w("LocationEngine", "Location update failed")
             }
         };
         // Inflate the layout for this fragment
@@ -164,10 +163,10 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback, Per
 
         this.mapboxMap = mapboxMap;
 
-        //TODO mapboxMap.moveCamera(map -> defaultCameraPosition);
         mapboxMap.setStyle(Style.MAPBOX_STREETS, this::enableLocationComponent);
 
     }
+
 
     private void populateWithMarkers() {
 
@@ -178,8 +177,21 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback, Per
                 marker.remove();
             }
             for (Post p : posts) {
-                numMarkers++;
-                if (p.getType() == null || !p.equals(Post.EVENT) || p.getDate().getTime() < new Date().getTime()) {
+                database.userCloseFollowersList(p.getUserId()).addOnCompleteListener(task1 -> {
+                    if (task1.isSuccessful()) {
+                        boolean isCloseFollower = false;
+                        if(LoggedInUser.getInstance() != null) {
+                            if (p.getUserId().equals(LoggedInUser.getInstance().getId())) {
+                                isCloseFollower = true;
+                            } else {
+                                for (User user : task1.getResult()) {
+                                    if (user.getId().equals(LoggedInUser.getInstance().getId()))
+                                        isCloseFollower = true;
+                                }
+                            }
+                        }
+                if ((isCloseFollower || p.getIsForCloseFollowers() == null || (p.getIsForCloseFollowers() != null && p.getIsForCloseFollowers().equals(Post.NOT_CLOSE_FOLLOWER))) && (p.getType() == null || !p.equals(Post.EVENT) || p.getDate().getTime() < new Date().getTime())) {
+                    numMarkers++;
                     mapboxMap.addMarker(new MarkerOptions()
                             .position(new LatLng(p.getLatitude(), p.getLongitude()))
                             .title("A post !")
@@ -216,6 +228,7 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback, Per
                     .addToBackStack(null)
                     .commit();
         });
+
 
 
     }
@@ -278,13 +291,10 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback, Per
 
 
             initLocationEngine();
-
         } else {
-
             permissionsManager = new PermissionsManager(this);
             permissionsManager.requestLocationPermissions(this.getActivity());
         }
-
     }
 
 
@@ -324,7 +334,6 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback, Per
     public void onResume() {
         super.onResume();
         mapView.onResume();
-
     }
 
     @Override
