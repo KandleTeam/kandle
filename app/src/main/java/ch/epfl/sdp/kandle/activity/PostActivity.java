@@ -143,7 +143,7 @@ public class PostActivity extends AppCompatActivity {
             isEvent = false;
             mMessageButton.setClickable(false);
             mEventButton.setClickable(true);
-            mDateAndTime.setVisibility(View.GONE); 
+            mDateAndTime.setVisibility(View.GONE);
             mMessageButton.setBackgroundResource(R.drawable.add_background);
             mEventButton.setBackgroundResource(R.drawable.add_background_grey);
             mPostText.setHint(getString(R.string.postMessageHint));
