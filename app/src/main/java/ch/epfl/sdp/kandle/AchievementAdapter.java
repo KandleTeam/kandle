@@ -48,6 +48,9 @@ public class AchievementAdapter extends RecyclerView.Adapter<AchievementAdapter.
         if (achievement.checkAchievementState()) {
             imageView.setImageResource(R.drawable.ic_mood_black_24dp);
         }
+        else{
+            imageView.setImageResource(R.drawable.ic_mood_bad_black_24dp);
+        }
         TextView titleView = holder.mtitleText;
         titleView.setText(String.valueOf(achievement.getDescription()));
         TextView dateView = holder.mHowToGetIt;
