@@ -50,6 +50,7 @@ public class PostActivity extends AppCompatActivity {
     private TextView mPostPageTitle;
     private ImageButton mMessageButton, mEventButton;
     private RelativeLayout mPostImageLayout;
+    private ImageButton mIsForCloseFollowers;
     private ImageView mPostImage;
     private Post p;
     private Authentication auth;
@@ -58,6 +59,7 @@ public class PostActivity extends AppCompatActivity {
     private Uri imageUri;
     private LinearLayout mDateAndTime;
     private boolean isEvent = false;
+    private boolean isForCloseFollowers = false;
     private DatePicker mDatePicker;
     private TimePicker mTimePicker;
 
@@ -92,6 +94,8 @@ public class PostActivity extends AppCompatActivity {
         mDatePicker = findViewById(R.id.dateSelector);
         mTimePicker = findViewById(R.id.timeSelector);
         mTimePicker.setIs24HourView(true);
+        mIsForCloseFollowers = findViewById(R.id.closeFriends);
+
 
         postCamera = new PostCamera(this);
 
@@ -159,6 +163,17 @@ public class PostActivity extends AppCompatActivity {
             i.setData(imageUri);
             startActivityForResult(i, EDIT_PIC_REQUEST);
         });
+
+        mIsForCloseFollowers.setOnClickListener(v -> {
+            if(!isForCloseFollowers){
+                isForCloseFollowers = true;
+                mIsForCloseFollowers.setBackgroundResource(R.drawable.add_background);
+            }
+            else {
+                isForCloseFollowers = false;
+                mIsForCloseFollowers.setBackgroundResource(R.drawable.add_background_grey);
+            }
+        });
     }
 
     private void onPostButtonClick(String postId, double longitude, double latitude) {
@@ -169,67 +184,80 @@ public class PostActivity extends AppCompatActivity {
             return;
         }
 
-        if (imageUri != null) {
-            ImagePicker.uploadImage(imageUri).addOnCompleteListener(task -> {
-                if (task.isSuccessful()) {
-                    Uri downloadUri = task.getResult();
-                    if (downloadUri == null) {
-                        Toast.makeText(PostActivity.this, getString(R.string.uploadImageError), Toast.LENGTH_LONG).show();
-                    } else {
-                        if (postId != null) {
-                            database.getPostByPostId(postId).addOnCompleteListener(task2 -> {
-                                if (task2.isSuccessful()) {
-                                    Post p = task2.getResult();
-                                    p.setDescription(postText);
-                                    p.setImageURL(downloadUri.toString());
-                                    p.setLatitude(p.getLatitude());
-                                    p.setLongitude(p.getLongitude());
-                                    p.setLikers(p.getLikers());
-                                    p.setType(p.getType());
-                                    if (p.getType() != null && p.getType().equals(Post.EVENT)) {
-                                        p.setDate(getDateFromPicker());
-                                    }
-                                    editPost(p, postId);
-                                }
-                            });
-                        } else {
-                            p = new Post(postText, downloadUri.toString(), new Date(), auth.getCurrentUser().getId(), longitude, latitude);
-                            if (isEvent) {
-                                p.setDate(getDateFromPicker());
-                                p.setType(Post.EVENT);
-                            }
-                            addPost(p);
-                        }
-                    }
-                }
-            });
+            if (imageUri != null) {
+                ImagePicker.uploadImage(imageUri).addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
+                        Uri downloadUri = task.getResult();
+                        if (downloadUri == null) {
+                            Toast.makeText(PostActivity.this, getString(R.string.uploadImageError), Toast.LENGTH_LONG).show();
 
-        } else {
-            if (postId != null) {
-                database.getPostByPostId(postId).addOnCompleteListener(task2 -> {
-                    if (task2.isSuccessful()) {
-                        Post p = task2.getResult();
-                        p.setDescription(postText);
-                        //raise the test coverage
-                        p.setLatitude(p.getLatitude());
-                        p.setLongitude(p.getLongitude());
-                        p.setLikers(p.getLikers());
-                        p.setType(p.getType());
-                        if (p.getType().equals(Post.EVENT)) {
-                            p.setDate(getDateFromPicker());
+                        } else {
+                            if (postId != null) {
+                                database.getPostByPostId(postId).addOnCompleteListener(task2 -> {
+                                    if (task2.isSuccessful()) {
+                                        Post p = task2.getResult();
+                                        p.setDescription(postText);
+                                        p.setImageURL(downloadUri.toString());
+                                        p.setLatitude(p.getLatitude());
+                                        p.setLongitude(p.getLongitude());
+                                        p.setLikers(p.getLikers());
+                                        p.setType(p.getType());
+                                        p.setIsForCloseFollowers(p.getIsForCloseFollowers());
+                                        if (p.getType()!= null && p.getType().equals(Post.EVENT)) {
+                                            p.setDate(getDateFromPicker());
+                                        }
+                                        editPost(p, postId);
+                                    }
+                                });
+                            } else {
+                                p = new Post(postText, downloadUri.toString(), new Date(), auth.getCurrentUser().getId(), longitude, latitude);
+                                if (isEvent) {
+                                    p.setDate(getDateFromPicker());
+                                    p.setType(Post.EVENT);
+                                }
+                                if(isForCloseFollowers){
+                                    p.setIsForCloseFollowers(Post.CLOSE_FOLLOWER);
+                                }
+                                addPost(p);
+                            }
                         }
-                        editPost(p, postId);
                     }
-                });
-            } else {
-                p = new Post(postText, null, new Date(), auth.getCurrentUser().getId(), longitude, latitude);
-                if (isEvent) {
-                    p.setDate(getDateFromPicker());
-                    p.setType(Post.EVENT);
+
+            });
+    }
+
+             else {
+                if (postId != null) {
+                    database.getPostByPostId(postId).addOnCompleteListener(task2 -> {
+                        if (task2.isSuccessful()) {
+                            Post p = task2.getResult();
+                            p.setDescription(postText);
+                            //raise the test coverage
+                            p.setLatitude(p.getLatitude());
+                            p.setLongitude(p.getLongitude());
+                            p.setLikers(p.getLikers());
+                            p.setType(p.getType());
+                            p.setIsForCloseFollowers(p.getIsForCloseFollowers());
+                            if (p.getType().equals(Post.EVENT)) {
+                                p.setDate(getDateFromPicker());
+                            }
+                            editPost(p, postId);
+                        }
+                    });
+                } else {
+                    p = new Post(postText, null, new Date(), auth.getCurrentUser().getId(), longitude, latitude);
+                    if (isEvent) {
+                        p.setDate(getDateFromPicker());
+                        p.setType(Post.EVENT);
+                    }
+
+                    if(isForCloseFollowers){
+                        p.setIsForCloseFollowers(Post.CLOSE_FOLLOWER);
+                    }
+                    addPost(p);
                 }
-                addPost(p);
             }
-        }
+
     }
 
     private void addPost(Post p) {
@@ -260,7 +288,6 @@ public class PostActivity extends AppCompatActivity {
 
     /**
      * get date and time picked in picker
-     *
      * @return date and time picked in picker
      */
     private Date getDateFromPicker() {

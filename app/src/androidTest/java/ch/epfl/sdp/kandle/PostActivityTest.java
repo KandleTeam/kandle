@@ -3,18 +3,26 @@ package ch.epfl.sdp.kandle;
 import android.app.Activity;
 import android.app.Instrumentation;
 import android.content.Intent;
+import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.provider.MediaStore;
+import android.view.View;
+import android.widget.EditText;
 
+import androidx.core.content.ContextCompat;
 import androidx.room.Room;
 import androidx.test.espresso.contrib.PickerActions;
 import androidx.test.espresso.intent.rule.IntentsTestRule;
+import androidx.test.espresso.matcher.BoundedMatcher;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 import androidx.test.rule.GrantPermissionRule;
+
+import org.hamcrest.Matcher;
 
 import org.junit.After;
 import org.junit.Rule;
 import org.junit.Test;
+import org.junit.runner.Description;
 import org.junit.runner.RunWith;
 
 import java.util.HashMap;
@@ -190,4 +198,33 @@ public class PostActivityTest {
 
         onView(withId(R.id.postImage)).check(matches(withTagValue(is(PostActivity.POST_EDITED_IMAGE_TAG))));
     }
+
+    @Test
+    public void createCloseFollowerPost() {
+        onView(withId(R.id.closeFriends)).perform(click());
+        onView(withId(R.id.closeFriends)).perform(click());
+        onView(withId(R.id.closeFriends)).perform(click());
+        onView(withId(R.id.postText)).perform(typeText("   Post close followers  "));
+        onView(withId (R.id.postText)).perform(closeSoftKeyboard());
+        onView(withId(R.id.postButton)).perform(click());
+        assertTrue(intentsRule.getActivity().isFinishing());
+    }
+
+    @Test
+    public void createCloseFollowerPostWithImage() {
+        Intent resultData = new Intent();
+        resultData.setAction(Intent.ACTION_GET_CONTENT);
+        Uri imageUri = Uri.parse("android.resource://ch.epfl.sdp.kandle/drawable/ic_launcher_background.xml");
+        resultData.setData(imageUri);
+        Instrumentation.ActivityResult result = new Instrumentation.ActivityResult(Activity.RESULT_OK, resultData);
+        intending(hasAction(Intent.ACTION_GET_CONTENT)).respondWith(result);
+
+        onView(withId(R.id.closeFriends)).perform(click());
+        onView(withId(R.id.galleryButton)).perform(click());
+        onView(withId(R.id.postButton)).perform(click());
+        assertTrue(intentsRule.getActivity().isFinishing());
+    }
+
+
+
 }

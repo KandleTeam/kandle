@@ -19,6 +19,7 @@ import androidx.test.rule.ActivityTestRule;
 import androidx.test.rule.GrantPermissionRule;
 
 import java.util.HashMap;
+import java.util.LinkedList;
 
 
 import ch.epfl.sdp.kandle.storage.room.LocalDatabase;
@@ -68,7 +69,7 @@ public class LoginActivityTest {
                     accounts.put(alreadyHasAnAccount.getEmail(), alreadyHasAnAccount.getId());
                     HashMap<String,User> users = new HashMap<>();
                     users.put(alreadyHasAnAccount.getId(),alreadyHasAnAccount);
-                    MockDatabase db = new MockDatabase(false, users, null, null);
+                    MockDatabase db = new MockDatabase(false, users, new HashMap<String, MockDatabase.Follow>(), null);
                     MockAuthentication authentication = new MockAuthentication(false, accounts, "password");
                     MockImageStorage storage = new MockImageStorage();
                     MockInternalStorage internalStorage = new MockInternalStorage(new HashMap<>());

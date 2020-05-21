@@ -3,18 +3,23 @@ package ch.epfl.sdp.kandle;
 import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Color;
+import android.content.res.Resources;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.squareup.picasso.Picasso;
 
+import java.time.format.ResolverStyle;
 import java.io.File;
 import java.util.List;
 
@@ -28,13 +33,17 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.ViewHolder> {
     public final static int PROFILE_PICTURE_TAG = 9;
     private static ClickListener clickListener;
     private List<User> mUsers;
-
     public UserAdapter(List<User> mUsers) {
         this.mUsers = mUsers;
     }
+    private boolean isFollowerList = false;
 
     public void setOnItemClickListener(ClickListener clickListener) {
         UserAdapter.clickListener = clickListener;
+    }
+
+    public void setIsFollowersList(boolean isFollowerList){
+        this.isFollowerList = isFollowerList;
     }
 
     @NonNull
@@ -43,8 +52,6 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.ViewHolder> {
         Context context = parent.getContext();
         LayoutInflater inflater = LayoutInflater.from(context);
         View userView = inflater.inflate(R.layout.search_user, parent, false);
-
-
         ViewHolder viewHolder = new ViewHolder(userView);
         return viewHolder;
 
@@ -81,6 +88,56 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.ViewHolder> {
         final CachedFirestoreDatabase database = new CachedFirestoreDatabase();
 
 
+        if(isFollowerList){
+            holder.mIsCloseFriend.setVisibility(View.VISIBLE);
+            database.userCloseFollowersList(currentUser.getId()).addOnCompleteListener(task -> {
+               boolean found_user = false;
+               if(task.isSuccessful()){
+                   for(User user1 : task.getResult()){
+                       if(user1.getId().equals(user.getId())) {
+                           holder.mIsCloseFriend.setBackground(Kandle.getContext().getDrawable(R.drawable.button_background));
+                           holder.mIsCloseFriend.setContentDescription("Is close friend");
+                           found_user = true;
+                       }
+                   }
+                   if(!found_user) {
+                       holder.mIsCloseFriend.setBackground(Kandle.getContext().getDrawable(R.drawable.add_background_grey));
+                       holder.mIsCloseFriend.setContentDescription("Is not close friend");
+                   }
+               }
+            });
+            holder.mIsCloseFriend.setOnClickListener(new View.OnClickListener() {
+
+                @Override
+                public void onClick(View v) {
+                    database.userCloseFollowersList(currentUser.getId()).addOnCompleteListener(task -> {
+                        boolean found_user = false;
+                        if(task.isSuccessful()){
+                            for(User user1 : task.getResult()){
+                                if(user1.getId().equals(user.getId())) {
+                                    holder.mIsCloseFriend.setBackground(Kandle.getContext().getDrawable(R.drawable.add_background_grey));
+                                    holder.mIsCloseFriend.setContentDescription("Is not close friend");
+                                    database.unsetCloseFollower(user.getId(), currentUser.getId());
+                                    found_user = true;
+                                }
+                            }
+                            if(!found_user) {
+                                holder.mIsCloseFriend.setBackground(Kandle.getContext().getDrawable(R.drawable.button_background));
+                                holder.mIsCloseFriend.setContentDescription("Is close friend");
+                                database.setCloseFollower(user.getId(), currentUser.getId());
+                            }
+                        }
+                        else{
+                            Toast.makeText(Kandle.getContext(), task.getException().getMessage(), Toast.LENGTH_LONG).show();
+                        }
+                    });
+                }
+            });
+        }
+        else{
+            holder.mIsCloseFriend.setVisibility(View.GONE);
+        }
+        Log.i("TAG", Thread.currentThread().getName());
         if (user.getId().equals(currentUser.getId())) {
             holder.mFollowBtn.setVisibility(View.GONE);
         } else {
@@ -123,7 +180,6 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.ViewHolder> {
                 }
             });
 
-
         }
 
     }
@@ -148,6 +204,7 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.ViewHolder> {
         public TextView mUsername;
         public CircleImageView image_profile;
         public Button mFollowBtn;
+        public ImageButton mIsCloseFriend;
 
 
         public ViewHolder(@NonNull View itemView) {
@@ -158,6 +215,7 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.ViewHolder> {
             mUsername = itemView.findViewById(R.id.search_username);
             image_profile = itemView.findViewById(R.id.search_image_user);
             mFollowBtn = itemView.findViewById(R.id.btn_follow);
+            mIsCloseFriend = itemView.findViewById(R.id.userCloseFriends);
         }
 
         @Override
