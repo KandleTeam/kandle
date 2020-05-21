@@ -1,13 +1,8 @@
 package ch.epfl.sdp.kandle.activity;
 
-import android.annotation.SuppressLint;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.MenuItem;
-import android.view.View;
-import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -20,17 +15,12 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
-import com.google.android.gms.maps.internal.IGoogleMapDelegate;
 import com.google.android.material.navigation.NavigationView;
-import com.mapbox.android.core.permissions.PermissionsListener;
 import com.squareup.picasso.Picasso;
-
-import java.util.List;
 
 import ch.epfl.sdp.kandle.LoggedInUser;
 import ch.epfl.sdp.kandle.R;
 import ch.epfl.sdp.kandle.dependencies.Authentication;
-import ch.epfl.sdp.kandle.dependencies.DependencyManager;
 import ch.epfl.sdp.kandle.fragment.AboutFragment;
 import ch.epfl.sdp.kandle.fragment.AchievementFragment;
 import ch.epfl.sdp.kandle.fragment.FollowingPostsFragment;
@@ -40,6 +30,8 @@ import ch.epfl.sdp.kandle.fragment.ProfileFragment;
 import ch.epfl.sdp.kandle.fragment.SearchFragment;
 import ch.epfl.sdp.kandle.fragment.SettingsFragment;
 import ch.epfl.sdp.kandle.fragment.YourPostListFragment;
+
+import static ch.epfl.sdp.kandle.dependencies.DependencyManager.getAuthSystem;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -51,31 +43,27 @@ public class MainActivity extends AppCompatActivity {
     private Fragment fragment;
     private FragmentManager fragmentManager;
     private ImageView mProfilePic;
-    private TextView mUsername;
     private TextView mNickname;
     private Authentication auth;
-    private ActionBarDrawerToggle drawerToggle;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        auth = DependencyManager.getAuthSystem();
-        // Set a Toolbar to replace the ActionBar.
+        auth = getAuthSystem();
         Toolbar toolbar = findViewById(R.id.toolbar);
         mDrawerLayout = findViewById(R.id.drawer_layout);
         mNavigationView = findViewById(R.id.navigation_view);
         mProfilePic = mNavigationView.getHeaderView(0).findViewById(R.id.profilePicInMenu);
-        mUsername = mNavigationView.getHeaderView(0).findViewById(R.id.username);
         mNickname = mNavigationView.getHeaderView(0).findViewById(R.id.nicknameInMenu);
-        mUsername = mNavigationView.getHeaderView(0).findViewById(R.id.usernameInMenu);
-        mUsername.setText("@" + auth.getCurrentUser().getUsername());
+        TextView mUsername = mNavigationView.getHeaderView(0).findViewById(R.id.usernameInMenu);
+        mUsername.setText(String.format("@%s", auth.getCurrentUser().getUsername()));
 
 
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        drawerToggle = new ActionBarDrawerToggle(this, mDrawerLayout, toolbar, R.string.drawer_open, R.string.drawer_close);
+        ActionBarDrawerToggle drawerToggle = new ActionBarDrawerToggle(this, mDrawerLayout, toolbar, R.string.drawer_open, R.string.drawer_close);
         drawerToggle.setDrawerIndicatorEnabled(true);
         setupDrawerContent(mNavigationView);
         drawerToggle.syncState();
@@ -92,7 +80,7 @@ public class MainActivity extends AppCompatActivity {
                     .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
                     .addToBackStack(null)
                     .commit();
-            setTitle("Your Profile");
+            setTitle(getString(R.string.yourProfile));
             mNavigationView.getCheckedItem().setChecked(false);
             mDrawerLayout.closeDrawers();
         });
@@ -144,10 +132,6 @@ public class MainActivity extends AppCompatActivity {
      * @param menuItem
      */
     private void selectDrawerItem(MenuItem menuItem) {
-        // Create a new fragment and specify the fragment to show based on nav item clicked
-
-        Class fragmentClass = null;
-
         switch (menuItem.getItemId()) {
             case R.id.logout:
                 auth.signOut();
@@ -156,44 +140,41 @@ public class MainActivity extends AppCompatActivity {
                 break;
 
             case R.id.your_posts:
-                fragmentClass = YourPostListFragment.class;
+                openFragment(YourPostListFragment.class);
                 break;
 
             case R.id.map_support:
-                fragmentClass = MapViewFragment.class;
+                openFragment(MapViewFragment.class);
                 break;
 
             case R.id.settings:
-                fragmentClass = SettingsFragment.class;
+                openFragment(SettingsFragment.class);
                 break;
 
             case R.id.about:
-                fragmentClass = AboutFragment.class;
+                openFragment(AboutFragment.class);
                 break;
 
             case R.id.follow:
-                fragmentClass = SearchFragment.class;
+                openFragment(SearchFragment.class);
                 break;
 
             case R.id.achievements:
-                fragmentClass = AchievementFragment.class;
+                openFragment(AchievementFragment.class);
                 break;
 
             case R.id.following_posts:
-                fragmentClass = FollowingPostsFragment.class;
+                openFragment(FollowingPostsFragment.class);
                 break;
 
             case R.id.popularKandlers:
-                fragmentClass = PopularUserFragment.class;
+                openFragment(PopularUserFragment.class);
                 break;
 
             default:
                 throw new IllegalArgumentException("There is a missing MenuItem case!");
         }
-
-        openFragment(fragmentClass);
         setTitle(menuItem.getTitle());
-
         mDrawerLayout.closeDrawers();
     }
 
@@ -209,7 +190,11 @@ public class MainActivity extends AppCompatActivity {
                 .commit();
     }
 
-
+    /**
+     * Returns the current fragment
+     *
+     * @return the current fragment
+     */
     public Fragment getCurrentFragment() {
         return fragment;
     }
@@ -234,11 +219,10 @@ public class MainActivity extends AppCompatActivity {
     // see https://github.com/mapbox/mapbox-events-android/issues/395
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        if(fragment instanceof MapViewFragment) {
+        if (fragment instanceof MapViewFragment) {
             ((MapViewFragment) fragment).getPermissionsManager().onRequestPermissionsResult(requestCode, permissions, grantResults);
         }
     }
-
 
 
 }
