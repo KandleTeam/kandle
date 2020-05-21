@@ -172,20 +172,20 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback, Per
                         currentLocation = task.getResult();
                         //addPostMarkers(style);
                         numMarkers = 0;
-
                                 database.getNearbyPosts(currentLocation.getLongitude(), currentLocation.getLatitude(), RADIUS).addOnSuccessListener(posts -> {
-                                            for (Post p : posts) {
-                                                System.out.println("THE POST USER ID IS " + p.getUserId());
-                                                database.userCloseFollowersList(p.getUserId()).addOnCompleteListener(task1 -> {
-                                                if(task1.isSuccessful()) {
+                                        for (Post p : posts) {
+                                            System.out.println("THE POST SIZE IS      " + posts.size()  + " AND THE CURRENT USER ID IS " + p.getUserId() );
+                                            database.userCloseFollowersList(p.getUserId()).addOnCompleteListener(task1 -> {
+                                                if (task1.isSuccessful()) {
                                                     boolean isCloseFollower = false;
-                                                    if(p.getUserId().equals(LoggedInUser.getInstance().getId()) || p.getUserId().equals("mock user id")){
-                                                        isCloseFollower = true;
-                                                    }
-                                                    else {
-                                                        for (User user : task1.getResult()) {
-                                                            if (user.getId().equals(LoggedInUser.getInstance().getId()))
-                                                                isCloseFollower = true;
+                                                    if(LoggedInUser.getInstance() != null) {
+                                                        if (p.getUserId().equals(LoggedInUser.getInstance().getId())) {
+                                                            isCloseFollower = true;
+                                                        } else {
+                                                            for (User user : task1.getResult()) {
+                                                                if (user.getId().equals(LoggedInUser.getInstance().getId()))
+                                                                    isCloseFollower = true;
+                                                            }
                                                         }
                                                     }
                                                     numMarkers++;
@@ -198,8 +198,8 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback, Per
                                                     }
                                                 }
 
-                                                });
-                                            }
+                                            });
+                                        }
 
                         });
                     });

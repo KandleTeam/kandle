@@ -220,10 +220,11 @@ public class PostActivity extends AppCompatActivity {
                             }
                         }
                     }
-                }
-            });
 
-            } else {
+            });
+    }
+
+             else {
                 if (postId != null) {
                     database.getPostByPostId(postId).addOnCompleteListener(task2 -> {
                         if (task2.isSuccessful()) {
@@ -255,7 +256,6 @@ public class PostActivity extends AppCompatActivity {
                 }
             }
 
-        });
     }
 
     private void addPost(Post p) {
