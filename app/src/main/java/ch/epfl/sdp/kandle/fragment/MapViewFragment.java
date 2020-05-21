@@ -109,12 +109,12 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback, Per
         View view = inflater.inflate(R.layout.fragment_map, container, false);
 
         // Load icons
-        IconFactory iconFactory = IconFactory.getInstance(MapViewFragment.this.getActivity());
-        Drawable drawable = ResourcesCompat.getDrawable(MapViewFragment.this.getResources(), R.drawable.ic_whatshot_24dp, null);
+        IconFactory iconFactory = IconFactory.getInstance(getActivity());
+        Drawable drawable = ResourcesCompat.getDrawable(getResources(), R.drawable.ic_whatshot_24dp, null);
         Bitmap mBitmap = BitmapUtils.getBitmapFromDrawable(drawable);
         postIcon = iconFactory.fromBitmap(mBitmap);
 
-        Drawable drawableLandMark = ResourcesCompat.getDrawable(MapViewFragment.this.getResources(), R.drawable.ic_place_red_50dp, null);
+        Drawable drawableLandMark = ResourcesCompat.getDrawable(getResources(), R.drawable.ic_place_red_50dp, null);
         Bitmap mBitmapLandmark = BitmapUtils.getBitmapFromDrawable(drawableLandMark);
         landmarkIcon = iconFactory.fromBitmap(mBitmapLandmark);
 
