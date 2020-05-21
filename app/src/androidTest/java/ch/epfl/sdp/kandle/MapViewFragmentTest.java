@@ -78,7 +78,7 @@ public class MapViewFragmentTest {
                     Post farPost = new Post("farPostDesciption", "image", new Date(), "user1Id", "farPostId");
                     farPost.setLatitude(0.0015);
                     farPost.setLongitude(0.0015);
-                    Post closeFollowerPost = new Post("closeFOllowerPost", null,new Date(), "user2Id", "closePostId");
+                    Post closeFollowerPost = new Post("closeFOllowerPost", null,new Date(), "user2Id", "closeFollowerPostId");
                     closeFollowerPost.setIsForCloseFollowers(Post.CLOSE_FOLLOWER);
                     closeFollowerPost.setLatitude(0.00015);
                     closeFollowerPost.setLongitude(0.00015);
@@ -178,7 +178,7 @@ public class MapViewFragmentTest {
     public void seeCLoseFollowerPost() throws Throwable {
         uiDevice.wait(Until.hasObject(By.desc("MAP READY")), 2000);
         Thread.sleep(2000);
-        ((MapViewFragment) intentsRule.getActivity().getCurrentFragment()).goToPostFragment("closePostId", new Location("mock"));
+        ((MapViewFragment) intentsRule.getActivity().getCurrentFragment()).goToPostFragment("closeFollowerPostId", new Location("mock"));
         onView(withId(R.id.postFragmentNumberOfLikes)).check(matches(withText("0")));
         onView(withId(R.id.postFragmentLikeButton)).perform(click());
         onView(withId(R.id.postFragmentNumberOfLikes)).check(matches(withText("1")));

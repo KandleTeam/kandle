@@ -21,6 +21,8 @@ import java.text.SimpleDateFormat;
 
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
+
+import ch.epfl.sdp.kandle.Kandle;
 import ch.epfl.sdp.kandle.LoggedInUser;
 import ch.epfl.sdp.kandle.Post;
 import ch.epfl.sdp.kandle.R;
