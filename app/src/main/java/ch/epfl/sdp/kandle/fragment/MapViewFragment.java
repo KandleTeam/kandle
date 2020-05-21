@@ -7,8 +7,8 @@ import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.location.Location;
-import android.net.Uri;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,7 +21,6 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.maps.android.SphericalUtil;
 import com.mapbox.android.core.location.LocationEngine;
 import com.mapbox.android.core.location.LocationEngineCallback;
@@ -33,7 +32,9 @@ import com.mapbox.android.core.permissions.PermissionsManager;
 import com.mapbox.mapboxsdk.Mapbox;
 import com.mapbox.mapboxsdk.annotations.Icon;
 import com.mapbox.mapboxsdk.annotations.IconFactory;
+import com.mapbox.mapboxsdk.annotations.Marker;
 import com.mapbox.mapboxsdk.annotations.MarkerOptions;
+import com.mapbox.mapboxsdk.camera.CameraPosition;
 import com.mapbox.mapboxsdk.geometry.LatLng;
 import com.mapbox.mapboxsdk.location.LocationComponent;
 import com.mapbox.mapboxsdk.location.LocationComponentActivationOptions;
@@ -106,7 +107,7 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback, Per
 
             @Override
             public void onFailure(@NonNull Exception exception) {
-                Log.w("LocationEngine", "Location update failed")
+                Log.w("LocationEngine", "Location update failed");
             }
         };
         // Inflate the layout for this fragment
@@ -177,30 +178,31 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback, Per
                 marker.remove();
             }
             for (Post p : posts) {
-                database.userCloseFollowersList(p.getUserId()).addOnCompleteListener(task1 -> {
-                    if (task1.isSuccessful()) {
-                        boolean isCloseFollower = false;
-                        if(LoggedInUser.getInstance() != null) {
-                            if (p.getUserId().equals(LoggedInUser.getInstance().getId())) {
-                                isCloseFollower = true;
-                            } else {
-                                for (User user : task1.getResult()) {
-                                    if (user.getId().equals(LoggedInUser.getInstance().getId()))
-                                        isCloseFollower = true;
-                                }
+                database.userCloseFollowersList(p.getUserId()).addOnSuccessListener(closeFollowers -> {
+                    boolean isCloseFollower = false;
+                    if (LoggedInUser.getInstance() != null) {
+                        if (p.getUserId().equals(LoggedInUser.getInstance().getId())) {
+                            isCloseFollower = true;
+                        } else {
+                            for (User user : closeFollowers) {
+                                if (user.getId().equals(LoggedInUser.getInstance().getId()))
+                                    isCloseFollower = true;
                             }
                         }
-                if ((isCloseFollower || p.getIsForCloseFollowers() == null || (p.getIsForCloseFollowers() != null && p.getIsForCloseFollowers().equals(Post.NOT_CLOSE_FOLLOWER))) && (p.getType() == null || !p.equals(Post.EVENT) || p.getDate().getTime() < new Date().getTime())) {
-                    numMarkers++;
-                    mapboxMap.addMarker(new MarkerOptions()
-                            .position(new LatLng(p.getLatitude(), p.getLongitude()))
-                            .title("A post !")
-                            .icon(postIcon))
-                            .setSnippet(p.getPostId());
-                }
+                    }
+
+                    if ((isCloseFollower || p.getIsForCloseFollowers() == null || (p.getIsForCloseFollowers() != null && p.getIsForCloseFollowers().equals(Post.NOT_CLOSE_FOLLOWER))) && (p.getType() == null || !p.equals(Post.EVENT) || p.getDate().getTime() < new Date().getTime())) {
+                        numMarkers++;
+                        mapboxMap.addMarker(new MarkerOptions()
+                                .position(new LatLng(p.getLatitude(), p.getLongitude()))
+                                .title("A post !")
+                                .icon(postIcon))
+                                .setSnippet(p.getPostId());
+                    }
+                });
             }
             Log.i("Map view", "Updated " + posts.size() + " posts markers");
-        }).addOnFailureListener(Throwable::printStackTrace);
+        });
 
         mapboxMap.addMarker(new MarkerOptions()
                 .position(new LatLng(46.5190, 6.5667))
@@ -228,7 +230,6 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback, Per
                     .addToBackStack(null)
                     .commit();
         });
-
 
 
     }
