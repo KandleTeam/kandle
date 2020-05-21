@@ -46,7 +46,7 @@ public class AchievementAdapter extends RecyclerView.Adapter<AchievementAdapter.
         // Set item views based on your views and data model
         ImageView imageView = holder.mImageView;
         if (achievement.checkAchievementState()) {
-            imageView.setImageResource(R.drawable.ic_mood_black_24dp);
+            imageView.setImageResource(R.drawable.ic_trophy_done);
         }
         TextView titleView = holder.mtitleText;
         titleView.setText(String.valueOf(achievement.getDescription()));

@@ -5,7 +5,8 @@
     android:id="@+id/drawer_layout"
     tools:openDrawer="end"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    >
 
     <!-- This LinearLayout represents the contents of the screen  -->
 
@@ -40,7 +41,10 @@
         android:layout_gravity="start"
         android:background="@android:color/white"
         app:menu="@menu/menu_item"
-        app:headerLayout="@layout/header">
+        app:headerLayout="@layout/header"
+        app:itemIconTint="@color/drawer_item"
+        app:itemTextColor="@color/drawer_item"
+        app:itemBackground="@android:color/transparent">
 
 
 

@@ -399,6 +399,7 @@ public class FirestoreDatabase implements Database {
                         }
                     }
 
+
                     deletedPostDoc.delete();
 
                     return null;
