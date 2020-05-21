@@ -24,15 +24,16 @@
             android:layout_marginStart="10dp"/>
 
         <TextView
+            android:id="@+id/postPageTitle"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_toEndOf="@+id/backButton"
             android:layout_centerVertical="true"
             android:text="Create new Post"
             android:textColor="@color/white"
             android:textSize="20sp"
             android:textStyle="bold"
             android:layout_margin="15dp"/>
+
 
 
     </RelativeLayout>
@@ -74,15 +75,14 @@
             </LinearLayout>
 
 
-
             <EditText
                 android:id="@+id/postText"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_margin="20dp"
-                android:hint="@string/message_hint"
+                android:hint="@string/postMessageHint"
                 android:importantForAutofill="no"
-                android:inputType="textMultiLine"/>
+                android:inputType="textMultiLine" />
 
             <RelativeLayout
                 android:id="@+id/postImageLayout"
@@ -164,15 +164,15 @@
 
         <Button
             android:id="@+id/postButton"
-            android:layout_centerVertical="true"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentEnd="true"
-            android:layout_marginBottom="8dp"
+            android:layout_centerVertical="true"
             android:layout_marginEnd="3dp"
+            android:layout_marginBottom="8dp"
             android:background="@drawable/button_background"
-            android:text="POST"
-            android:textStyle="bold"/>
+            android:text="@string/postButtonText"
+            android:textStyle="bold" />
     </RelativeLayout>
 
 </RelativeLayout>

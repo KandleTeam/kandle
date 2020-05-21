@@ -6,6 +6,6 @@ import ch.epfl.sdp.kandle.R;
 public class NoInternetException extends Exception {
 
     public NoInternetException() {
-        super(Kandle.getContext().getResources().getString(R.string.no_connexion));
+        super(Kandle.getContext().getResources().getString(R.string.noConnexion));
     }
 }

@@ -13,13 +13,13 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
-import com.google.android.gms.tasks.Task;
 import com.squareup.picasso.Picasso;
 
 import java.util.Calendar;
@@ -31,24 +31,24 @@ import ch.epfl.sdp.kandle.PostCamera;
 import ch.epfl.sdp.kandle.R;
 import ch.epfl.sdp.kandle.dependencies.Authentication;
 import ch.epfl.sdp.kandle.dependencies.Database;
-import ch.epfl.sdp.kandle.dependencies.DependencyManager;
 import ch.epfl.sdp.kandle.fragment.YourPostListFragment;
 import ch.epfl.sdp.kandle.imagePicker.ImagePicker;
 import ch.epfl.sdp.kandle.storage.caching.CachedFirestoreDatabase;
+
+import static ch.epfl.sdp.kandle.dependencies.DependencyManager.getAuthSystem;
 
 
 public class PostActivity extends AppCompatActivity {
 
     public final static int EDIT_PIC_REQUEST = 2;
-
     public final static int POST_IMAGE_TAG = 42;
     public final static int POST_EDITED_IMAGE_TAG = 24;
+    private final static double NEAR_LAT_LNG_SUB = 0.5;
+    private final static double NEAR_LAT_LNG_DIV = 500;
     private EditText mPostText;
     private Button mPostButton;
-    private ImageButton mBackButton;
-    private ImageButton mGalleryButton, mCameraButton;
+    private TextView mPostPageTitle;
     private ImageButton mMessageButton, mEventButton;
-    private ImageButton mPostImageEdit;
     private RelativeLayout mPostImageLayout;
     private ImageView mPostImage;
     private Post p;
@@ -62,13 +62,6 @@ public class PostActivity extends AppCompatActivity {
     private TimePicker mTimePicker;
 
 
-    private Post editPost;
-
-    @Override
-    public void onResume() {
-        super.onResume();
-    }
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -79,19 +72,20 @@ public class PostActivity extends AppCompatActivity {
         Random rand = new Random();
 
         Intent intent = getIntent();
-        Double latitude = intent.getDoubleExtra("latitude", 0.0) + (rand.nextDouble()-0.5)/500;
-        Double longitude = intent.getDoubleExtra("longitude", 0.0) +(rand.nextDouble()-0.5)/500;
+        double latitude = intent.getDoubleExtra("latitude", 0.0) + (rand.nextDouble() - NEAR_LAT_LNG_SUB) / NEAR_LAT_LNG_DIV;
+        double longitude = intent.getDoubleExtra("longitude", 0.0) + (rand.nextDouble() - NEAR_LAT_LNG_SUB) / NEAR_LAT_LNG_DIV;
         String postId = intent.getStringExtra("postId");
 
 
         mPostText = findViewById(R.id.postText);
         mPostButton = findViewById(R.id.postButton);
-        mGalleryButton = findViewById(R.id.galleryButton);
-        mCameraButton = findViewById(R.id.cameraButton);
+        mPostPageTitle = findViewById(R.id.postPageTitle);
+        ImageButton mGalleryButton = findViewById(R.id.galleryButton);
+        ImageButton mCameraButton = findViewById(R.id.cameraButton);
         mPostImageLayout = findViewById(R.id.postImageLayout);
         mPostImage = findViewById(R.id.postImage);
-        mPostImageEdit = findViewById(R.id.postImageEdit);
-        mBackButton = findViewById(R.id.backButton);
+        ImageButton mPostImageEdit = findViewById(R.id.postImageEdit);
+        ImageButton mBackButton = findViewById(R.id.backButton);
         mMessageButton = findViewById(R.id.selectMessageButton);
         mEventButton = findViewById(R.id.selectEventButton);
         mDateAndTime = findViewById(R.id.eventDateTimeSelector);
@@ -101,21 +95,22 @@ public class PostActivity extends AppCompatActivity {
 
         postCamera = new PostCamera(this);
 
-        auth = DependencyManager.getAuthSystem();
+        auth = getAuthSystem();
         database = new CachedFirestoreDatabase();
 
         if (postId != null) {
             database.getPostByPostId(postId).addOnCompleteListener(task -> {
                 if (task.isSuccessful()) {
                     Post p = task.getResult();
-                    mPostButton.setText("EDIT");
+                    mPostButton.setText(getString(R.string.editButtonText));
+                    mPostPageTitle.setText(getString(R.string.editPageTitle));
                     mPostText.setText(p.getDescription());
                     mPostImageLayout.setVisibility(View.VISIBLE);
                     mPostImage.setTag(YourPostListFragment.POST_IMAGE);
                     Picasso.get().load(p.getImageURL()).into(mPostImage);
                     mMessageButton.setVisibility(View.GONE);
                     mEventButton.setVisibility(View.GONE);
-                    if (p.getType()!=null && p.getType().equals(Post.EVENT)) {
+                    if (p.getType() != null && p.getType().equals(Post.EVENT)) {
                         Calendar cal = Calendar.getInstance();
                         cal.setTime(p.getDate());
                         setEventAppearance();
@@ -131,80 +126,7 @@ public class PostActivity extends AppCompatActivity {
         }
 
         mPostButton.setOnClickListener(v -> {
-
-            String postText = mPostText.getText().toString().trim();
-
-            if (postText.isEmpty() && imageUri == null) {
-                mPostText.setError("Your post is empty...");
-                return;
-            }
-
-            if (imageUri != null) {
-                ImagePicker.uploadImage(imageUri).addOnCompleteListener(task -> {
-                    if (task.isSuccessful()) {
-                        Uri downloadUri = task.getResult();
-                        if (downloadUri == null) {
-                            Toast.makeText(PostActivity.this, "Unable to upload image", Toast.LENGTH_LONG).show();
-
-                        } else {
-                            if (postId != null) {
-                                database.getPostByPostId(postId).addOnCompleteListener(task2 -> {
-                                    if (task2.isSuccessful()) {
-                                        Post p = task2.getResult();
-                                        p.setDescription(postText);
-                                        p.setImageURL(downloadUri.toString());
-                                        p.setLatitude(p.getLatitude());
-                                        p.setLongitude(p.getLongitude());
-                                        p.setLikers(p.getLikers());
-                                        p.setType(p.getType());
-                                        if (p.getType()!= null && p.getType().equals(Post.EVENT)) {
-                                            p.setDate(getDateFromPicker());
-                                        }
-                                        editPost(p, postId);
-                                    }
-                                });
-                            } else {
-                                p = new Post(postText, downloadUri.toString(), new Date(), auth.getCurrentUser().getId(), longitude, latitude);
-                                if (isEvent) {
-                                    p.setDate(getDateFromPicker());
-                                    p.setType(Post.EVENT);
-                                }
-                                post(p);
-                            }
-                        }
-                    }
-                    else {
-                        Task t = task;
-                    }
-                });
-
-            } else {
-                if (postId != null) {
-                    database.getPostByPostId(postId).addOnCompleteListener(task2 -> {
-                        if (task2.isSuccessful()) {
-                            Post p = task2.getResult();
-                            p.setDescription(postText);
-                            //raise the test coverage
-                            p.setLatitude(p.getLatitude());
-                            p.setLongitude(p.getLongitude());
-                            p.setLikers(p.getLikers());
-                            p.setType(p.getType());
-                            if (p.getType().equals(Post.EVENT)) {
-                                p.setDate(getDateFromPicker());
-                            }
-                            editPost(p, postId);
-                        }
-                    });
-                } else {
-                    p = new Post(postText, null, new Date(), auth.getCurrentUser().getId(), longitude, latitude);
-                    if (isEvent) {
-                        p.setDate(getDateFromPicker());
-                        p.setType(Post.EVENT);
-                    }
-                    post(p);
-                }
-            }
-
+            onPostButtonClick(postId, longitude, latitude);
         });
 
         mBackButton.setOnClickListener(v -> finish());
@@ -220,7 +142,7 @@ public class PostActivity extends AppCompatActivity {
             mDateAndTime.setVisibility(View.GONE);
             mMessageButton.setBackgroundResource(R.drawable.add_background);
             mEventButton.setBackgroundResource(R.drawable.add_background_grey);
-            mPostText.setHint(getResources().getString(R.string.message_hint));
+            mPostText.setHint(getString(R.string.postMessageHint));
         });
 
         mEventButton.setOnClickListener(v -> {
@@ -239,14 +161,82 @@ public class PostActivity extends AppCompatActivity {
         });
     }
 
-    private void post(Post p) {
+    private void onPostButtonClick(String postId, double longitude, double latitude) {
+        String postText = mPostText.getText().toString().trim();
+
+        if (postText.isEmpty() && imageUri == null) {
+            mPostText.setError(getString(R.string.emptyPostError));
+            return;
+        }
+
+        if (imageUri != null) {
+            ImagePicker.uploadImage(imageUri).addOnCompleteListener(task -> {
+                if (task.isSuccessful()) {
+                    Uri downloadUri = task.getResult();
+                    if (downloadUri == null) {
+                        Toast.makeText(PostActivity.this, getString(R.string.uploadImageError), Toast.LENGTH_LONG).show();
+                    } else {
+                        if (postId != null) {
+                            database.getPostByPostId(postId).addOnCompleteListener(task2 -> {
+                                if (task2.isSuccessful()) {
+                                    Post p = task2.getResult();
+                                    p.setDescription(postText);
+                                    p.setImageURL(downloadUri.toString());
+                                    p.setLatitude(p.getLatitude());
+                                    p.setLongitude(p.getLongitude());
+                                    p.setLikers(p.getLikers());
+                                    p.setType(p.getType());
+                                    if (p.getType() != null && p.getType().equals(Post.EVENT)) {
+                                        p.setDate(getDateFromPicker());
+                                    }
+                                    editPost(p, postId);
+                                }
+                            });
+                        } else {
+                            p = new Post(postText, downloadUri.toString(), new Date(), auth.getCurrentUser().getId(), longitude, latitude);
+                            if (isEvent) {
+                                p.setDate(getDateFromPicker());
+                                p.setType(Post.EVENT);
+                            }
+                            addPost(p);
+                        }
+                    }
+                }
+            });
+
+        } else {
+            if (postId != null) {
+                database.getPostByPostId(postId).addOnCompleteListener(task2 -> {
+                    if (task2.isSuccessful()) {
+                        Post p = task2.getResult();
+                        p.setDescription(postText);
+                        //raise the test coverage
+                        p.setLatitude(p.getLatitude());
+                        p.setLongitude(p.getLongitude());
+                        p.setLikers(p.getLikers());
+                        p.setType(p.getType());
+                        if (p.getType().equals(Post.EVENT)) {
+                            p.setDate(getDateFromPicker());
+                        }
+                        editPost(p, postId);
+                    }
+                });
+            } else {
+                p = new Post(postText, null, new Date(), auth.getCurrentUser().getId(), longitude, latitude);
+                if (isEvent) {
+                    p.setDate(getDateFromPicker());
+                    p.setType(Post.EVENT);
+                }
+                addPost(p);
+            }
+        }
+    }
+
+    private void addPost(Post p) {
         database.addPost(p).addOnCompleteListener(task -> {
             if (task.isSuccessful()) {
-
-                Toast.makeText(PostActivity.this, "You have successfully posted ", Toast.LENGTH_LONG).show();
-
+                Toast.makeText(PostActivity.this, getString(R.string.postSuccessful), Toast.LENGTH_LONG).show();
                 finish();
-
             }
         });
     }
@@ -254,11 +244,8 @@ public class PostActivity extends AppCompatActivity {
     private void editPost(Post p, String postId) {
         database.editPost(p, postId).addOnCompleteListener(task -> {
             if (task.isSuccessful()) {
-
-                Toast.makeText(PostActivity.this, "You have successfully edited your post ", Toast.LENGTH_LONG).show();
-
+                Toast.makeText(PostActivity.this, getString(R.string.postEditSuccessful), Toast.LENGTH_LONG).show();
                 finish();
-
             }
         });
     }
@@ -267,12 +254,13 @@ public class PostActivity extends AppCompatActivity {
      * set text hint and display date and time pickers
      */
     private void setEventAppearance() {
-        mPostText.setHint(getResources().getString(R.string.event_hint));
+        mPostText.setHint(getString(R.string.createEventHint));
         mDateAndTime.setVisibility(View.VISIBLE);
     }
 
     /**
      * get date and time picked in picker
+     *
      * @return date and time picked in picker
      */
     private Date getDateFromPicker() {
@@ -285,7 +273,7 @@ public class PostActivity extends AppCompatActivity {
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == 0) {
+        if (requestCode == PostCamera.PHOTO_REQUEST) {
             Bitmap imageBitmap = postCamera.handleActivityResult(requestCode, resultCode, data);
             if (imageBitmap != null) {
                 mPostImageLayout.setVisibility(View.VISIBLE);
@@ -293,13 +281,11 @@ public class PostActivity extends AppCompatActivity {
                 mPostImage.setImageBitmap(imageBitmap);
             }
             imageUri = postCamera.getImageUri();
-        }
-        else if (requestCode == EDIT_PIC_REQUEST && resultCode == RESULT_OK && data!=null && data.getData()!=null) {
+        } else if (requestCode == EDIT_PIC_REQUEST && resultCode == RESULT_OK && data != null && data.getData() != null) {
             imageUri = data.getData();
             mPostImage.setTag(POST_EDITED_IMAGE_TAG);
             mPostImage.setImageURI(imageUri);
-        }
-        else {
+        } else {
             imageUri = ImagePicker.handleActivityResultAndGetUri(requestCode, resultCode, data);
             if (imageUri != null) {
                 mPostImageLayout.setVisibility(View.VISIBLE);

@@ -16,20 +16,20 @@ public class AboutFragment extends Fragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        Element versionElement = new Element().setTitle("Beta Version 1.0.0");
-        Element adsElement = new Element().setTitle("Advertises");
+        Element versionElement = new Element().setTitle(getString(R.string.appVersion));
+        Element adsElement = new Element().setTitle(getString(R.string.advertisements));
         View aboutPage = new AboutPage(this.getContext())
                 .isRTL(false)
-                .setDescription("Welcome to Kandle ! Share your best photos and jokes with nearby Kandlers :)")
+                .setDescription(getString(R.string.appDescription))
                 .setImage(R.drawable.logo)
                 .addItem(versionElement)
                 .addItem(adsElement)
-                .addGroup("Connect with us")
-                .addWebsite("https://www.google.ch/")
-                .addEmail("yanisepfl@gmail.com")
-                .addFacebook("Yanis Berkani")
-                .addGitHub("yanisepfl")
-                .addInstagram("yanisbrk")
+                .addGroup(getString(R.string.joinUs))
+                .addWebsite(getString(R.string.website))
+                .addEmail(getString(R.string.email))
+                .addFacebook(getString(R.string.facebook))
+                .addGitHub(getString(R.string.github))
+                .addInstagram(getString(R.string.instagram))
                 .create();
 
         return aboutPage;
