@@ -58,5 +58,7 @@
 
     <!-- Guest mode -->
     <string name="guestModeCannotAccess">You need to be logged in to do that!</string>
+    <string name="locationPermissionDeniedToastMsg">Please enable location to make full use of the app</string>
+    <string name="locationPermissionExplanation">Please enable location to see nearby posts</string>
 
 </resources>

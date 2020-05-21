@@ -8,7 +8,6 @@ import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.location.Location;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -61,15 +60,10 @@ import ch.epfl.sdp.kandle.storage.caching.CachedFirestoreDatabase;
 
 public class MapViewFragment extends Fragment implements OnMapReadyCallback, PermissionsListener {
 
-    private static final String MARKER_SOURCE = "markers-source";
-    private static final String MARKER_STYLE_LAYER = "markers-style-layer";
-    private static final String MARKER_IMAGE = "custom-marker";
-
     private static final long DEFAULT_INTERVAL_IN_MILLISECONDS = 1000L;
     private static final long DEFAULT_MAX_WAIT_TIME = DEFAULT_INTERVAL_IN_MILLISECONDS * 5;
 
     private static final int RADIUS = 2000;
-    private static final int LOCATION_PERMISSION_REQUEST_CODE = 1;
     // Default map position, zoomed out over California
     private static final CameraPosition defaultCameraPosition = new CameraPosition.Builder().zoom(3).target(new LatLng(37.144579, -121.905870)).build();
 
@@ -144,7 +138,7 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback, Per
             });
         }
 
-        if(!DependencyManager.getNetworkStateSystem().isConnected()){
+        if (!DependencyManager.getNetworkStateSystem().isConnected()) {
             mGameButton.setVisibility(View.VISIBLE);
             mGameButton.setOnClickListener(v -> {
                 startActivity(new Intent(getContext(), OfflineGameActivity.class));
@@ -174,9 +168,7 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback, Per
         mapboxMap.clear();
 
         database.getNearbyPosts(currentLocation.getLatitude(), currentLocation.getLongitude(), RADIUS).addOnSuccessListener(posts -> {
-            Log.w("Callback called", "Retrieved Posts at location " + currentLocation.toString());
             for (Post p : posts) {
-                Log.w("=>>", "a post");
                 numMarkers++;
                 if (p.getType() == null || !p.equals(Post.EVENT) || p.getDate().getTime() < new Date().getTime()) {
                     mapboxMap.addMarker(new MarkerOptions()
@@ -244,7 +236,6 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback, Per
     private void enableLocationComponent(@NonNull Style loadedMapStyle) {
         // Check if permissions are enabled and if not request
         if (PermissionsManager.areLocationPermissionsGranted(this.getContext())) {
-            Log.w("====", "enableLocationComponent success!");
 
             // Get an instance of the component
             LocationComponent locationComponent = mapboxMap.getLocationComponent();
@@ -278,27 +269,22 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback, Per
 
             initLocationEngine();
 
-            locationProvider.getLocation(this.getActivity()).addOnCompleteListener(task -> {
-                if (task.isSuccessful()) {
+            locationProvider.getLocation(this.getActivity()).addOnSuccessListener(newLocation -> {
 
-                    if (task.getResult() != null) {
+                if (newLocation != null) {
 
-                        currentLocation = task.getResult();
+                    currentLocation = newLocation;
 
-                        populateWithMarkers();
+                    populateWithMarkers();
 
-                    } else {
-                        Toast.makeText(this.getActivity(), "Retrieved location is null", Toast.LENGTH_LONG).show();
-                    }
                 } else {
-
-                    Toast.makeText(this.getActivity(), "Failed to retrieve location: " + task.getException().getMessage(), Toast.LENGTH_LONG).show();
+                    Toast.makeText(this.getActivity(), "Retrieved location is null", Toast.LENGTH_LONG).show();
                 }
-
-            });
+            }).addOnFailureListener(e ->
+                    Toast.makeText(this.getActivity(), "Failed to retrieve location: " + e.getMessage(), Toast.LENGTH_LONG).show()
+            );
 
         } else {
-            Log.w("====", "enableLocationComponent failure!");
 
             permissionsManager = new PermissionsManager(this);
             permissionsManager.requestLocationPermissions(this.getActivity());
@@ -321,16 +307,15 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback, Per
 
     @Override
     public void onExplanationNeeded(List<String> permissionsToExplain) {
-        Toast.makeText(this.getActivity(), "Please enable location to see nearby posts", Toast.LENGTH_LONG).show();
+        Toast.makeText(this.getActivity(), R.string.locationPermissionExplanation, Toast.LENGTH_LONG).show();
     }
 
     @Override
     public void onPermissionResult(boolean granted) {
         if (granted) {
-            Toast.makeText(getContext(), "Thanks for enabling location", Toast.LENGTH_LONG).show();
             mapboxMap.getStyle(this::enableLocationComponent);
         } else {
-            Toast.makeText(getContext(), "Please enable location to make full use of the app", Toast.LENGTH_LONG).show();
+            Toast.makeText(getContext(), R.string.locationPermissionDeniedToastMsg, Toast.LENGTH_LONG).show();
         }
     }
 
@@ -384,6 +369,6 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback, Per
     }
 
     public PermissionsManager getPermissionsManager() {
-        return permissionsManager   ;
+        return permissionsManager;
     }
 }
