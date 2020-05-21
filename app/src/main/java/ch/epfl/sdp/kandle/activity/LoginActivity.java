@@ -95,7 +95,7 @@ public class LoginActivity extends AppCompatActivity {
     private boolean checkForInternetConnection() {
         if (!DependencyManager.getNetworkStateSystem().isConnected()) {
             CNetworkBar = findViewById(R.id.connectionBar);
-            Snackbar snackbar = Snackbar.make(CNetworkBar, R.string.no_connexion, Snackbar.LENGTH_SHORT);
+            Snackbar snackbar = Snackbar.make(CNetworkBar, R.string.noConnexion, Snackbar.LENGTH_SHORT);
             snackbar.setTextColor(ContextCompat.getColor(this, R.color.white));
             CNetworkBar.setBackgroundColor(ContextCompat.getColor(this, R.color.colorAccent));
             snackbar.show();

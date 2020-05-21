@@ -26,8 +26,6 @@
     <string name="achievement_posts">Do 10 posts </string>
     <string name="achievement_following">Follow 3 persons </string>
     <string name="achievement_followers">Have 3 followers </string>
-    <string name="message_hint">What\'s on your mind today ? </string>
-    <string name="event_hint">Enter a description for your event… </string>
     <string name="badge_default">Badge Default</string>
 
     <string name="confirm_message">Are your sure ? </string>
@@ -49,8 +47,8 @@
     <string name="switch_cam">Switch Camera</string>
 
     <!-- Exceptions -->
-    <string name="no_connexion">Please check your internet connexion</string>
-    <string name="incomplete_data">The data returned is not complete</string>
+    <string name="noConnexion">Please check your internet connexion</string>
+    <string name="incompleteData">The data returned is not complete</string>
 
     <string name="mapbox_access_token">pk.eyJ1IjoiYS1pYm0iLCJhIjoiY2s4cmpoamd6MGEyeTNlbXNyaXZmcXNveiJ9.B5j1E7U4A_Pon-mHaRKrnQ</string>
 
@@ -58,5 +56,52 @@
 
     <!-- Guest mode -->
     <string name="guestModeCannotAccess">You need to be logged in to do that!</string>
+
+    <!-- CustomAccountActivity -->
+    <string name="accountFinalization">Finalizing your account</string>
+    <string name="welcomingCustomAccountMessage">Welcome to Kandle !</string>
+    <string name="customNicknameHint">Your Nickname</string>
+    <string name="customNicknameText">Choose a nickname :</string>
+    <string name="customNicknamePrecision">It can be changed at any time</string>
+    <string name="customProfilePictureText">Choose a profile picture :</string>
+    <string name="customProfilePictureBrowse">Browse</string>
+    <string name="customAccountValidation">Continue to the app</string>
+
+
+    <!-- MainActivity -->
+    <string name="yourProfile">Your Profile</string>
+
+    <!-- PostActivity -->
+    <string name="postPageTitle">Create a post</string>
+    <string name="editPageTitle">Edit your post</string>
+    <string name="postButtonText">POST</string>
+    <string name="editButtonText">EDIT</string>
+    <string name="postMessageHint">What\'s on your mind today ?</string>
+    <string name="emptyPostError">Your post is empty...</string>
+    <string name="uploadImageError">Unable to upload image</string>
+    <string name="postSuccessful">You have successfully posted</string>
+    <string name="postEditSuccessful">You have successfully edited your post</string>
+    <string name="createEventHint">Enter a description for your event… </string>
+
+    <!-- About Fragment -->
+    <string name="appVersion">Version 1.0.0</string>
+    <string name="advertisements">Some advertisements here...</string>
+    <string name="appDescription">Welcome to Kandle ! Share your best pictures and jokes with nearby Kandlers :)</string>
+    <string name="joinUs">Connect with us</string>
+    <string name="website">https://www.google.ch/</string>
+    <string name="email">yanisepfl@gmail.com</string>
+    <string name="github">yanisepfl</string>
+    <string name="facebook">Yanis Berkani</string>
+    <string name="instagram">yanisbrk</string>
+
+    <!-- Post Fragment -->
+    <string name="tooFarToLikePost">You are too far away from the post to like it</string>
+
+    <!-- Offline Game Activity -->
+    <string name="gameDescription">Stay at home and click on the virus to destroy it to limit the spread of the pandemic ! Ready ?</string>
+    <string name="endText">FINISH</string>
+    <string name="scoreText">Score : </string>
+    <string name="recordText">Record : </string>
+    <string name="initialScore">0</string>
 
 </resources>

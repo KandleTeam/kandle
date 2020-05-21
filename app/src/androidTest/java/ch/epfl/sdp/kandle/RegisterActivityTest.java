@@ -192,7 +192,7 @@ public class RegisterActivityTest {
         onView(withId(R.id.passwordConfirm)).perform(closeSoftKeyboard());
         onView(withId(R.id.loginBtn)).perform(click());
         onView(withId(com.google.android.material.R.id.snackbar_text))
-                .check(matches(withText(R.string.no_connexion)));
+                .check(matches(withText(R.string.noConnexion)));
 
     }
 
