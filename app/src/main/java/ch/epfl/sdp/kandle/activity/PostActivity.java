@@ -18,6 +18,7 @@ import android.widget.TimePicker;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 
 import com.squareup.picasso.Picasso;
 
@@ -61,6 +62,7 @@ public class PostActivity extends AppCompatActivity {
     private boolean isForCloseFollowers = false;
     private DatePicker mDatePicker;
     private TimePicker mTimePicker;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
