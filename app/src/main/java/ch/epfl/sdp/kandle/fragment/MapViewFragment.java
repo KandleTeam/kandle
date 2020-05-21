@@ -52,6 +52,7 @@ import java.util.List;
 import ch.epfl.sdp.kandle.LoggedInUser;
 import ch.epfl.sdp.kandle.Post;
 import ch.epfl.sdp.kandle.R;
+import ch.epfl.sdp.kandle.User;
 import ch.epfl.sdp.kandle.activity.OfflineGameActivity;
 import ch.epfl.sdp.kandle.activity.PostActivity;
 import ch.epfl.sdp.kandle.dependencies.Authentication;
@@ -165,21 +166,41 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback, Per
 
                         Icon icon = iconFactory.fromBitmap(mBitmap);
 
+
+
                         enableLocationComponent(style);
                         currentLocation = task.getResult();
                         //addPostMarkers(style);
                         numMarkers = 0;
-                        database.getNearbyPosts(currentLocation.getLongitude(), currentLocation.getLatitude(), RADIUS).addOnSuccessListener(posts -> {
-                            for (Post p : posts) {
-                                numMarkers++;
-                                if (p.getType() == null || !p.equals(Post.EVENT) || p.getDate().getTime() < new Date().getTime()) {
-                                    mapboxMap.addMarker(new MarkerOptions()
-                                            .position(new LatLng(p.getLatitude(), p.getLongitude()))
-                                            .title("A post !")
-                                            .icon(icon))
-                                            .setSnippet(p.getPostId());
-                                }
-                            }
+
+                                database.getNearbyPosts(currentLocation.getLongitude(), currentLocation.getLatitude(), RADIUS).addOnSuccessListener(posts -> {
+                                            for (Post p : posts) {
+                                                System.out.println("THE POST USER ID IS " + p.getUserId());
+                                                database.userCloseFollowersList(p.getUserId()).addOnCompleteListener(task1 -> {
+                                                if(task1.isSuccessful()) {
+                                                    boolean isCloseFollower = false;
+                                                    if(p.getUserId().equals(LoggedInUser.getInstance().getId()) || p.getUserId().equals("mock user id")){
+                                                        isCloseFollower = true;
+                                                    }
+                                                    else {
+                                                        for (User user : task1.getResult()) {
+                                                            if (user.getId().equals(LoggedInUser.getInstance().getId()))
+                                                                isCloseFollower = true;
+                                                        }
+                                                    }
+                                                    numMarkers++;
+                                                    if ((isCloseFollower || p.getIsForCloseFollowers() == null || (p.getIsForCloseFollowers() != null && p.getIsForCloseFollowers().equals(Post.NOT_CLOSE_FOLLOWER))) && (p.getType() == null || !p.equals(Post.EVENT) || p.getDate().getTime() < new Date().getTime())) {
+                                                        mapboxMap.addMarker(new MarkerOptions()
+                                                                .position(new LatLng(p.getLatitude(), p.getLongitude()))
+                                                                .title("A post !")
+                                                                .icon(icon))
+                                                                .setSnippet(p.getPostId());
+                                                    }
+                                                }
+
+                                                });
+                                            }
+
                         });
                     });
                     Drawable drawableLandMark = ResourcesCompat.getDrawable(MapViewFragment.this.getResources(), R.drawable.ic_place_red_50dp, null);

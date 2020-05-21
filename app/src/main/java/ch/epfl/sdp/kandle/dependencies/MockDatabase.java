@@ -136,7 +136,6 @@ public class MockDatabase implements Database {
 
     @Override
     public Task<Void> follow(String userFollowing, String userFollowed) {
-        System.out.println("IN THE FOLLOW METHOD THE MOCKDATABASE IS   _____öööööö " + followMap);
 
         Follow follow = followMap.get(userFollowing);
         Follow follow2 = followMap.get(userFollowed);
@@ -247,10 +246,11 @@ public class MockDatabase implements Database {
     public Task<List<User>> userCloseFollowersList(String userId) {
         TaskCompletionSource<List<User>> source = new TaskCompletionSource<>();
         ArrayList<User> closeFollowers = new ArrayList<>();
+        if(followMap.get(userId) != null) {
             for (String id : followMap.get(userId).closeFollowers) {
                 closeFollowers.add(users.get(id));
             }
-
+        }
         source.setResult(closeFollowers);
         return source.getTask();
     }
