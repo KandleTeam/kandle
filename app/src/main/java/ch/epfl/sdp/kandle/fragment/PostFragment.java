@@ -23,18 +23,20 @@ import ch.epfl.sdp.kandle.Post;
 import ch.epfl.sdp.kandle.R;
 import ch.epfl.sdp.kandle.User;
 import ch.epfl.sdp.kandle.dependencies.Database;
-import ch.epfl.sdp.kandle.dependencies.DependencyManager;
+
+import static ch.epfl.sdp.kandle.dependencies.DependencyManager.getDatabaseSystem;
 
 
 public class PostFragment extends Fragment {
 
     public final static int POST_IMAGE = 20;
     public final static int PROFILE_PICTURE_IMAGE = 21;
-    Database database;
-    private Post post;
-    private User user;
-    private Location location;
-    private int distance;
+    public final static int MAX_DISTANCE = 30;
+    private Database database;
+    private final Post post;
+    private final User user;
+    private final Location location;
+    private final int distance;
     //Views
     private TextView username, description, numberOfLikes, distanceView;
     private ImageView profilePicture, postImage;
@@ -44,11 +46,19 @@ public class PostFragment extends Fragment {
 
     private PostFragment(Post post, Location location, User user, int distance) {
         this.post = post;
-        this.location = location;
         this.user = user;
+        this.location = location;
         this.distance = distance;
     }
 
+    /**
+     * Instantiates a PostFragment and returns it
+     * @param post the post
+     * @param location the location
+     * @param user the user
+     * @param distance the distance
+     * @return a PostFragment
+     */
     public static PostFragment newInstance(Post post, Location location, User user, int distance) {
         return new PostFragment(post, location, user, distance);
     }
@@ -74,7 +84,7 @@ public class PostFragment extends Fragment {
         getViews(view);
         final User currentUser = LoggedInUser.getInstance();
         final String currentUserId = currentUser.getId();
-        database = DependencyManager.getDatabaseSystem();
+        database = getDatabaseSystem();
 
         if (post.getType() != null && post.getType().equals(Post.EVENT)) {
             likeButton.setImageDrawable(getResources().getDrawable(R.drawable.ic_event_red_24dp));
@@ -82,8 +92,7 @@ public class PostFragment extends Fragment {
         }
 
         username.setText(user.getUsername());
-        distanceView.setText(distance + " m");
-
+        distanceView.setText(String.format("%d m", distance));
 
         if (user.getImageURL() != null) {
             profilePicture.setTag(PROFILE_PICTURE_IMAGE);
@@ -111,7 +120,7 @@ public class PostFragment extends Fragment {
 
         numberOfLikes.setText(String.valueOf(post.getLikes()));
 
-        if (post.getType()!=null && post.getType().equals(Post.EVENT) || distance <= 30) {
+        if (post.getType() != null && post.getType().equals(Post.EVENT) || distance <= MAX_DISTANCE) {
             likeButton.setOnClickListener(v -> {
 
                 if (post.getLikers().contains(currentUserId)) {
@@ -134,9 +143,9 @@ public class PostFragment extends Fragment {
                 }
             });
         } else {
-            distanceView.setAlpha((float) 0.5);
-            likeButton.setAlpha((float) 0.5);
-            likeButton.setOnClickListener(v -> Toast.makeText(PostFragment.this.getContext(), "You are too far away from the post to like it", Toast.LENGTH_SHORT).show());
+            distanceView.setAlpha(0.5f);
+            likeButton.setAlpha(0.5f);
+            likeButton.setOnClickListener(v -> Toast.makeText(PostFragment.this.getContext(), getString(R.string.tooFarToLikePost), Toast.LENGTH_SHORT).show());
         }
 
         if (post.getImageURL() != null) {

@@ -80,6 +80,25 @@
     <string name="postEditSuccessful">You have successfully edited your post</string>
     <string name="createEventHint">Enter a description for your event… </string>
 
+    <!-- About Fragment -->
+    <string name="appVersion">Version 1.0.0</string>
+    <string name="advertisements">Some advertisements here...</string>
+    <string name="appDescription">Welcome to Kandle ! Share your best pictures and jokes with nearby Kandlers :)</string>
+    <string name="joinUs">Connect with us</string>
+    <string name="website">https://www.google.ch/</string>
+    <string name="email">yanisepfl@gmail.com</string>
+    <string name="github">yanisepfl</string>
+    <string name="facebook">Yanis Berkani</string>
+    <string name="instagram">yanisbrk</string>
 
+    <!-- Post Fragment -->
+    <string name="tooFarToLikePost">You are too far away from the post to like it</string>
+
+    <!-- Offline Game Activity -->
+    <string name="gameDescription">Stay at home and click on the virus to destroy it to limit the spread of the pandemic ! Ready ?</string>
+    <string name="endText">FINISH</string>
+    <string name="scoreText">Score : </string>
+    <string name="recordText">Record : </string>
+    <string name="initialScore">0</string>
 
 </resources>
