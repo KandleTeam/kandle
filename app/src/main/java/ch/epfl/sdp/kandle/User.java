@@ -15,6 +15,7 @@ import java.util.List;
 import ch.epfl.sdp.kandle.storage.room.Converters;
 
 import static ch.epfl.sdp.kandle.storage.room.UserDao.USER_ATTR_EMAIL;
+import static ch.epfl.sdp.kandle.storage.room.UserDao.USER_ATTR_HIGH_SCORE;
 import static ch.epfl.sdp.kandle.storage.room.UserDao.USER_ATTR_IMAGE_URL;
 import static ch.epfl.sdp.kandle.storage.room.UserDao.USER_ATTR_NICKNAME;
 import static ch.epfl.sdp.kandle.storage.room.UserDao.USER_ATTR_POSTS_LIST;
@@ -38,6 +39,9 @@ public class User implements Serializable {
     @ColumnInfo(name = USER_ATTR_POSTS_LIST)
     @TypeConverters(Converters.class)
     private List<String> postsIds;
+    @ColumnInfo(name = USER_ATTR_HIGH_SCORE)
+    private int highScore;
+
 
     @Ignore
     public User() {
@@ -51,6 +55,7 @@ public class User implements Serializable {
         this.imageURL = imageURL;
         this.nickname = nickname;
         postsIds = new ArrayList<>();
+        this.highScore = 0;
     }
 
     public String getNickname() {
@@ -94,13 +99,20 @@ public class User implements Serializable {
         this.postsIds = postsIds;
     }
 
-
     public void addPostId(String postId) {
         postsIds.add(postId);
     }
 
     public void removePostId(String postId) {
         postsIds.remove(postId);
+    }
+
+    public int getHighScore() {
+        return highScore;
+    }
+
+    public void setHighScore(int highScore) {
+        this.highScore = highScore;
     }
 
 

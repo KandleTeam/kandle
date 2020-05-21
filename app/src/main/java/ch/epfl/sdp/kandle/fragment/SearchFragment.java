@@ -19,6 +19,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import ch.epfl.sdp.kandle.R;
 import ch.epfl.sdp.kandle.User;
@@ -61,10 +62,9 @@ public class SearchFragment extends Fragment {
         mRecyclerView = view.findViewById(R.id.recycler_view);
         search_bar = view.findViewById(R.id.search_bar);
         currentUser = auth.getCurrentUser();
-
         mRecyclerView.setAdapter(userAdapter);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(this.getContext()));
-
+        giveFollowPropositions();
         search_bar.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
@@ -88,6 +88,7 @@ public class SearchFragment extends Fragment {
                     });
                 } else {
                     mUsers.clear();
+                    giveFollowPropositions();
                     userAdapter.notifyDataSetChanged();
                 }
             }
@@ -116,5 +117,42 @@ public class SearchFragment extends Fragment {
         return view;
     }
 
+    private void giveFollowPropositions(){
+        database.userFollowingList(currentUser.getId()).addOnCompleteListener(task -> {
+            if(task.isSuccessful()){
+                for(User user: task.getResult()){
+                    database.userFollowingList(user.getId()).addOnCompleteListener(task1 -> {
+                        if(task1.isSuccessful()){
+                            for(User user1: task1.getResult()) {
+                                boolean alreadyFollowed = false;
+                                if (mUsers.isEmpty()) {
+                                    alreadyFollowed = checkUserIsInArray(task.getResult(), user1);
+                                    if (!alreadyFollowed && !user1.getId().equals(currentUser.getId())) {
+                                        mUsers.add(user1);
+                                    }
+                                } else {
+                                    boolean alreadyInList = checkUserIsInArray(mUsers, user1);
+                                    alreadyFollowed = checkUserIsInArray(task.getResult(), user1);
+                                    if (!alreadyFollowed && !alreadyInList && !user1.getId().equals(currentUser.getId())) {
+                                        mUsers.add(user1);
+                                    }
+                                }
+                            }
+                            userAdapter.notifyDataSetChanged();
+                        }
+                    });
+                }
+            }
+        });
+    }
 
+
+    private boolean checkUserIsInArray(List<User> list, User user){
+        for(User user1: list){
+            if(user.getId().equals(user1.getId())){
+                return true;
+            }
+        }
+        return false;
+    }
 }

@@ -52,7 +52,7 @@ public class InternalStorageManager implements InternalStorage {
     private void storeUser(@NonNull User user) {
 
         try {
-            File localUserDirectory = context.getDir(IMAGE_DATA_PATH,Context.MODE_PRIVATE);
+            File localUserDirectory = context.getDir(USER_DATA_PATH,Context.MODE_PRIVATE);
             File localUserPath = new File(localUserDirectory,"localUser");
             FileOutputStream file = new FileOutputStream(localUserPath);
             ObjectOutputStream out = new ObjectOutputStream(file);
@@ -76,7 +76,7 @@ public class InternalStorageManager implements InternalStorage {
 
         User user = null;
         try {
-            File localUserDirectory = context.getDir(IMAGE_DATA_PATH,Context.MODE_PRIVATE);
+            File localUserDirectory = context.getDir(USER_DATA_PATH,Context.MODE_PRIVATE);
             File localUserPath = new File(localUserDirectory,"localUser");
             FileInputStream file = new FileInputStream(localUserPath);
             ObjectInputStream in = new ObjectInputStream(file);
@@ -134,7 +134,7 @@ public class InternalStorageManager implements InternalStorage {
      */
     @Override
     public void deleteUser() {
-        File localUserDirectory = context.getDir(IMAGE_DATA_PATH,Context.MODE_PRIVATE);
+        File localUserDirectory = context.getDir(USER_DATA_PATH,Context.MODE_PRIVATE);
         File localUserPath = new File(localUserDirectory,"localUser");
         localUserPath.delete();
 
@@ -163,11 +163,16 @@ public class InternalStorageManager implements InternalStorage {
 
 
     public File getImageFileById(String id) {
-        File imagePath = null;
         File imageDirectory = context.getDir(IMAGE_DATA_PATH, Context.MODE_PRIVATE);
-        imagePath = new File(imageDirectory, id);
-        System.out.println(new File(String.valueOf(context.getDir(IMAGE_DATA_PATH,Context.MODE_PRIVATE))).listFiles()[0]);
-        return imagePath;
+        File imageFile = new File(imageDirectory, id);
+        return imageFile.length() == 0 ? null : imageFile;
+    }
+
+    public void deleteAllPictures() {
+        File imageDirectory = context.getDir(IMAGE_DATA_PATH,Context.MODE_PRIVATE);
+        for (File file : imageDirectory.listFiles()){
+            file.delete();
+        }
     }
 
 }

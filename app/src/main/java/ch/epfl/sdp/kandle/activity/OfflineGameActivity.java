@@ -11,13 +11,14 @@ import androidx.constraintlayout.widget.ConstraintLayout;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import ch.epfl.sdp.kandle.LoggedInUser;
 import ch.epfl.sdp.kandle.R;
+import ch.epfl.sdp.kandle.dependencies.DependencyManager;
 
 public class OfflineGameActivity extends AppCompatActivity {
 
-    public final static int MAX_POINTS = 2;
+    public final static int MAX_NB_VIRUS = 10;
     public final int APPEARING_TIME = 3000; //in ms
-
 
     private ImageButton mVirusButton;
     private ImageButton mStartButton;
@@ -61,11 +62,15 @@ public class OfflineGameActivity extends AppCompatActivity {
         mStartText.setText(getString(R.string.gameDescription));
         mEndText.setText(getString(R.string.endText));
         mEndText.setVisibility(View.GONE);
+
         mScoreText.setText(getString(R.string.scoreText));
         mScore.setText(getString(R.string.initialScore));
+        
+        if(DependencyManager.getAuthSystem().getCurrentUser()!=null){
+            nbPoints[2] = DependencyManager.getAuthSystem().getCurrentUser().getHighScore();
+        }
         mMaxScoreText.setText(getString(R.string.recordText));
-        mMaxScore.setText("0");
-
+        mMaxScore.setText(Integer.toString(nbPoints[2]));
 
         mStartButton.setOnClickListener(v -> {
 
@@ -136,7 +141,7 @@ public class OfflineGameActivity extends AppCompatActivity {
 
     private void handlingVirusDisappearing() {
         mVirusButton.setVisibility(View.GONE);
-        if (getMaxPossiblePoints(nbPoints) < MAX_POINTS) {
+        if (getMaxPossiblePoints(nbPoints) < MAX_NB_VIRUS) {
             incrementMaxPossiblePoints(nbPoints);
             timer = new Timer();
             timer.schedule(new GameTimerTask(), APPEARING_TIME);
@@ -145,6 +150,10 @@ public class OfflineGameActivity extends AppCompatActivity {
             if (nbPoints[1] > nbPoints[2]) {
                 setRecord(nbPoints, nbPoints[1]);
                 mMaxScore.setText(Integer.toString(nbPoints[2]));
+                if(DependencyManager.getAuthSystem().getCurrentUser()!=null){
+                    DependencyManager.getInternalStorageSystem().getCurrentUser().setHighScore(nbPoints[2]);
+                    LoggedInUser.getInstance().setHighScore(nbPoints[2]);
+                }
             }
             mEndText.setVisibility(View.VISIBLE);
             mStartButton.setVisibility(View.VISIBLE);

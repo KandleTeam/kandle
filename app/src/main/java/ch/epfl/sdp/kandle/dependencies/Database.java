@@ -48,6 +48,13 @@ public interface Database {
     Task<List<User>> searchUsers(final String prefix, int maxNumber);
 
     /**
+     * Asynchronously retrieves maxNumber of users that have a username matching prefix
+     *
+     * @return A list of user of at most maxNUmber length that have their usernames matching the prefix
+     */
+    Task<List<User>> usersList();
+
+    /**
      * Asynchronously adds the userFollowing to the follow list of the userFollowed
      *
      * @param userFollowing
@@ -189,5 +196,14 @@ public interface Database {
      * @return A post with the corresponding Id
      */
     Task<Post> getPostByPostId(String postId);
+
+    /**
+     * Asynchronously retrieves the post with the corresponding postId
+     *
+     * @param highScore the user's new high score
+     * @return A void task
+     */
+    Task<Void> updateHighScore(int highScore);
+
 
 }
