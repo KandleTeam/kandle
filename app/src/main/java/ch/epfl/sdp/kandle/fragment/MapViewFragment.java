@@ -70,7 +70,6 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback, Per
     // Default map position, zoomed out over California
     private static final CameraPosition defaultCameraPosition = new CameraPosition.Builder().zoom(3).target(new LatLng(37.144579, -121.905870)).build();
 
-
     private static Icon postIcon, landmarkIcon;
     private int numMarkers;
 
