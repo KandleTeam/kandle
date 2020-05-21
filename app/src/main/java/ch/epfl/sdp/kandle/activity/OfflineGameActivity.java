@@ -1,12 +1,12 @@
 package ch.epfl.sdp.kandle.activity;
 
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.constraintlayout.widget.ConstraintLayout;
-
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.TextView;
+
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.constraintlayout.widget.ConstraintLayout;
 
 import java.util.Timer;
 import java.util.TimerTask;
@@ -18,8 +18,7 @@ import ch.epfl.sdp.kandle.dependencies.DependencyManager;
 public class OfflineGameActivity extends AppCompatActivity {
 
     public final static int MAX_NB_VIRUS = 10;
-    public final int APPEARING_TIME = 3000; //in miliseconds
-
+    public final int APPEARING_TIME = 3000; //in ms
 
     private ImageButton mVirusButton;
     private ImageButton mStartButton;
@@ -33,13 +32,12 @@ public class OfflineGameActivity extends AppCompatActivity {
 
 
     /**
-     *     we create an array in order to be able to modify its values inside a clickListener
-     *
-     *     it contains :
-     *     - the total number of images already displayed
-     *     - the number of images we clicked on (thus nb of points)
-     *     - the max score we have
-     *
+     * we create an array in order to be able to modify its values inside a clickListener
+     * <p>
+     * it contains :
+     * - the total number of images already displayed
+     * - the number of images we clicked on (thus nb of points)
+     * - the max score we have
      */
     private int[] nbPoints = {0, 0, 0};
 
@@ -61,20 +59,18 @@ public class OfflineGameActivity extends AppCompatActivity {
         mMaxScoreText = findViewById(R.id.maxScoreText);
 
         mVirusButton.setVisibility(View.GONE);
-        mStartText.setText("Stay at home and click on the virus to kill it and thus limit the spread of the pandemic ! Ready ?");
-        mEndText.setText("FINISH");
+        mStartText.setText(getString(R.string.gameDescription));
+        mEndText.setText(getString(R.string.endText));
         mEndText.setVisibility(View.GONE);
-        mScoreText.setText("score :");
-        mScore.setText("0");
 
+        mScoreText.setText(getString(R.string.scoreText));
+        mScore.setText(getString(R.string.initialScore));
+        
         if(DependencyManager.getAuthSystem().getCurrentUser()!=null){
             nbPoints[2] = DependencyManager.getAuthSystem().getCurrentUser().getHighScore();
         }
-
-        mMaxScoreText.setText("record :");
+        mMaxScoreText.setText(getString(R.string.recordText));
         mMaxScore.setText(Integer.toString(nbPoints[2]));
-
-
 
         mStartButton.setOnClickListener(v -> {
 
@@ -133,7 +129,7 @@ public class OfflineGameActivity extends AppCompatActivity {
         nbPoints[2] = max;
     }
 
-    private void setRandomVirusButtonPositionAndDisplay(){
+    private void setRandomVirusButtonPositionAndDisplay() {
         ConstraintLayout.LayoutParams params = (ConstraintLayout.LayoutParams) mVirusButton.getLayoutParams();
         double horizontal_pos = Math.random();
         double vertical_pos = Math.random();
@@ -143,7 +139,7 @@ public class OfflineGameActivity extends AppCompatActivity {
         mVirusButton.setVisibility(View.VISIBLE);
     }
 
-    private void handlingVirusDisappearing(){
+    private void handlingVirusDisappearing() {
         mVirusButton.setVisibility(View.GONE);
         if (getMaxPossiblePoints(nbPoints) < MAX_NB_VIRUS) {
             incrementMaxPossiblePoints(nbPoints);
@@ -152,7 +148,7 @@ public class OfflineGameActivity extends AppCompatActivity {
             setRandomVirusButtonPositionAndDisplay();
         } else {
             if (nbPoints[1] > nbPoints[2]) {
-                nbPoints[2] = nbPoints[1];
+                setRecord(nbPoints, nbPoints[1]);
                 mMaxScore.setText(Integer.toString(nbPoints[2]));
                 if(DependencyManager.getAuthSystem().getCurrentUser()!=null){
                     DependencyManager.getInternalStorageSystem().getCurrentUser().setHighScore(nbPoints[2]);

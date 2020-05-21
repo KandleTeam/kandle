@@ -267,7 +267,7 @@ public class YourPostsListTest {
         onView(withId(R.id.navigation_view)).perform(NavigationViewActions.navigateTo(R.id.your_posts));
         onView(withId(R.id.drawer_layout)).perform(DrawerActions.close());
         onView(withId(R.id.rvPosts)).perform(RecyclerViewActions.actionOnItemAtPosition(1, clickChildViewWithId(R.id.likeButton)));
-        onView(withText(R.string.no_connexion)).inRoot(withDecorView(not(is(intentsRule.getActivity().getWindow().getDecorView())))).check(matches(isDisplayed()));
+        onView(withText(R.string.noConnexion)).inRoot(withDecorView(not(is(intentsRule.getActivity().getWindow().getDecorView())))).check(matches(isDisplayed()));
     }
 
 

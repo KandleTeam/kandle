@@ -23,10 +23,8 @@ public class CustomAccountActivity extends AppCompatActivity {
 
     public final static int PROFILE_PICTURE_TAG = 12;
 
-    private Button uploadButton;
-    private Button leaveButton;
     private ImageView profilePic;
-    private EditText m_nickname;
+    private EditText mNickname;
 
     private Database database;
 
@@ -40,19 +38,19 @@ public class CustomAccountActivity extends AppCompatActivity {
 
         database = new CachedFirestoreDatabase();
 
-        uploadButton = findViewById(R.id.button);
-        leaveButton = findViewById(R.id.startButton);
+        Button uploadButton = findViewById(R.id.button);
+        Button leaveButton = findViewById(R.id.startButton);
         profilePic = findViewById(R.id.profilePic);
-        m_nickname = findViewById(R.id.nickname);
+        mNickname = findViewById(R.id.nickname);
         uploadButton.setOnClickListener(v -> ProfilePicPicker.openImage(this));
 
         leaveButton.setOnClickListener(v -> {
-            String nickname = m_nickname.getText().toString().trim();
+            String nickname = mNickname.getText().toString().trim();
             if (imageUri == null && nickname.length() == 0) {
                 startMainActivity();
             } else {
                 ProgressDialog pd = new ProgressDialog(CustomAccountActivity.this);
-                pd.setMessage("Finalizing your account");
+                pd.setMessage(getString(R.string.accountFinalization));
                 pd.show();
                 Task<Void> task;
                 if (imageUri != null) {
