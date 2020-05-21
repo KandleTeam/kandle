@@ -8,6 +8,7 @@ import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.location.Location;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -31,6 +32,7 @@ import com.mapbox.android.core.permissions.PermissionsManager;
 import com.mapbox.mapboxsdk.Mapbox;
 import com.mapbox.mapboxsdk.annotations.Icon;
 import com.mapbox.mapboxsdk.annotations.IconFactory;
+import com.mapbox.mapboxsdk.annotations.Marker;
 import com.mapbox.mapboxsdk.annotations.MarkerOptions;
 import com.mapbox.mapboxsdk.camera.CameraPosition;
 import com.mapbox.mapboxsdk.geometry.LatLng;
@@ -80,7 +82,7 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback, Per
     private MapboxMap mapboxMap;
     private PermissionsManager permissionsManager;
     private LocationEngine locationEngine;
-    private LocationEngineCallback<LocationEngineResult> callback;
+    private LocationEngineCallback<LocationEngineResult> onLocationUpdateCallback;
 
     private ImageButton mGameButton;
 
@@ -89,19 +91,23 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback, Per
                              final Bundle savedInstanceState) {
 
 
-        callback = new LocationEngineCallback<LocationEngineResult>() {
+        onLocationUpdateCallback = new LocationEngineCallback<LocationEngineResult>() {
             @Override
             public void onSuccess(LocationEngineResult result) {
                 if (result.getLastLocation() != null) {
 
+                    Log.i("LocationEngine", "Location updated");
+
+
                     currentLocation = result.getLastLocation();
+                    populateWithMarkers();
                     mapboxMap.getLocationComponent().forceLocationUpdate(result.getLastLocation());
+                } else {
                 }
             }
 
             @Override
             public void onFailure(@NonNull Exception exception) {
-
             }
         };
         // Inflate the layout for this fragment
@@ -158,16 +164,19 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback, Per
 
         this.mapboxMap = mapboxMap;
 
-        //mapboxMap.moveCamera(map -> defaultCameraPosition);
+        //TODO mapboxMap.moveCamera(map -> defaultCameraPosition);
         mapboxMap.setStyle(Style.MAPBOX_STREETS, this::enableLocationComponent);
 
     }
 
     private void populateWithMarkers() {
-        numMarkers = 0;
-        mapboxMap.clear();
+
 
         database.getNearbyPosts(currentLocation.getLatitude(), currentLocation.getLongitude(), RADIUS).addOnSuccessListener(posts -> {
+            numMarkers = 0;
+            for (Marker marker : mapboxMap.getMarkers()) {
+                marker.remove();
+            }
             for (Post p : posts) {
                 numMarkers++;
                 if (p.getType() == null || !p.equals(Post.EVENT) || p.getDate().getTime() < new Date().getTime()) {
@@ -178,6 +187,7 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback, Per
                             .setSnippet(p.getPostId());
                 }
             }
+            Log.i("Map view", "Updated " + posts.size() + " posts markers");
         }).addOnFailureListener(Throwable::printStackTrace);
 
         mapboxMap.addMarker(new MarkerOptions()
@@ -269,21 +279,6 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback, Per
 
             initLocationEngine();
 
-            locationProvider.getLocation(this.getActivity()).addOnSuccessListener(newLocation -> {
-
-                if (newLocation != null) {
-
-                    currentLocation = newLocation;
-
-                    populateWithMarkers();
-
-                } else {
-                    Toast.makeText(this.getActivity(), "Retrieved location is null", Toast.LENGTH_LONG).show();
-                }
-            }).addOnFailureListener(e ->
-                    Toast.makeText(this.getActivity(), "Failed to retrieve location: " + e.getMessage(), Toast.LENGTH_LONG).show()
-            );
-
         } else {
 
             permissionsManager = new PermissionsManager(this);
@@ -300,8 +295,8 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback, Per
                 .setPriority(LocationEngineRequest.PRIORITY_HIGH_ACCURACY)
                 .setMaxWaitTime(DEFAULT_MAX_WAIT_TIME).build();
 
-        locationEngine.requestLocationUpdates(request, callback, this.getActivity().getMainLooper());
-        locationEngine.getLastLocation(callback);
+        locationEngine.requestLocationUpdates(request, onLocationUpdateCallback, this.getActivity().getMainLooper());
+        locationEngine.getLastLocation(onLocationUpdateCallback);
     }
 
 
@@ -329,6 +324,7 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback, Per
     public void onResume() {
         super.onResume();
         mapView.onResume();
+
     }
 
     @Override
@@ -361,7 +357,7 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback, Per
     public void onDestroy() {
         super.onDestroy();
         if (locationEngine != null) {
-            locationEngine.removeLocationUpdates(callback);
+            locationEngine.removeLocationUpdates(onLocationUpdateCallback);
         }
         if (mapView != null) {
             mapView.onDestroy();
