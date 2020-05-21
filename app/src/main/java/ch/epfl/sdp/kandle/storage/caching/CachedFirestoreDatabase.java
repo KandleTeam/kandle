@@ -121,6 +121,11 @@ public class CachedFirestoreDatabase implements Database {
     }
 
     @Override
+    public Task<List<User>> usersList() {
+        return database.usersList();
+    }
+
+    @Override
     public Task<Void> follow(String userFollowing, String userFollowed) {
         return database.follow(userFollowing, userFollowed);
     }
@@ -337,7 +342,6 @@ public class CachedFirestoreDatabase implements Database {
         }
     }
 
-
     //-----------------This part handles the local user-----------------------
     @Override
     public Task<Void> updateProfilePicture(String uri) {
@@ -371,6 +375,23 @@ public class CachedFirestoreDatabase implements Database {
             });
         } else {
            return NoInternetExpcetionTask();
+        }
+    }
+
+    @Override
+    public Task<Void> updateHighScore(int highScore) {
+        if (DependencyManager.getNetworkStateSystem().isConnected()) {
+            return database.updateHighScore(highScore).addOnCompleteListener(v -> {
+                if (v.isSuccessful()) {
+                    LoggedInUser.getInstance().setHighScore(highScore);
+                    User user = internalStorage.getCurrentUser();
+                    user.setHighScore(highScore);
+                    internalStorage.updateUser(user);
+                    userDao.updateUser(user);
+                }
+            });
+        } else {
+            return NoInternetExpcetionTask();
         }
     }
 

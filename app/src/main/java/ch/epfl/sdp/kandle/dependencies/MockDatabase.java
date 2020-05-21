@@ -126,6 +126,15 @@ public class MockDatabase implements Database {
     }
 
     @Override
+    public Task<List<User>> usersList() {
+        List<User> results = new ArrayList<>();
+        results.addAll(users.values());
+        TaskCompletionSource<List<User>> source = new TaskCompletionSource<>();
+        source.setResult(new ArrayList<User>(results.subList(0, results.size())));
+        return source.getTask();
+    }
+
+    @Override
     public Task<Void> follow(String userFollowing, String userFollowed) {
 
         Follow follow = followMap.get(userFollowing);
@@ -331,6 +340,15 @@ public class MockDatabase implements Database {
             source.setException(new IllegalArgumentException("No such user with id: " + postId + "with users containing"));
         }
 
+        return source.getTask();
+    }
+
+    @Override
+    public Task<Void> updateHighScore(int highScore) {
+        TaskCompletionSource<Void> source = new TaskCompletionSource<>();
+        User user = users.get(LoggedInUser.getInstance().getId());
+        user.setHighScore(highScore);
+        source.setResult(null);
         return source.getTask();
     }
 
