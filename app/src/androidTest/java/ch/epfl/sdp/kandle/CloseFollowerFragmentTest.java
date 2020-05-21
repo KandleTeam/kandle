@@ -133,7 +133,6 @@ public class CloseFollowerFragmentTest {
     public void CheckPostP2IsCloseFollowersAndP1Not(){
         loadView(R.id.your_posts);
         onView(withId(R.id.rvPosts)).check(new RecyclerViewItemCountAssertion(2));
-        //Like then unlike the oldest (already created in the mockdatabase)
         onView(new RecyclerViewMatcher(R.id.rvPosts)
                 .atPositionOnView(1, R.id.isPostForCloseFollowers)).check(matches(withEffectiveVisibility(ViewMatchers.Visibility.VISIBLE)));
         onView(new RecyclerViewMatcher(R.id.rvPosts)

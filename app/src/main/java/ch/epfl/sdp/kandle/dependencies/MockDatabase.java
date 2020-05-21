@@ -172,7 +172,6 @@ public class MockDatabase implements Database {
     public Task<Void> setCloseFollower(String userFollowing, String userFollowed) {
         Follow follow = followMap.get(userFollowing);
         Follow follow2 = followMap.get(userFollowed);
-        System.out.println("IN THE METHOD THE MOCKDATABASE IS   _____öööööö " + followMap);
             if (!follow2.closeFollowers.contains(userFollowing) && follow.following.contains(userFollowed)) {
                 follow2.addCloseFollowe(userFollowing);
                 followMap.put(userFollowed, follow2);
@@ -246,11 +245,9 @@ public class MockDatabase implements Database {
     public Task<List<User>> userCloseFollowersList(String userId) {
         TaskCompletionSource<List<User>> source = new TaskCompletionSource<>();
         ArrayList<User> closeFollowers = new ArrayList<>();
-        if(followMap.get(userId) != null) {
             for (String id : followMap.get(userId).closeFollowers) {
                 closeFollowers.add(users.get(id));
             }
-        }
         source.setResult(closeFollowers);
         return source.getTask();
     }
