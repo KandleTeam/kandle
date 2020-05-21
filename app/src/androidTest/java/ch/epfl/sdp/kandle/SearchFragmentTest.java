@@ -33,17 +33,23 @@ import static androidx.test.espresso.action.ViewActions.clearText;
 import static androidx.test.espresso.action.ViewActions.click;
 import static androidx.test.espresso.action.ViewActions.closeSoftKeyboard;
 import static androidx.test.espresso.action.ViewActions.typeText;
+import static androidx.test.espresso.matcher.ViewMatchers.hasDescendant;
 import static androidx.test.espresso.matcher.ViewMatchers.withText;
 import static androidx.test.espresso.Espresso.onView;
 import static androidx.test.espresso.assertion.ViewAssertions.matches;
 import static androidx.test.espresso.contrib.DrawerMatchers.isClosed;
 import static androidx.test.espresso.matcher.ViewMatchers.withId;
+import static ch.epfl.sdp.kandle.YourProfileFragmentTest.atPosition;
+import static ch.epfl.sdp.kandle.dependencies.DependencyManager.getDatabaseSystem;
 
 public class SearchFragmentTest {
 
     private LocalDatabase localDatabase;
-   public  User user1;
-   public  User user2;
+    public User user1;
+    public User user2;
+    public User user3;
+    public User user4;
+
 
     @Rule
     public ActivityTestRule<MainActivity> intentsRule =
@@ -52,14 +58,20 @@ public class SearchFragmentTest {
                 protected void beforeActivityLaunched() {
                     user1 = new User("user1Id", "user1", "user1@kandle.ch", null,  null);
                     user2 = new User("user2Id", "user2", "user2@kandle.ch", null,  "image");
+                    user3 = new User("user3Id", "user3", "user3@kandle.ch", null,  "image");
+                    user4 = new User("user4Id", "user4", "user4@kandle.ch", null,  "image");
                     LoggedInUser.init(new User("loggedInUserId","LoggedInUser","loggedInUser@kandle.ch","nickname","image"));
                     HashMap<String, String> accounts = new HashMap<>();
                     accounts.put(user1.getEmail(), user1.getId());
                     accounts.put(user2.getEmail(), user2.getId());
+                    accounts.put(user3.getEmail(), user3.getId());
+                    accounts.put(user4.getEmail(), user4.getId());
                     HashMap<String,User> users = new HashMap<>();
                     HashMap<String, MockDatabase.Follow> followMap = new HashMap<>();
                     followMap.put(user1.getId(),new MockDatabase.Follow(new LinkedList<>(),new LinkedList<>()));
                     followMap.put(user2.getId(),new MockDatabase.Follow(new LinkedList<>(),new LinkedList<>()));
+                    followMap.put(user3.getId(),new MockDatabase.Follow(new LinkedList<>(),new LinkedList<>()));
+                    followMap.put(user4.getId(),new MockDatabase.Follow(new LinkedList<>(),new LinkedList<>()));
                     HashMap<String, Post> posts = new HashMap<>();
                     MockDatabase db = new MockDatabase(true, users, followMap, posts);
                     MockAuthentication authentication = new MockAuthentication(true, accounts, "password");
@@ -68,10 +80,12 @@ public class SearchFragmentTest {
                     MockNetwork network = new MockNetwork(true);
                     localDatabase = Room.inMemoryDatabaseBuilder(Kandle.getContext(), LocalDatabase.class).allowMainThreadQueries().build();
                     DependencyManager.setFreshTestDependencies(authentication, db, storage,internalStorage,network,localDatabase);
-                    DependencyManager.getDatabaseSystem().createUser(user1);
-                    DependencyManager.getDatabaseSystem().createUser(user2);
-                    DependencyManager.getDatabaseSystem().follow(LoggedInUser.getInstance().getId(),user1.getId());
-                    DependencyManager.getDatabaseSystem().follow(user1.getId(),LoggedInUser.getInstance().getId());
+                    getDatabaseSystem().createUser(user1);
+                    getDatabaseSystem().createUser(user2);
+                    getDatabaseSystem().createUser(user3);
+                    getDatabaseSystem().createUser(user4);
+                    getDatabaseSystem().follow(LoggedInUser.getInstance().getId(),user1.getId());
+                    getDatabaseSystem().follow(user1.getId(),LoggedInUser.getInstance().getId());
                 }
             };
 
@@ -130,6 +144,41 @@ public class SearchFragmentTest {
     public void userWithNoProfilePic() {
         onView(withId(R.id.search_bar)).perform(typeText(user1.getUsername()));
         onView(withId (R.id.search_bar)).perform(closeSoftKeyboard());
+    }
+
+    @Test
+    public void checkFollowingPropositions() {
+        getDatabaseSystem().follow(user1.getId(), user2.getId());
+        getDatabaseSystem().follow(user1.getId(), user3.getId());
+        loadFragment();
+        onView(withId(R.id.recycler_view)).check(matches(atPosition(0, hasDescendant(withText("@" + user2.getUsername())))));
+        onView(withId(R.id.recycler_view)).check(matches(atPosition(1, hasDescendant(withText("@" + user3.getUsername())))));
+    }
+
+    @Test
+    public void writeAndDeleteShowsList(){
+        getDatabaseSystem().follow(user1.getId(), user2.getId());
+        getDatabaseSystem().follow(user1.getId(), user3.getId());
+        onView(withId(R.id.search_bar)).perform(typeText("us"));
+        onView(withId (R.id.search_bar)).perform(closeSoftKeyboard());
+        onView(withId(R.id.search_bar)).perform(clearText());
+        onView(withId (R.id.search_bar)).perform(closeSoftKeyboard());
+        onView(withId(R.id.recycler_view)).check(matches(atPosition(0, hasDescendant(withText("@" + user2.getUsername())))));
+        onView(withId(R.id.recycler_view)).check(matches(atPosition(1, hasDescendant(withText("@" + user3.getUsername())))));
+    }
+
+    @Test
+    public void writeFollowDeleteTextShowsList(){
+        getDatabaseSystem().follow(user1.getId(), user2.getId());
+        getDatabaseSystem().follow(user1.getId(), user3.getId());
+        getDatabaseSystem().follow(user2.getId(), user4.getId());
+        onView(withId(R.id.search_bar)).perform(typeText("user2"));
+        onView(withId (R.id.search_bar)).perform(closeSoftKeyboard());
+        onView(withId(R.id.recycler_view)).perform(RecyclerViewActions.actionOnItemAtPosition(0, clickChildViewWithId(R.id.btn_follow)));
+        onView(withId(R.id.search_bar)).perform(clearText());
+        onView(withId (R.id.search_bar)).perform(closeSoftKeyboard());
+        onView(withId(R.id.recycler_view)).check(matches(atPosition(0, hasDescendant(withText("@" + user3.getUsername())))));
+        onView(withId(R.id.recycler_view)).check(matches(atPosition(1, hasDescendant(withText("@" + user4.getUsername())))));
     }
 
 
