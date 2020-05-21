@@ -290,8 +290,12 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback, Per
             // Set the component's render mode
             locationComponent.setRenderMode(RenderMode.COMPASS);
 
+            locationProvider.getLocation(getActivity()).addOnSuccessListener(firstLocation -> {
+                currentLocation = firstLocation;
+                populateWithMarkers();
+                initLocationEngine();
+            });
 
-            initLocationEngine();
         } else {
             permissionsManager = new PermissionsManager(this);
             permissionsManager.requestLocationPermissions(this.getActivity());
