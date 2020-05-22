@@ -232,7 +232,7 @@ public interface Database {
     Task<Post> getPostByPostId(String postId);
 
     /**
-     * Asynchronously retrieves the post with the corresponding postId
+     * Updates high score of the user in the offline game
      *
      * @param highScore the user's new high score
      * @return A void task

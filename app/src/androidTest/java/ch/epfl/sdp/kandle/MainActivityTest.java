@@ -1,5 +1,6 @@
 package ch.epfl.sdp.kandle;
 
+import android.graphics.drawable.Drawable;
 import android.view.Gravity;
 
 import androidx.room.Room;
@@ -8,6 +9,8 @@ import androidx.test.espresso.contrib.NavigationViewActions;
 import androidx.test.espresso.intent.Intents;
 import androidx.test.rule.ActivityTestRule;
 import androidx.test.rule.GrantPermissionRule;
+
+import com.google.android.material.navigation.NavigationView;
 
 import org.junit.After;
 import org.junit.Rule;
@@ -122,6 +125,13 @@ public class MainActivityTest {
         onView(withId(R.id.navigation_view)).perform(NavigationViewActions.navigateTo(R.id.follow));
         onView(withId(R.id.toolbar)).check(matches(hasDescendant(withText("Follow"))));
 
+    }
+
+    @Test
+    public void openMenuNavigateToEvents() {
+        onView(withId(R.id.drawer_layout)).check(matches(isClosed(Gravity.LEFT))).perform(DrawerActions.open());
+        onView(withId(R.id.navigation_view)).perform(NavigationViewActions.navigateTo(R.id.incoming_events));
+        onView(withId(R.id.toolbar)).check(matches(hasDescendant(withText("Incoming Events"))));
     }
 
     @Test

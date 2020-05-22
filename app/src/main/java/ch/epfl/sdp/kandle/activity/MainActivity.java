@@ -23,6 +23,7 @@ import ch.epfl.sdp.kandle.R;
 import ch.epfl.sdp.kandle.dependencies.Authentication;
 import ch.epfl.sdp.kandle.fragment.AboutFragment;
 import ch.epfl.sdp.kandle.fragment.AchievementFragment;
+import ch.epfl.sdp.kandle.fragment.EventListFragment;
 import ch.epfl.sdp.kandle.fragment.FollowingPostsFragment;
 import ch.epfl.sdp.kandle.fragment.MapViewFragment;
 import ch.epfl.sdp.kandle.fragment.PopularUserFragment;
@@ -117,6 +118,7 @@ public class MainActivity extends AppCompatActivity {
             navigationView.getMenu().findItem(R.id.follow).setVisible(false);
             navigationView.getMenu().findItem(R.id.following_posts).setVisible(false);
             navigationView.getMenu().findItem(R.id.achievements).setVisible(false);
+            navigationView.getMenu().findItem(R.id.incoming_events).setVisible(false);
         }
 
         navigationView.setNavigationItemSelectedListener(
@@ -165,6 +167,10 @@ public class MainActivity extends AppCompatActivity {
 
             case R.id.following_posts:
                 openFragment(FollowingPostsFragment.class);
+                break;
+
+            case R.id.incoming_events:
+                openFragment(EventListFragment.class);
                 break;
 
             case R.id.popularKandlers:
