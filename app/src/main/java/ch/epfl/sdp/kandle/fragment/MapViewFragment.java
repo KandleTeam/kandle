@@ -190,7 +190,9 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback, Per
                         }
                     }
 
-                    if ((isCloseFollower || p.getIsForCloseFollowers() == null || (p.getIsForCloseFollowers() != null && p.getIsForCloseFollowers().equals(Post.NOT_CLOSE_FOLLOWER))) && (p.getType() == null || !p.equals(Post.EVENT) || p.getDate().getTime() < new Date().getTime())) {
+                    if ((isCloseFollower || p.getIsForCloseFollowers() == null
+                            || (p.getIsForCloseFollowers() != null && p.getIsForCloseFollowers().equals(Post.NOT_CLOSE_FOLLOWER)))
+                            && (p.getType() == null || !p.equals(Post.EVENT) || p.getDate().getTime() > new Date().getTime())) {
                         numMarkers++;
                         mapboxMap.addMarker(new MarkerOptions()
                                 .position(new LatLng(p.getLatitude(), p.getLongitude()))
