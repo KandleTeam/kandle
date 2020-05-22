@@ -207,7 +207,7 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback, Per
                                     .title("A post !")
                                     .icon(postIconSmall))
                                     .setSnippet(p.getPostId());
-                        } if (p.getLikers().size() <10){
+                        } else if (p.getLikers().size() <10){
                             mapboxMap.addMarker(new MarkerOptions()
                                     .position(new LatLng(p.getLatitude(), p.getLongitude()))
                                     .title("A post !")
