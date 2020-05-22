@@ -11,16 +11,15 @@
 
     <de.hdodenhof.circleimageview.CircleImageView
         android:id="@+id/landmarkFragmentImage"
-        android:layout_width="104dp"
-        android:layout_height="98dp"
-        android:src="@mipmap/ic_launcher"
+        android:layout_width="171dp"
+        android:layout_height="100dp"
+        android:src="@drawable/epfl"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.185"
+        app:layout_constraintHorizontal_bias="0.066"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.014" />
-
+        app:layout_constraintVertical_bias="0.025" />
 
     <TextView
         android:id="@+id/landmarkFragmentTitle"
@@ -48,10 +47,10 @@
         android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.502"
+        app:layout_constraintHorizontal_bias="0.497"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/landmarkFragmentImage"
-        app:layout_constraintVertical_bias="0.04" />
+        app:layout_constraintVertical_bias="0.024" />
 
     <FrameLayout
         android:background="#FFFFFF"

@@ -366,10 +366,42 @@ public class MockDatabase implements Database {
     @Override
     public Task<List<Post>> getNearbyPosts(double latitude, double longitude, double distance) {
         TaskCompletionSource<List<Post>> source = new TaskCompletionSource<>();
+        List<String> userSmall = new ArrayList<>();
+        List<String> userMedium = new ArrayList<>();
+        List<String> userLarge = new ArrayList<>();
+
+        userSmall.add("mock0");
+        userMedium.add("mock0");
+        userMedium.add("mock1");
+        userMedium.add("mock2");
+        userMedium.add("mock3");
+        userMedium.add("mock4");
+        userMedium.add("mock6");
+        userLarge.add("mock0");
+        userLarge.add("mock1");
+        userLarge.add("mock2");
+        userLarge.add("mock3");
+        userLarge.add("mock4");
+        userLarge.add("mock5");
+        userLarge.add("mock6");
+        userLarge.add("mock7");
+        userLarge.add("mock8");
+        userLarge.add("mock9");
+        userLarge.add("mock10");
+
+        Post post1=new Post("nearby post 1 ", null, new Date(), "mock user id", 0.0001, 0.0001);
+        post1.setLikers(userSmall);
+
+        Post post2=new Post("nearby post 2 ", null, new Date(), "mock user id", 0.0001, 0.0001);
+        post2.setLikers(userMedium);
+
+        Post post3=new Post("nearby post 3 ", null, new Date(), "mock user id", 0.0001, 0.0001);
+        post3.setLikers(userLarge);
+
         List<Post> posts = new ArrayList<>();
-        posts.add(new Post("nearby post 1 ", null, new Date(), "mock user id", 0.0001, 0.0001));
-        posts.add(new Post("nearby post 2 ", null, new Date(), "mock user id", 0.0001, 0.0001));
-        posts.add(new Post("nearby post 3 ", null, new Date(), "mock user id", 0.0001, 0.0001));
+        posts.add(post1);
+        posts.add(post2);
+        posts.add(post3);
         posts.add(new Post("nearby post 4 ", null, new Date(), "mock user id", 0.0001, 0.0001));
         posts.add(new Post("nearby post 5 ", null, new Date(), "mock user id", 0.0001, 0.0001));
         source.setResult(posts);
