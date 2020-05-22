@@ -36,7 +36,7 @@ public class PostFragment extends Fragment {
 
     public final static int POST_IMAGE = 20;
     public final static int PROFILE_PICTURE_IMAGE = 21;
-    public final static int MAX_DISTANCE = 30;
+    public final static int MAX_DISTANCE = 50;
     private Database database;
     private final Post post;
     private final User user;

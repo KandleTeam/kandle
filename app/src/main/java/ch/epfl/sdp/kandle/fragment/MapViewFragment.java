@@ -70,7 +70,7 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback, Per
     // Default map position, zoomed out over California
     private static final CameraPosition defaultCameraPosition = new CameraPosition.Builder().zoom(3).target(new LatLng(37.144579, -121.905870)).build();
 
-    private static Icon postIcon, landmarkIcon;
+    private static Icon postIconSmall,postIconMedium, postIconLarge, landmarkIcon;
     private int numMarkers;
 
     private CachedFirestoreDatabase database;
@@ -115,11 +115,19 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback, Per
 
         // Load icons
         IconFactory iconFactory = IconFactory.getInstance(getActivity());
-        Drawable drawable = ResourcesCompat.getDrawable(getResources(), R.drawable.ic_whatshot_24dp, null);
-        Bitmap mBitmap = BitmapUtils.getBitmapFromDrawable(drawable);
-        postIcon = iconFactory.fromBitmap(mBitmap);
+        Drawable drawableSmall = ResourcesCompat.getDrawable(getResources(), R.drawable.ic_whatshot_24dp, null);
+        Bitmap mBitmapSmall = BitmapUtils.getBitmapFromDrawable(drawableSmall);
+        postIconSmall = iconFactory.fromBitmap(mBitmapSmall);
 
-        Drawable drawableLandMark = ResourcesCompat.getDrawable(getResources(), R.drawable.ic_place_red_50dp, null);
+        Drawable drawableMedium = ResourcesCompat.getDrawable(getResources(), R.drawable.ic_whatshot_black_50dp, null);
+        Bitmap mBitmapMedium = BitmapUtils.getBitmapFromDrawable(drawableMedium);
+        postIconMedium = iconFactory.fromBitmap(mBitmapMedium);
+
+        Drawable drawableLarge = ResourcesCompat.getDrawable(getResources(), R.drawable.ic_whatshot_black_80dp, null);
+        Bitmap mBitmapLarge = BitmapUtils.getBitmapFromDrawable(drawableLarge);
+        postIconLarge = iconFactory.fromBitmap(mBitmapLarge);
+
+        Drawable drawableLandMark = ResourcesCompat.getDrawable(getResources(), R.drawable.ic_place_red_100dp, null);
         Bitmap mBitmapLandmark = BitmapUtils.getBitmapFromDrawable(drawableLandMark);
         landmarkIcon = iconFactory.fromBitmap(mBitmapLandmark);
 
@@ -192,11 +200,26 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback, Per
 
                     if ((isCloseFollower || p.getIsForCloseFollowers() == null || (p.getIsForCloseFollowers() != null && p.getIsForCloseFollowers().equals(Post.NOT_CLOSE_FOLLOWER))) && (p.getType() == null || !p.equals(Post.EVENT) || p.getDate().getTime() < new Date().getTime())) {
                         numMarkers++;
-                        mapboxMap.addMarker(new MarkerOptions()
-                                .position(new LatLng(p.getLatitude(), p.getLongitude()))
-                                .title("A post !")
-                                .icon(postIcon))
-                                .setSnippet(p.getPostId());
+
+                        if (p.getLikers().size() <5) {
+                            mapboxMap.addMarker(new MarkerOptions()
+                                    .position(new LatLng(p.getLatitude(), p.getLongitude()))
+                                    .title("A post !")
+                                    .icon(postIconSmall))
+                                    .setSnippet(p.getPostId());
+                        } if (p.getLikers().size() <10){
+                            mapboxMap.addMarker(new MarkerOptions()
+                                    .position(new LatLng(p.getLatitude(), p.getLongitude()))
+                                    .title("A post !")
+                                    .icon(postIconMedium))
+                                    .setSnippet(p.getPostId());
+                        } else {
+                            mapboxMap.addMarker(new MarkerOptions()
+                                    .position(new LatLng(p.getLatitude(), p.getLongitude()))
+                                    .title("A post !")
+                                    .icon(postIconLarge))
+                                    .setSnippet(p.getPostId());
+                        }
                     }
                 });
             }
