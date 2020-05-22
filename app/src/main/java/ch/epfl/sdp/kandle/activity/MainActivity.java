@@ -118,6 +118,7 @@ public class MainActivity extends AppCompatActivity {
             navigationView.getMenu().findItem(R.id.follow).setVisible(false);
             navigationView.getMenu().findItem(R.id.following_posts).setVisible(false);
             navigationView.getMenu().findItem(R.id.achievements).setVisible(false);
+            navigationView.getMenu().findItem(R.id.incoming_events).setVisible(false);
         }
 
         navigationView.setNavigationItemSelectedListener(
