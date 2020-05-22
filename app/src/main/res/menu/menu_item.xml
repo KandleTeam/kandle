@@ -29,6 +29,12 @@
             android:title="@string/other_posts_item" />
 
         <item
+            android:id="@+id/incoming_events"
+            android:icon="@drawable/ic_event_black_24dp"
+            android:title="Incoming Events"
+            />
+
+        <item
             android:id="@+id/popularKandlers"
             android:icon="@drawable/ic_emoji_events_24px"
             android:title="@string/popular_kandlers_item" />
