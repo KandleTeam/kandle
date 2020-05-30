@@ -11,7 +11,7 @@ import androidx.constraintlayout.widget.ConstraintLayout;
 import java.util.Timer;
 import java.util.TimerTask;
 
-import ch.epfl.sdp.kandle.LoggedInUser;
+import ch.epfl.sdp.kandle.entities.user.LoggedInUser;
 import ch.epfl.sdp.kandle.R;
 import ch.epfl.sdp.kandle.dependencies.DependencyManager;
 

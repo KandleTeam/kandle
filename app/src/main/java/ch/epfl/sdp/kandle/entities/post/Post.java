@@ -1,4 +1,4 @@
-package ch.epfl.sdp.kandle;
+package ch.epfl.sdp.kandle.entities.post;
 
 import androidx.annotation.NonNull;
 import androidx.room.ColumnInfo;

@@ -1,7 +1,5 @@
 package ch.epfl.sdp.kandle.fragment;
 
-import android.app.Activity;
-import android.content.Context;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,8 +11,8 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import java.util.ArrayList;
 import java.util.List;
-import ch.epfl.sdp.kandle.Achievement;
-import ch.epfl.sdp.kandle.AchievementAdapter;
+import ch.epfl.sdp.kandle.entities.achievement.Achievement;
+import ch.epfl.sdp.kandle.entities.achievement.AchievementAdapter;
 import ch.epfl.sdp.kandle.R;
 
 public class AchievementFragment extends Fragment {

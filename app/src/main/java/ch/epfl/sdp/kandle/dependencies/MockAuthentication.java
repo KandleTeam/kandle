@@ -5,8 +5,9 @@ import com.google.android.gms.tasks.TaskCompletionSource;
 
 import java.util.Map;
 
-import ch.epfl.sdp.kandle.LoggedInUser;
-import ch.epfl.sdp.kandle.User;
+import ch.epfl.sdp.kandle.authentification.Authentication;
+import ch.epfl.sdp.kandle.entities.user.LoggedInUser;
+import ch.epfl.sdp.kandle.entities.user.User;
 
 public class MockAuthentication implements Authentication {
 

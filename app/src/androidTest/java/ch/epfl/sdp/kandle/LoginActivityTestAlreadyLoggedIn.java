@@ -11,6 +11,9 @@ import androidx.test.rule.ActivityTestRule;
 
 import java.util.HashMap;
 
+import ch.epfl.sdp.kandle.entities.post.Post;
+import ch.epfl.sdp.kandle.entities.user.LoggedInUser;
+import ch.epfl.sdp.kandle.entities.user.User;
 import ch.epfl.sdp.kandle.storage.room.LocalDatabase;
 import ch.epfl.sdp.kandle.activity.LoginActivity;
 import ch.epfl.sdp.kandle.dependencies.DependencyManager;
@@ -42,7 +45,7 @@ public class LoginActivityTestAlreadyLoggedIn {
 
                     HashMap<String, String> accounts = new HashMap<>();
                     accounts.put(LoggedInUser.getInstance().getEmail(), LoggedInUser.getInstance().getId());
-                    HashMap<String,User> users = new HashMap<>();
+                    HashMap<String, User> users = new HashMap<>();
                     users.put(LoggedInUser.getInstance().getId(),LoggedInUser.getInstance());
                     HashMap<String, MockDatabase.Follow> followMap = new HashMap<>();
                     HashMap<String, Post> posts = new HashMap<>();

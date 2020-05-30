@@ -1,9 +1,8 @@
-package ch.epfl.sdp.kandle.imagePicker;
+package ch.epfl.sdp.kandle.utils.imagePicker;
 
 import android.app.Activity;
 import android.content.ContentResolver;
 import android.content.Intent;
-import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.webkit.MimeTypeMap;
 
@@ -13,7 +12,7 @@ import com.google.android.gms.tasks.Task;
 
 import ch.epfl.sdp.kandle.Kandle;
 import ch.epfl.sdp.kandle.dependencies.DependencyManager;
-import ch.epfl.sdp.kandle.dependencies.ImageStorage;
+import ch.epfl.sdp.kandle.storage.ImageStorage;
 
 import static android.app.Activity.RESULT_OK;
 

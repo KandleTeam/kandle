@@ -5,8 +5,8 @@ import androidx.room.Relation;
 
 import java.util.List;
 
-import ch.epfl.sdp.kandle.Post;
-import ch.epfl.sdp.kandle.User;
+import ch.epfl.sdp.kandle.entities.post.Post;
+import ch.epfl.sdp.kandle.entities.user.User;
 
 public class UserWithPosts {
     @Embedded

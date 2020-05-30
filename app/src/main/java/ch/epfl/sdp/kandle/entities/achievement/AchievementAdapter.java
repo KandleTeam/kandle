@@ -1,4 +1,4 @@
-package ch.epfl.sdp.kandle;
+package ch.epfl.sdp.kandle.entities.achievement;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -12,15 +12,14 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.List;
 
+import ch.epfl.sdp.kandle.R;
+
 
 public class AchievementAdapter extends RecyclerView.Adapter<AchievementAdapter.ViewHolder> {
     private List<Achievement> mAchievemnts;
-    private Context mContext;
-    private ViewHolder viewHolder;
 
     public AchievementAdapter(List<Achievement> achievements, Context context) {
         mAchievemnts = achievements;
-        mContext = context;
     }
 
 
@@ -34,8 +33,7 @@ public class AchievementAdapter extends RecyclerView.Adapter<AchievementAdapter.
         View achievementsView = inflater.inflate(R.layout.achievement_item, parent, false);
 
         // Return a new holder instance
-        viewHolder = new ViewHolder(achievementsView);
-        return viewHolder;
+        return new ViewHolder(achievementsView);
     }
 
     @Override

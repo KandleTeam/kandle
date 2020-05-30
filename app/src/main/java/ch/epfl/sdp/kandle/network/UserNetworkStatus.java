@@ -7,10 +7,8 @@ import android.net.NetworkInfo;
 import android.os.Build;
 
 import ch.epfl.sdp.kandle.Kandle;
-import ch.epfl.sdp.kandle.LoggedInUser;
-import ch.epfl.sdp.kandle.dependencies.Database;
+import ch.epfl.sdp.kandle.entities.user.LoggedInUser;
 import ch.epfl.sdp.kandle.dependencies.DependencyManager;
-import ch.epfl.sdp.kandle.storage.caching.CachedFirestoreDatabase;
 
 public class UserNetworkStatus implements NetworkState {
 

@@ -11,9 +11,10 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
-import ch.epfl.sdp.kandle.LoggedInUser;
-import ch.epfl.sdp.kandle.Post;
-import ch.epfl.sdp.kandle.User;
+import ch.epfl.sdp.kandle.entities.user.LoggedInUser;
+import ch.epfl.sdp.kandle.entities.post.Post;
+import ch.epfl.sdp.kandle.entities.user.User;
+import ch.epfl.sdp.kandle.storage.Database;
 
 /**
  * A mocked database. Upon creation, it contains:

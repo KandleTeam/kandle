@@ -15,6 +15,8 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import java.util.HashMap;
 
+import ch.epfl.sdp.kandle.entities.user.LoggedInUser;
+import ch.epfl.sdp.kandle.entities.user.User;
 import ch.epfl.sdp.kandle.storage.room.LocalDatabase;
 import ch.epfl.sdp.kandle.activity.LoginActivity;
 import ch.epfl.sdp.kandle.dependencies.DependencyManager;
@@ -45,7 +47,7 @@ public class LoginActivityTestWithNoInternet {
                     alreadyHasAnAccount = new User("user1Id", "username", "user1@kandle.ch", "nickname", null);
                     HashMap<String,String> accounts = new HashMap<>();
                     accounts.put(alreadyHasAnAccount.getEmail(), alreadyHasAnAccount.getId());
-                    HashMap<String,User> users = new HashMap<>();
+                    HashMap<String, User> users = new HashMap<>();
                     users.put(alreadyHasAnAccount.getId(),alreadyHasAnAccount);
                     MockDatabase db = new MockDatabase(false, users, null, null);
                     MockAuthentication authentication = new MockAuthentication(false, accounts, "password");

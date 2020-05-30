@@ -9,7 +9,7 @@ import androidx.room.Update;
 
 import java.util.List;
 
-import ch.epfl.sdp.kandle.User;
+import ch.epfl.sdp.kandle.entities.user.User;
 
 @Dao
 public interface UserDao {

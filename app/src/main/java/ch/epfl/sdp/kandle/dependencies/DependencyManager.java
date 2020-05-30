@@ -1,10 +1,16 @@
 package ch.epfl.sdp.kandle.dependencies;
 
+import ch.epfl.sdp.kandle.authentification.Authentication;
+import ch.epfl.sdp.kandle.location.GoogleLocationServices;
+import ch.epfl.sdp.kandle.location.MyLocationProvider;
 import ch.epfl.sdp.kandle.network.NetworkState;
 import ch.epfl.sdp.kandle.network.UserNetworkStatus;
+import ch.epfl.sdp.kandle.storage.Database;
+import ch.epfl.sdp.kandle.storage.ImageStorage;
+import ch.epfl.sdp.kandle.storage.caching.InternalStorage;
 import ch.epfl.sdp.kandle.storage.caching.InternalStorageManager;
 import ch.epfl.sdp.kandle.storage.firebase.FirebaseImageStorage;
-import ch.epfl.sdp.kandle.storage.firebase.FirebaseAuthentication;
+import ch.epfl.sdp.kandle.authentification.FirebaseAuthentication;
 import ch.epfl.sdp.kandle.storage.firebase.FirestoreDatabase;
 import ch.epfl.sdp.kandle.storage.room.LocalDatabase;
 

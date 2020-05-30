@@ -1,10 +1,7 @@
 package ch.epfl.sdp.kandle.fragment;
 
-import android.app.AlertDialog;
 import android.app.ProgressDialog;
-import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -12,18 +9,15 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.fragment.app.Fragment;
 
-import ch.epfl.sdp.kandle.Kandle;
-import ch.epfl.sdp.kandle.LoggedInUser;
+import ch.epfl.sdp.kandle.entities.user.LoggedInUser;
 import ch.epfl.sdp.kandle.R;
 import ch.epfl.sdp.kandle.activity.LoginActivity;
-import ch.epfl.sdp.kandle.activity.MainActivity;
-import ch.epfl.sdp.kandle.dependencies.Authentication;
+import ch.epfl.sdp.kandle.authentification.Authentication;
 import ch.epfl.sdp.kandle.dependencies.DependencyManager;
 
 public class SettingsFragment extends Fragment {

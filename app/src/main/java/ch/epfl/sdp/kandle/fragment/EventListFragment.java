@@ -14,10 +14,10 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
-import ch.epfl.sdp.kandle.Post;
-import ch.epfl.sdp.kandle.PostAdapter;
+import ch.epfl.sdp.kandle.entities.post.Post;
+import ch.epfl.sdp.kandle.entities.post.PostAdapter;
 import ch.epfl.sdp.kandle.R;
-import ch.epfl.sdp.kandle.dependencies.Database;
+import ch.epfl.sdp.kandle.storage.Database;
 import ch.epfl.sdp.kandle.dependencies.DependencyManager;
 import ch.epfl.sdp.kandle.storage.caching.CachedFirestoreDatabase;
 

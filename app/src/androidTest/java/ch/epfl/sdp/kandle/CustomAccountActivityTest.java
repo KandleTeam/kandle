@@ -16,6 +16,9 @@ import org.junit.Test;
 
 import java.util.HashMap;
 
+import ch.epfl.sdp.kandle.entities.post.Post;
+import ch.epfl.sdp.kandle.entities.user.LoggedInUser;
+import ch.epfl.sdp.kandle.entities.user.User;
 import ch.epfl.sdp.kandle.storage.room.LocalDatabase;
 import ch.epfl.sdp.kandle.activity.CustomAccountActivity;
 import ch.epfl.sdp.kandle.activity.MainActivity;
@@ -54,7 +57,7 @@ public class CustomAccountActivityTest {
                 protected void beforeActivityLaunched() {
                     LoggedInUser.init(new User("loggedInUserId","LoggedInUser","loggedInUser@kandle.ch",null,null));
                     HashMap<String, String> accounts = new HashMap<>();
-                    HashMap<String,User> users = new HashMap<>();
+                    HashMap<String, User> users = new HashMap<>();
                     HashMap<String, MockDatabase.Follow> followMap = new HashMap<>();
                     HashMap<String, Post> posts = new HashMap<>();
                     MockDatabase db = new MockDatabase(true, users, followMap, posts);

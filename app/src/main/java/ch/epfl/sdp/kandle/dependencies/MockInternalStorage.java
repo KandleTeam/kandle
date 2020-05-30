@@ -5,12 +5,12 @@ import android.graphics.Bitmap;
 import androidx.annotation.NonNull;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.util.HashMap;
 import java.util.Map;
 
-import ch.epfl.sdp.kandle.User;
+import ch.epfl.sdp.kandle.entities.user.User;
+import ch.epfl.sdp.kandle.storage.caching.InternalStorage;
 
 /**
  * @Author Marc Egli

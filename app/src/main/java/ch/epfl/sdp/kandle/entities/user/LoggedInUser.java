@@ -1,5 +1,7 @@
-package ch.epfl.sdp.kandle;
+package ch.epfl.sdp.kandle.entities.user;
 
+
+import ch.epfl.sdp.kandle.entities.user.User;
 
 public final class LoggedInUser {
 

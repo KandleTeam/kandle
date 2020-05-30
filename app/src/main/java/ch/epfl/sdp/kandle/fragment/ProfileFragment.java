@@ -3,8 +3,6 @@ package ch.epfl.sdp.kandle.fragment;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.ImageDecoder;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -29,14 +27,14 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
-import ch.epfl.sdp.kandle.Achievement;
-import ch.epfl.sdp.kandle.LoggedInUser;
+import ch.epfl.sdp.kandle.entities.achievement.Achievement;
+import ch.epfl.sdp.kandle.entities.user.LoggedInUser;
 import ch.epfl.sdp.kandle.R;
-import ch.epfl.sdp.kandle.User;
-import ch.epfl.sdp.kandle.dependencies.Authentication;
-import ch.epfl.sdp.kandle.dependencies.Database;
+import ch.epfl.sdp.kandle.entities.user.User;
+import ch.epfl.sdp.kandle.authentification.Authentication;
+import ch.epfl.sdp.kandle.storage.Database;
 import ch.epfl.sdp.kandle.dependencies.DependencyManager;
-import ch.epfl.sdp.kandle.imagePicker.ProfilePicPicker;
+import ch.epfl.sdp.kandle.utils.imagePicker.ProfilePicPicker;
 import ch.epfl.sdp.kandle.storage.caching.CachedFirestoreDatabase;
 
 

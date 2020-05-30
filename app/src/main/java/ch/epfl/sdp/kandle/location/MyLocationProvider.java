@@ -1,4 +1,4 @@
-package ch.epfl.sdp.kandle.dependencies;
+package ch.epfl.sdp.kandle.location;
 
 import android.app.Activity;
 import android.location.Location;

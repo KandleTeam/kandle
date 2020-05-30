@@ -1,6 +1,5 @@
 package ch.epfl.sdp.kandle;
 
-import android.graphics.drawable.Drawable;
 import android.view.Gravity;
 
 import androidx.room.Room;
@@ -10,14 +9,15 @@ import androidx.test.espresso.intent.Intents;
 import androidx.test.rule.ActivityTestRule;
 import androidx.test.rule.GrantPermissionRule;
 
-import com.google.android.material.navigation.NavigationView;
-
 import org.junit.After;
 import org.junit.Rule;
 import org.junit.Test;
 
 import java.util.HashMap;
 
+import ch.epfl.sdp.kandle.entities.post.Post;
+import ch.epfl.sdp.kandle.entities.user.LoggedInUser;
+import ch.epfl.sdp.kandle.entities.user.User;
 import ch.epfl.sdp.kandle.storage.room.LocalDatabase;
 import ch.epfl.sdp.kandle.activity.MainActivity;
 import ch.epfl.sdp.kandle.activity.PostActivity;

@@ -14,8 +14,8 @@ import java.util.List;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-import ch.epfl.sdp.kandle.Post;
-import ch.epfl.sdp.kandle.PostAdapter;
+import ch.epfl.sdp.kandle.entities.post.Post;
+import ch.epfl.sdp.kandle.entities.post.PostAdapter;
 import ch.epfl.sdp.kandle.R;
 
 
