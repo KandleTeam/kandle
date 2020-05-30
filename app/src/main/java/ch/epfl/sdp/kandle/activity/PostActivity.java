@@ -18,7 +18,6 @@ import android.widget.TimePicker;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
 
 import com.squareup.picasso.Picasso;
 
@@ -26,13 +25,13 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.Random;
 
-import ch.epfl.sdp.kandle.Post;
-import ch.epfl.sdp.kandle.PostCamera;
+import ch.epfl.sdp.kandle.entities.post.Post;
+import ch.epfl.sdp.kandle.utils.PostCamera;
 import ch.epfl.sdp.kandle.R;
-import ch.epfl.sdp.kandle.dependencies.Authentication;
-import ch.epfl.sdp.kandle.dependencies.Database;
+import ch.epfl.sdp.kandle.authentification.Authentication;
+import ch.epfl.sdp.kandle.storage.Database;
 import ch.epfl.sdp.kandle.fragment.YourPostListFragment;
-import ch.epfl.sdp.kandle.imagePicker.ImagePicker;
+import ch.epfl.sdp.kandle.utils.imagePicker.ImagePicker;
 import ch.epfl.sdp.kandle.storage.caching.CachedFirestoreDatabase;
 
 import static ch.epfl.sdp.kandle.dependencies.DependencyManager.getAuthSystem;

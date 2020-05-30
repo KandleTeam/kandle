@@ -1,26 +1,19 @@
 package ch.epfl.sdp.kandle.storage.caching;
 
 import android.content.Context;
-import android.content.ContextWrapper;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.os.Build;
-import android.os.Environment;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.RequiresApi;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 
 import ch.epfl.sdp.kandle.Kandle;
-import ch.epfl.sdp.kandle.User;
-import ch.epfl.sdp.kandle.dependencies.InternalStorage;
+import ch.epfl.sdp.kandle.entities.user.User;
 
 /**
  * @Author Marc Egli

@@ -1,8 +1,8 @@
-package ch.epfl.sdp.kandle.dependencies;
+package ch.epfl.sdp.kandle.authentification;
 
 import com.google.android.gms.tasks.Task;
 
-import ch.epfl.sdp.kandle.User;
+import ch.epfl.sdp.kandle.entities.user.User;
 
 public interface Authentication {
 

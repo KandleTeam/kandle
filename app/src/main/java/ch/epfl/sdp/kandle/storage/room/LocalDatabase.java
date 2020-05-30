@@ -5,8 +5,8 @@ import androidx.room.Room;
 import androidx.room.RoomDatabase;
 
 import ch.epfl.sdp.kandle.Kandle;
-import ch.epfl.sdp.kandle.Post;
-import ch.epfl.sdp.kandle.User;
+import ch.epfl.sdp.kandle.entities.post.Post;
+import ch.epfl.sdp.kandle.entities.user.User;
 
 @Database(entities = {User.class, Post.class}, exportSchema = false, version = 1)
 public abstract class LocalDatabase extends RoomDatabase {

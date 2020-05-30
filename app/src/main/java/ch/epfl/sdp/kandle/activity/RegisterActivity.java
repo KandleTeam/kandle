@@ -15,8 +15,8 @@ import androidx.core.content.ContextCompat;
 import com.google.android.material.snackbar.Snackbar;
 
 import ch.epfl.sdp.kandle.R;
-import ch.epfl.sdp.kandle.dependencies.Authentication;
-import ch.epfl.sdp.kandle.dependencies.Database;
+import ch.epfl.sdp.kandle.authentification.Authentication;
+import ch.epfl.sdp.kandle.storage.Database;
 import ch.epfl.sdp.kandle.dependencies.DependencyManager;
 import ch.epfl.sdp.kandle.storage.caching.CachedFirestoreDatabase;
 

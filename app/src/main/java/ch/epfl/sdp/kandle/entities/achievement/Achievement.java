@@ -1,21 +1,18 @@
-package ch.epfl.sdp.kandle;
+package ch.epfl.sdp.kandle.entities.achievement;
 
-import android.app.Activity;
 import android.util.Log;
 
-import ch.epfl.sdp.kandle.dependencies.Authentication;
-import ch.epfl.sdp.kandle.dependencies.Database;
+import ch.epfl.sdp.kandle.authentification.Authentication;
+import ch.epfl.sdp.kandle.storage.Database;
 import ch.epfl.sdp.kandle.dependencies.DependencyManager;
-import ch.epfl.sdp.kandle.fragment.PostFragment;
 import ch.epfl.sdp.kandle.fragment.ProfileFragment;
-import ch.epfl.sdp.kandle.storage.caching.CachedFirestoreDatabase;
 
 import static androidx.constraintlayout.widget.Constraints.TAG;
 
 public class Achievement {
 
-    Achievement_type type;
-    int goal_value;
+    private Achievement_type type;
+    private int goal_value;
     private Authentication auth;
     private Database database;
     private AchievementAdapter achievementAdapter;

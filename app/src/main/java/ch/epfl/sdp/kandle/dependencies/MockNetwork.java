@@ -1,7 +1,7 @@
 package ch.epfl.sdp.kandle.dependencies;
 
 
-import ch.epfl.sdp.kandle.LoggedInUser;
+import ch.epfl.sdp.kandle.entities.user.LoggedInUser;
 import ch.epfl.sdp.kandle.network.NetworkState;
 
 public class MockNetwork implements NetworkState {

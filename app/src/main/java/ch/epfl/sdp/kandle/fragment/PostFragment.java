@@ -11,7 +11,6 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 
 import com.squareup.picasso.Picasso;
@@ -22,12 +21,11 @@ import java.text.SimpleDateFormat;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
-import ch.epfl.sdp.kandle.Kandle;
-import ch.epfl.sdp.kandle.LoggedInUser;
-import ch.epfl.sdp.kandle.Post;
+import ch.epfl.sdp.kandle.entities.user.LoggedInUser;
+import ch.epfl.sdp.kandle.entities.post.Post;
 import ch.epfl.sdp.kandle.R;
-import ch.epfl.sdp.kandle.User;
-import ch.epfl.sdp.kandle.dependencies.Database;
+import ch.epfl.sdp.kandle.entities.user.User;
+import ch.epfl.sdp.kandle.storage.Database;
 
 import static ch.epfl.sdp.kandle.dependencies.DependencyManager.getDatabaseSystem;
 

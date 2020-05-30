@@ -6,20 +6,16 @@ import android.view.View;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.room.Room;
 import androidx.test.espresso.NoMatchingViewException;
-import androidx.test.espresso.UiController;
-import androidx.test.espresso.ViewAction;
 import androidx.test.espresso.ViewAssertion;
 import androidx.test.espresso.contrib.DrawerActions;
 import androidx.test.espresso.contrib.NavigationViewActions;
 import androidx.test.rule.ActivityTestRule;
 import androidx.test.rule.GrantPermissionRule;
 
-import org.hamcrest.Matcher;
 import org.junit.After;
 import org.junit.Rule;
 import org.junit.Test;
 
-import java.util.Date;
 import java.util.HashMap;
 import java.util.LinkedList;
 
@@ -30,6 +26,9 @@ import ch.epfl.sdp.kandle.dependencies.MockDatabase;
 import ch.epfl.sdp.kandle.dependencies.MockImageStorage;
 import ch.epfl.sdp.kandle.dependencies.MockInternalStorage;
 import ch.epfl.sdp.kandle.dependencies.MockNetwork;
+import ch.epfl.sdp.kandle.entities.post.Post;
+import ch.epfl.sdp.kandle.entities.user.LoggedInUser;
+import ch.epfl.sdp.kandle.entities.user.User;
 import ch.epfl.sdp.kandle.storage.room.LocalDatabase;
 
 import static androidx.test.espresso.Espresso.onView;

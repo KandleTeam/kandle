@@ -1,16 +1,13 @@
-package ch.epfl.sdp.kandle;
+package ch.epfl.sdp.kandle.entities.user;
 
 import android.content.Context;
-import android.content.res.Resources;
 import android.graphics.Color;
-import android.content.res.Resources;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageButton;
-import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -19,11 +16,12 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.squareup.picasso.Picasso;
 
-import java.time.format.ResolverStyle;
 import java.io.File;
 import java.util.List;
 
-import ch.epfl.sdp.kandle.dependencies.Authentication;
+import ch.epfl.sdp.kandle.Kandle;
+import ch.epfl.sdp.kandle.R;
+import ch.epfl.sdp.kandle.authentification.Authentication;
 import ch.epfl.sdp.kandle.dependencies.DependencyManager;
 import ch.epfl.sdp.kandle.storage.caching.CachedFirestoreDatabase;
 import de.hdodenhof.circleimageview.CircleImageView;

@@ -50,15 +50,15 @@ import com.mapbox.mapboxsdk.utils.BitmapUtils;
 import java.util.Date;
 import java.util.List;
 
-import ch.epfl.sdp.kandle.LoggedInUser;
-import ch.epfl.sdp.kandle.Post;
+import ch.epfl.sdp.kandle.entities.user.LoggedInUser;
+import ch.epfl.sdp.kandle.entities.post.Post;
 import ch.epfl.sdp.kandle.R;
-import ch.epfl.sdp.kandle.User;
+import ch.epfl.sdp.kandle.entities.user.User;
 import ch.epfl.sdp.kandle.activity.OfflineGameActivity;
 import ch.epfl.sdp.kandle.activity.PostActivity;
-import ch.epfl.sdp.kandle.dependencies.Authentication;
+import ch.epfl.sdp.kandle.authentification.Authentication;
 import ch.epfl.sdp.kandle.dependencies.DependencyManager;
-import ch.epfl.sdp.kandle.dependencies.MyLocationProvider;
+import ch.epfl.sdp.kandle.location.MyLocationProvider;
 import ch.epfl.sdp.kandle.storage.caching.CachedFirestoreDatabase;
 
 public class MapViewFragment extends Fragment implements OnMapReadyCallback, PermissionsListener {

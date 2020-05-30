@@ -3,26 +3,18 @@ package ch.epfl.sdp.kandle;
 import android.app.Activity;
 import android.app.Instrumentation;
 import android.content.Intent;
-import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.provider.MediaStore;
-import android.view.View;
-import android.widget.EditText;
 
-import androidx.core.content.ContextCompat;
 import androidx.room.Room;
 import androidx.test.espresso.contrib.PickerActions;
 import androidx.test.espresso.intent.rule.IntentsTestRule;
-import androidx.test.espresso.matcher.BoundedMatcher;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 import androidx.test.rule.GrantPermissionRule;
-
-import org.hamcrest.Matcher;
 
 import org.junit.After;
 import org.junit.Rule;
 import org.junit.Test;
-import org.junit.runner.Description;
 import org.junit.runner.RunWith;
 
 import java.util.HashMap;
@@ -34,6 +26,9 @@ import ch.epfl.sdp.kandle.dependencies.MockAuthentication;
 import ch.epfl.sdp.kandle.dependencies.MockDatabase;
 import ch.epfl.sdp.kandle.dependencies.MockInternalStorage;
 import ch.epfl.sdp.kandle.dependencies.MockNetwork;
+import ch.epfl.sdp.kandle.entities.post.Post;
+import ch.epfl.sdp.kandle.entities.user.LoggedInUser;
+import ch.epfl.sdp.kandle.entities.user.User;
 import ch.epfl.sdp.kandle.storage.room.LocalDatabase;
 import ch.epfl.sdp.kandle.dependencies.MockImageStorage;
 
@@ -64,7 +59,7 @@ public class PostActivityTest {
                 protected void beforeActivityLaunched() {
                     LoggedInUser.init(new User("loggedInUserId","LoggedInUser","loggedInUser@kandle.ch","nickname","image"));
                     HashMap<String, String> accounts = new HashMap<>();
-                    HashMap<String,User> users = new HashMap<>();
+                    HashMap<String, User> users = new HashMap<>();
                     HashMap<String, MockDatabase.Follow> followMap = new HashMap<>();
                     HashMap<String, Post> posts = new HashMap<>();
                     MockDatabase db = new MockDatabase(true, users, followMap, posts);

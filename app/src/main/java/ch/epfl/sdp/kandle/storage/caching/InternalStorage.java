@@ -1,13 +1,12 @@
-package ch.epfl.sdp.kandle.dependencies;
+package ch.epfl.sdp.kandle.storage.caching;
 
 import android.graphics.Bitmap;
 
 import androidx.annotation.NonNull;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 
-import ch.epfl.sdp.kandle.User;
+import ch.epfl.sdp.kandle.entities.user.User;
 
 
 public interface InternalStorage {

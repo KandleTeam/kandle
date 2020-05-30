@@ -16,9 +16,9 @@ import androidx.core.content.ContextCompat;
 
 import com.google.android.material.snackbar.Snackbar;
 
-import ch.epfl.sdp.kandle.LoggedInUser;
+import ch.epfl.sdp.kandle.entities.user.LoggedInUser;
 import ch.epfl.sdp.kandle.R;
-import ch.epfl.sdp.kandle.dependencies.Authentication;
+import ch.epfl.sdp.kandle.authentification.Authentication;
 import ch.epfl.sdp.kandle.dependencies.DependencyManager;
 
 public class LoginActivity extends AppCompatActivity {

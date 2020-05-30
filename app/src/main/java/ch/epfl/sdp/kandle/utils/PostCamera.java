@@ -1,4 +1,4 @@
-package ch.epfl.sdp.kandle;
+package ch.epfl.sdp.kandle.utils;
 
 import android.app.Activity;
 import android.content.ContentValues;

@@ -1,4 +1,4 @@
-package ch.epfl.sdp.kandle.dependencies;
+package ch.epfl.sdp.kandle.storage;
 
 import android.net.Uri;
 

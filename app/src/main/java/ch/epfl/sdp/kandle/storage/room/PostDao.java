@@ -9,7 +9,7 @@ import androidx.room.Update;
 
 import java.util.List;
 
-import ch.epfl.sdp.kandle.Post;
+import ch.epfl.sdp.kandle.entities.post.Post;
 
 
 @Dao
