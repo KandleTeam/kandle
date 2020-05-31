@@ -270,16 +270,18 @@ public class MockDatabase implements Database {
     public Task<Void> updateProfilePicture(HashMap<String, Object> imageUrlMap) {
         TaskCompletionSource<Void> source = new TaskCompletionSource<>();
         User user = users.get(LoggedInUser.getInstance().getId());
-        user.setImageURL((String) imageUrlMap.get("imageURL"));
+        String imageURL = (String) imageUrlMap.get("imageURL");
+        user.setImageURL(imageURL);
         source.setResult(null);
         return source.getTask();
     }
 
 
     @Override
-    public Task<Void> updateNickname(String nickname) {
+    public Task<Void> updateNickname(HashMap<String, Object> nicknameMap) {
         TaskCompletionSource<Void> source = new TaskCompletionSource<>();
         User user = users.get(LoggedInUser.getInstance().getId());
+        String nickname = (String) nicknameMap.get("nickname");
         user.setNickname(nickname);
         source.setResult(null);
         return source.getTask();

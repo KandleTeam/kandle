@@ -146,7 +146,7 @@ public interface Database {
     /**
      * Asynchronously updates the current users profil picture URI
      *
-     * @param uri
+     * @param imageUrlMap
      * @return A void task
      */
     Task<Void> updateProfilePicture(HashMap<String, Object> imageUrlMap);
@@ -154,10 +154,10 @@ public interface Database {
     /**
      * Asynchronously updates the current users nickname
      *
-     * @param nickname
+     * @param nicknameMap
      * @return A void task
      */
-    Task<Void> updateNickname(String nickname);
+    Task<Void> updateNickname(HashMap<String, Object> nicknameMap);
 
     /**
      * Asynchronously adds a new post to the database

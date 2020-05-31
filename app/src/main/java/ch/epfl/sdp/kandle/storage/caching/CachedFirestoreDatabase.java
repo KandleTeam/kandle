@@ -397,13 +397,13 @@ public class CachedFirestoreDatabase implements Database {
     }
 
     @Override
-    public Task<Void> updateNickname(String nickname) {
+    public Task<Void> updateNickname(HashMap<String, Object> nicknameMap) {
         if (DependencyManager.getNetworkStateSystem().isConnected()) {
-            return database.updateNickname(nickname).addOnCompleteListener(v -> {
+            return database.updateNickname(nicknameMap).addOnCompleteListener(v -> {
                 if (v.isSuccessful()) {
-                    LoggedInUser.getInstance().setNickname(nickname);
+                    LoggedInUser.getInstance().setNickname((String) nicknameMap.get("nickname"));
                     User user = internalStorage.getCurrentUser();
-                    user.setNickname(nickname);
+                    user.setNickname((String) nicknameMap.get("nickname"));
                     internalStorage.updateUser(user);
                     userDao.updateUser(user);
                 }

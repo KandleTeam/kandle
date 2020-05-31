@@ -48,6 +48,7 @@ public class FirestoreDatabase implements Database {
     private static final CollectionReference POSTS = FIRESTORE.collection("posts");
     private static final CollectionReference FOLLOW = FIRESTORE.collection("follow");
 
+
     // Array fields of the documents in collection 'follow'
     private static final String FOLLOWERS = "followers";
     private static final String FOLLOWING = "following";
@@ -402,10 +403,10 @@ public class FirestoreDatabase implements Database {
     }
 
     @Override
-    public Task<Void> updateNickname(String nickname) {
-        HashMap<String, Object> map = new HashMap<>();
-        map.put("nickname", nickname);
-        return loggedInUser().update(map);
+    public Task<Void> updateNickname(HashMap<String, Object> nicknameMap) {
+       // HashMap<String, Object> map = new HashMap<>();
+        //map.put("nickname", nickname);
+        return loggedInUser().update(nicknameMap);
     }
 
     @Override

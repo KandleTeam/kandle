@@ -12,6 +12,8 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.android.gms.tasks.Task;
 
+import java.util.HashMap;
+
 import ch.epfl.sdp.kandle.R;
 import ch.epfl.sdp.kandle.storage.Database;
 import ch.epfl.sdp.kandle.utils.imagePicker.ProfilePicPicker;
@@ -53,13 +55,15 @@ public class CustomAccountActivity extends AppCompatActivity {
                 pd.setMessage(getString(R.string.accountFinalization));
                 pd.show();
                 Task<Void> task;
+                HashMap<String, Object> nicknameMap = new HashMap<>();
+                nicknameMap.put("nickname", nickname);
                 if (imageUri != null) {
                     task = ProfilePicPicker.setProfilePicture(imageUri);
                     if (nickname.length() > 0) {
-                        task.continueWith(t -> database.updateNickname(nickname));
+                        task.continueWith(t -> database.updateNickname(nicknameMap));
                     }
                 } else {
-                    task = database.updateNickname(nickname);
+                    task = database.updateNickname(nicknameMap);
                 }
 
                 task.addOnCompleteListener(t -> {

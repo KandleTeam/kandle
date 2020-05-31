@@ -137,10 +137,13 @@ public class ProfileFragment extends Fragment {
 
             String nickname = mNicknameEdit.getText().toString();
             if (nickname.trim().length() > 0) {
-                mNicknameView.setText(nickname.trim());
-                mNickNameInMenu.setText(nickname.trim());
-                auth.getCurrentUser().setNickname(nickname.trim());
-                database.updateNickname(nickname.trim());
+                String nickname_trim = nickname.trim();
+                mNicknameView.setText(nickname_trim);
+                mNickNameInMenu.setText(nickname_trim);
+                auth.getCurrentUser().setNickname(nickname_trim);
+                HashMap<String, Object> nicknameMap = new HashMap<>();
+                nicknameMap.put("nickname", nickname_trim);
+                database.updateNickname(nicknameMap);
             }
             mNickname.showPrevious();
             mValidateNameButton.setVisibility(View.GONE);
