@@ -74,7 +74,7 @@ public class LandmarkFragmentTest {
     public void clickOnLandmark() throws InterruptedException {
         uiDevice.wait(Until.hasObject(By.desc("MAP READY")), 2000);
 
-        ((MapViewFragment) intentsRule.getActivity().getCurrentFragment()).goToEpflLandmarkFragment();
+        ((MapViewFragment) intentsRule.getActivity().getCurrentFragment()).goToEpflLandmarkFragment("EPFL", "image");
 
         onView(withId(R.id.landmarkFragmentImage)).check(matches(withTagValue(is(LandmarkFragment.LANDMARK_IMAGE))));
         onView(withId(R.id.landmarkFragmentPostsList)).check(new RecyclerViewItemCountAssertion(5));

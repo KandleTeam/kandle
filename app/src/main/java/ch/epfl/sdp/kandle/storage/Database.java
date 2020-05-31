@@ -3,6 +3,7 @@ package ch.epfl.sdp.kandle.storage;
 import com.google.android.gms.tasks.Task;
 
 import java.util.List;
+import java.util.Map;
 
 import ch.epfl.sdp.kandle.entities.post.Post;
 import ch.epfl.sdp.kandle.entities.user.User;
@@ -36,8 +37,10 @@ public interface Database {
      * @param user the user to be created in the database
      * @return an empty Task, signifying the outcome
      */
-    Task<Void> createUser(User user);
+    Task<Void> createUser(User user, Map<String, Object> usernameMap, Map<String, Object> deviceMap);
 
+
+    Task<Void> createUser(User user);
     /**
      * Asynchronously retrieves maxNumber of users that have a username matching prefix
      *

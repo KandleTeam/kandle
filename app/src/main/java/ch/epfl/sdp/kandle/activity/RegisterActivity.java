@@ -14,6 +14,9 @@ import androidx.core.content.ContextCompat;
 
 import com.google.android.material.snackbar.Snackbar;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import ch.epfl.sdp.kandle.R;
 import ch.epfl.sdp.kandle.authentification.Authentication;
 import ch.epfl.sdp.kandle.storage.Database;
@@ -78,7 +81,11 @@ public class RegisterActivity extends AppCompatActivity {
         ProgressDialog pd = new ProgressDialog(RegisterActivity.this);
         pd.setMessage("Your account is being created");
         pd.show();
-        auth.createUserWithEmailAndPassword(username, email, password).addOnCompleteListener(task -> {
+        Map<String, Object> usernameMap = new HashMap<>();
+        usernameMap.put("username", username);
+        Map<String, Object> deviceMap = new HashMap<>();
+
+        auth.createUserWithEmailAndPassword(username, email, password, usernameMap, deviceMap).addOnCompleteListener(task -> {
             if (task.isSuccessful()) {
                 pd.dismiss();
                 Toast.makeText(RegisterActivity.this, "User has been created", Toast.LENGTH_LONG).show();
@@ -86,7 +93,7 @@ public class RegisterActivity extends AppCompatActivity {
                 finishAffinity();
             } else {
                 pd.dismiss();
-                System.out.println("Task creation was sucessfull" + task.getException().getMessage());
+                System.out.println("Task creation was successful" + task.getException().getMessage());
                 task.getException().printStackTrace();
                 Toast.makeText(RegisterActivity.this, "An error has occurred : " + task.getException().getMessage(), Toast.LENGTH_SHORT).show();
             }

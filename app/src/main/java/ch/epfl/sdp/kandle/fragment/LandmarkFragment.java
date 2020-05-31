@@ -36,6 +36,7 @@ public class LandmarkFragment extends Fragment {
     public LandmarkFragment( String title, String imageUri, List<Post> posts) {
         this.title = title;
         this.imageUri = imageUri;
+        System.out.println(posts.size());
         if (posts.size()>5) {
             this.posts = posts.subList(0, 5);
         }else {
@@ -63,6 +64,7 @@ public class LandmarkFragment extends Fragment {
             imageLandmark.setTag(LANDMARK_IMAGE);
             Picasso.get().load(imageUri).into(imageLandmark);
         }
+
 
         this.postAdapter = new PostAdapter(posts, this.getContext());
         postsListView.setAdapter(postAdapter);

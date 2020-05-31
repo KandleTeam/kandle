@@ -41,6 +41,7 @@ public class FirestoreDatabase implements Database {
 
     private static final FirebaseFirestore FIRESTORE = FirebaseFirestore.getInstance();
     private static final FirestoreDatabase INSTANCE = new FirestoreDatabase();
+    private static final FirebaseInstanceId FIREBASE_INSTANCE_ID = FirebaseInstanceId.getInstance();
     private static final CollectionReference USERS = FIRESTORE.collection("users");
     private static final CollectionReference USERNAMES = FIRESTORE.collection("usernames");
     private static final CollectionReference NOTIFICATION = FIRESTORE.collection("notification");
@@ -101,7 +102,7 @@ public class FirestoreDatabase implements Database {
     }
 
     @Override
-    public Task<Void> createUser(final User user) {
+    public Task<Void> createUser(final User user, Map<String, Object> usernameMap, Map<String, Object> deviceMap) {
 
         final DocumentReference usernameDoc = USERNAMES.document(user.getUsername());
         final DocumentReference userDoc = USERS.document(user.getId());
@@ -115,27 +116,28 @@ public class FirestoreDatabase implements Database {
                         throw new FirebaseFirestoreException("Username already taken!", FirebaseFirestoreException.Code.ALREADY_EXISTS);
                     } else {
 
-                        Map<String, Object> usernameMap = new HashMap<>();
-                        usernameMap.put("username", user.getUsername());
+                        //Map<String, Object> usernameMap = new HashMap<>();
+                        //usernameMap.put("username", user.getUsername());
                         transaction.set(usernameDoc, usernameMap);
-
-                        //Map<String, Object> deviceMap = new HashMap<>();
-                        //deviceMap.put("deviceId", FirebaseInstanceId.getInstance().getToken() );
 
                         transaction.set(userDoc, user);
 
-                        FirebaseInstanceId.getInstance().getInstanceId().addOnSuccessListener(instanceIdResult -> {
+                        FIREBASE_INSTANCE_ID.getInstanceId().addOnSuccessListener(instanceIdResult -> {
                             String token = instanceIdResult.getToken();
-                            Map<String, Object> deviceMap = new HashMap<>();
+                            //Map<String, Object> deviceMap = new HashMap<>();
                             deviceMap.put("deviceId", token );
                             USERS.document(user.getId()).set(deviceMap, SetOptions.merge());
                         });
-                       // transaction.set(userDoc, deviceMap, SetOptions.merge());
                     }
 
                     return null;
                 });
 
+    }
+
+    @Override
+    public Task<Void> createUser(User user) {
+        return createUser(user, new HashMap<String, Object>(), new HashMap<String, Object>());
     }
 
     @Override

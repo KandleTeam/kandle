@@ -43,7 +43,7 @@ public class MockAuthentication implements Authentication {
 
 
     @Override
-    public Task<User> createUserWithEmailAndPassword(String username, String email, String password) {
+    public Task<User> createUserWithEmailAndPassword(String username, String email, String password, Map<String, Object> usernameMap, Map<String, Object> deviceMap) {
 
         TaskCompletionSource source = new TaskCompletionSource<User>();
 
@@ -54,7 +54,7 @@ public class MockAuthentication implements Authentication {
             User userToRegister = new User(newId, username, email, "nickname", null);
             accounts.put(email, newId);
             DependencyManager.getInternalStorageSystem().saveUserAtLoginOrRegister(userToRegister);
-            DependencyManager.getDatabaseSystem().createUser(userToRegister);
+            DependencyManager.getDatabaseSystem().createUser(userToRegister, usernameMap, deviceMap);
             isConnected = true;
             LoggedInUser.init(userToRegister);
             source.setResult(userToRegister);

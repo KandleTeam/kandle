@@ -8,7 +8,9 @@ import com.google.android.gms.tasks.TaskCompletionSource;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 import ch.epfl.sdp.kandle.entities.user.LoggedInUser;
@@ -105,7 +107,12 @@ public class CachedFirestoreDatabase implements Database {
 
     @Override
     public Task<Void> createUser(User user) {
-        return database.createUser(user).addOnCompleteListener( v -> {
+        return createUser(user, new HashMap<>(), new HashMap<>());
+    }
+
+    @Override
+    public Task<Void> createUser(User user, Map<String, Object> usernameMap, Map<String, Object> deviceMap) {
+        return database.createUser(user, usernameMap, deviceMap).addOnCompleteListener( v -> {
             if (v.isSuccessful()) {
                 userDao.insertUser(user);
             }

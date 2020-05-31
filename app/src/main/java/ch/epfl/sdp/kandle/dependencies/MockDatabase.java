@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -76,7 +77,7 @@ public class MockDatabase implements Database {
 
 
     @Override
-    public Task<Void> createUser(User user) {
+    public Task<Void> createUser(User user, Map<String, Object> usernameMap, Map<String, Object> deviceMap) {
 
         TaskCompletionSource<Void> task = new TaskCompletionSource<>();
 
@@ -93,6 +94,11 @@ public class MockDatabase implements Database {
         //task.setResult(null);
         //}
         return task.getTask();
+    }
+
+    @Override
+    public Task<Void> createUser(User user) {
+        return createUser(user, new HashMap<String, Object>(), new HashMap<String, Object>());
     }
 
     @Override

@@ -182,7 +182,7 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback, Per
         database.getNearbyPosts(currentLocation.getLatitude(), currentLocation.getLongitude(), RADIUS).addOnSuccessListener(posts -> {
             numMarkers = 0;
             for (Marker marker : mapboxMap.getMarkers()) {
-                marker.remove();
+                if (!marker.getSnippet().equals("EPFL Landmark")) marker.remove();
             }
             for (Post p : posts) {
                 database.userCloseFollowersList(p.getUserId()).addOnSuccessListener(closeFollowers -> {
@@ -228,15 +228,9 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback, Per
             Log.i("Map view", "Updated " + posts.size() + " posts markers");
         });
 
-        mapboxMap.addMarker(new MarkerOptions()
-                .position(new LatLng(46.5190, 6.5667))
-                .title("EPFL")
-                .icon(landmarkIcon))
-                .setSnippet("EPFL Landmark");
-
         mapboxMap.setOnMarkerClickListener(marker -> {
             if (marker.getSnippet().equals("EPFL Landmark")) {
-                goToEpflLandmarkFragment();
+                goToEpflLandmarkFragment("EPFL", null);
                 return true;
             } else {
                 goToPostFragment(marker.getSnippet(), currentLocation);
@@ -245,11 +239,11 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback, Per
         });
     }
 
-    public void goToEpflLandmarkFragment() {
+    public void goToEpflLandmarkFragment(String title, String imageUri ) {
         final FragmentManager fragmentManager = this.getActivity().getSupportFragmentManager();
-        database.getNearbyPosts(6.5667, 46.5190, 1000).addOnSuccessListener(posts -> {
+        database.getNearbyPosts(46.5190, 6.5667, RADIUS).addOnSuccessListener(posts -> {
             fragmentManager.beginTransaction()
-                    .replace(R.id.flContent, new LandmarkFragment("EPFL", "image", posts))
+                    .replace(R.id.flContent, new LandmarkFragment(title, imageUri, posts))
                     .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
                     .addToBackStack(null)
                     .commit();
@@ -317,6 +311,11 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback, Per
             locationProvider.getLocation(getActivity()).addOnSuccessListener(firstLocation -> {
                 currentLocation = firstLocation;
                 populateWithMarkers();
+                mapboxMap.addMarker(new MarkerOptions()
+                        .position(new LatLng(46.5190, 6.5667))
+                        .title("EPFL")
+                        .icon(landmarkIcon))
+                        .setSnippet("EPFL Landmark");
                 initLocationEngine();
             });
 
