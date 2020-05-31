@@ -6,6 +6,8 @@ import android.provider.MediaStore;
 
 import com.google.android.gms.tasks.Task;
 
+import java.util.HashMap;
+
 import ch.epfl.sdp.kandle.Kandle;
 import ch.epfl.sdp.kandle.authentification.Authentication;
 import ch.epfl.sdp.kandle.dependencies.DependencyManager;
@@ -40,8 +42,9 @@ public class ProfilePicPicker extends ImagePicker {
             if (downloadUri != null) {
                 sUri = downloadUri.toString();
             }
-
-            return database.updateProfilePicture(sUri);
+            HashMap<String, Object> uriMap = new HashMap<>();
+            uriMap.put("imageURL", sUri);
+            return database.updateProfilePicture(uriMap);
         });
     }
 }

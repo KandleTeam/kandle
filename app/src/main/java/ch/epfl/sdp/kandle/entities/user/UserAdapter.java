@@ -161,8 +161,10 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.ViewHolder> {
                 public void onClick(View v) {
                     if (holder.mFollowBtn.getText().toString().equals("follow")) {
                         Map<String, String> notificationData = new HashMap<>();
-                        notificationData.put("title", Resources.getSystem().getString(R.string.NOTIFICATION_FOLLOW_TITLE));
-                        notificationData.put("text", Resources.getSystem().getString(R.string.NOTIFICATION_FOLLOW_TEXT));
+                        //notificationData.put("title", Resources.getSystem().getString(R.string.NOTIFICATION_FOLLOW_TITLE));
+                        //notificationData.put("text", Resources.getSystem().getString(R.string.NOTIFICATION_FOLLOW_TEXT));
+                        notificationData.put("title", "New Follower !");
+                        notificationData.put("text", "Youhou, You have a new follower !");
                         notificationData.put("toUserId", user.getId());
                         database.follow(currentUser.getId(), user.getId(), notificationData).addOnCompleteListener(task -> {
                             if (task.isSuccessful()) {

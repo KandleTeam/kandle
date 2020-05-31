@@ -112,8 +112,6 @@ public class FirestoreDatabase implements Database {
                         throw new FirebaseFirestoreException("Username already taken!", FirebaseFirestoreException.Code.ALREADY_EXISTS);
                     } else {
 
-                        //Map<String, Object> usernameMap = new HashMap<>();
-                        //usernameMap.put("username", user.getUsername());
                         transaction.set(usernameDoc, usernameMap);
 
                         transaction.set(userDoc, user);
@@ -397,10 +395,10 @@ public class FirestoreDatabase implements Database {
     }
 
     @Override
-    public Task<Void> updateProfilePicture(String uri) {
-        HashMap<String, Object> map = new HashMap<>();
-        map.put("imageURL", uri);
-        return loggedInUser().update(map);
+    public Task<Void> updateProfilePicture(HashMap<String, Object> imageUrlMap ) {
+        //HashMap<String, Object> map = new HashMap<>();
+        //map.put("imageURL", uri);
+        return loggedInUser().update(imageUrlMap);
     }
 
     @Override

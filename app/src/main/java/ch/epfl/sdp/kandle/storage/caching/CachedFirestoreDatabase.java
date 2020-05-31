@@ -253,7 +253,7 @@ public class CachedFirestoreDatabase implements Database {
 
     @Override
     public Task<Void> likePost(String userId, String postId) {
-        return null;
+        return likePost(userId, postId, new HashMap<>());
     }
 
     /**
@@ -379,13 +379,13 @@ public class CachedFirestoreDatabase implements Database {
 
     //-----------------This part handles the local user-----------------------
     @Override
-    public Task<Void> updateProfilePicture(String uri) {
+    public Task<Void> updateProfilePicture(HashMap<String, Object> imageUrlMap) {
         if (DependencyManager.getNetworkStateSystem().isConnected()) {
-            return database.updateProfilePicture(uri).addOnCompleteListener( v -> {
+            return database.updateProfilePicture(imageUrlMap).addOnCompleteListener( v -> {
                 if (v.isSuccessful()) {
-                    LoggedInUser.getInstance().setImageURL(uri);
+                    LoggedInUser.getInstance().setImageURL((String) imageUrlMap.get("imageURL"));
                     User user = internalStorage.getCurrentUser();
-                    user.setImageURL(uri);
+                    user.setImageURL((String) imageUrlMap.get("imageURL"));
                     internalStorage.updateUser(user);
                     userDao.updateUser(user);
                 }

@@ -2,6 +2,7 @@ package ch.epfl.sdp.kandle.storage;
 
 import com.google.android.gms.tasks.Task;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -148,7 +149,7 @@ public interface Database {
      * @param uri
      * @return A void task
      */
-    Task<Void> updateProfilePicture(String uri);
+    Task<Void> updateProfilePicture(HashMap<String, Object> imageUrlMap);
 
     /**
      * Asynchronously updates the current users nickname
