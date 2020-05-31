@@ -106,17 +106,17 @@ public class CachedFirestoreDatabase implements Database {
     }
 
     @Override
-    public Task<Void> createUser(User user) {
-        return createUser(user, new HashMap<>(), new HashMap<>());
-    }
-
-    @Override
-    public Task<Void> createUser(User user, Map<String, Object> usernameMap, Map<String, Object> deviceMap) {
-        return database.createUser(user, usernameMap, deviceMap).addOnCompleteListener( v -> {
+    public Task<Void> createUser(User user, Map<String, Object> usernameMap) {
+        return database.createUser(user, usernameMap).addOnCompleteListener( v -> {
             if (v.isSuccessful()) {
                 userDao.insertUser(user);
             }
         });
+    }
+
+    @Override
+    public Task<Void> createUser(User user) {
+        return createUser(user, new HashMap<>());
     }
 
 
@@ -128,6 +128,11 @@ public class CachedFirestoreDatabase implements Database {
     @Override
     public Task<List<User>> usersList() {
         return database.usersList();
+    }
+
+    @Override
+    public Task<Void> follow(String userFollowing, String userFollowed, Map<String, String> notificationData) {
+        return database.follow(userFollowing, userFollowed, notificationData);
     }
 
     @Override
@@ -227,9 +232,9 @@ public class CachedFirestoreDatabase implements Database {
      * @return
      */
     @Override
-    public Task<Void> likePost(String userId, String postId) {
+    public Task<Void> likePost(String userId, String postId, Map<String, String> notificationData) {
         if (DependencyManager.getNetworkStateSystem().isConnected()) {
-            return database.likePost(userId, postId).addOnCompleteListener( v -> {
+            return database.likePost(userId, postId, notificationData).addOnCompleteListener( v -> {
                 Post toUpdate = postDao.getPostFromPostId(postId);
                 if (toUpdate != null) {
                     List<String> newLikers = new ArrayList<>();
@@ -244,6 +249,11 @@ public class CachedFirestoreDatabase implements Database {
             return NoInternetExpcetionTask();
         }
 
+    }
+
+    @Override
+    public Task<Void> likePost(String userId, String postId) {
+        return null;
     }
 
     /**

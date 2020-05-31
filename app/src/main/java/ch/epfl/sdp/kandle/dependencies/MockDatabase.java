@@ -77,7 +77,7 @@ public class MockDatabase implements Database {
 
 
     @Override
-    public Task<Void> createUser(User user, Map<String, Object> usernameMap, Map<String, Object> deviceMap) {
+    public Task<Void> createUser(User user, Map<String, Object> usernameMap) {
 
         TaskCompletionSource<Void> task = new TaskCompletionSource<>();
 
@@ -98,7 +98,7 @@ public class MockDatabase implements Database {
 
     @Override
     public Task<Void> createUser(User user) {
-        return createUser(user, new HashMap<String, Object>(), new HashMap<String, Object>());
+        return createUser(user, null);
     }
 
     @Override
@@ -142,7 +142,7 @@ public class MockDatabase implements Database {
     }
 
     @Override
-    public Task<Void> follow(String userFollowing, String userFollowed) {
+    public Task<Void> follow(String userFollowing, String userFollowed, Map<String, String> notificationData) {
 
         Follow follow = followMap.get(userFollowing);
         Follow follow2 = followMap.get(userFollowed);
@@ -157,6 +157,11 @@ public class MockDatabase implements Database {
         TaskCompletionSource<Void> source = new TaskCompletionSource<>();
         source.setResult(null);
         return source.getTask();
+    }
+
+    @Override
+    public Task<Void> follow(String userFollowing, String userFollowed) {
+        return follow(userFollowing, userFollowed, null);
     }
 
     @Override
@@ -309,13 +314,18 @@ public class MockDatabase implements Database {
     }
 
     @Override
-    public Task<Void> likePost(String userId, String postId) {
+    public Task<Void> likePost(String userId, String postId, Map<String, String> notificationData) {
         if (!posts.get(postId).getLikers().contains(userId)) {
             posts.get(postId).likePost(userId);
         }
         TaskCompletionSource<Void> source = new TaskCompletionSource<>();
         source.setResult(null);
         return source.getTask();
+    }
+
+    @Override
+    public Task<Void> likePost(String userId, String postId) {
+        return likePost(userId, postId, null);
     }
 
     @Override

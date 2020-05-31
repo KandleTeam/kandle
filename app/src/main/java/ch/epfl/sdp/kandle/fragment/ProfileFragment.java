@@ -25,7 +25,9 @@ import com.squareup.picasso.Picasso;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import ch.epfl.sdp.kandle.entities.achievement.Achievement;
 import ch.epfl.sdp.kandle.entities.user.LoggedInUser;
@@ -228,7 +230,11 @@ public class ProfileFragment extends Fragment {
     private View.OnClickListener followButtonListener(User currUser) {
         return v -> {
             if (mFollowButton.getText().toString().equals(getString(R.string.followBtnNotFollowing))) {
-                database.follow(currUser.getId(), user.getId()).addOnCompleteListener(task -> {
+                Map<String, String> notificationData = new HashMap<>();
+                notificationData.put("title", getString(R.string.NOTIFICATION_FOLLOW_TITLE) );
+                notificationData.put("text", getString(R.string.NOTIFICATION_FOLLOW_TEXT));
+                notificationData.put("toUserId", user.getId());
+                database.follow(currUser.getId(), user.getId(), notificationData).addOnCompleteListener(task -> {
                     if (task.isSuccessful()) {
                         mFollowButton.setText(R.string.followBtnAlreadyFollowing);
                         setNumberOfFollowers();

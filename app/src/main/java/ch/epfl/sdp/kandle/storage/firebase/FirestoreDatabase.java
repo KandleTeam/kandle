@@ -52,13 +52,9 @@ public class FirestoreDatabase implements Database {
     private static final String FOLLOWERS = "followers";
     private static final String FOLLOWING = "following";
     private static final String CLOSE_FOLLOWERS = "close_followers";
-    private static final String NOTIFICATION_NEW_FOLLOWER_TITLE = "New Follower !";
-    private static final String NOTIFICATION_NEW_FOLLOWER_TEXT = "YOUHOU ! You have a new Follower !";
-    private static final String NOTIFICATION_LIKE_TITLE = "New like !";
-    private static final String NOTIFICATION_LIKE_TEXT = "YOUHOU ! Someone has liked your post !";
-    private Map<String, Object> mapDeleteFollowing = (Map<String, Object>) new HashMap<>().put("following", FieldValue.delete());
-    private Map<String, Object> mapDeleteFollowers = (Map<String, Object>) new HashMap<>().put("followers", FieldValue.delete());
-    private Map<String, Object> mapDeleteCloseFollowers = (Map<String, Object>) new HashMap<>().put("close_followers", FieldValue.delete());
+    //private Map<String, Object> mapDeleteFollowing = (Map<String, Object>) new HashMap<>().put("following", FieldValue.delete());
+    //private Map<String, Object> mapDeleteFollowers = (Map<String, Object>) new HashMap<>().put("followers", FieldValue.delete());
+    //private Map<String, Object> mapDeleteCloseFollowers = (Map<String, Object>) new HashMap<>().put("close_followers", FieldValue.delete());
 
 
     private FirestoreDatabase() {
@@ -102,7 +98,7 @@ public class FirestoreDatabase implements Database {
     }
 
     @Override
-    public Task<Void> createUser(final User user, Map<String, Object> usernameMap, Map<String, Object> deviceMap) {
+    public Task<Void> createUser(final User user, Map<String, Object> usernameMap) {
 
         final DocumentReference usernameDoc = USERNAMES.document(user.getUsername());
         final DocumentReference userDoc = USERS.document(user.getId());
@@ -124,7 +120,7 @@ public class FirestoreDatabase implements Database {
 
                         FIREBASE_INSTANCE_ID.getInstanceId().addOnSuccessListener(instanceIdResult -> {
                             String token = instanceIdResult.getToken();
-                            //Map<String, Object> deviceMap = new HashMap<>();
+                            Map<String, Object> deviceMap = new HashMap<>();
                             deviceMap.put("deviceId", token );
                             USERS.document(user.getId()).set(deviceMap, SetOptions.merge());
                         });
@@ -137,7 +133,7 @@ public class FirestoreDatabase implements Database {
 
     @Override
     public Task<Void> createUser(User user) {
-        return createUser(user, new HashMap<String, Object>(), new HashMap<String, Object>());
+        return createUser(user, new HashMap<>());
     }
 
     @Override
@@ -160,7 +156,7 @@ public class FirestoreDatabase implements Database {
     }
 
     @Override
-    public Task<Void> follow(final String userFollowing, final String userFollowed) {
+    public Task<Void> follow(final String userFollowing, final String userFollowed, Map<String, String> notificationData) {
         final DocumentReference userFollowingDoc = FOLLOW.document(userFollowing);
         final DocumentReference userFollowedDoc = FOLLOW.document(userFollowed);
 
@@ -171,40 +167,41 @@ public class FirestoreDatabase implements Database {
                     List<String> following = (List<String>) userFollowingSnapshot.get(FOLLOWING);
                     List<String> followers = (List<String>) userFollowedSnapshot.get(FOLLOWERS);
 
-                    addFollow(userFollowed, userFollowingDoc, transaction, following, FOLLOWING);
-                    addFollow(userFollowing, userFollowedDoc, transaction, followers, FOLLOWERS);
+                    addFollow(userFollowed, userFollowingDoc, transaction, following, FOLLOWING, notificationData);
+                    addFollow(userFollowing, userFollowedDoc, transaction, followers, FOLLOWERS, notificationData);
 
                     return null;
                 });
     }
 
-    private void addFollow(String userId, DocumentReference userDoc, Transaction transaction, List<String> followList, String process) {
+    @Override
+    public Task<Void> follow(String userFollowing, String userFollowed) {
+        return follow(userFollowing, userFollowed, new HashMap<>());
+    }
+
+    private void addFollow(String userId, DocumentReference userDoc, Transaction transaction, List<String> followList, String process, Map<String, String> notificationData) {
         if (followList != null) {
             if (!followList.contains(userId)) {
                 Map<String, Object> mapFollowing = new HashMap<>();
                 followList.add(userId);
                 mapFollowing.put(process, followList);
                 transaction.set(userDoc, mapFollowing, SetOptions.merge());
-                if (process.equals(FOLLOWING)) sendNotification(userId, NOTIFICATION_NEW_FOLLOWER_TITLE, NOTIFICATION_NEW_FOLLOWER_TEXT);
+                if (process.equals(FOLLOWING)) sendNotification(notificationData);
             }
         } else {
             Map<String, Object> mapFollowing = new HashMap<>();
             mapFollowing.put(process, Arrays.asList(userId));
             transaction.set(userDoc, mapFollowing, SetOptions.merge());
-            if (process.equals(FOLLOWING)) sendNotification(userId, NOTIFICATION_NEW_FOLLOWER_TITLE, NOTIFICATION_NEW_FOLLOWER_TEXT);
+            if (process.equals(FOLLOWING)) sendNotification(notificationData);
         }
     }
 
 
-    private void sendNotification(String userFollowedId, String title, String text){
-        USERS.document(userFollowedId).get().addOnSuccessListener(documentSnapshot -> {
+    private void sendNotification(Map<String, String> notificationData){
+        USERS.document(notificationData.get("toUserId")).get().addOnSuccessListener(documentSnapshot -> {
             String deviceId = (String) documentSnapshot.get("deviceId");
             if (deviceId != null) {
-                Map<String, String> notificationData = new HashMap<>();
-                notificationData.put("toUserId", userFollowedId);
                 notificationData.put("toDeviceId", deviceId);
-                notificationData.put("title", title);
-                notificationData.put("text", text);
                 NOTIFICATION.document(UUID.randomUUID().toString()).set(notificationData);
             }
         });
@@ -244,13 +241,13 @@ public class FirestoreDatabase implements Database {
 
     @Override
     public Task<Void> setCloseFollower(final String userFollowing, final String userFollowed) {
-        final DocumentReference userFollowingDoc = FOLLOW.document(userFollowing);
+        //final DocumentReference userFollowingDoc = FOLLOW.document(userFollowing);
         final DocumentReference userFollowedDoc = FOLLOW.document(userFollowed);
 
         return FIRESTORE
                 .runTransaction(transaction -> {
 
-                    DocumentSnapshot userFollowingSnapshot = transaction.get(userFollowingDoc);
+                    //DocumentSnapshot userFollowingSnapshot = transaction.get(userFollowingDoc);
                     DocumentSnapshot userFollowedSnapshot = transaction.get(userFollowedDoc);
 
                     List<String> followers = (List<String>) userFollowedSnapshot.get(FOLLOWERS);
@@ -284,13 +281,13 @@ public class FirestoreDatabase implements Database {
 
     @Override
     public Task<Void> unsetCloseFollower(final String userFollowing, final String userFollowed) {
-        final DocumentReference userFollowingDoc = FOLLOW.document(userFollowing);
+        //final DocumentReference userFollowingDoc = FOLLOW.document(userFollowing);
         final DocumentReference userFollowedDoc = FOLLOW.document(userFollowed);
 
         return FIRESTORE
                 .runTransaction(transaction -> {
 
-                    DocumentSnapshot userFollowingSnapshot = transaction.get(userFollowingDoc);
+                    //DocumentSnapshot userFollowingSnapshot = transaction.get(userFollowingDoc);
                     DocumentSnapshot userFollowedSnapshot = transaction.get(userFollowedDoc);
                     List<String> closeFollowers = (List<String>) userFollowedSnapshot.get(CLOSE_FOLLOWERS);
                     if (closeFollowers != null) {
@@ -482,27 +479,32 @@ public class FirestoreDatabase implements Database {
     }
 
     @Override
-    public Task<Void> likePost(String userId, String postId) {
+    public Task<Void> likePost(String userId, String postId, Map<String, String> notificationData) {
         final DocumentReference likedPostDoc = POSTS.document(postId);
         return FIRESTORE
-                .runTransaction(likePostTransaction(likedPostDoc, userId, "like"));
+                .runTransaction(likePostTransaction(likedPostDoc, userId, "like", notificationData));
+    }
+
+    @Override
+    public Task<Void> likePost(String userId, String postId) {
+        return likePost(userId, postId, new HashMap<>());
     }
 
     @Override
     public Task<Void> unlikePost(String userId, String postId) {
         final DocumentReference unlikedPostDoc = POSTS.document(postId);
         return FIRESTORE
-                .runTransaction(likePostTransaction(unlikedPostDoc, userId, "unlike"));
+                .runTransaction(likePostTransaction(unlikedPostDoc, userId, "unlike", new HashMap<>()));
     }
 
-    private Transaction.Function<Void> likePostTransaction (DocumentReference postDoc, String userId, String process) {
+    private Transaction.Function<Void> likePostTransaction (DocumentReference postDoc, String userId, String process, Map<String, String> notificationData) {
         return transaction -> {
             DocumentSnapshot postSnapchot = transaction.get(postDoc);
             List<String> likers = (List<String>) postSnapchot.get("likers");
             Map<String, Object> mapLikers = new HashMap<>();
             if (process.equals("like")){
                 likers.add(userId);
-                sendNotification((String) postSnapchot.get("userId"), NOTIFICATION_LIKE_TITLE, NOTIFICATION_LIKE_TEXT);
+                sendNotification(notificationData);
             }
             else likers.remove(userId);
             mapLikers.put("likers", likers);

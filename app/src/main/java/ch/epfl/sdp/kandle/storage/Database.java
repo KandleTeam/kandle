@@ -37,10 +37,10 @@ public interface Database {
      * @param user the user to be created in the database
      * @return an empty Task, signifying the outcome
      */
-    Task<Void> createUser(User user, Map<String, Object> usernameMap, Map<String, Object> deviceMap);
-
+    Task<Void> createUser(User user, Map<String, Object> usernameMap);
 
     Task<Void> createUser(User user);
+
     /**
      * Asynchronously retrieves maxNumber of users that have a username matching prefix
      *
@@ -64,6 +64,7 @@ public interface Database {
      * @param userFollowed
      * @return A void task
      */
+    Task<Void> follow(final String userFollowing, final String userFollowed,Map<String, String> notificationData);
     Task<Void> follow(final String userFollowing, final String userFollowed);
 
     /**
@@ -189,6 +190,7 @@ public interface Database {
      * @param postId The post that has been liked
      * @return A void task
      */
+    Task<Void> likePost(String userId, String postId, Map<String, String> notificationData);
     Task<Void> likePost(String userId, String postId);
 
     /**

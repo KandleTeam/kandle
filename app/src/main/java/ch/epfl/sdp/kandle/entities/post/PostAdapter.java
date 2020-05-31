@@ -3,6 +3,7 @@ package ch.epfl.sdp.kandle.entities.post;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.content.res.Resources;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -22,7 +23,9 @@ import com.squareup.picasso.Picasso;
 import java.io.File;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import ch.epfl.sdp.kandle.Kandle;
 import ch.epfl.sdp.kandle.R;
@@ -110,7 +113,11 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder> {
                     });
 
                 } else {
-                    database.likePost(userId, post.getPostId()).addOnCompleteListener(task -> {
+                    Map<String, String> notificationData = new HashMap<>();
+                    notificationData.put("title", mContext.getString(R.string.NOTIFICATION_LIKE_TITLE));
+                    notificationData.put("text", mContext.getString(R.string.NOTIFICATION_LIKE_TEXT));
+                    notificationData.put("toUserId", post.getUserId());
+                    database.likePost(userId, post.getPostId(), notificationData).addOnCompleteListener(task -> {
                         if (task.isSuccessful()) {
                             post.likePost(userId);
                             likeView.setText(String.valueOf(post.getLikes()));

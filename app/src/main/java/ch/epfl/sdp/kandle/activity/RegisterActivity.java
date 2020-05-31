@@ -83,9 +83,8 @@ public class RegisterActivity extends AppCompatActivity {
         pd.show();
         Map<String, Object> usernameMap = new HashMap<>();
         usernameMap.put("username", username);
-        Map<String, Object> deviceMap = new HashMap<>();
 
-        auth.createUserWithEmailAndPassword(username, email, password, usernameMap, deviceMap).addOnCompleteListener(task -> {
+        auth.createUserWithEmailAndPassword(username, email, password, usernameMap).addOnCompleteListener(task -> {
             if (task.isSuccessful()) {
                 pd.dismiss();
                 Toast.makeText(RegisterActivity.this, "User has been created", Toast.LENGTH_LONG).show();

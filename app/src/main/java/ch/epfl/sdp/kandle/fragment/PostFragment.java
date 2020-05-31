@@ -17,6 +17,8 @@ import com.squareup.picasso.Picasso;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.HashMap;
+import java.util.Map;
 
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
@@ -154,7 +156,11 @@ public class PostFragment extends Fragment {
                     });
 
                 } else {
-                    database.likePost(currentUserId, post.getPostId()).addOnCompleteListener(task -> {
+                    Map<String, String> notificationData = new HashMap<>();
+                    notificationData.put("title", getString(R.string.NOTIFICATION_LIKE_TITLE));
+                    notificationData.put("text", getString(R.string.NOTIFICATION_LIKE_TEXT));
+                    notificationData.put("toUserId", post.getUserId());
+                    database.likePost(currentUserId, post.getPostId(), notificationData).addOnCompleteListener(task -> {
                         if (task.isSuccessful()) {
                             post.likePost(currentUserId);
                             numberOfLikes.setText(String.valueOf(post.getLikes()));
@@ -188,7 +194,11 @@ public class PostFragment extends Fragment {
     private View.OnClickListener followButtonListener(User currUser) {
         return v -> {
             if (followButton.getText().toString().equals(getString(R.string.followBtnNotFollowing))) {
-                database.follow(currUser.getId(), user.getId()).addOnCompleteListener(task -> {
+                Map<String, String> notificationData = new HashMap<>();
+                notificationData.put("title", getString(R.string.NOTIFICATION_FOLLOW_TITLE) );
+                notificationData.put("text", getString(R.string.NOTIFICATION_FOLLOW_TEXT));
+                notificationData.put("toUserId", post.getUserId());
+                database.follow(currUser.getId(), user.getId(), notificationData).addOnCompleteListener(task -> {
                     if (task.isSuccessful()) {
                         followButton.setText(R.string.followBtnAlreadyFollowing);
                     }

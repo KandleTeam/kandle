@@ -33,6 +33,12 @@
     <string name="alert_box_confirm">Confirm </string>
     <string name="alert_box_cancel">Cancel</string>
 
+    <!-- Notification -->
+    <string name="NOTIFICATION_LIKE_TITLE">New like !</string>
+    <string name="NOTIFICATION_LIKE_TEXT">YOUHOU ! Someone has liked your post !</string>
+    <string name="NOTIFICATION_FOLLOW_TITLE">New follower !</string>
+    <string name="NOTIFICATION_FOLLOW_TEXT">YOUHOU ! You have a new follower !</string>
+
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_addPost_fragment">Add a Post</string>
     <string name="hello_search_fragment">Search</string>

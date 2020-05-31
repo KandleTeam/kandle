@@ -1,6 +1,7 @@
 package ch.epfl.sdp.kandle.entities.user;
 
 import android.content.Context;
+import android.content.res.Resources;
 import android.graphics.Color;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -17,7 +18,9 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.squareup.picasso.Picasso;
 
 import java.io.File;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import ch.epfl.sdp.kandle.Kandle;
 import ch.epfl.sdp.kandle.R;
@@ -157,8 +160,11 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.ViewHolder> {
                 @Override
                 public void onClick(View v) {
                     if (holder.mFollowBtn.getText().toString().equals("follow")) {
-
-                        database.follow(currentUser.getId(), user.getId()).addOnCompleteListener(task -> {
+                        Map<String, String> notificationData = new HashMap<>();
+                        notificationData.put("title", Resources.getSystem().getString(R.string.NOTIFICATION_FOLLOW_TITLE));
+                        notificationData.put("text", Resources.getSystem().getString(R.string.NOTIFICATION_FOLLOW_TEXT));
+                        notificationData.put("toUserId", user.getId());
+                        database.follow(currentUser.getId(), user.getId(), notificationData).addOnCompleteListener(task -> {
                             if (task.isSuccessful()) {
                                 holder.mFollowBtn.setText("following");
                             }

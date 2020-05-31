@@ -72,14 +72,14 @@ public class FirebaseAuthentication implements Authentication {
      * @return a task that contains a kandle user
      */
     @Override
-    public Task<User> createUserWithEmailAndPassword(final String username, final String email, final String password, Map<String, Object> usernameMap, Map<String, Object> deviceMap) {
+    public Task<User> createUserWithEmailAndPassword(final String username, final String email, final String password, Map<String, Object> usernameMap) {
         Task<AuthResult> authResult = FAUTH.createUserWithEmailAndPassword(email, password);
         TaskCompletionSource<User> source = new TaskCompletionSource<User>();
         return authResult.continueWithTask(task -> {
             if (authResult.isSuccessful()) {
                 String userId = authResult.getResult().getUser().getUid();
                 User newUser = new User(userId, username, email, username, null);
-                database.createUser(newUser,usernameMap, deviceMap ).addOnCompleteListener(task1 -> {
+                database.createUser(newUser,usernameMap ).addOnCompleteListener(task1 -> {
                     if (task1.isSuccessful()) {
                         LoggedInUser.init(newUser);
                         DependencyManager.getInternalStorageSystem().saveUserAtLoginOrRegister(newUser);
