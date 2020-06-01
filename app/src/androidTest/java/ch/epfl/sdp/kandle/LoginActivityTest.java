@@ -107,7 +107,7 @@ public class LoginActivityTest {
     @Test
     public void emptyEmailTest() {
         onView(withId(R.id.loginBtn)).perform(click());
-        onView(withId(R.id.email)).check(matches(hasErrorText(res.getString(R.string.login_email_required))));
+        onView(withId(R.id.email)).check(matches(hasErrorText(res.getString(R.string.loginEmailRequired))));
     }
 
     @Test
@@ -115,7 +115,7 @@ public class LoginActivityTest {
         onView(withId(R.id.email)).perform(typeText("test@test.com"));
         onView(withId(R.id.email)).perform(closeSoftKeyboard());
         onView(withId(R.id.loginBtn)).perform(click());
-        onView(withId(R.id.password)).check(matches(hasErrorText(res.getString(R.string.login_password_required))));
+        onView(withId(R.id.password)).check(matches(hasErrorText(res.getString(R.string.loginPasswordRequired))));
     }
 
     @Test
