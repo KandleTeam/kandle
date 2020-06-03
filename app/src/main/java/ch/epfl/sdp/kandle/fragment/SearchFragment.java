@@ -111,35 +111,34 @@ public class SearchFragment extends Fragment {
         };
     }
 
+
     private void giveFollowPropositions() {
         database.userFollowingList(currentUser.getId()).addOnSuccessListener(userFollowingList -> {
-            for (User user : userFollowingList) {
-                database.userFollowingList(user.getId()).addOnSuccessListener(followingList -> {
-                    for (User user1 : followingList) {
+            for (User follower : userFollowingList) {
+                database.userFollowingList(follower.getId()).addOnSuccessListener(followerFollowingList -> {
+                    for (User follower2ndDegree : followerFollowingList) {
                         boolean alreadyFollowed;
                         if (mUsers.isEmpty()) {
-                            alreadyFollowed = checkUserIsInList(followingList, user1);
-                            if (!alreadyFollowed && !user1.getId().equals(currentUser.getId())) {
-                                mUsers.add(user1);
+                            alreadyFollowed = isUserInList(userFollowingList, follower2ndDegree);
+                            if (!alreadyFollowed && !follower2ndDegree.getId().equals(currentUser.getId())) {
+                                mUsers.add(follower2ndDegree);
                             }
                         } else {
-                            boolean alreadyInList = checkUserIsInList(mUsers, user1);
-                            alreadyFollowed = checkUserIsInList(followingList, user1);
-                            if (!alreadyFollowed && !alreadyInList && !user1.getId().equals(currentUser.getId())) {
-                                mUsers.add(user1);
+                            boolean alreadyInList = isUserInList(mUsers, follower2ndDegree);
+                            alreadyFollowed = isUserInList(userFollowingList, follower2ndDegree);
+                            if (!alreadyFollowed && !alreadyInList && !follower2ndDegree.getId().equals(currentUser.getId())) {
+                                mUsers.add(follower2ndDegree);
                             }
                         }
                     }
                     userAdapter.notifyDataSetChanged();
-
                 });
             }
-
         });
     }
 
 
-    private boolean checkUserIsInList(List<User> list, User user) {
+    private boolean isUserInList(List<User> list, User user) {
         for (User user1 : list) {
             if (user.getId().equals(user1.getId())) {
                 return true;
