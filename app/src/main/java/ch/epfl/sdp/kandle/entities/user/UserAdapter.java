@@ -62,6 +62,19 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.ViewHolder> {
         TextView mUsername = holder.mUsername;
         mUsername.setText(String.format("@%s", user.getUsername()));
 
+
+        final User currentUser = DependencyManager.getAuthSystem().getCurrentUser();
+        final CachedFirestoreDatabase database = new CachedFirestoreDatabase();
+
+        setupUserImage(holder, user);
+
+        setupCloseFriends(holder, user, currentUser, database);
+
+        setupFollow(holder, user, currentUser, database);
+
+    }
+
+    private void setupUserImage(@NonNull ViewHolder holder, User user) {
         CircleImageView mImageProfile = holder.image_profile;
         if (user.getImageURL() != null) {
             mImageProfile.setBackgroundColor(Color.TRANSPARENT);
@@ -76,10 +89,37 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.ViewHolder> {
             mImageProfile.setImageDrawable(Kandle.getContext().getDrawable(R.drawable.ic_launcher_foreground));
             mImageProfile.setBackground(Kandle.getContext().getDrawable(R.drawable.ic_launcher_circle_background));
         }
-        final User currentUser = DependencyManager.getAuthSystem().getCurrentUser();
-        final CachedFirestoreDatabase database = new CachedFirestoreDatabase();
+    }
+
+    private void setupFollow(@NonNull ViewHolder holder, User user, User currentUser, CachedFirestoreDatabase database) {
+        if (user.getId().equals(currentUser.getId())) {
+            holder.mFollowBtn.setVisibility(View.GONE);
+        } else {
+            database.userIdFollowingList(currentUser.getId()).addOnSuccessListener(list -> {
+                if ((list == null) || (!list.contains(user.getId()))) {
+                    holder.mFollowBtn.setText(R.string.followBtnNotFollowing);
+                } else {
+                    holder.mFollowBtn.setText(R.string.followBtnAlreadyFollowing);
+                }
+            });
 
 
+            holder.mFollowBtn.setOnClickListener(v -> {
+                if (holder.mFollowBtn.getText().toString().equals(Kandle.getContext().getString(R.string.followBtnNotFollowing))) {
+                    database.follow(currentUser.getId(), user.getId()).addOnSuccessListener(task -> {
+                        holder.mFollowBtn.setText(R.string.followBtnAlreadyFollowing);
+
+                    });
+                } else {
+                    database.unFollow(currentUser.getId(), user.getId()).addOnSuccessListener(task -> {
+                        holder.mFollowBtn.setText(R.string.followBtnNotFollowing);
+                    });
+                }
+            });
+        }
+    }
+
+    private void setupCloseFriends(@NonNull ViewHolder holder, User user, User currentUser, CachedFirestoreDatabase database) {
         if (isFollowerList) {
             holder.mIsCloseFriend.setVisibility(View.VISIBLE);
             database.userCloseFollowersList(currentUser.getId()).addOnSuccessListener(closeFollowers -> {
@@ -118,33 +158,6 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.ViewHolder> {
         } else {
             holder.mIsCloseFriend.setVisibility(View.GONE);
         }
-
-        if (user.getId().equals(currentUser.getId())) {
-            holder.mFollowBtn.setVisibility(View.GONE);
-        } else {
-            database.userIdFollowingList(currentUser.getId()).addOnSuccessListener(list -> {
-                if ((list == null) || (!list.contains(user.getId()))) {
-                    holder.mFollowBtn.setText(R.string.followBtnNotFollowing);
-                } else {
-                    holder.mFollowBtn.setText(R.string.followBtnAlreadyFollowing);
-                }
-            });
-
-
-            holder.mFollowBtn.setOnClickListener(v -> {
-                if (holder.mFollowBtn.getText().toString().equals(Kandle.getContext().getString(R.string.followBtnNotFollowing))) {
-                    database.follow(currentUser.getId(), user.getId()).addOnSuccessListener(task -> {
-                        holder.mFollowBtn.setText(R.string.followBtnAlreadyFollowing);
-
-                    });
-                } else {
-                    database.unFollow(currentUser.getId(), user.getId()).addOnSuccessListener(task -> {
-                        holder.mFollowBtn.setText(R.string.followBtnNotFollowing);
-                    });
-                }
-            });
-        }
-
     }
 
     @Override
