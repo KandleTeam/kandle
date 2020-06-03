@@ -91,16 +91,16 @@ public class ProfileFragment extends Fragment {
 
         getViews(view);
 
-        setupNameAndPicture();
+        setupNameFieldsAndPicture();
         setupAchievements();
         loadProfilePicture();
         setupFollowButton(LoggedInUser.getInstance());
         setupFollowCounts();
-        
+
         return view;
     }
 
-    private void setupNameAndPicture() {
+    private void setupNameFieldsAndPicture() {
         if (!user.getId().equals(LoggedInUser.getInstance().getId()) || LoggedInUser.isGuestMode()) {
             mEditPicture.setVisibility(View.GONE);
             mEditName.setVisibility(View.GONE);
@@ -173,18 +173,6 @@ public class ProfileFragment extends Fragment {
         });
     }
 
-    private void loadProfilePicture() {
-        if (user.getImageURL() != null) {
-            mProfilePicture.setTag(PROFILE_PICTURE_BEFORE);
-            File image = DependencyManager.getInternalStorageSystem().getImageFileById(user.getId());
-            if (image != null) {
-                Picasso.get().load(image).into(mProfilePicture);
-            } else {
-                Picasso.get().load(user.getImageURL()).into(mProfilePicture);
-            }
-        }
-    }
-
     private void setupFollowButton(User currentUser) {
 
         if (user.getId().equals(currentUser.getId()) || LoggedInUser.isGuestMode()) {
@@ -202,6 +190,19 @@ public class ProfileFragment extends Fragment {
             mFollowButton.setOnClickListener(followButtonListener(currentUser));
         }
     }
+
+    private void loadProfilePicture() {
+        if (user.getImageURL() != null) {
+            mProfilePicture.setTag(PROFILE_PICTURE_BEFORE);
+            File image = DependencyManager.getInternalStorageSystem().getImageFileById(user.getId());
+            if (image != null) {
+                Picasso.get().load(image).into(mProfilePicture);
+            } else {
+                Picasso.get().load(user.getImageURL()).into(mProfilePicture);
+            }
+        }
+    }
+
 
     private View.OnClickListener validateNameClickListener() {
         return v -> {
