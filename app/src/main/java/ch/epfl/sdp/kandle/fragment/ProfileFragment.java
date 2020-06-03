@@ -39,8 +39,8 @@ import ch.epfl.sdp.kandle.utils.imagePicker.ProfilePicPicker;
 
 public class ProfileFragment extends Fragment {
 
-    private final static int PROFILE_PICTURE_BEFORE = 6;
-    private final static int PROFILE_PICTURE_AFTER = 7;
+    public final static int PROFILE_PICTURE_BEFORE = 6;
+    public final static int PROFILE_PICTURE_AFTER = 7;
     private static int nbValidatedAchievements;
     private User user;
     private ImageView mProfilePicture, mEditPicture, mProfilePictureInMenu, mEditName, mBadge;
