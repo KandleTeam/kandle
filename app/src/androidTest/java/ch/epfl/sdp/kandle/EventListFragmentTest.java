@@ -40,9 +40,6 @@ import static androidx.test.espresso.matcher.ViewMatchers.withText;
 @RunWith(AndroidJUnit4.class)
 public class EventListFragmentTest {
 
-    private static Post p1;
-    private User u1;
-    private MockDatabase db;
     private LocalDatabase localDatabase;
     @Rule
     public ActivityTestRule<MainActivity> intentsRule =
@@ -50,10 +47,10 @@ public class EventListFragmentTest {
                 @Override
                 protected void beforeActivityLaunched() {
                     LoggedInUser.init(new User("loggedInUserId","LoggedInUser","loggedInUser@kandle.ch","nickname","image"));
-                    u1 = new User("u1Id","u1","u2@kandle.ch","u1","image1");
+                    User u1 = new User("u1Id", "u1", "u2@kandle.ch", "u1", "image1");
                     Date date = new Date();
                     date.setTime(date.getTime()+100000);
-                    p1 =  new Post("Hello", null, date, "u1Id", "post1Id");
+                    Post p1 = new Post("Hello", null, date, "u1Id", "post1Id");
                     u1.addPostId(p1.getPostId());
                     p1.setType(Post.EVENT);
                     List<String> participants = new ArrayList<>();
@@ -66,8 +63,8 @@ public class EventListFragmentTest {
                     HashMap<String, User> users = new HashMap<>();
                     HashMap<String, MockDatabase.Follow> followMap = new HashMap<>();
                     HashMap<String, Post> posts = new HashMap<>();
-                    posts.put(p1.getPostId(),p1);
-                    db = new MockDatabase(true, users, followMap, posts);
+                    posts.put(p1.getPostId(), p1);
+                    MockDatabase db = new MockDatabase(true, users, followMap, posts);
                     MockAuthentication authentication = new MockAuthentication(true, accounts, "password");
                     MockImageStorage storage = new MockImageStorage();
                     MockInternalStorage internalStorage = new MockInternalStorage(new HashMap<>());

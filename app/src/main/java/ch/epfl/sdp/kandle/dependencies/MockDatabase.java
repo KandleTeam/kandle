@@ -373,17 +373,6 @@ public class MockDatabase implements Database {
         posts.add(new Post("nearby post 4 ", null, new Date(), "mock user id", 0.0001, 0.0001));
         posts.add(new Post("nearby post 5 ", null, new Date(), "mock user id", 0.0001, 0.0001));
 
-        if (LoggedInUser.getInstance() != null) {
-            Date date = new Date();
-            date.setTime(date.getTime() + 100000);
-            Post event = new Post("Hello", null, date, LoggedInUser.getInstance().getId(), "post1Id");
-            event.setType(Post.EVENT);
-            List<String> participants = new ArrayList<>();
-            participants.add("loggedInUserId");
-            event.setLikers(participants);
-            posts.add(event);
-        }
-
         source.setResult(posts);
         return source.getTask();
     }
