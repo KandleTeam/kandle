@@ -60,7 +60,7 @@ import static ch.epfl.sdp.kandle.dependencies.DependencyManager.getDatabaseSyste
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
 
-public class YourProfileFragmentTest {
+public class ProfileFragmentTest {
 
     @Rule
     public GrantPermissionRule permissionRule = GrantPermissionRule.grant(android.Manifest.permission.ACCESS_FINE_LOCATION);

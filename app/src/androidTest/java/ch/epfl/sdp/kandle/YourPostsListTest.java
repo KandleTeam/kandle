@@ -187,7 +187,6 @@ public class YourPostsListTest {
     @Test
     public void getErrorIfNoPostInLocalDbAndOffline() {
 
-
         onView(withId(R.id.rvPosts)).check(new RecyclerViewItemCountAssertion(2));
         network.setIsOnline(false);
         localDatabase.clearAllTables();
@@ -196,7 +195,6 @@ public class YourPostsListTest {
         onView(withId(R.id.drawer_layout)).perform(DrawerActions.close());
 
         onView(withId(R.id.rvPosts)).check(new RecyclerViewItemCountAssertion(0));
-
 
     }
 
@@ -230,7 +228,6 @@ public class YourPostsListTest {
         onView(withId(R.id.rvPosts)).perform(RecyclerViewActions.actionOnItemAtPosition(0, clickChildViewWithId(R.id.deleteButton)));
         onView(withId(android.R.id.button1)).perform(click());
 
-
     }
 
     @Test
@@ -246,7 +243,6 @@ public class YourPostsListTest {
         onView(new RecyclerViewMatcher(R.id.rvPosts)
                 .atPositionOnView(0, R.id.postImageInPost))
                 .check(matches(not(withTagValue(is(PostAdapter.POST_IMAGE)))));
-
     }
 
     @Test
@@ -264,7 +260,6 @@ public class YourPostsListTest {
         onView(withId(R.id.rvPosts)).perform(RecyclerViewActions.actionOnItemAtPosition(1, clickChildViewWithId(R.id.flames)));
         Thread.sleep(1000);
         onView(withId(R.id.list_user_number)).check(matches(withText("3")));
-
 
     }
 

@@ -43,7 +43,7 @@ import static androidx.test.espresso.contrib.DrawerMatchers.isClosed;
 import static androidx.test.espresso.matcher.ViewMatchers.hasDescendant;
 import static androidx.test.espresso.matcher.ViewMatchers.withId;
 import static androidx.test.espresso.matcher.ViewMatchers.withText;
-import static ch.epfl.sdp.kandle.YourProfileFragmentTest.atPosition;
+import static ch.epfl.sdp.kandle.ProfileFragmentTest.atPosition;
 import static ch.epfl.sdp.kandle.dependencies.DependencyManager.getDatabaseSystem;
 
 public class SearchFragmentTest {

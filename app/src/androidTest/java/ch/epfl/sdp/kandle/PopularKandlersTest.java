@@ -38,7 +38,7 @@ import static androidx.test.espresso.matcher.ViewMatchers.hasDescendant;
 import static androidx.test.espresso.matcher.ViewMatchers.withContentDescription;
 import static androidx.test.espresso.matcher.ViewMatchers.withId;
 import static androidx.test.espresso.matcher.ViewMatchers.withText;
-import static ch.epfl.sdp.kandle.YourProfileFragmentTest.atPosition;
+import static ch.epfl.sdp.kandle.ProfileFragmentTest.atPosition;
 import static ch.epfl.sdp.kandle.dependencies.DependencyManager.getDatabaseSystem;
 import static ch.epfl.sdp.kandle.fragment.PopularUserFragment.USERS_ARRAY_SIZE;
 import static junit.framework.TestCase.assertEquals;

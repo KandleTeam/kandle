@@ -19,7 +19,6 @@ import java.util.List;
 
 import ch.epfl.sdp.kandle.Kandle;
 import ch.epfl.sdp.kandle.R;
-import ch.epfl.sdp.kandle.authentification.Authentication;
 import ch.epfl.sdp.kandle.dependencies.DependencyManager;
 import ch.epfl.sdp.kandle.storage.caching.CachedFirestoreDatabase;
 import de.hdodenhof.circleimageview.CircleImageView;
@@ -77,8 +76,7 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.ViewHolder> {
             mImageProfile.setImageDrawable(Kandle.getContext().getDrawable(R.drawable.ic_launcher_foreground));
             mImageProfile.setBackground(Kandle.getContext().getDrawable(R.drawable.ic_launcher_circle_background));
         }
-        final Authentication authentication = DependencyManager.getAuthSystem();
-        final User currentUser = authentication.getCurrentUser();
+        final User currentUser = DependencyManager.getAuthSystem().getCurrentUser();
         final CachedFirestoreDatabase database = new CachedFirestoreDatabase();
 
 
@@ -170,7 +168,6 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.ViewHolder> {
         CircleImageView image_profile;
         Button mFollowBtn;
         ImageButton mIsCloseFriend;
-
 
         ViewHolder(@NonNull View itemView) {
             super(itemView);
