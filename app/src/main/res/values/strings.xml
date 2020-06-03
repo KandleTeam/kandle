@@ -117,5 +117,6 @@
     <!-- Permission stuffs -->
     <string name="locationPermissionDeniedToastMsg">Please enable location to make full use of the app</string>
     <string name="locationPermissionExplanation">Please enable location to see nearby posts</string>
+    <string name="profileFragmentUploadingDialog">Uploading...</string>
 
 </resources>
