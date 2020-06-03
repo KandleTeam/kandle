@@ -80,18 +80,8 @@ public class MockDatabase implements Database {
 
         TaskCompletionSource<Void> task = new TaskCompletionSource<>();
 
-       /* if(users.containsKey(user.getId())) {
-            task.setException(new IllegalArgumentException("User with this id already exists"));
-        } else if(findUserByName(user.getUsername()).isPresent()) {
-            task.setException(new IllegalArgumentException("User with this username already exists"));
-        } else {
-
-
-        */
         users.put(user.getId(), user);
         followMap.put(user.getId(), new Follow());
-        //task.setResult(null);
-        //}
         return task.getTask();
     }
 
@@ -104,21 +94,7 @@ public class MockDatabase implements Database {
                 results.add(u);
             }
         }
-/*
-        results.sort(new Comparator<User>() {
-            @Override
-            public int compare(User u1, User u2) {
-                return u1.getUsername().compareTo(u2.getUsername());
-            }
-        });
-
- */
-        Collections.sort(results, new Comparator<User>() {
-            @Override
-            public int compare(User o1, User o2) {
-                return o1.getUsername().compareTo(o2.getUsername());
-            }
-        });
+        Collections.sort(results, (o1, o2) -> o1.getUsername().compareTo(o2.getUsername()));
 
         TaskCompletionSource<List<User>> source = new TaskCompletionSource<>();
         source.setResult(new ArrayList<User>(results.subList(0, Math.min(maxNumber, results.size()))));
@@ -342,15 +318,6 @@ public class MockDatabase implements Database {
 
     }
 
-    /*
-    @Override
-    public Task<List<String>> likers(String postId) {
-        TaskCompletionSource<List<String>> source = new TaskCompletionSource<>();
-        source.setResult(new ArrayList<String>(posts.get(postId).getLikers()));
-        return source.getTask();
-    }
-     */
-
     @Override
     public Task<List<Post>> getPostsByUserId(String userId) {
         List<Post> postsList = new ArrayList<Post>();
@@ -405,6 +372,16 @@ public class MockDatabase implements Database {
         posts.add(post3);
         posts.add(new Post("nearby post 4 ", null, new Date(), "mock user id", 0.0001, 0.0001));
         posts.add(new Post("nearby post 5 ", null, new Date(), "mock user id", 0.0001, 0.0001));
+
+        Date date = new Date();
+        date.setTime(date.getTime()+100000);
+        Post event = new Post("Hello", null, date, LoggedInUser.getInstance().getId(), "post1Id");
+        event.setType(Post.EVENT);
+        List<String> participants = new ArrayList<>();
+        participants.add("loggedInUserId");
+        event.setLikers(participants);
+        posts.add(event);
+
         source.setResult(posts);
         return source.getTask();
     }
