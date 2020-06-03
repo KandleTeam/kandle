@@ -118,5 +118,7 @@
     <string name="profileFragmentUploadingDialog">Uploading...</string>
     <string name="userAdapterHolderDescriptionCloseFriend">Is close friend</string>
     <string name="userAdapterHolderDescriptionNotCloseFriend">Is not close friend</string>
+    <string name="profileFragmentFollowersListTitle">Followers</string>
+    <string name="profileFragmentFollowingListTitle">Following</string>
 
 </resources>

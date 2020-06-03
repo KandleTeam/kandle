@@ -19,7 +19,7 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
-import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.navigation.NavigationView;
 import com.squareup.picasso.Picasso;
 
@@ -91,6 +91,16 @@ public class ProfileFragment extends Fragment {
 
         getViews(view);
 
+        setupNameAndPicture();
+        setupAchievements();
+        loadProfilePicture();
+        setupFollowButton(LoggedInUser.getInstance());
+        setupFollowCounts();
+        
+        return view;
+    }
+
+    private void setupNameAndPicture() {
         if (!user.getId().equals(LoggedInUser.getInstance().getId()) || LoggedInUser.isGuestMode()) {
             mEditPicture.setVisibility(View.GONE);
             mEditName.setVisibility(View.GONE);
@@ -100,14 +110,6 @@ public class ProfileFragment extends Fragment {
                 ProfilePicPicker.openImage(this);
             });
         }
-
-        AchievementFragment.getAchievements(achievements);
-        nbValidatedAchievements = 0;
-        for (Achievement achievement : achievements) {
-            achievement.setProfileFragment(this);
-            achievement.checkAchievement(false);
-        }
-        changeBadge();
 
         mValidateNameButton.setVisibility(View.GONE);
         mValidatePictureButton.setVisibility(View.GONE);
@@ -126,22 +128,49 @@ public class ProfileFragment extends Fragment {
         mNicknameEdit = mNickname.findViewById(R.id.edit_view);
         mNicknameView.setText(user.getNickname());
         mNicknameEdit.setText(user.getNickname());
+    }
 
-        loadProfilePicture();
+    private void setupAchievements() {
+        AchievementFragment.getAchievements(achievements);
+        nbValidatedAchievements = 0;
+        for (Achievement achievement : achievements) {
+            achievement.setProfileFragment(this);
+            achievement.checkAchievement(false);
+        }
+        changeBadge();
+    }
+
+    private void setupFollowCounts() {
 
         setNumberOfFollowers();
         setNumberOfFollowing();
 
-        setupFollowButton(LoggedInUser.getInstance());
-
         final FragmentManager fragmentManager = this.getActivity().getSupportFragmentManager();
-        mNumberOfFollowers.setOnClickListener(v -> database.userFollowersList(user.getId()).addOnCompleteListener(numberListener("Followers", fragmentManager)));
-        mNumberOfFollowing.setOnClickListener(v -> database.userFollowingList(user.getId()).addOnCompleteListener(numberListener("Following", fragmentManager)));
+        mNumberOfFollowers.setOnClickListener(v ->
+                database.userFollowersList(user.getId())
+                        .addOnSuccessListener(numberListener(getString(R.string.profileFragmentFollowersListTitle), fragmentManager)));
+        mNumberOfFollowing.setOnClickListener(v ->
+                database.userFollowingList(user.getId())
+                        .addOnSuccessListener(numberListener(getString(R.string.profileFragmentFollowingListTitle), fragmentManager)));
+
         mNumberOfFollowers.setClickable(!LoggedInUser.isGuestMode());
         mNumberOfFollowing.setClickable(!LoggedInUser.isGuestMode());
+    }
 
+    private void setNumberOfFollowing() {
+        database.userIdFollowingList(user.getId()).addOnSuccessListener(following -> {
+            if (following != null) {
+                mNumberOfFollowing.setText(Integer.toString(following.size()));
+            }
+        });
+    }
 
-        return view;
+    private void setNumberOfFollowers() {
+        database.userIdFollowersList(user.getId()).addOnSuccessListener(followers -> {
+            if (followers != null) {
+                mNumberOfFollowers.setText(Integer.toString(followers.size()));
+            }
+        });
     }
 
     private void loadProfilePicture() {
@@ -211,19 +240,16 @@ public class ProfileFragment extends Fragment {
         };
     }
 
-    private OnCompleteListener<List<User>> numberListener(String title, final FragmentManager fragmentManager) {
-        return task -> {
-            if (task.isSuccessful()) {
-
-                fragmentManager.beginTransaction().replace(R.id.flContent, ListUsersFragment.newInstance(
-                        task.getResult()
-                        , title
-                        , Integer.toString(task.getResult().size())
-                ))
-                        .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
-                        .addToBackStack(null)
-                        .commit();
-            }
+    private OnSuccessListener<List<User>> numberListener(String title, final FragmentManager fragmentManager) {
+        return userList -> {
+            fragmentManager.beginTransaction().replace(R.id.flContent, ListUsersFragment.newInstance(
+                    userList
+                    , title
+                    , Integer.toString(userList.size())
+            ))
+                    .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
+                    .addToBackStack(null)
+                    .commit();
         };
     }
 
@@ -247,26 +273,6 @@ public class ProfileFragment extends Fragment {
         };
     }
 
-
-    private void setNumberOfFollowing() {
-        database.userIdFollowingList(user.getId()).addOnCompleteListener(task -> {
-            if (task.isSuccessful()) {
-                if (task.getResult() != null) {
-                    mNumberOfFollowing.setText(Integer.toString(task.getResult().size()));
-                }
-            }
-        });
-    }
-
-    private void setNumberOfFollowers() {
-        database.userIdFollowersList(user.getId()).addOnCompleteListener(task -> {
-            if (task.isSuccessful()) {
-                if (task.getResult() != null) {
-                    mNumberOfFollowers.setText(Integer.toString(task.getResult().size()));
-                }
-            }
-        });
-    }
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
