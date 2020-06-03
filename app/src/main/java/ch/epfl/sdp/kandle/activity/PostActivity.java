@@ -323,7 +323,9 @@ public class PostActivity extends AppCompatActivity {
             imageUri = data.getData();
             mPostImage.setTag(POST_EDITED_IMAGE_TAG);
             mPostImage.setImageURI(imageUri);
-        } else {
+        } else if (requestCode == EDIT_PIC_REQUEST && resultCode == RESULT_CANCELED) {
+            mPostImageLayout.setVisibility(View.GONE);
+        }else {
             imageUri = ImagePicker.handleActivityResultAndGetUri(requestCode, resultCode, data);
             if (imageUri != null) {
                 mPostImageLayout.setVisibility(View.VISIBLE);
