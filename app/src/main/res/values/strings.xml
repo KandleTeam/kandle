@@ -87,7 +87,7 @@
     <string name="postButtonText">POST</string>
     <string name="editButtonText">EDIT</string>
     <string name="postMessageHint">What\'s on your mind today ?</string>
-    <string name="emptyPostError">Your post is empty...</string>
+    <string name="emptyPostError">Your post is empty…</string>
     <string name="uploadImageError">Unable to upload image</string>
     <string name="postSuccessful">You have successfully posted</string>
     <string name="postEditSuccessful">You have successfully edited your post</string>
@@ -95,7 +95,7 @@
 
     <!-- About Fragment -->
     <string name="appVersion">Version 1.0.0</string>
-    <string name="advertisements">Some advertisements here...</string>
+    <string name="advertisements">Some advertisements here…</string>
     <string name="appDescription">Welcome to Kandle ! Share your best pictures and jokes with nearby Kandlers :)</string>
     <string name="joinUs">Connect with us</string>
     <string name="website">https://www.google.ch/</string>
@@ -117,8 +117,5 @@
     <!-- Permission stuffs -->
     <string name="locationPermissionDeniedToastMsg">Please enable location to make full use of the app</string>
     <string name="locationPermissionExplanation">Please enable location to see nearby posts</string>
-
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
 
 </resources>
