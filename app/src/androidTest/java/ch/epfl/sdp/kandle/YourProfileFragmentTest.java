@@ -62,13 +62,14 @@ import static org.hamcrest.Matchers.is;
 
 public class YourProfileFragmentTest {
 
-    private User user1, user2, user3, user4, user5, user6;
-    private Post p1, p2, p3, p4, p5;
-
     @Rule
     public GrantPermissionRule permissionRule = GrantPermissionRule.grant(android.Manifest.permission.ACCESS_FINE_LOCATION);
+
+    private User user1, user2, user3, user4, user5, user6;
+    private Post p1, p2, p3, p4, p5;
     private LocalDatabase localDatabase;
     private MockNetwork network;
+
     @Rule
     public IntentsTestRule<MainActivity> intentsRule =
             new IntentsTestRule<MainActivity>(MainActivity.class, true, true
