@@ -402,6 +402,21 @@ public class MockDatabase implements Database {
     }
 
     @Override
+    public Task<List<Post>> getParticipatingEvents() {
+        TaskCompletionSource<List<Post>> source = new TaskCompletionSource<>();
+        List<Post> events = new ArrayList<>();
+
+        for (Post p : posts.values()) {
+            if (p.getType() != null && p.getType().equals(Post.EVENT)
+                    && p.getLikers().contains(DependencyManager.getAuthSystem().getCurrentUser().getId())) {
+                events.add(p);
+            }
+        }
+        source.setResult(events);
+        return source.getTask();
+    }
+
+    @Override
     public Task<Void> updateHighScore(int highScore) {
         TaskCompletionSource<Void> source = new TaskCompletionSource<>();
         User user = users.get(LoggedInUser.getInstance().getId());

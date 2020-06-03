@@ -14,6 +14,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 import ch.epfl.sdp.kandle.entities.post.Post;
@@ -57,8 +58,8 @@ public class YourPostListFragment extends Fragment {
 
                 if (task.getResult() != null) {
                     posts = new ArrayList<>(task.getResult());
-                    //reverse to have the newer posts first
-                    Collections.reverse(posts);
+                    //sort to have the newer posts first
+                    Collections.sort(posts, (p1, p2) -> Long.compare(p2.getDate().getTime(), p1.getDate().getTime()));
                 } else {
                     posts = new ArrayList<>();
                 }

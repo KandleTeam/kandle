@@ -360,6 +360,21 @@ public class CachedFirestoreDatabase implements Database {
         }
     }
 
+    @Override
+    public Task<List<Post>> getParticipatingEvents() {
+        if (DependencyManager.getNetworkStateSystem().isConnected()) {
+            return database.getParticipatingEvents().addOnCompleteListener( v -> {
+                if (v.isSuccessful()) {
+                    postDao.insertPostList(v.getResult());
+                }
+            });
+        } else {
+            TaskCompletionSource<List<Post>> source = new TaskCompletionSource<>();
+            source.setResult(new ArrayList<>());
+            return source.getTask();
+        }
+    }
+
     //-----------------This part handles the local user-----------------------
     @Override
     public Task<Void> updateProfilePicture(String uri) {

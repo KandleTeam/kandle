@@ -31,6 +31,7 @@ import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
 import ch.epfl.sdp.kandle.entities.post.Post;
+import ch.epfl.sdp.kandle.entities.user.LoggedInUser;
 import ch.epfl.sdp.kandle.entities.user.User;
 import ch.epfl.sdp.kandle.storage.Database;
 
@@ -610,6 +611,15 @@ public class FirestoreDatabase implements Database {
                     assert (post != null);
                     return post;
                 });
+    }
+
+    @Override
+    public Task<List<Post>> getParticipatingEvents() {
+        return POSTS
+                .whereEqualTo("type", Post.EVENT)
+                .whereArrayContains("likers", LoggedInUser.getInstance().getId())
+                .get()
+                .continueWith(task -> task.getResult().toObjects(Post.class));
     }
 
     @Override
