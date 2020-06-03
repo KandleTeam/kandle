@@ -5,14 +5,13 @@ import com.google.android.gms.tasks.TaskCompletionSource;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
-import ch.epfl.sdp.kandle.entities.user.LoggedInUser;
 import ch.epfl.sdp.kandle.entities.post.Post;
+import ch.epfl.sdp.kandle.entities.user.LoggedInUser;
 import ch.epfl.sdp.kandle.entities.user.User;
 import ch.epfl.sdp.kandle.storage.Database;
 
@@ -435,9 +434,9 @@ public class MockDatabase implements Database {
         }
 
         public Follow() {
-            this.followers = new LinkedList<String>();
-            this.following = new LinkedList<String>();
-            this.closeFollowers = new LinkedList<String>();
+            this.followers = new LinkedList<>();
+            this.following = new LinkedList<>();
+            this.closeFollowers = new LinkedList<>();
         }
 
         public void addFollowing(String s) {
