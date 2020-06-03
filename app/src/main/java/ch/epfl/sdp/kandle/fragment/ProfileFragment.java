@@ -20,6 +20,7 @@ import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.android.material.navigation.NavigationView;
 import com.squareup.picasso.Picasso;
 
@@ -158,17 +159,17 @@ public class ProfileFragment extends Fragment {
     }
 
     private void setNumberOfFollowing() {
-        database.userIdFollowingList(user.getId()).addOnSuccessListener(following -> {
-            if (following != null) {
-                mNumberOfFollowing.setText(Integer.toString(following.size()));
-            }
-        });
+        setNumberOfSomething(mNumberOfFollowing, database.userIdFollowingList(user.getId()));
     }
 
     private void setNumberOfFollowers() {
-        database.userIdFollowersList(user.getId()).addOnSuccessListener(followers -> {
-            if (followers != null) {
-                mNumberOfFollowers.setText(Integer.toString(followers.size()));
+        setNumberOfSomething(mNumberOfFollowers, database.userIdFollowersList(user.getId()));
+    }
+
+    private void setNumberOfSomething(TextView destination, Task<List<String>> task) {
+        task.addOnSuccessListener(list -> {
+            if (list != null) {
+                destination.setText(Integer.toString(list.size()));
             }
         });
     }
