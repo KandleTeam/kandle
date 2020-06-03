@@ -123,7 +123,7 @@ public class PostActivity extends AppCompatActivity {
                         cal.setTime(p.getDate());
                         setEventAppearance();
                         mDatePicker.updateDate(cal.get(Calendar.YEAR), cal.get(Calendar.MONTH), cal.get(Calendar.DAY_OF_MONTH));
-                        mTimePicker.setCurrentHour(cal.get(Calendar.HOUR));
+                        mTimePicker.setCurrentHour(cal.get(Calendar.HOUR_OF_DAY));
                         mTimePicker.setCurrentMinute(cal.get(Calendar.MINUTE));
                     }
                 }
