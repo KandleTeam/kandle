@@ -41,7 +41,8 @@ public class ProfileFragment extends Fragment {
 
     public final static int PROFILE_PICTURE_BEFORE = 6;
     public final static int PROFILE_PICTURE_AFTER = 7;
-    private static int nbValidatedAchievements;
+
+    private int nbValidatedAchievements;
     private User user;
     private ImageView mProfilePicture, mEditPicture, mProfilePictureInMenu, mEditName, mBadge;
     private TextView mNumberOfFollowers, mNumberOfFollowing, mUsername, mNicknameView, mNickNameInMenu;
@@ -198,7 +199,7 @@ public class ProfileFragment extends Fragment {
     private View.OnClickListener validatePictureClickListener() {
         return v -> {
             ProgressDialog pd = new ProgressDialog(getContext());
-            pd.setMessage("uploading");
+            pd.setMessage(getString(R.string.profileFragmentUploadingDialog));
             pd.show();
             ProfilePicPicker.setProfilePicture(imageUri).addOnCompleteListener(task -> {
                 mProfilePictureInMenu.setTag(PROFILE_PICTURE_AFTER);
