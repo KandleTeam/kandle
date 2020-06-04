@@ -5,44 +5,33 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
-
+import java.util.ArrayList;
+import java.util.List;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-
-import java.util.List;
-
 import ch.epfl.sdp.kandle.R;
 import ch.epfl.sdp.kandle.entities.user.User;
 import ch.epfl.sdp.kandle.entities.user.UserAdapter;
-import ch.epfl.sdp.kandle.authentification.Authentication;
-import ch.epfl.sdp.kandle.storage.Database;
-
 
 public class ListUsersFragment extends Fragment {
 
     //attributes
-    List<User> users;
-    String title, number;
-    UserAdapter userAdapter;
+    private List<User> users;
+    private String title, number;
+    private UserAdapter userAdapter;
 
     //views
-    RecyclerView mRecyclerView;
-    TextView mTitle, mNumber;
-
-    //dependencies
-    Authentication auth;
-    Database database;
-
+    private RecyclerView mRecyclerView;
+    private TextView mTitle, mNumber;
 
     private ListUsersFragment(List<User> users, String title, String number) {
-        this.users = users;
+        this.users = new ArrayList<>(users);
         this.number = number;
         this.title = title;
-        this.userAdapter = new UserAdapter(users);
-
+        this.userAdapter = new UserAdapter(this.users);
     }
 
     public static ListUsersFragment newInstance(List<User> users, String title, String number) {
@@ -60,19 +49,15 @@ public class ListUsersFragment extends Fragment {
                              Bundle savedInstanceState) {
 
         View view = inflater.inflate(R.layout.fragment_list_users, container, false);
-
         getViews(view);
-
-
         mNumber.setText(number);
         mTitle.setText(title);
 
-        if(mTitle.getText().equals("Followers"))
+        if (mTitle.getText().equals("Followers"))
             userAdapter.setIsFollowersList(true);
 
         mRecyclerView.setAdapter(userAdapter);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(this.getContext()));
-
 
         final FragmentManager fragmentManager = this.getActivity().getSupportFragmentManager();
 
@@ -85,7 +70,6 @@ public class ListUsersFragment extends Fragment {
                     .addToBackStack(null)
                     .commit();
         });
-
 
         return view;
     }

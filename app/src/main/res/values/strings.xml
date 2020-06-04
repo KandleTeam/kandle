@@ -1,25 +1,44 @@
 <resources>
 
-    <string name="app_name">Kandle</string>
+    <string name="appName">Kandle</string>
     <string name="drawer_open">drawerOpen</string>
     <string name="drawer_close">drawerClose</string>
     <string name="title_activity_maps">Map</string>
 
+    <string name="ErrorMessage">An error has occurred</string>
+
     <string name="google_maps_api_key">AIzaSyDFMUOQDRXbnJJbl1QEz0N1MYNcQJ5OlUA</string>
 
+    <!-- Login -->
+    <string name="loginEmailHint">E-mail address</string>
+    <string name="loginPasswordHint">Password</string>
+    <string name="loginBtnText">Log In</string>
+    <string name="loginSignupBtnText">Create an account</string>
+    <string name="loginGuestmodeBtnText">Use in guest mode</string>
+    <string name="appLogoDesc">Kandle logo</string>
+    <string name="loginPasswordRequired">Please enter a password</string>
+    <string name="loginEmailRequired">Please enter an email address</string>
+    <string name="loginSuccess">You are now logged in</string>
+    <string name="loginFailPasswordError">Wrong credentials</string>
+    <string name="loginFailEmailError">Wrong credentials</string>
+    <string name="loginInProgress">Logging in</string>
 
-    <string name="login_email_hint">E-mail address</string>
-    <string name="login_password_hint">Password</string>
-    <string name="login_btn_text">Log In</string>
-    <string name="login_signup_btn_text">Create an account</string>
-    <string name="login_guestmode_btn_text">Use in guest mode</string>
-    <string name="app_logo_desc">Kandle logo</string>
-    <string name="login_password_required">Please enter a password</string>
-    <string name="login_email_required">Please enter an email address</string>
-    <string name="login_success">You are now logged in</string>
-    <string name="login_fail_password_error">Wrong credentials</string>
-    <string name="login_fail_email_error">Wrong credentials</string>
-    <string name="login_in_progress">Logging in</string>
+    <!-- Register -->
+    <string name="registerUsernameAlreadyUsed">This username is already used !</string>
+    <string name="registerAccountBeingCreated">Your account is being created</string>
+    <string name="registerAccountCreated">Your account has been created</string>
+    <string name="registerUsernameRequired">Your username is required !</string>
+    <string name="registerEmailRequired">Your email is required !</string>
+    <string name="registerPasswordLengthError">Please choose a password of more than 8 characters !</string>
+    <string name="registerPasswordsMatchingError">Your passwords do not match !</string>
+    <string name="registerEmailHint">E-mail</string>
+    <string name="registerUsernameHint">username</string>
+    <string name="registerPasswordConfirmationHint">Confirm your password</string>
+    <string name="registerPasswordHint">Password</string>
+    <string name="registerSignUp">Sign Up</string>
+    <string name="registerSignInLink">Already have an account ?</string>
+
+    <!-- Achievements -->
     <string name="achievement">Achievement Completed</string>
     <string name="achievement_nb_posts">You have done 10 posts !!</string>
     <string name="achievement_congratulations">Congratulations</string>

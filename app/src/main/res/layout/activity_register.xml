@@ -35,7 +35,7 @@
         android:layout_height="38dp"
         android:backgroundTint="@color/backGroundRed"
         android:ems="10"
-        android:hint="E-mail"
+        android:hint="@string/registerEmailHint"
         android:inputType="textEmailAddress"
         app:layout_constraintBottom_toTopOf="@+id/password"
         app:layout_constraintEnd_toEndOf="parent"
@@ -47,7 +47,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="20dp"
-        android:text="Kandle"
+        android:text="@string/appName"
         android:textAlignment="center"
         android:textColor="#090909"
         android:textSize="36sp"
@@ -62,7 +62,7 @@
         android:layout_height="38dp"
         android:backgroundTint="@color/backGroundRed"
         android:ems="10"
-        android:hint="username"
+        android:hint="@string/registerUsernameHint"
         android:digits="abcdefghijklmnopqrstuvwxyz1234567890_"
         android:inputType="textFilter|textNoSuggestions"
         app:layout_constraintBottom_toTopOf="@+id/email"
@@ -71,26 +71,12 @@
         app:layout_constraintTop_toBottomOf="@id/appName" />
 
     <EditText
-        android:id="@+id/passwordConfirm"
-        android:layout_width="341dp"
-        android:layout_height="38dp"
-        android:backgroundTint="@color/backGroundRed"
-        android:ems="10"
-        android:hint="Confirm your password"
-        android:inputType="textPersonName"
-        android:password="true"
-        app:layout_constraintBottom_toTopOf="@+id/loginBtn"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/password" />
-
-    <EditText
         android:id="@+id/password"
         android:layout_width="341dp"
         android:layout_height="38dp"
         android:backgroundTint="@color/backGroundRed"
         android:ems="10"
-        android:hint="Password"
+        android:hint="@string/registerPasswordHint"
         android:inputType="textPersonName"
         android:password="true"
         app:layout_constraintBottom_toTopOf="@+id/passwordConfirm"
@@ -98,12 +84,26 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/email" />
 
+    <EditText
+        android:id="@+id/passwordConfirm"
+        android:layout_width="341dp"
+        android:layout_height="38dp"
+        android:backgroundTint="@color/backGroundRed"
+        android:ems="10"
+        android:hint="@string/registerPasswordConfirmationHint"
+        android:inputType="textPersonName"
+        android:password="true"
+        app:layout_constraintBottom_toTopOf="@+id/loginBtn"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/password" />
+
     <Button
         android:id="@+id/loginBtn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:background="@drawable/button_background"
-        android:text="Sign Up"
+        android:text="@string/registerSignUp"
         app:layout_constraintBottom_toTopOf="@+id/signInLink"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -114,7 +114,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:clickable="true"
-        android:text="Already have an account ?"
+        android:text="@string/registerSignInLink"
         android:textAlignment="center"
         android:textColor="#C1F44336"
         app:layout_constraintBottom_toBottomOf="parent"
