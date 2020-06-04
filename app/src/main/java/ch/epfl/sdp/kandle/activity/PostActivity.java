@@ -1,7 +1,10 @@
 package ch.epfl.sdp.kandle.activity;
 
 
+import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
@@ -17,7 +20,10 @@ import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 
 import com.squareup.picasso.Picasso;
 
@@ -39,6 +45,7 @@ import static ch.epfl.sdp.kandle.dependencies.DependencyManager.getAuthSystem;
 
 public class PostActivity extends AppCompatActivity {
 
+    public final static int PERMISSION_CODE = 12;
     public final static int EDIT_PIC_REQUEST = 2;
     public final static int POST_IMAGE_TAG = 42;
     public final static int POST_EDITED_IMAGE_TAG = 24;
@@ -67,8 +74,6 @@ public class PostActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_post);
-
-        //Permission();
 
         Random rand = new Random();
 
@@ -118,13 +123,11 @@ public class PostActivity extends AppCompatActivity {
                         cal.setTime(p.getDate());
                         setEventAppearance();
                         mDatePicker.updateDate(cal.get(Calendar.YEAR), cal.get(Calendar.MONTH), cal.get(Calendar.DAY_OF_MONTH));
-                        mTimePicker.setCurrentHour(cal.get(Calendar.HOUR));
+                        mTimePicker.setCurrentHour(cal.get(Calendar.HOUR_OF_DAY));
                         mTimePicker.setCurrentMinute(cal.get(Calendar.MINUTE));
                     }
                 }
             });
-
-            //mPostImage.setImageURI();
 
         }
 
@@ -158,17 +161,19 @@ public class PostActivity extends AppCompatActivity {
         });
 
         mPostImageEdit.setOnClickListener(v -> {
-            Intent i = new Intent(PostActivity.this, PhotoEditorActivity.class);
-            i.setData(imageUri);
-            startActivityForResult(i, EDIT_PIC_REQUEST);
+            String permission = "android.permission.WRITE_EXTERNAL_STORAGE";
+            if (ContextCompat.checkSelfPermission(getApplicationContext(), permission) != PackageManager.PERMISSION_GRANTED) {
+                ActivityCompat.requestPermissions(this, new String[]{permission}, PERMISSION_CODE);
+            } else {
+                launchImageEditor();
+            }
         });
 
         mIsForCloseFollowers.setOnClickListener(v -> {
-            if(!isForCloseFollowers){
+            if (!isForCloseFollowers) {
                 isForCloseFollowers = true;
                 mIsForCloseFollowers.setBackgroundResource(R.drawable.add_background);
-            }
-            else {
+            } else {
                 isForCloseFollowers = false;
                 mIsForCloseFollowers.setBackgroundResource(R.drawable.add_background_grey);
             }
@@ -183,79 +188,76 @@ public class PostActivity extends AppCompatActivity {
             return;
         }
 
-            if (imageUri != null) {
-                ImagePicker.uploadImage(imageUri).addOnCompleteListener(task -> {
-                    if (task.isSuccessful()) {
-                        Uri downloadUri = task.getResult();
-                        if (downloadUri == null) {
-                            Toast.makeText(PostActivity.this, getString(R.string.uploadImageError), Toast.LENGTH_LONG).show();
+        if (imageUri != null) {
+            ImagePicker.uploadImage(imageUri).addOnCompleteListener(task -> {
+                if (task.isSuccessful()) {
+                    Uri downloadUri = task.getResult();
+                    if (downloadUri == null) {
+                        Toast.makeText(PostActivity.this, getString(R.string.uploadImageError), Toast.LENGTH_LONG).show();
 
-                        } else {
-                            if (postId != null) {
-                                database.getPostByPostId(postId).addOnCompleteListener(task2 -> {
-                                    if (task2.isSuccessful()) {
-                                        Post p = task2.getResult();
-                                        p.setDescription(postText);
-                                        p.setImageURL(downloadUri.toString());
-                                        p.setLatitude(p.getLatitude());
-                                        p.setLongitude(p.getLongitude());
-                                        p.setLikers(p.getLikers());
-                                        p.setType(p.getType());
-                                        p.setIsForCloseFollowers(p.getIsForCloseFollowers());
-                                        if (p.getType()!= null && p.getType().equals(Post.EVENT)) {
-                                            p.setDate(getDateFromPicker());
-                                        }
-                                        editPost(p, postId);
+                    } else {
+                        if (postId != null) {
+                            database.getPostByPostId(postId).addOnCompleteListener(task2 -> {
+                                if (task2.isSuccessful()) {
+                                    Post p = task2.getResult();
+                                    p.setDescription(postText);
+                                    p.setImageURL(downloadUri.toString());
+                                    p.setLatitude(p.getLatitude());
+                                    p.setLongitude(p.getLongitude());
+                                    p.setLikers(p.getLikers());
+                                    p.setType(p.getType());
+                                    p.setIsForCloseFollowers(p.getIsForCloseFollowers());
+                                    if (p.getType() != null && p.getType().equals(Post.EVENT)) {
+                                        p.setDate(getDateFromPicker());
                                     }
-                                });
-                            } else {
-                                p = new Post(postText, downloadUri.toString(), new Date(), auth.getCurrentUser().getId(), longitude, latitude);
-                                if (isEvent) {
-                                    p.setDate(getDateFromPicker());
-                                    p.setType(Post.EVENT);
+                                    editPost(p, postId);
                                 }
-                                if(isForCloseFollowers){
-                                    p.setIsForCloseFollowers(Post.CLOSE_FOLLOWER);
-                                }
-                                addPost(p);
+                            });
+                        } else {
+                            p = new Post(postText, downloadUri.toString(), new Date(), auth.getCurrentUser().getId(), longitude, latitude);
+                            if (isEvent) {
+                                p.setDate(getDateFromPicker());
+                                p.setType(Post.EVENT);
                             }
+                            if (isForCloseFollowers) {
+                                p.setIsForCloseFollowers(Post.CLOSE_FOLLOWER);
+                            }
+                            addPost(p);
                         }
                     }
+                }
 
             });
-    }
-
-             else {
-                if (postId != null) {
-                    database.getPostByPostId(postId).addOnCompleteListener(task2 -> {
-                        if (task2.isSuccessful()) {
-                            Post p = task2.getResult();
-                            p.setDescription(postText);
-                            //raise the test coverage
-                            p.setLatitude(p.getLatitude());
-                            p.setLongitude(p.getLongitude());
-                            p.setLikers(p.getLikers());
-                            p.setType(p.getType());
-                            p.setIsForCloseFollowers(p.getIsForCloseFollowers());
-                            if (p.getType().equals(Post.EVENT)) {
-                                p.setDate(getDateFromPicker());
-                            }
-                            editPost(p, postId);
+        } else {
+            if (postId != null) {
+                database.getPostByPostId(postId).addOnCompleteListener(task2 -> {
+                    if (task2.isSuccessful()) {
+                        Post p = task2.getResult();
+                        p.setDescription(postText);
+                        p.setLatitude(p.getLatitude());
+                        p.setLongitude(p.getLongitude());
+                        p.setLikers(p.getLikers());
+                        p.setType(p.getType());
+                        p.setIsForCloseFollowers(p.getIsForCloseFollowers());
+                        if (p.getType().equals(Post.EVENT)) {
+                            p.setDate(getDateFromPicker());
                         }
-                    });
-                } else {
-                    p = new Post(postText, null, new Date(), auth.getCurrentUser().getId(), longitude, latitude);
-                    if (isEvent) {
-                        p.setDate(getDateFromPicker());
-                        p.setType(Post.EVENT);
+                        editPost(p, postId);
                     }
-
-                    if(isForCloseFollowers){
-                        p.setIsForCloseFollowers(Post.CLOSE_FOLLOWER);
-                    }
-                    addPost(p);
+                });
+            } else {
+                p = new Post(postText, null, new Date(), auth.getCurrentUser().getId(), longitude, latitude);
+                if (isEvent) {
+                    p.setDate(getDateFromPicker());
+                    p.setType(Post.EVENT);
                 }
+
+                if (isForCloseFollowers) {
+                    p.setIsForCloseFollowers(Post.CLOSE_FOLLOWER);
+                }
+                addPost(p);
             }
+        }
 
     }
 
@@ -287,6 +289,7 @@ public class PostActivity extends AppCompatActivity {
 
     /**
      * get date and time picked in picker
+     *
      * @return date and time picked in picker
      */
     private Date getDateFromPicker() {
@@ -294,6 +297,15 @@ public class PostActivity extends AppCompatActivity {
         cal.set(mDatePicker.getYear(), mDatePicker.getMonth(), mDatePicker.getDayOfMonth(),
                 mTimePicker.getCurrentHour(), mTimePicker.getCurrentMinute());
         return cal.getTime();
+    }
+
+    /**
+     * launch the image editor activity
+     */
+    private void launchImageEditor() {
+        Intent i = new Intent(PostActivity.this, PhotoEditorActivity.class);
+        i.setData(imageUri);
+        startActivityForResult(i, EDIT_PIC_REQUEST);
     }
 
     @Override
@@ -311,7 +323,9 @@ public class PostActivity extends AppCompatActivity {
             imageUri = data.getData();
             mPostImage.setTag(POST_EDITED_IMAGE_TAG);
             mPostImage.setImageURI(imageUri);
-        } else {
+        } else if (requestCode == EDIT_PIC_REQUEST && resultCode == RESULT_CANCELED) {
+            mPostImageLayout.setVisibility(View.GONE);
+        }else {
             imageUri = ImagePicker.handleActivityResultAndGetUri(requestCode, resultCode, data);
             if (imageUri != null) {
                 mPostImageLayout.setVisibility(View.VISIBLE);
@@ -321,5 +335,20 @@ public class PostActivity extends AppCompatActivity {
         }
     }
 
+    @Override
+    public void onRequestPermissionsResult(int requestCode,
+                                           @NonNull String[] permissions,
+                                           @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode,
+                        permissions,
+                        grantResults);
 
+        if (requestCode == PERMISSION_CODE) {
+            if (grantResults.length>0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                launchImageEditor();
+            }
+        }
+
+
+    }
 }

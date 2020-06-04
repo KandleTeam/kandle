@@ -11,6 +11,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 
@@ -33,26 +34,18 @@ public class EventListFragment extends Fragment {
 
         Database database = new CachedFirestoreDatabase();
 
-        database.getNearbyPosts(0,0, Double.MAX_VALUE).addOnCompleteListener(task -> {
-
-            if (task.isSuccessful()) {
-
-                List<Post> events = new ArrayList<>();
-
-                if (task.getResult() != null) {
-                    List<Post> allPosts = new ArrayList<>(task.getResult());
-                    for (Post p : allPosts) {
-                        if (p.getType() != null && p.getType().equals(Post.EVENT) &&
-                            p.getLikers().contains(DependencyManager.getAuthSystem().getCurrentUser().getId()) &&
-                            p.getDate().getTime() > new Date().getTime()) {
-                            events.add(p);
-                        }
+        database.getParticipatingEvents().addOnCompleteListener(task -> {
+            if (task.isSuccessful() && task.getResult()!=null) {
+                List<Post> events = new ArrayList<>(task.getResult());
+                for (int i = events.size() - 1; i>=0; i--){
+                    if (events.get(i).getDate().getTime() < new Date().getTime()) {
+                        events.remove(i);
                     }
-                    Collections.reverse(events);
                 }
+                //sort to have closest events first
+                Collections.sort(events, (e1, e2) -> Long.compare(e1.getDate().getTime(), e2.getDate().getTime()));
 
                 PostAdapter adapter = new PostAdapter(events, this.getContext());
-
                 mEvents.setAdapter(adapter);
             }
         });

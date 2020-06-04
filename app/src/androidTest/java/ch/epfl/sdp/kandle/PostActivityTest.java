@@ -147,6 +147,7 @@ public class PostActivityTest {
         onView(withId(R.id.selectEventButton)).perform(click());
         onView(withId(R.id.dateSelector)).perform(PickerActions.setDate(2020, 12, 31));
         onView(withId(R.id.postText)).perform(typeText("Super event"));
+        onView(withId (R.id.postText)).perform(closeSoftKeyboard());
         onView(withId(R.id.postButton)).perform(click());
 
     }
@@ -164,6 +165,7 @@ public class PostActivityTest {
         onView(withId(R.id.galleryButton)).perform(click());
         onView(withId(R.id.dateSelector)).perform(PickerActions.setDate(2020, 12, 31));
         onView(withId(R.id.postText)).perform(typeText("Super event"));
+        onView(withId (R.id.postText)).perform(closeSoftKeyboard());
         onView(withId(R.id.postButton)).perform(click());
 
     }

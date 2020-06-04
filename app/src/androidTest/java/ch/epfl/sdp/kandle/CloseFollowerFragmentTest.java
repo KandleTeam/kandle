@@ -43,14 +43,14 @@ import static ch.epfl.sdp.kandle.dependencies.DependencyManager.setFreshTestDepe
 import static junit.framework.TestCase.assertEquals;
 
 public class CloseFollowerFragmentTest {
-    Post p1;
-    Post p2;
-    Post p3;
-    Post p4;
-    Post p5;
-    User u1;
-    User u2;
-    User u3;
+    private Post p1;
+    private Post p2;
+    private Post p3;
+    private Post p4;
+    private Post p5;
+    private User u1;
+    private User u2;
+    private User u3;
     private MockDatabase db;
     private LocalDatabase localDatabase;
     private LinkedList<String> user12;
@@ -127,9 +127,9 @@ public class CloseFollowerFragmentTest {
         loadView(R.id.your_posts);
         onView(withId(R.id.rvPosts)).check(new RecyclerViewItemCountAssertion(2));
         onView(new RecyclerViewMatcher(R.id.rvPosts)
-                .atPositionOnView(1, R.id.isPostForCloseFollowers)).check(matches(withEffectiveVisibility(ViewMatchers.Visibility.VISIBLE)));
+                .atPositionOnView(0, R.id.isPostForCloseFollowers)).check(matches(withEffectiveVisibility(ViewMatchers.Visibility.VISIBLE)));
         onView(new RecyclerViewMatcher(R.id.rvPosts)
-                .atPositionOnView(0, R.id.isPostForCloseFollowers)).check(matches(withEffectiveVisibility(ViewMatchers.Visibility.GONE)));
+                .atPositionOnView(1, R.id.isPostForCloseFollowers)).check(matches(withEffectiveVisibility(ViewMatchers.Visibility.GONE)));
     }
 
     @Test
