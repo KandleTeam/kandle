@@ -120,12 +120,14 @@ public class LoginActivityTest {
 
     @Test
     public void wrongCredentialsTest() {
+        Intents.init();
         onView(withId(R.id.email)).perform(typeText("zzzz@test.com"));
         onView(withId(R.id.email)).perform(closeSoftKeyboard());
         onView(withId(R.id.password)).perform(typeText("zzzzzzzzzz"));
         onView(withId(R.id.password)).perform(closeSoftKeyboard());
         onView(withId(R.id.loginBtn)).perform(click());
-        //TODO check toast
+        intended(hasComponent(LoginActivity.class.getName()));
+        Intents.release();
     }
 
     @Test

@@ -20,7 +20,7 @@ import ch.epfl.sdp.kandle.entities.user.LoggedInUser;
 
 public class LoginActivity extends AppCompatActivity {
 
-    EditText mEmail, mPassword;
+    private EditText mEmail, mPassword;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
