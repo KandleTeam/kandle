@@ -38,7 +38,7 @@ import static androidx.test.espresso.matcher.ViewMatchers.hasDescendant;
 import static androidx.test.espresso.matcher.ViewMatchers.withContentDescription;
 import static androidx.test.espresso.matcher.ViewMatchers.withId;
 import static androidx.test.espresso.matcher.ViewMatchers.withText;
-import static ch.epfl.sdp.kandle.YourProfileFragmentTest.atPosition;
+import static ch.epfl.sdp.kandle.ProfileFragmentTest.atPosition;
 import static ch.epfl.sdp.kandle.dependencies.DependencyManager.getDatabaseSystem;
 import static ch.epfl.sdp.kandle.fragment.PopularUserFragment.USERS_ARRAY_SIZE;
 import static junit.framework.TestCase.assertEquals;
@@ -154,8 +154,8 @@ public class PopularKandlersTest {
     public void checkIfFollowButtonWorks(){
         setFragment();
         onView(withId(R.id.list_user_recycler_view)).check(new RecyclerViewItemCountAssertion(4));
-        onView(withId(R.id.list_user_recycler_view)).check(matches(atPosition(0, hasDescendant(withText("following")))));
-        onView(withId(R.id.list_user_recycler_view)).check(matches(atPosition(1, hasDescendant(withText("follow")))));
+        onView(withId(R.id.list_user_recycler_view)).check(matches(atPosition(0, hasDescendant(withText(R.string.followBtnAlreadyFollowing)))));
+        onView(withId(R.id.list_user_recycler_view)).check(matches(atPosition(1, hasDescendant(withText(R.string.followBtnNotFollowing)))));
         onView(withId(R.id.list_user_recycler_view)).check(matches(atPosition(2, hasDescendant(withText("@" + user3.getUsername())))));
         onView(withId(R.id.list_user_recycler_view)).check(matches(atPosition(3, hasDescendant(withText("@" + LoggedInUser.getInstance().getUsername())))));
     }

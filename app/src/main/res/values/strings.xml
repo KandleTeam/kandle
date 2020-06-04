@@ -33,12 +33,10 @@
     <string name="alert_box_confirm">Confirm </string>
     <string name="alert_box_cancel">Cancel</string>
 
-    <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_addPost_fragment">Add a Post</string>
     <string name="hello_search_fragment">Search</string>
     <string name="hello_profile_fragment">Profile</string>
 
-    <!-- TODO: Remove or change this placeholder text -->
     <string name="followBtnNotFollowing">follow</string>
     <string name="followBtnAlreadyFollowing">unfollow</string>
 
@@ -117,8 +115,10 @@
     <!-- Permission stuffs -->
     <string name="locationPermissionDeniedToastMsg">Please enable location to make full use of the app</string>
     <string name="locationPermissionExplanation">Please enable location to see nearby posts</string>
-
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="profileFragmentUploadingDialog">Uploading...</string>
+    <string name="userAdapterHolderDescriptionCloseFriend">Is close friend</string>
+    <string name="userAdapterHolderDescriptionNotCloseFriend">Is not close friend</string>
+    <string name="profileFragmentFollowersListTitle">Followers</string>
+    <string name="profileFragmentFollowingListTitle">Following</string>
 
 </resources>

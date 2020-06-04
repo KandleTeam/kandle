@@ -5,14 +5,13 @@ import com.google.android.gms.tasks.TaskCompletionSource;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
-import ch.epfl.sdp.kandle.entities.user.LoggedInUser;
 import ch.epfl.sdp.kandle.entities.post.Post;
+import ch.epfl.sdp.kandle.entities.user.LoggedInUser;
 import ch.epfl.sdp.kandle.entities.user.User;
 import ch.epfl.sdp.kandle.storage.Database;
 
@@ -80,18 +79,8 @@ public class MockDatabase implements Database {
 
         TaskCompletionSource<Void> task = new TaskCompletionSource<>();
 
-       /* if(users.containsKey(user.getId())) {
-            task.setException(new IllegalArgumentException("User with this id already exists"));
-        } else if(findUserByName(user.getUsername()).isPresent()) {
-            task.setException(new IllegalArgumentException("User with this username already exists"));
-        } else {
-
-
-        */
         users.put(user.getId(), user);
         followMap.put(user.getId(), new Follow());
-        //task.setResult(null);
-        //}
         return task.getTask();
     }
 
@@ -104,21 +93,7 @@ public class MockDatabase implements Database {
                 results.add(u);
             }
         }
-/*
-        results.sort(new Comparator<User>() {
-            @Override
-            public int compare(User u1, User u2) {
-                return u1.getUsername().compareTo(u2.getUsername());
-            }
-        });
-
- */
-        Collections.sort(results, new Comparator<User>() {
-            @Override
-            public int compare(User o1, User o2) {
-                return o1.getUsername().compareTo(o2.getUsername());
-            }
-        });
+        Collections.sort(results, (o1, o2) -> o1.getUsername().compareTo(o2.getUsername()));
 
         TaskCompletionSource<List<User>> source = new TaskCompletionSource<>();
         source.setResult(new ArrayList<User>(results.subList(0, Math.min(maxNumber, results.size()))));
@@ -342,15 +317,6 @@ public class MockDatabase implements Database {
 
     }
 
-    /*
-    @Override
-    public Task<List<String>> likers(String postId) {
-        TaskCompletionSource<List<String>> source = new TaskCompletionSource<>();
-        source.setResult(new ArrayList<String>(posts.get(postId).getLikers()));
-        return source.getTask();
-    }
-     */
-
     @Override
     public Task<List<Post>> getPostsByUserId(String userId) {
         List<Post> postsList = new ArrayList<Post>();
@@ -405,6 +371,7 @@ public class MockDatabase implements Database {
         posts.add(post3);
         posts.add(new Post("nearby post 4 ", null, new Date(), "mock user id", 0.0001, 0.0001));
         posts.add(new Post("nearby post 5 ", null, new Date(), "mock user id", 0.0001, 0.0001));
+
         source.setResult(posts);
         return source.getTask();
     }
@@ -419,6 +386,21 @@ public class MockDatabase implements Database {
             source.setException(new IllegalArgumentException("No such user with id: " + postId + "with users containing"));
         }
 
+        return source.getTask();
+    }
+
+    @Override
+    public Task<List<Post>> getParticipatingEvents() {
+        TaskCompletionSource<List<Post>> source = new TaskCompletionSource<>();
+        List<Post> events = new ArrayList<>();
+
+        for (Post p : posts.values()) {
+            if (p.getType() != null && p.getType().equals(Post.EVENT)
+                    && p.getLikers().contains(DependencyManager.getAuthSystem().getCurrentUser().getId())) {
+                events.add(p);
+            }
+        }
+        source.setResult(events);
         return source.getTask();
     }
 
@@ -452,9 +434,9 @@ public class MockDatabase implements Database {
         }
 
         public Follow() {
-            this.followers = new LinkedList<String>();
-            this.following = new LinkedList<String>();
-            this.closeFollowers = new LinkedList<String>();
+            this.followers = new LinkedList<>();
+            this.following = new LinkedList<>();
+            this.closeFollowers = new LinkedList<>();
         }
 
         public void addFollowing(String s) {

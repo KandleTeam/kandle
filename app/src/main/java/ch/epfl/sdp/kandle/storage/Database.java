@@ -232,6 +232,13 @@ public interface Database {
     Task<Post> getPostByPostId(String postId);
 
     /**
+     * Asynchronously retrieves the events where the logged in user participates
+     *
+     * @return A list of events in which the user is participating
+     */
+    Task<List<Post>> getParticipatingEvents();
+
+    /**
      * Updates high score of the user in the offline game
      *
      * @param highScore the user's new high score
