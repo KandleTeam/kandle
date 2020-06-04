@@ -31,6 +31,7 @@ import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
 import ch.epfl.sdp.kandle.entities.post.Post;
+import ch.epfl.sdp.kandle.entities.user.LoggedInUser;
 import ch.epfl.sdp.kandle.entities.user.User;
 import ch.epfl.sdp.kandle.storage.Database;
 
@@ -55,9 +56,6 @@ public class FirestoreDatabase implements Database {
     private static final String NOTIFICATION_NEW_FOLLOWER_TEXT = "YOUHOU ! You have a new Follower !";
     private static final String NOTIFICATION_LIKE_TITLE = "New like !";
     private static final String NOTIFICATION_LIKE_TEXT = "YOUHOU ! Someone has liked your post !";
-    private Map<String, Object> mapDeleteFollowing = (Map<String, Object>) new HashMap<>().put("following", FieldValue.delete());
-    private Map<String, Object> mapDeleteFollowers = (Map<String, Object>) new HashMap<>().put("followers", FieldValue.delete());
-    private Map<String, Object> mapDeleteCloseFollowers = (Map<String, Object>) new HashMap<>().put("close_followers", FieldValue.delete());
 
 
     private FirestoreDatabase() {
@@ -119,9 +117,6 @@ public class FirestoreDatabase implements Database {
                         usernameMap.put("username", user.getUsername());
                         transaction.set(usernameDoc, usernameMap);
 
-                        //Map<String, Object> deviceMap = new HashMap<>();
-                        //deviceMap.put("deviceId", FirebaseInstanceId.getInstance().getToken() );
-
                         transaction.set(userDoc, user);
 
                         FirebaseInstanceId.getInstance().getInstanceId().addOnSuccessListener(instanceIdResult -> {
@@ -130,7 +125,6 @@ public class FirestoreDatabase implements Database {
                             deviceMap.put("deviceId", token );
                             USERS.document(user.getId()).set(deviceMap, SetOptions.merge());
                         });
-                       // transaction.set(userDoc, deviceMap, SetOptions.merge());
                     }
 
                     return null;
@@ -187,7 +181,7 @@ public class FirestoreDatabase implements Database {
             }
         } else {
             Map<String, Object> mapFollowing = new HashMap<>();
-            mapFollowing.put(process, Arrays.asList(userId));
+            mapFollowing.put(process, Collections.singletonList(userId));
             transaction.set(userDoc, mapFollowing, SetOptions.merge());
             if (process.equals(FOLLOWING)) sendNotification(userId, NOTIFICATION_NEW_FOLLOWER_TITLE, NOTIFICATION_NEW_FOLLOWER_TEXT);
         }
@@ -610,6 +604,15 @@ public class FirestoreDatabase implements Database {
                     assert (post != null);
                     return post;
                 });
+    }
+
+    @Override
+    public Task<List<Post>> getParticipatingEvents() {
+        return POSTS
+                .whereEqualTo("type", Post.EVENT)
+                .whereArrayContains("likers", LoggedInUser.getInstance().getId())
+                .get()
+                .continueWith(task -> task.getResult().toObjects(Post.class));
     }
 
     @Override

@@ -237,11 +237,11 @@ public class YourPostsListTest {
         onView(withId(R.id.rvPosts)).check(new RecyclerViewItemCountAssertion(2));
 
         onView(new RecyclerViewMatcher(R.id.rvPosts)
-                .atPositionOnView(1, R.id.postImageInPost))
+                .atPositionOnView(0, R.id.postImageInPost))
                 .check(matches(withTagValue(is(PostAdapter.POST_IMAGE))));
 
         onView(new RecyclerViewMatcher(R.id.rvPosts)
-                .atPositionOnView(0, R.id.postImageInPost))
+                .atPositionOnView(1, R.id.postImageInPost))
                 .check(matches(not(withTagValue(is(PostAdapter.POST_IMAGE)))));
     }
 
@@ -328,9 +328,7 @@ public class YourPostsListTest {
         onView(withId(R.id.postText)).perform(replaceText("   Salut Salut  "));
         onView(withId(R.id.postText)).perform(closeSoftKeyboard());
         onView(withId(R.id.postButton)).perform(click());
-
         loadPostView();
-
         onView(new RecyclerViewMatcher(R.id.rvPosts)
                 .atPositionOnView(0, R.id.title))
                 .check(matches(withText(is("Salut Salut"))));
