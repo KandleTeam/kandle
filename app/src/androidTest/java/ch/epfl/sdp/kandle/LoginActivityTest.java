@@ -47,6 +47,7 @@ import static androidx.test.espresso.matcher.ViewMatchers.hasErrorText;
 import static androidx.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static androidx.test.espresso.matcher.ViewMatchers.withId;
 import static androidx.test.espresso.matcher.ViewMatchers.withText;
+import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.not;
 
@@ -119,26 +120,13 @@ public class LoginActivityTest {
     }
 
     @Test
-    public void wrongCredentialsTest() {
-        Intents.init();
-        onView(withId(R.id.email)).perform(typeText("zzzz@test.com"));
-        onView(withId(R.id.email)).perform(closeSoftKeyboard());
-        onView(withId(R.id.password)).perform(typeText("zzzzzzzzzz"));
-        onView(withId(R.id.password)).perform(closeSoftKeyboard());
-        onView(withId(R.id.loginBtn)).perform(click());
-        intended(hasComponent(LoginActivity.class.getName()));
-        Intents.release();
-    }
-
-    @Test
-    public void authenticationShouldFail() {
+    public void authenticationShouldFailWhenWrongCredentials() {
         onView(withId(R.id.email)).perform(typeText("user2@test.com"));
         onView(withId(R.id.email)).perform(closeSoftKeyboard());
         onView(withId(R.id.password)).perform(typeText("123456789"));
         onView(withId(R.id.password)).perform(closeSoftKeyboard());
         onView(withId(R.id.loginBtn)).perform(click());
         onView(withText("An error has occurred : You do not have an account yet")).inRoot(withDecorView(not(is(intentsRule.getActivity().getWindow().getDecorView())))).check(matches(isDisplayed()));
-
 
     }
 
