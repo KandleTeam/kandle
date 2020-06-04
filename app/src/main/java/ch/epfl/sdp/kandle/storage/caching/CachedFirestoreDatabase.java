@@ -27,13 +27,17 @@ public class CachedFirestoreDatabase implements Database {
     private final Database database = DependencyManager.getDatabaseSystem();
     private final InternalStorage internalStorage = DependencyManager.getInternalStorageSystem();
     private final LocalDatabase localDatabase = DependencyManager.getLocalDatabase();
+    private static final CachedFirestoreDatabase INSTANCE = new CachedFirestoreDatabase();
     private final UserDao userDao;
     private final PostDao postDao;
 
-    public CachedFirestoreDatabase() {
+    private CachedFirestoreDatabase() {
         userDao = localDatabase.userDao();
         postDao = localDatabase.postDao();
+    }
 
+    public static CachedFirestoreDatabase getInstance() {
+        return INSTANCE;
     }
 
     @SuppressWarnings("unchecked")

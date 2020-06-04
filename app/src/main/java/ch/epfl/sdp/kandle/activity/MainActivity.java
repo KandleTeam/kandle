@@ -6,6 +6,7 @@ import android.view.MenuItem;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
@@ -214,6 +215,7 @@ public class MainActivity extends AppCompatActivity {
         }
 
     }
+
 
     // The PermissionManager works under the hood with `ActivityCompat.requestPermissions(activity, permissions, code)`
     // i.e. the parent activity request the permission to the system, and receives the request result.

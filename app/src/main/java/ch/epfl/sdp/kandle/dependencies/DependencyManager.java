@@ -7,6 +7,7 @@ import ch.epfl.sdp.kandle.network.NetworkState;
 import ch.epfl.sdp.kandle.network.UserNetworkStatus;
 import ch.epfl.sdp.kandle.storage.Database;
 import ch.epfl.sdp.kandle.storage.ImageStorage;
+import ch.epfl.sdp.kandle.storage.caching.CachedFirestoreDatabase;
 import ch.epfl.sdp.kandle.storage.caching.InternalStorage;
 import ch.epfl.sdp.kandle.storage.caching.InternalStorageManager;
 import ch.epfl.sdp.kandle.storage.firebase.FirebaseImageStorage;
@@ -22,8 +23,9 @@ public final class DependencyManager {
     private static MyLocationProvider locationProvider = new GoogleLocationServices();
     private static InternalStorage internalStorage = InternalStorageManager.getInstance();
     private static LocalDatabase localDatabase = LocalDatabase.getInstance();
-    private static Authentication auth = FirebaseAuthentication.getInstance();
     private static NetworkState networkState = UserNetworkStatus.getInstance();
+    private static Database cachedDatabase = CachedFirestoreDatabase.getInstance();
+    private static Authentication auth = FirebaseAuthentication.getInstance();
 
 
     private DependencyManager() {
@@ -96,5 +98,14 @@ public final class DependencyManager {
     public static void setLocalDatabase(LocalDatabase localDatabase) {
         DependencyManager.localDatabase = localDatabase;
     }
+
+    public static Database getCachedDatabase() {
+        return cachedDatabase;
+    }
+
+    public static void setCachedDatabase(CachedFirestoreDatabase cachedDatabase) {
+        DependencyManager.cachedDatabase = cachedDatabase;
+    }
+
 
 }

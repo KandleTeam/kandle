@@ -25,6 +25,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.Random;
 
+import ch.epfl.sdp.kandle.dependencies.DependencyManager;
 import ch.epfl.sdp.kandle.entities.post.Post;
 import ch.epfl.sdp.kandle.utils.PostCamera;
 import ch.epfl.sdp.kandle.R;
@@ -43,7 +44,7 @@ public class PostActivity extends AppCompatActivity {
     public final static int POST_IMAGE_TAG = 42;
     public final static int POST_EDITED_IMAGE_TAG = 24;
     private final static double NEAR_LAT_LNG_SUB = 0.5;
-    private final static double NEAR_LAT_LNG_DIV = 500;
+    private final static double NEAR_LAT_LNG_DIV = 2000;
     private EditText mPostText;
     private Button mPostButton;
     private TextView mPostPageTitle;
@@ -97,9 +98,8 @@ public class PostActivity extends AppCompatActivity {
 
 
         postCamera = new PostCamera(this);
-
         auth = getAuthSystem();
-        database = new CachedFirestoreDatabase();
+        database = DependencyManager.getCachedDatabase();
 
         if (postId != null) {
             database.getPostByPostId(postId).addOnCompleteListener(task -> {

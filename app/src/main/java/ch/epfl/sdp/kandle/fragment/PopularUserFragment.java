@@ -57,7 +57,7 @@ public class PopularUserFragment extends Fragment {
                              Bundle savedInstanceState) {
 
         auth = DependencyManager.getAuthSystem();
-        database = new CachedFirestoreDatabase();
+        database =  DependencyManager.getCachedDatabase();
 
         View view = inflater.inflate(R.layout.fragment_list_users, container, false);
 
@@ -120,6 +120,13 @@ public class PopularUserFragment extends Fragment {
             return v2.compareTo(v1);
         }
     };
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        this.getActivity().setTitle(R.string.popular_kandlers_item);
+    }
+
 
 
 

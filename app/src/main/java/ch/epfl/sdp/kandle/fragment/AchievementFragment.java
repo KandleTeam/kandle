@@ -60,5 +60,11 @@ public class AchievementFragment extends Fragment {
         }
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        this.getActivity().setTitle(R.string.your_achievements_item);
+    }
+
 
 }

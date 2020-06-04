@@ -35,5 +35,13 @@ public class AboutFragment extends Fragment {
         return aboutPage;
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        // Set title
+        this.getActivity().setTitle(R.string.about_us_item);
+    }
+
+
 
 }

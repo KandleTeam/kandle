@@ -31,7 +31,7 @@ public class EventListFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
-        Database database = new CachedFirestoreDatabase();
+        Database database = DependencyManager.getCachedDatabase();
 
         database.getNearbyPosts(0,0, Double.MAX_VALUE).addOnCompleteListener(task -> {
 
@@ -62,6 +62,12 @@ public class EventListFragment extends Fragment {
         mEvents.setLayoutManager(new LinearLayoutManager(this.getContext()));
 
         return rootView;
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        this.getActivity().setTitle(R.string.incoming_events_item);
     }
 
 }

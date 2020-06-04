@@ -23,7 +23,7 @@ public class FirebaseAuthentication implements Authentication {
 
     private static final FirebaseAuth FAUTH = FirebaseAuth.getInstance();
     private static final FirebaseAuthentication INSTANCE = new FirebaseAuthentication();
-    private Database database = new CachedFirestoreDatabase();
+    private Database database =  DependencyManager.getCachedDatabase();
 
     private FirebaseAuthentication() {
     }

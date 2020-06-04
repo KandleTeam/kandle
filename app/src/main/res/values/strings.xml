@@ -55,6 +55,8 @@
 
     <!-- Guest mode -->
     <string name="guestModeCannotAccess">You need to be logged in to do that!</string>
+
+    <!-- Item titles for Fragments -->
     <string name="your_posts_item">Your Posts</string>
     <string name="map_item">Map</string>
     <string name="follow_item">Follow</string>
@@ -65,6 +67,8 @@
     <string name="settings_item">Settings</string>
     <string name="about_us_item">About us</string>
     <string name="logout_item">Logout</string>
+
+
     <string name="place_holder_string">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed non risus. Suspendisse lectus tortor, dignissim sit amet, adipiscing nec, ultricies sed, dolor. Cras elementum ultrices diam. Maecenas ligula massa, varius a, semper congue, euismod non, mi. Proin porttitor, orci nec nonummy molestie, enim est eleifend mi, non fermentum diam nisl sit amet erat. Duis semper.</string>
 
     <!-- CustomAccountActivity -->
@@ -120,5 +124,6 @@
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="incoming_events_item">Incoming Events</string>
 
 </resources>

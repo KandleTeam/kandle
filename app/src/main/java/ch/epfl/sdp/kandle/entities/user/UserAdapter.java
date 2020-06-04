@@ -23,6 +23,7 @@ import ch.epfl.sdp.kandle.Kandle;
 import ch.epfl.sdp.kandle.R;
 import ch.epfl.sdp.kandle.authentification.Authentication;
 import ch.epfl.sdp.kandle.dependencies.DependencyManager;
+import ch.epfl.sdp.kandle.storage.Database;
 import ch.epfl.sdp.kandle.storage.caching.CachedFirestoreDatabase;
 import de.hdodenhof.circleimageview.CircleImageView;
 
@@ -83,8 +84,7 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.ViewHolder> {
         }
         final Authentication authentication = DependencyManager.getAuthSystem();
         final User currentUser = authentication.getCurrentUser();
-        final CachedFirestoreDatabase database = new CachedFirestoreDatabase();
-
+        final Database database =  DependencyManager.getCachedDatabase();
 
         if(isFollowerList){
             holder.mIsCloseFriend.setVisibility(View.VISIBLE);

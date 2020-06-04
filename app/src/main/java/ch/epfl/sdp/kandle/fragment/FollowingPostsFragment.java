@@ -45,7 +45,7 @@ public class FollowingPostsFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
         auth = DependencyManager.getAuthSystem();
-        database = new CachedFirestoreDatabase();
+        database =  DependencyManager.getCachedDatabase();
         rootView = inflater.inflate(R.layout.fragment_following_posts, container, false);
         flPosts = rootView.findViewById(R.id.flPosts);
         flPosts.setLayoutManager(new LinearLayoutManager(this.getContext()));
@@ -106,6 +106,12 @@ public class FollowingPostsFragment extends Fragment {
 
         flPosts.setAdapter(adapter);
         return rootView;
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        this.getActivity().setTitle(R.string.other_posts_item);
     }
 
 }

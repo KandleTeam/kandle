@@ -49,39 +49,41 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.055" />
 
+
     <ImageButton
         android:id="@+id/postFragmentLikeButton"
         android:layout_width="56dp"
         android:layout_height="43dp"
-        android:layout_marginBottom="28dp"
+        android:layout_marginStart="244dp"
+        android:layout_marginEnd="32dp"
+        android:layout_marginBottom="32dp"
         android:background="#FFFFFF"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.442"
+        app:layout_constraintEnd_toStartOf="@+id/postFragmentNumberOfLikes"
+        app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/postFragmentUsername"
+        app:layout_constraintVertical_bias="1.0"
         app:srcCompat="@drawable/ic_whatshot_red_50dp" />
 
     <ImageView
         android:id="@+id/postCloseFriends"
         android:layout_width="56dp"
         android:layout_height="43dp"
-        android:layout_marginBottom="28dp"
+        android:layout_marginBottom="32dp"
         android:background="#FFFFFF"
         android:visibility="invisible"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.442"
+        app:layout_constraintHorizontal_bias="0.556"
         app:layout_constraintStart_toStartOf="@+id/postFragmentNumberOfLikes"
         app:srcCompat="@drawable/ic_people_outline_black_24dp" />
-
-
 
     <TextView
         android:id="@+id/postFragmentNumberOfLikes"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="156dp"
-        android:layout_marginBottom="28dp"
+        android:layout_marginBottom="32dp"
         android:clickable="true"
         android:focusable="true"
         android:text="0"
@@ -89,13 +91,16 @@
         android:textSize="30sp"
         android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.64"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/postFragmentPostImage"
+        app:layout_constraintVertical_bias="0.989" />
 
     <TextView
         android:id="@+id/postDateTime"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:visibility="gone"
         android:text="Date : Time"
         android:textAppearance="@style/TextAppearance.Compat.Notification.Time"
         android:textSize="15sp"
@@ -103,8 +108,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/postFragmentUsername"
-        app:layout_constraintVertical_bias="0.167"
-        />
+        app:layout_constraintVertical_bias="0.095" />
 
     <TextView
         android:id="@+id/postFragmentDescription"
@@ -117,7 +121,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/postDateTime"
-        app:layout_constraintVertical_bias="0.167" />
+        app:layout_constraintVertical_bias="0.029" />
 
     <ImageView
         android:id="@+id/postFragmentPostImage"
@@ -125,6 +129,7 @@
         android:layout_height="250dp"
         android:layout_centerHorizontal="true"
         android:layout_marginVertical="20dp"
+        android:layout_marginTop="451dp"
         android:adjustViewBounds="true"
         android:contentDescription="Posted image"
         android:cropToPadding="true"
@@ -133,7 +138,7 @@
         app:layout_constraintBottom_toTopOf="@+id/postFragmentLikeButton"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/post_description" />
+        app:layout_constraintTop_toBottomOf="@+id/postFragmentDescription" />
 
     <ImageView
         android:id="@+id/postFragmentDistanceImage"

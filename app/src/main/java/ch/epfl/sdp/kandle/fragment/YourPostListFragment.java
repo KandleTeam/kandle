@@ -44,7 +44,7 @@ public class YourPostListFragment extends Fragment {
                              @Nullable Bundle savedInstanceState) {
 
         auth = DependencyManager.getAuthSystem();
-        database = new CachedFirestoreDatabase();
+        database = DependencyManager.getCachedDatabase();
 
 
         userId = auth.getCurrentUser().getId();
@@ -77,6 +77,13 @@ public class YourPostListFragment extends Fragment {
         rvPosts = rootView.findViewById(R.id.rvPosts);
         rvPosts.setLayoutManager(new LinearLayoutManager(this.getContext()));
         return rootView;
+    }
+
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        this.getActivity().setTitle(R.string.your_posts_item);
     }
 
 

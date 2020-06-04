@@ -55,7 +55,7 @@ public class SearchFragment extends Fragment {
 
 
         auth = DependencyManager.getAuthSystem();
-        database = new CachedFirestoreDatabase();
+        database =  DependencyManager.getCachedDatabase();
 
         View view = inflater.inflate(R.layout.fragment_search, container, false);
 
@@ -154,5 +154,12 @@ public class SearchFragment extends Fragment {
             }
         }
         return false;
+    }
+
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        this.getActivity().setTitle(R.string.follow_item);
     }
 }

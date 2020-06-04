@@ -91,7 +91,7 @@ public class ProfileFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_profile, container, false);
 
         auth = DependencyManager.getAuthSystem();
-        database = new CachedFirestoreDatabase();
+        database = DependencyManager.getCachedDatabase();
 
         getViews(view);
 
