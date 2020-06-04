@@ -70,8 +70,8 @@ import static org.hamcrest.Matchers.not;
 @RunWith(AndroidJUnit4.class)
 public class YourPostsListTest {
     private User user1, user2;
-    public static Post p1;
-    public static Post p2;
+    private static Post p1;
+    private static Post p2;
     private LocalDatabase localDatabase;
     private MockNetwork network;
     @Rule
@@ -223,11 +223,11 @@ public class YourPostsListTest {
         onView(withId(R.id.rvPosts)).check(new RecyclerViewItemCountAssertion(2));
 
         onView(new RecyclerViewMatcher(R.id.rvPosts)
-                .atPositionOnView(1, R.id.postImageInPost))
+                .atPositionOnView(0, R.id.postImageInPost))
                 .check(matches(withTagValue(is(PostAdapter.POST_IMAGE))));
 
         onView(new RecyclerViewMatcher(R.id.rvPosts)
-                .atPositionOnView(0, R.id.postImageInPost))
+                .atPositionOnView(1, R.id.postImageInPost))
                 .check(matches(not(withTagValue(is(PostAdapter.POST_IMAGE)))));
 
     }
@@ -327,9 +327,7 @@ public class YourPostsListTest {
         onView(withId(R.id.postText)).perform(replaceText("   Salut Salut  "));
         onView(withId (R.id.postText)).perform(closeSoftKeyboard());
         onView(withId(R.id.postButton)).perform(click());
-
         loadPostView();
-
         onView(new RecyclerViewMatcher(R.id.rvPosts)
                 .atPositionOnView(0, R.id.title))
                 .check(matches(withText(is("Salut Salut"))));
