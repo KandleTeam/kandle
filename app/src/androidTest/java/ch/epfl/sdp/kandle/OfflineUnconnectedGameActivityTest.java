@@ -22,7 +22,6 @@ import ch.epfl.sdp.kandle.dependencies.MockInternalStorage;
 import ch.epfl.sdp.kandle.dependencies.MockNetwork;
 import ch.epfl.sdp.kandle.entities.post.Post;
 import ch.epfl.sdp.kandle.entities.user.User;
-import ch.epfl.sdp.kandle.storage.caching.CachedFirestoreDatabase;
 import ch.epfl.sdp.kandle.storage.room.LocalDatabase;
 
 import static androidx.test.espresso.Espresso.onView;
@@ -39,7 +38,7 @@ public class OfflineUnconnectedGameActivityTest {
     private LocalDatabase localDatabase;
     @Rule
     public ActivityTestRule<LoginActivity> intentsRule =
-            new ActivityTestRule<LoginActivity>(LoginActivity.class, true, true){
+            new ActivityTestRule<LoginActivity>(LoginActivity.class, true, true) {
                 @Override
                 protected void beforeActivityLaunched() {
                     HashMap<String, String> accounts = new HashMap<>();
@@ -67,9 +66,9 @@ public class OfflineUnconnectedGameActivityTest {
     }
 
     @Test
-    public void startGameAndClickOnVirusUpdateScore(){
+    public void startGameAndClickOnVirusUpdateScore() {
         onView(withId(R.id.startButton)).perform(click());
-        for(int i=0; i < OfflineGameActivity.MAX_NB_VIRUS; i++){
+        for (int i = 0; i < OfflineGameActivity.MAX_NB_VIRUS; i++) {
             onView(withId(R.id.virusButton)).perform(click());
         }
         onView(withId(R.id.score)).check(matches(not(withText(is("0")))));
@@ -78,7 +77,7 @@ public class OfflineUnconnectedGameActivityTest {
 
 
     @Test
-    public void startGameAndNoClickOnVirus(){
+    public void startGameAndNoClickOnVirus() {
         onView(withId(R.id.startButton)).perform(click());
         try {
             Thread.sleep(OfflineGameActivity.APPEARING_TIME * OfflineGameActivity.MAX_NB_VIRUS);

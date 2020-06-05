@@ -9,7 +9,6 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
-import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.FirebaseFirestoreSettings;
@@ -70,6 +69,13 @@ public class FirestoreDatabase implements Database {
         return INSTANCE;
     }
 
+    public static boolean nearby(double latitude, double longitude, double postLatitude, double postLongitude, double distance, int numLikes, long numDays) {
+
+        LatLng startLatLng = new LatLng(latitude, longitude);
+        LatLng endLatLng = new LatLng(postLatitude, postLongitude);
+        return SphericalUtil.computeDistanceBetween(startLatLng, endLatLng) <= distance + numLikes * LIKE_BONUS_DISTANCE - numDays * DATE_MALUS_DISTANCE;
+
+    }
 
     private DocumentReference loggedInUser() {
         return USERS.document(FirebaseAuth.getInstance().getCurrentUser().getUid());
@@ -122,7 +128,7 @@ public class FirestoreDatabase implements Database {
                         FirebaseInstanceId.getInstance().getInstanceId().addOnSuccessListener(instanceIdResult -> {
                             String token = instanceIdResult.getToken();
                             Map<String, Object> deviceMap = new HashMap<>();
-                            deviceMap.put("deviceId", token );
+                            deviceMap.put("deviceId", token);
                             USERS.document(user.getId()).set(deviceMap, SetOptions.merge());
                         });
                     }
@@ -177,18 +183,19 @@ public class FirestoreDatabase implements Database {
                 followList.add(userId);
                 mapFollowing.put(process, followList);
                 transaction.set(userDoc, mapFollowing, SetOptions.merge());
-                if (process.equals(FOLLOWING)) sendNotification(userId, NOTIFICATION_NEW_FOLLOWER_TITLE, NOTIFICATION_NEW_FOLLOWER_TEXT);
+                if (process.equals(FOLLOWING))
+                    sendNotification(userId, NOTIFICATION_NEW_FOLLOWER_TITLE, NOTIFICATION_NEW_FOLLOWER_TEXT);
             }
         } else {
             Map<String, Object> mapFollowing = new HashMap<>();
             mapFollowing.put(process, Collections.singletonList(userId));
             transaction.set(userDoc, mapFollowing, SetOptions.merge());
-            if (process.equals(FOLLOWING)) sendNotification(userId, NOTIFICATION_NEW_FOLLOWER_TITLE, NOTIFICATION_NEW_FOLLOWER_TEXT);
+            if (process.equals(FOLLOWING))
+                sendNotification(userId, NOTIFICATION_NEW_FOLLOWER_TITLE, NOTIFICATION_NEW_FOLLOWER_TEXT);
         }
     }
 
-
-    private void sendNotification(String userFollowedId, String title, String text){
+    private void sendNotification(String userFollowedId, String title, String text) {
         USERS.document(userFollowedId).get().addOnSuccessListener(documentSnapshot -> {
             String deviceId = (String) documentSnapshot.get("deviceId");
             if (deviceId != null) {
@@ -266,13 +273,12 @@ public class FirestoreDatabase implements Database {
                 });
     }
 
-    private void setCloseFollowers(String userId, DocumentReference userDoc, Transaction transaction, List<String> closeFollowers){
+    private void setCloseFollowers(String userId, DocumentReference userDoc, Transaction transaction, List<String> closeFollowers) {
         Map<String, Object> mapCloseFollowed = new HashMap<>();
         closeFollowers.add(userId);
         mapCloseFollowed.put(CLOSE_FOLLOWERS, closeFollowers);
         transaction.set(userDoc, mapCloseFollowed, SetOptions.merge());
     }
-
 
     @Override
     public Task<Void> unsetCloseFollower(final String userFollowing, final String userFollowed) {
@@ -296,7 +302,6 @@ public class FirestoreDatabase implements Database {
                     return null;
                 });
     }
-
 
     /**
      * Returns a list of userIds of the users followed by the specified user, or following the
@@ -344,7 +349,7 @@ public class FirestoreDatabase implements Database {
         return getFollowerOrFollowedListTask(userId, CLOSE_FOLLOWERS);
     }
 
-    private OnCompleteListener<List<String>> userListCompleteListener(TaskCompletionSource source){
+    private OnCompleteListener<List<String>> userListCompleteListener(TaskCompletionSource source) {
         return task -> {
             if (task.isSuccessful()) {
                 if (task.getResult() != null) {
@@ -384,6 +389,7 @@ public class FirestoreDatabase implements Database {
         userIdFollowersList(userId).addOnCompleteListener(userListCompleteListener(source));
         return source.getTask();
     }
+
     @Override
     public Task<List<User>> userCloseFollowersList(String userId) {
         TaskCompletionSource<List<User>> source = new TaskCompletionSource<>();
@@ -487,16 +493,15 @@ public class FirestoreDatabase implements Database {
                 .runTransaction(likePostTransaction(unlikedPostDoc, userId, "unlike"));
     }
 
-    private Transaction.Function<Void> likePostTransaction (DocumentReference postDoc, String userId, String process) {
+    private Transaction.Function<Void> likePostTransaction(DocumentReference postDoc, String userId, String process) {
         return transaction -> {
             DocumentSnapshot postSnapchot = transaction.get(postDoc);
             List<String> likers = (List<String>) postSnapchot.get("likers");
             Map<String, Object> mapLikers = new HashMap<>();
-            if (process.equals("like")){
+            if (process.equals("like")) {
                 likers.add(userId);
                 sendNotification((String) postSnapchot.get("userId"), NOTIFICATION_LIKE_TITLE, NOTIFICATION_LIKE_TEXT);
-            }
-            else likers.remove(userId);
+            } else likers.remove(userId);
             mapLikers.put("likers", likers);
             transaction.set(postDoc, mapLikers, SetOptions.merge());
             return null;
@@ -583,14 +588,6 @@ public class FirestoreDatabase implements Database {
             }
         });
         return source.getTask();
-
-    }
-
-    public static boolean nearby(double latitude, double longitude, double postLatitude, double postLongitude, double distance, int numLikes, long numDays) {
-
-        LatLng startLatLng = new LatLng(latitude, longitude);
-        LatLng endLatLng = new LatLng(postLatitude, postLongitude);
-        return SphericalUtil.computeDistanceBetween(startLatLng, endLatLng) <= distance + numLikes * LIKE_BONUS_DISTANCE - numDays * DATE_MALUS_DISTANCE;
 
     }
 

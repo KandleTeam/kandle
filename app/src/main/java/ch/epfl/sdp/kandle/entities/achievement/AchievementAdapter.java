@@ -45,8 +45,7 @@ public class AchievementAdapter extends RecyclerView.Adapter<AchievementAdapter.
         ImageView imageView = holder.mImageView;
         if (achievement.checkAchievementState()) {
             imageView.setImageResource(R.drawable.ic_trophy_done);
-        }
-        else{
+        } else {
             imageView.setImageResource(R.drawable.ic_trophy_none);
         }
         TextView titleView = holder.mtitleText;

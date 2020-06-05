@@ -10,17 +10,17 @@
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
-        android:orientation="vertical"
-        android:gravity="center_vertical">
+        android:gravity="center_vertical"
+        android:orientation="vertical">
 
 
         <de.hdodenhof.circleimageview.CircleImageView
             android:id="@+id/profilePicInMenu"
             android:layout_width="85dp"
             android:layout_height="85dp"
-            android:src="@drawable/ic_profil_24dp"
             android:clickable="true"
-            android:paddingLeft="10dp" />
+            android:paddingLeft="10dp"
+            android:src="@drawable/ic_profil_24dp" />
 
         <TextView
             android:id="@+id/nicknameInMenu"

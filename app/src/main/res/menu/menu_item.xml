@@ -31,8 +31,7 @@
         <item
             android:id="@+id/incoming_events"
             android:icon="@drawable/ic_event_black_24dp"
-            android:title="Incoming Events"
-            />
+            android:title="Incoming Events" />
 
         <item
             android:id="@+id/popularKandlers"

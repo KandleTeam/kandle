@@ -1,12 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="vertical"
     android:layout_marginTop="10dp"
-    android:layout_marginBottom="10dp">
+    android:layout_marginBottom="10dp"
+    android:orientation="vertical">
 
     <TextView
         android:id="@+id/achievement_description"
@@ -45,16 +44,15 @@
             android:layout_width="117dp"
             android:layout_height="49dp"
             android:layout_weight="0.5"
-            android:src="@drawable/ic_trophy_none"
-            />
+            android:src="@drawable/ic_trophy_none" />
 
 
     </LinearLayout>
 
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="2dp"
-            android:background="@color/dark_grey"
-            android:alpha="0.3"/>
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="2dp"
+        android:alpha="0.3"
+        android:background="@color/dark_grey" />
 
 </LinearLayout>

@@ -20,9 +20,9 @@ import ch.epfl.sdp.kandle.storage.caching.InternalStorage;
 public class MockInternalStorage implements InternalStorage {
     private static boolean userSavedLocally;
     private static User storedUser;
-    private Map<String,File> images;
+    private Map<String, File> images;
 
-    public MockInternalStorage(boolean userSavedLocally,HashMap<String,File> images) {
+    public MockInternalStorage(boolean userSavedLocally, HashMap<String, File> images) {
         MockInternalStorage.userSavedLocally = userSavedLocally;
         this.images = images;
         if (userSavedLocally) {
@@ -30,7 +30,7 @@ public class MockInternalStorage implements InternalStorage {
         }
     }
 
-    public MockInternalStorage(HashMap<String,File> images) {
+    public MockInternalStorage(HashMap<String, File> images) {
         this.images = images;
         userSavedLocally = false;
     }
@@ -71,13 +71,13 @@ public class MockInternalStorage implements InternalStorage {
     }
 
     @Override
-    public void saveImageToInternalStorage(Bitmap imageBitMap, String id)  {
+    public void saveImageToInternalStorage(Bitmap imageBitMap, String id) {
         File image = new File("user");
         try {
             FileOutputStream fos = new FileOutputStream(image);
             imageBitMap.compress(Bitmap.CompressFormat.PNG, 100, fos);
             images.put(id, image);
-        }catch(Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }

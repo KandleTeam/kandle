@@ -36,7 +36,7 @@ public class SearchFragment extends Fragment {
     private ArrayList<User> mUsers = new ArrayList<>(0);
     private UserAdapter userAdapter = new UserAdapter(mUsers);
     private User currentUser;
-    
+
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,

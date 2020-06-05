@@ -1,15 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_marginLeft="0dp"
     android:layout_marginTop="10dp"
     android:layout_marginRight="0dp"
     android:layout_marginBottom="10dp"
-    android:orientation="vertical"
-    >
+    android:orientation="vertical">
 
     <RelativeLayout
         android:layout_width="wrap_content"
@@ -20,35 +18,35 @@
             android:layout_width="60dp"
             android:layout_height="60dp"
             android:layout_margin="10dp"
-            android:src="@mipmap/ic_launcher"/>
+            android:src="@mipmap/ic_launcher" />
 
         <TextView
             android:id="@+id/nicknameInPost"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
             android:layout_toEndOf="@+id/profilePicInPost"
             android:text="Nickname"
-            android:textStyle="bold"
-            android:layout_marginTop="20dp"/>
+            android:textStyle="bold" />
 
         <TextView
+            android:id="@+id/usernameinPost"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:id="@+id/usernameinPost"
-            android:layout_toEndOf="@+id/nicknameInPost"
-            android:text="\@username"
+            android:layout_marginStart="10dp"
             android:layout_marginTop="20dp"
-            android:layout_marginStart="10dp"/>
+            android:layout_toEndOf="@+id/nicknameInPost"
+            android:text="\@username" />
 
         <TextView
             android:id="@+id/date_and_time"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_below="@+id/nicknameInPost"
+            android:layout_toEndOf="@id/profilePicInPost"
             android:text="Date : Time"
             android:textAppearance="@style/TextAppearance.Compat.Notification.Time"
-            android:textSize="10dp"
-            android:layout_toEndOf="@id/profilePicInPost"
-            android:layout_below="@+id/nicknameInPost"/>
+            android:textSize="10dp" />
 
         <ImageView
             android:id="@+id/isPostForCloseFollowers"
@@ -75,7 +73,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="5dp"
                 android:background="@android:drawable/ic_menu_edit"
-                android:visibility="gone"/>
+                android:visibility="gone" />
 
             <ImageButton
                 android:id="@+id/deleteButton"
@@ -83,14 +81,13 @@
                 android:layout_height="wrap_content"
                 android:layout_toEndOf="@+id/editButton"
                 android:background="@android:drawable/ic_notification_clear_all"
-                android:visibility="gone"/>
+                android:visibility="gone" />
 
 
         </RelativeLayout>
 
 
     </RelativeLayout>
-
 
 
     <TextView
@@ -101,15 +98,15 @@
         android:layout_marginEnd="5dp"
         android:paddingBottom="10dp"
         android:text="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed non risus. Suspendisse lectus tortor, dignissim sit amet, adipiscing nec, ultricies sed, dolor. Cras elementum ultrices diam. Maecenas ligula massa, varius a, semper congue, euismod non, mi. Proin porttitor, orci nec nonummy molestie, enim est eleifend mi, non fermentum diam nisl sit amet erat. Duis semper."
-        android:textSize="14sp"/>
+        android:textSize="14sp" />
 
     <ImageView
         android:id="@+id/postImageInPost"
-        android:visibility="gone"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="10dp"
-        android:scaleType="centerInside"/>
+        android:scaleType="centerInside"
+        android:visibility="gone" />
 
     <RelativeLayout
         android:layout_width="wrap_content"
@@ -121,22 +118,21 @@
             android:id="@+id/likeButton"
             android:layout_width="30dp"
             android:layout_height="30dp"
-            android:background="@drawable/ic_whatshot_24dp"
-            android:layout_centerVertical="true"/>
+            android:layout_centerVertical="true"
+            android:background="@drawable/ic_whatshot_24dp" />
 
         <TextView
             android:id="@+id/flames"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
             android:layout_toEndOf="@+id/likeButton"
             android:clickable="true"
             android:focusable="true"
             android:text="0"
             android:textColor="#000000"
             android:textSize="26dp"
-            android:textStyle="bold"
-            android:layout_centerVertical="true"/>
-
+            android:textStyle="bold" />
 
 
     </RelativeLayout>
@@ -148,11 +144,9 @@
         <View
             android:layout_width="match_parent"
             android:layout_height="2dp"
-            android:background="@color/dark_grey"
-            android:alpha="0.3"/>
+            android:alpha="0.3"
+            android:background="@color/dark_grey" />
     </RelativeLayout>
-
-
 
 
 </LinearLayout>

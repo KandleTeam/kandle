@@ -15,7 +15,7 @@ public class MockNetwork implements NetworkState {
 
     @Override
     public boolean isConnected() {
-        if(!previouslyOnline && isOnline){
+        if (!previouslyOnline && isOnline) {
             DependencyManager.getDatabaseSystem().updateHighScore(LoggedInUser.getInstance().getHighScore());
         }
         return isOnline;
@@ -25,7 +25,7 @@ public class MockNetwork implements NetworkState {
         MockNetwork.isOnline = isOnline;
     }
 
-    public void setPreviouslyOnline(boolean previouslyOnline){
+    public void setPreviouslyOnline(boolean previouslyOnline) {
         MockNetwork.previouslyOnline = previouslyOnline;
     }
 }

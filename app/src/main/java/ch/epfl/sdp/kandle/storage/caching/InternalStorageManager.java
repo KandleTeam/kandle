@@ -45,8 +45,8 @@ public class InternalStorageManager implements InternalStorage {
     private void storeUser(@NonNull User user) {
 
         try {
-            File localUserDirectory = context.getDir(USER_DATA_PATH,Context.MODE_PRIVATE);
-            File localUserPath = new File(localUserDirectory,"localUser");
+            File localUserDirectory = context.getDir(USER_DATA_PATH, Context.MODE_PRIVATE);
+            File localUserPath = new File(localUserDirectory, "localUser");
             FileOutputStream file = new FileOutputStream(localUserPath);
             ObjectOutputStream out = new ObjectOutputStream(file);
             out.writeObject(user);
@@ -69,8 +69,8 @@ public class InternalStorageManager implements InternalStorage {
 
         User user = null;
         try {
-            File localUserDirectory = context.getDir(USER_DATA_PATH,Context.MODE_PRIVATE);
-            File localUserPath = new File(localUserDirectory,"localUser");
+            File localUserDirectory = context.getDir(USER_DATA_PATH, Context.MODE_PRIVATE);
+            File localUserPath = new File(localUserDirectory, "localUser");
             FileInputStream file = new FileInputStream(localUserPath);
             ObjectInputStream in = new ObjectInputStream(file);
             user = (User) in.readObject();
@@ -90,7 +90,7 @@ public class InternalStorageManager implements InternalStorage {
      * @Author Marc Egli
      */
     @Override
-    public void saveUserAtLoginOrRegister(@NonNull User user)  {
+    public void saveUserAtLoginOrRegister(@NonNull User user) {
 
         User storedUser = getCurrentUser();
         if (storedUser == null) {
@@ -112,7 +112,7 @@ public class InternalStorageManager implements InternalStorage {
      */
 
     @Override
-    public void updateUser(@NonNull User user)  {
+    public void updateUser(@NonNull User user) {
         deleteUser();
         storeUser(user);
 
@@ -127,17 +127,16 @@ public class InternalStorageManager implements InternalStorage {
      */
     @Override
     public void deleteUser() {
-        File localUserDirectory = context.getDir(USER_DATA_PATH,Context.MODE_PRIVATE);
-        File localUserPath = new File(localUserDirectory,"localUser");
+        File localUserDirectory = context.getDir(USER_DATA_PATH, Context.MODE_PRIVATE);
+        File localUserPath = new File(localUserDirectory, "localUser");
         localUserPath.delete();
 
     }
 
 
-
-    public void saveImageToInternalStorage(Bitmap imageBitMap,String id) {
-        File imageDirectory = context.getDir(IMAGE_DATA_PATH,Context.MODE_PRIVATE);
-        File imagePath = new File(imageDirectory,id);
+    public void saveImageToInternalStorage(Bitmap imageBitMap, String id) {
+        File imageDirectory = context.getDir(IMAGE_DATA_PATH, Context.MODE_PRIVATE);
+        File imagePath = new File(imageDirectory, id);
         FileOutputStream fos = null;
         try {
             fos = new FileOutputStream(imagePath);
@@ -154,7 +153,6 @@ public class InternalStorageManager implements InternalStorage {
     }
 
 
-
     public File getImageFileById(String id) {
         File imageDirectory = context.getDir(IMAGE_DATA_PATH, Context.MODE_PRIVATE);
         File imageFile = new File(imageDirectory, id);
@@ -162,8 +160,8 @@ public class InternalStorageManager implements InternalStorage {
     }
 
     public void deleteAllPictures() {
-        File imageDirectory = context.getDir(IMAGE_DATA_PATH,Context.MODE_PRIVATE);
-        for (File file : imageDirectory.listFiles()){
+        File imageDirectory = context.getDir(IMAGE_DATA_PATH, Context.MODE_PRIVATE);
+        for (File file : imageDirectory.listFiles()) {
             file.delete();
         }
     }

@@ -12,6 +12,27 @@ import androidx.test.espresso.contrib.NavigationViewActions;
 import androidx.test.rule.ActivityTestRule;
 import androidx.test.rule.GrantPermissionRule;
 
+import org.junit.After;
+import org.junit.Rule;
+import org.junit.Test;
+
+import java.util.Date;
+import java.util.HashMap;
+import java.util.LinkedList;
+
+import ch.epfl.sdp.kandle.activity.MainActivity;
+import ch.epfl.sdp.kandle.activity.OfflineGameActivity;
+import ch.epfl.sdp.kandle.dependencies.DependencyManager;
+import ch.epfl.sdp.kandle.dependencies.MockAuthentication;
+import ch.epfl.sdp.kandle.dependencies.MockDatabase;
+import ch.epfl.sdp.kandle.dependencies.MockImageStorage;
+import ch.epfl.sdp.kandle.dependencies.MockInternalStorage;
+import ch.epfl.sdp.kandle.dependencies.MockNetwork;
+import ch.epfl.sdp.kandle.entities.post.Post;
+import ch.epfl.sdp.kandle.entities.user.LoggedInUser;
+import ch.epfl.sdp.kandle.entities.user.User;
+import ch.epfl.sdp.kandle.storage.room.LocalDatabase;
+
 import static androidx.test.espresso.Espresso.onView;
 import static androidx.test.espresso.action.ViewActions.click;
 import static androidx.test.espresso.assertion.ViewAssertions.matches;
@@ -26,78 +47,53 @@ import static junit.framework.TestCase.assertEquals;
 import static org.hamcrest.Matchers.is;
 
 
-import org.junit.After;
-import org.junit.Rule;
-import org.junit.Test;
-
-import java.util.Date;
-import java.util.HashMap;
-import java.util.LinkedList;
-
-import ch.epfl.sdp.kandle.activity.OfflineGameActivity;
-import ch.epfl.sdp.kandle.entities.post.Post;
-import ch.epfl.sdp.kandle.entities.user.LoggedInUser;
-import ch.epfl.sdp.kandle.entities.user.User;
-import ch.epfl.sdp.kandle.storage.room.LocalDatabase;
-import ch.epfl.sdp.kandle.activity.MainActivity;
-import ch.epfl.sdp.kandle.dependencies.DependencyManager;
-import ch.epfl.sdp.kandle.dependencies.MockAuthentication;
-import ch.epfl.sdp.kandle.dependencies.MockDatabase;
-import ch.epfl.sdp.kandle.dependencies.MockInternalStorage;
-import ch.epfl.sdp.kandle.dependencies.MockNetwork;
-import ch.epfl.sdp.kandle.dependencies.MockImageStorage;
-
-
 public class AchievementTest {
-    private  User user1;
-    private  User user2;
+    @Rule
+    public GrantPermissionRule permissionRule = GrantPermissionRule.grant(android.Manifest.permission.ACCESS_FINE_LOCATION);
+    MockDatabase db;
+    private User user1;
+    private User user2;
     private User user3;
     private Post p1;
     private Post p2;
     private Post p3;
     private Post p4;
     private Post p5;
-    MockDatabase db;
-
     private LocalDatabase localDatabase;
     private MockNetwork network;
-
-    @Rule
-    public GrantPermissionRule permissionRule = GrantPermissionRule.grant(android.Manifest.permission.ACCESS_FINE_LOCATION);
-
     @Rule
     public ActivityTestRule<MainActivity> intentsRule =
-            new ActivityTestRule<MainActivity>(MainActivity.class,true,true){
+            new ActivityTestRule<MainActivity>(MainActivity.class, true, true) {
                 @Override
                 protected void beforeActivityLaunched() {
-                    LoggedInUser.init(new User("loggedInUserId","LoggedInUser","loggedInUser@kandle.ch","nickname","image"));
-                    user1 = new User("user1Id", "user1", "user1@kandle.ch", null,  null);
-                    user2 = new User("user2Id", "user2", "user2@kandle.ch", null,  null);
-                    user3 = new User("user3Id", "user3", "user3@kandle.ch", null,  null);
-                    p1 =  new Post("Hello", null, new Date(), "loggedInUserId", "post1Id");
+                    LoggedInUser.init(new User("loggedInUserId", "LoggedInUser", "loggedInUser@kandle.ch", "nickname", "image"));
+                    user1 = new User("user1Id", "user1", "user1@kandle.ch", null, null);
+                    user2 = new User("user2Id", "user2", "user2@kandle.ch", null, null);
+                    user3 = new User("user3Id", "user3", "user3@kandle.ch", null, null);
+                    p1 = new Post("Hello", null, new Date(), "loggedInUserId", "post1Id");
                     p2 = new Post("There", "null", new Date(), "loggedInUserId", "post2Id");
-                    p3 =  new Post("My", null, new Date(), "loggedInUserId", "post3Id");
-                    p4 =  new Post("You", null, new Date(), "loggedInUserId", "post4Id");
-                    p5 =  new Post("Are", null, new Date(), "loggedInUserId", "post5Id");
+                    p3 = new Post("My", null, new Date(), "loggedInUserId", "post3Id");
+                    p4 = new Post("You", null, new Date(), "loggedInUserId", "post4Id");
+                    p5 = new Post("Are", null, new Date(), "loggedInUserId", "post5Id");
                     LoggedInUser.getInstance().addPostId(p1.getPostId());
                     LoggedInUser.getInstance().addPostId(p2.getPostId());
                     LoggedInUser.getInstance().addPostId(p3.getPostId());
                     LoggedInUser.getInstance().addPostId(p4.getPostId());
-                    HashMap<String,String> accounts = new HashMap<>();
-                    accounts.put(user1.getEmail(),user1.getId());
-                    accounts.put(user2.getEmail(),user2.getId());
-                    accounts.put(user3.getEmail(),user3.getId());
-                    HashMap<String,User> users = new HashMap<>();
+                    HashMap<String, String> accounts = new HashMap<>();
+                    accounts.put(user1.getEmail(), user1.getId());
+                    accounts.put(user2.getEmail(), user2.getId());
+                    accounts.put(user3.getEmail(), user3.getId());
+                    HashMap<String, User> users = new HashMap<>();
                     HashMap<String, MockDatabase.Follow> followMap = new HashMap<>();
-                    followMap.put(user1.getId(),new MockDatabase.Follow(new LinkedList<>(),new LinkedList<>()));
-                    followMap.put(user2.getId(),new MockDatabase.Follow(new LinkedList<>(),new LinkedList<>()));
-                    followMap.put(user3.getId(),new MockDatabase.Follow(new LinkedList<>(),new LinkedList<>()));
+                    followMap.put(user1.getId(), new MockDatabase.Follow(new LinkedList<>(), new LinkedList<>()));
+                    followMap.put(user2.getId(), new MockDatabase.Follow(new LinkedList<>(), new LinkedList<>()));
+                    followMap.put(user3.getId(), new MockDatabase.Follow(new LinkedList<>(), new LinkedList<>()));
                     HashMap<String, Post> posts = new HashMap<>();
-                    posts.put(p1.getPostId(),p1);
-                    posts.put(p2.getPostId(),p2);
-                    posts.put(p3.getPostId(),p3);
-                    posts.put(p4.getPostId(),p4);
-                     db = new MockDatabase(true, users, followMap, posts);
+                    posts.put(p1.getPostId(), p1);
+                    posts.put(p2.getPostId(), p2);
+                    posts.put(p3.getPostId(), p3);
+                    posts.put(p4.getPostId(), p4);
+                    db = new MockDatabase(true, users, followMap, posts);
                     MockAuthentication authentication = new MockAuthentication(true, accounts, "password");
                     MockImageStorage storage = new MockImageStorage();
                     MockInternalStorage internalStorage = new MockInternalStorage(true, new HashMap<>());
@@ -109,7 +105,7 @@ public class AchievementTest {
                     getDatabaseSystem().createUser(user2);
                     getDatabaseSystem().createUser(user3);
                     getDatabaseSystem().follow(user1.getId(), LoggedInUser.getInstance().getId());
-                    getDatabaseSystem().follow(user2.getId(),LoggedInUser.getInstance().getId());
+                    getDatabaseSystem().follow(user2.getId(), LoggedInUser.getInstance().getId());
                     getDatabaseSystem().follow(LoggedInUser.getInstance().getId(), user1.getId());
                     getDatabaseSystem().follow(LoggedInUser.getInstance().getId(), user2.getId());
                     getDatabaseSystem().likePost(user1.getId(), p1.getPostId());
@@ -120,17 +116,15 @@ public class AchievementTest {
             };
 
 
-
-
     @After
-    public void clearCurrentUser(){
+    public void clearCurrentUser() {
         LoggedInUser.clear();
         localDatabase.close();
     }
 
 
     @Test
-    public void allTypesOfAchievementsNotDone(){
+    public void allTypesOfAchievementsNotDone() {
         setFragment();
         onView(withId(R.id.flAchievements)).check(new AchievementTest.RecyclerViewItemCountAssertion(13));
         //onView(withId(R.id.flPosts)).perform(RecyclerViewActions.actionOnItemAtPosition(0, click()));
@@ -181,7 +175,7 @@ public class AchievementTest {
     public void AchievementOfflineGamePointsWorks() {
         navigateToOfflineGame();
         onView(withId(R.id.startButton)).perform(click());
-        for(int i = 0; i < OfflineGameActivity.MAX_NB_VIRUS; i++){
+        for (int i = 0; i < OfflineGameActivity.MAX_NB_VIRUS; i++) {
             onView(withId(R.id.virusButton)).perform(click());
         }
         onView(withId(R.id.maxScore)).check(matches((withText(is(Integer.toString(OfflineGameActivity.MAX_NB_VIRUS))))));
@@ -195,7 +189,7 @@ public class AchievementTest {
         onView(withId(R.id.flAchievements)).perform(scrollToPosition(12)).check(matches(atPosition(12, hasDescendant(withText("Achievement Completed !")))));
     }
 
-    private void navigateToOfflineGame(){
+    private void navigateToOfflineGame() {
         network.setIsOnline(false);
         onView(withId(R.id.drawer_layout)).check(matches(isClosed(Gravity.LEFT))).perform(DrawerActions.open());
         onView(withId(R.id.navigation_view)).perform(NavigationViewActions.navigateTo(R.id.map_support));
@@ -203,7 +197,7 @@ public class AchievementTest {
         onView(withId(R.id.startOfflineGameConnectedButton)).perform(click());
     }
 
-    private void setFragment(){
+    private void setFragment() {
         onView(withId(R.id.drawer_layout)).check(matches(isClosed(Gravity.LEFT))).perform(DrawerActions.open());
         onView(withId(R.id.navigation_view)).perform(NavigationViewActions.navigateTo(R.id.achievements));
         onView(withId(R.id.drawer_layout)).perform(DrawerActions.close());

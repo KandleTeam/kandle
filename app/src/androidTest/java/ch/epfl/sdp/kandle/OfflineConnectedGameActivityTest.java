@@ -44,7 +44,7 @@ public class OfflineConnectedGameActivityTest {
     private MockNetwork network;
     @Rule
     public ActivityTestRule<MainActivity> intentsRule =
-            new ActivityTestRule<MainActivity>(MainActivity.class, true, true){
+            new ActivityTestRule<MainActivity>(MainActivity.class, true, true) {
                 @Override
                 protected void beforeActivityLaunched() {
                     LoggedInUser.init(new User("loggedInUserId", "LoggedInUser", "loggedInUser@kandle.ch", "nickname", "image"));
@@ -79,9 +79,9 @@ public class OfflineConnectedGameActivityTest {
 
 
     @Test
-    public void userPlayAndSetsRecordThenCached(){
+    public void userPlayAndSetsRecordThenCached() {
         onView(withId(R.id.startButton)).perform(click());
-        for(int i=0; i < OfflineGameActivity.MAX_NB_VIRUS; i++){
+        for (int i = 0; i < OfflineGameActivity.MAX_NB_VIRUS; i++) {
             onView(withId(R.id.virusButton)).perform(click());
         }
         onView(withId(R.id.maxScore)).check(matches((withText(is(Integer.toString(OfflineGameActivity.MAX_NB_VIRUS))))));

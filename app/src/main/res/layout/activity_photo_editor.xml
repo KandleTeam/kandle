@@ -1,80 +1,74 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".activity.PhotoEditorActivity"
     android:background="@color/black"
-    >
+    tools:context=".activity.PhotoEditorActivity">
 
     <ja.burhanrashid52.photoeditor.PhotoEditorView
         android:id="@+id/photoEditorView"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        >
-    </ja.burhanrashid52.photoeditor.PhotoEditorView>
+        android:layout_height="match_parent"></ja.burhanrashid52.photoeditor.PhotoEditorView>
 
     <Button
         android:id="@+id/finishButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Finish"
-        android:textStyle="bold"
-        android:background="@color/grey"
-        android:layout_alignParentEnd="true"
         android:layout_alignParentTop="true"
-        android:layout_margin="5dp"/>
+        android:layout_alignParentEnd="true"
+        android:layout_margin="5dp"
+        android:background="@color/grey"
+        android:text="Finish"
+        android:textStyle="bold" />
 
     <ImageButton
         android:id="@+id/undoButton"
         android:layout_width="40dp"
         android:layout_height="40dp"
+        android:layout_margin="5dp"
         android:background="@drawable/ic_undo_black_24dp"
-        android:backgroundTint="@color/grey"
-        android:layout_margin="5dp" />
+        android:backgroundTint="@color/grey" />
 
     <ImageButton
         android:id="@+id/redoButton"
         android:layout_width="40dp"
         android:layout_height="40dp"
+        android:layout_margin="5dp"
         android:layout_toRightOf="@id/undoButton"
         android:background="@drawable/ic_redo_black_24dp"
-        android:backgroundTint="@color/grey"
-        android:layout_margin="5dp" />
+        android:backgroundTint="@color/grey" />
 
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true"
         android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
         android:orientation="horizontal">
 
         <ImageButton
             android:id="@+id/textButton"
             android:layout_width="50dp"
             android:layout_height="50dp"
+            android:layout_margin="5dp"
             android:background="@drawable/ic_text_fields_black_24dp"
-            android:backgroundTint="@color/grey"
-            android:layout_margin="5dp" />
+            android:backgroundTint="@color/grey" />
 
         <ImageButton
             android:id="@+id/brushButton"
             android:layout_width="50dp"
             android:layout_height="50dp"
+            android:layout_margin="5dp"
             android:background="@drawable/ic_brush_black_24dp"
-            android:backgroundTint="@color/grey"
-            android:layout_margin="5dp"/>
+            android:backgroundTint="@color/grey" />
 
         <ImageButton
             android:id="@+id/eraserButton"
             android:layout_width="50dp"
             android:layout_height="50dp"
+            android:layout_margin="5dp"
             android:background="@drawable/ic_eraser"
-            android:backgroundTint="@color/grey"
-            android:layout_margin="5dp"/>
-
-
+            android:backgroundTint="@color/grey" />
 
 
     </LinearLayout>

@@ -30,10 +30,6 @@ public class TextDialogFragment extends DialogFragment {
     private TextEditor mTextEditor;
     private int mColorCode;
 
-    public interface TextEditor {
-        void onDone(String inputText);
-    }
-
     public static TextDialogFragment show(@NonNull AppCompatActivity appCompatActivity, @ColorInt int colorCode) {
         Bundle args = new Bundle();
         args.putInt(EXTRA_COLOR_CODE, colorCode);
@@ -85,5 +81,9 @@ public class TextDialogFragment extends DialogFragment {
 
     public void setOnTextEditorListener(TextEditor textEditor) {
         mTextEditor = textEditor;
+    }
+
+    public interface TextEditor {
+        void onDone(String inputText);
     }
 }

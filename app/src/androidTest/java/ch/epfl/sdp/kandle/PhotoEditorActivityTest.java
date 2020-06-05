@@ -28,9 +28,8 @@ public class PhotoEditorActivityTest {
             };
 
 
-
     @Test
-    public void brushAndColor()  {
+    public void brushAndColor() {
         onView(withId(R.id.brushButton)).perform(click());
         onView(withId(R.id.okColorButton)).perform(click());
     }
