@@ -84,8 +84,11 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback, Per
             @Override
             public void onSuccess(LocationEngineResult result) {
                 if (result.getLastLocation() != null) {
+                    if(computeDistance(currentLocation.getLatitude(),currentLocation.getLongitude(),result.getLastLocation().getLatitude(),result.getLastLocation().getLongitude()) > 50) {
+                        currentLocation = result.getLastLocation();
+                        //populateWithMarkers();
+                    }
                     currentLocation = result.getLastLocation();
-                    populateWithMarkers();
                     mapboxMap.getLocationComponent().forceLocationUpdate(result.getLastLocation());
                 }
             }
