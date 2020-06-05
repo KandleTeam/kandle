@@ -30,9 +30,11 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.ViewHolder> {
     private List<User> mUsers;
     private boolean isFollowerList = false;
 
+
     public UserAdapter(List<User> mUsers) {
         this.mUsers = mUsers;
     }
+
 
     public void setOnItemClickListener(ClickListener clickListener) {
         UserAdapter.clickListener = clickListener;
@@ -91,7 +93,9 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.ViewHolder> {
         }
     }
 
+
     private void setupFollow(@NonNull ViewHolder holder, User user, User currentUser, CachedFirestoreDatabase database) {
+
         if (user.getId().equals(currentUser.getId())) {
             holder.mFollowBtn.setVisibility(View.GONE);
         } else {
@@ -108,6 +112,7 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.ViewHolder> {
                 if (holder.mFollowBtn.getText().toString().equals(Kandle.getContext().getString(R.string.followBtnNotFollowing))) {
                     database.follow(currentUser.getId(), user.getId()).addOnSuccessListener(task -> {
                         holder.mFollowBtn.setText(R.string.followBtnAlreadyFollowing);
+
 
                     });
                 } else {
