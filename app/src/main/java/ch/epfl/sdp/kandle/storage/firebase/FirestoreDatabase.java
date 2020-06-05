@@ -61,7 +61,7 @@ public class FirestoreDatabase implements Database {
     private FirestoreDatabase() {
         // For now, disable caching
         FirebaseFirestoreSettings settings = new FirebaseFirestoreSettings.Builder()
-                .setPersistenceEnabled(false)
+                .setPersistenceEnabled(true)
                 .build();
         FIRESTORE.setFirestoreSettings(settings);
     }

@@ -50,7 +50,7 @@ public class PostActivity extends AppCompatActivity {
     public final static int POST_IMAGE_TAG = 42;
     public final static int POST_EDITED_IMAGE_TAG = 24;
     private final static double NEAR_LAT_LNG_SUB = 0.5;
-    private final static double NEAR_LAT_LNG_DIV = 500;
+    private final static double NEAR_LAT_LNG_DIV = 2500;
     private EditText mPostText;
     private Button mPostButton;
     private TextView mPostPageTitle;
