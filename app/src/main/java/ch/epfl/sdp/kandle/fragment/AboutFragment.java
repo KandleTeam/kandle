@@ -21,7 +21,7 @@ public class AboutFragment extends Fragment {
         View aboutPage = new AboutPage(this.getContext())
                 .isRTL(false)
                 .setDescription(getString(R.string.appDescription))
-                .setImage(R.drawable.logo)
+                .setImage(R.drawable.small_logo)
                 .addItem(versionElement)
                 .addItem(adsElement)
                 .addGroup(getString(R.string.joinUs))
