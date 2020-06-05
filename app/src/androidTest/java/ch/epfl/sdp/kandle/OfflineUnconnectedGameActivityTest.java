@@ -80,7 +80,7 @@ public class OfflineUnconnectedGameActivityTest {
     public void startGameAndNoClickOnVirus(){
         onView(withId(R.id.startButton)).perform(click());
         try {
-            Thread.sleep(7000);
+            Thread.sleep(OfflineGameActivity.APPEARING_TIME * OfflineGameActivity.MAX_NB_VIRUS);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
