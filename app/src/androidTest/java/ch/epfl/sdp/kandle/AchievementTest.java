@@ -203,6 +203,8 @@ public class AchievementTest {
         onView(withId(R.id.startOfflineGameConnectedButton)).perform(click());
     }
 
+
+
     private void setFragment(){
         onView(withId(R.id.drawer_layout)).check(matches(isClosed(Gravity.LEFT))).perform(DrawerActions.open());
         onView(withId(R.id.navigation_view)).perform(NavigationViewActions.navigateTo(R.id.achievements));
