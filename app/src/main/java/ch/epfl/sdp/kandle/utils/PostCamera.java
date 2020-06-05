@@ -16,8 +16,8 @@ import static android.app.Activity.RESULT_OK;
 
 public class PostCamera {
 
-    protected static final int PERMISSIONS_REQUEST_CODE = 42;
     public static final int PHOTO_REQUEST = 0;
+    protected static final int PERMISSIONS_REQUEST_CODE = 42;
     protected Activity activity;
     protected Uri imageUri;
     ImageView imageView;

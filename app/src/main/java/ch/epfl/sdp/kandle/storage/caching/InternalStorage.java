@@ -19,9 +19,9 @@ public interface InternalStorage {
 
     void deleteUser();
 
-    void saveImageToInternalStorage(Bitmap imageBitMap,String id);
+    void saveImageToInternalStorage(Bitmap imageBitMap, String id);
 
-    File getImageFileById(String id) ;
+    File getImageFileById(String id);
 
     void deleteAllPictures();
 

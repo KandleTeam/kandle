@@ -11,22 +11,22 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 
+import ch.epfl.sdp.kandle.R;
 import ch.epfl.sdp.kandle.entities.post.Post;
 import ch.epfl.sdp.kandle.entities.post.PostAdapter;
-import ch.epfl.sdp.kandle.R;
 import ch.epfl.sdp.kandle.storage.Database;
-import ch.epfl.sdp.kandle.dependencies.DependencyManager;
 import ch.epfl.sdp.kandle.storage.caching.CachedFirestoreDatabase;
 
 public class EventListFragment extends Fragment {
 
     private RecyclerView mEvents;
 
-    public static EventListFragment newInstance() { return new EventListFragment(); }
+    public static EventListFragment newInstance() {
+        return new EventListFragment();
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -35,9 +35,9 @@ public class EventListFragment extends Fragment {
         Database database = new CachedFirestoreDatabase();
 
         database.getParticipatingEvents().addOnCompleteListener(task -> {
-            if (task.isSuccessful() && task.getResult()!=null) {
+            if (task.isSuccessful() && task.getResult() != null) {
                 List<Post> events = new ArrayList<>(task.getResult());
-                for (int i = events.size() - 1; i>=0; i--){
+                for (int i = events.size() - 1; i >= 0; i--) {
                     if (events.get(i).getDate().getTime() < new Date().getTime()) {
                         events.remove(i);
                     }

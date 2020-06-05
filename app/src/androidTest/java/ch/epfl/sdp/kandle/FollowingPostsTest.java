@@ -23,21 +23,20 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.LinkedList;
 
+import ch.epfl.sdp.kandle.activity.MainActivity;
+import ch.epfl.sdp.kandle.dependencies.DependencyManager;
+import ch.epfl.sdp.kandle.dependencies.MockAuthentication;
+import ch.epfl.sdp.kandle.dependencies.MockDatabase;
+import ch.epfl.sdp.kandle.dependencies.MockImageStorage;
+import ch.epfl.sdp.kandle.dependencies.MockInternalStorage;
+import ch.epfl.sdp.kandle.dependencies.MockNetwork;
 import ch.epfl.sdp.kandle.entities.post.Post;
 import ch.epfl.sdp.kandle.entities.post.PostAdapter;
 import ch.epfl.sdp.kandle.entities.user.LoggedInUser;
 import ch.epfl.sdp.kandle.entities.user.User;
 import ch.epfl.sdp.kandle.storage.room.LocalDatabase;
-import ch.epfl.sdp.kandle.activity.MainActivity;
-import ch.epfl.sdp.kandle.dependencies.DependencyManager;
-import ch.epfl.sdp.kandle.dependencies.MockAuthentication;
-import ch.epfl.sdp.kandle.dependencies.MockDatabase;
-import ch.epfl.sdp.kandle.dependencies.MockInternalStorage;
-import ch.epfl.sdp.kandle.dependencies.MockNetwork;
-import ch.epfl.sdp.kandle.dependencies.MockImageStorage;
 
 import static androidx.test.espresso.Espresso.onView;
-import static androidx.test.espresso.action.ViewActions.click;
 import static androidx.test.espresso.assertion.ViewAssertions.matches;
 import static androidx.test.espresso.contrib.DrawerMatchers.isClosed;
 import static androidx.test.espresso.matcher.ViewMatchers.withId;
@@ -53,17 +52,19 @@ public class FollowingPostsTest {
     public static Post p2;
     public User u1;
     public User u2;
+    @Rule
+    public GrantPermissionRule permissionRule = GrantPermissionRule.grant(android.Manifest.permission.ACCESS_FINE_LOCATION);
     private MockDatabase db;
     private LocalDatabase localDatabase;
     @Rule
     public ActivityTestRule<MainActivity> intentsRule =
-            new ActivityTestRule<MainActivity>(MainActivity.class, true, true){
+            new ActivityTestRule<MainActivity>(MainActivity.class, true, true) {
                 @Override
                 protected void beforeActivityLaunched() {
-                    LoggedInUser.init(new User("loggedInUserId","LoggedInUser","loggedInUser@kandle.ch","nickname","image"));
-                    u1 = new User("u1Id","u1","u2@kandle.ch","u1","image1");
-                    u2 = new User("u2Id","u2","u2@kandle.ch","u2","image2");
-                    p1 =  new Post("Hello", null, new Date(), "u1Id", "post1Id");
+                    LoggedInUser.init(new User("loggedInUserId", "LoggedInUser", "loggedInUser@kandle.ch", "nickname", "image"));
+                    u1 = new User("u1Id", "u1", "u2@kandle.ch", "u1", "image1");
+                    u2 = new User("u2Id", "u2", "u2@kandle.ch", "u2", "image2");
+                    p1 = new Post("Hello", null, new Date(), "u1Id", "post1Id");
                     p2 = new Post("There", "image1", new Date(), "u2Id", "post2Id");
                     u1.addPostId(p1.getPostId());
                     u2.addPostId(p2.getPostId());
@@ -72,32 +73,28 @@ public class FollowingPostsTest {
                     accounts.put(u2.getEmail(), u2.getId());
                     HashMap<String, User> users = new HashMap<>();
                     HashMap<String, MockDatabase.Follow> followMap = new HashMap<>();
-                    followMap.put(u1.getId(),new MockDatabase.Follow(new LinkedList<>(),new LinkedList<>()));
-                    followMap.put(u2.getId(),new MockDatabase.Follow(new LinkedList<>(),new LinkedList<>()));
+                    followMap.put(u1.getId(), new MockDatabase.Follow(new LinkedList<>(), new LinkedList<>()));
+                    followMap.put(u2.getId(), new MockDatabase.Follow(new LinkedList<>(), new LinkedList<>()));
                     HashMap<String, Post> posts = new HashMap<>();
-                    posts.put(p1.getPostId(),p1);
-                    posts.put(p2.getPostId(),p2);
+                    posts.put(p1.getPostId(), p1);
+                    posts.put(p2.getPostId(), p2);
                     db = new MockDatabase(true, users, followMap, posts);
                     MockAuthentication authentication = new MockAuthentication(true, accounts, "password");
                     MockImageStorage storage = new MockImageStorage();
                     MockInternalStorage internalStorage = new MockInternalStorage(new HashMap<>());
                     MockNetwork network = new MockNetwork(true);
                     localDatabase = Room.inMemoryDatabaseBuilder(Kandle.getContext(), LocalDatabase.class).allowMainThreadQueries().build();
-                    DependencyManager.setFreshTestDependencies(authentication, db, storage,internalStorage,network,localDatabase);
+                    DependencyManager.setFreshTestDependencies(authentication, db, storage, internalStorage, network, localDatabase);
                     DependencyManager.getDatabaseSystem().createUser(u1);
                     DependencyManager.getDatabaseSystem().createUser(u2);
-                    DependencyManager.getDatabaseSystem().follow(LoggedInUser.getInstance().getId(),u1.getId());
+                    DependencyManager.getDatabaseSystem().follow(LoggedInUser.getInstance().getId(), u1.getId());
                     DependencyManager.getDatabaseSystem().follow(LoggedInUser.getInstance().getId(), u2.getId());
                 }
 
             };
 
-    @Rule
-    public GrantPermissionRule permissionRule = GrantPermissionRule.grant(android.Manifest.permission.ACCESS_FINE_LOCATION);
-
-
     @After
-    public void clearCurrentUser(){
+    public void clearCurrentUser() {
         LoggedInUser.clear();
         localDatabase.close();
     }

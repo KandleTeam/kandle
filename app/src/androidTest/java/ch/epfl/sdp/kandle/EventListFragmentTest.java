@@ -43,13 +43,13 @@ public class EventListFragmentTest {
     private LocalDatabase localDatabase;
     @Rule
     public ActivityTestRule<MainActivity> intentsRule =
-            new ActivityTestRule<MainActivity>(MainActivity.class, true, true){
+            new ActivityTestRule<MainActivity>(MainActivity.class, true, true) {
                 @Override
                 protected void beforeActivityLaunched() {
-                    LoggedInUser.init(new User("loggedInUserId","LoggedInUser","loggedInUser@kandle.ch","nickname","image"));
+                    LoggedInUser.init(new User("loggedInUserId", "LoggedInUser", "loggedInUser@kandle.ch", "nickname", "image"));
                     User u1 = new User("u1Id", "u1", "u2@kandle.ch", "u1", "image1");
                     Date date = new Date();
-                    date.setTime(date.getTime()+100000);
+                    date.setTime(date.getTime() + 100000);
                     Post p1 = new Post("Hello", null, date, "u1Id", "post1Id");
                     u1.addPostId(p1.getPostId());
                     p1.setType(Post.EVENT);
@@ -70,14 +70,14 @@ public class EventListFragmentTest {
                     MockInternalStorage internalStorage = new MockInternalStorage(new HashMap<>());
                     MockNetwork network = new MockNetwork(true);
                     localDatabase = Room.inMemoryDatabaseBuilder(Kandle.getContext(), LocalDatabase.class).allowMainThreadQueries().build();
-                    DependencyManager.setFreshTestDependencies(authentication, db, storage,internalStorage,network,localDatabase);
+                    DependencyManager.setFreshTestDependencies(authentication, db, storage, internalStorage, network, localDatabase);
                     DependencyManager.getDatabaseSystem().createUser(u1);
                 }
 
             };
 
     @After
-    public void clearCurrentUser(){
+    public void clearCurrentUser() {
         LoggedInUser.clear();
         localDatabase.close();
     }

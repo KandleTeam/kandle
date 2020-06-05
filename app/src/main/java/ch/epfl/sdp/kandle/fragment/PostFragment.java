@@ -12,18 +12,17 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 
 import com.squareup.picasso.Picasso;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 
-import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentTransaction;
-
-import ch.epfl.sdp.kandle.entities.user.LoggedInUser;
-import ch.epfl.sdp.kandle.entities.post.Post;
 import ch.epfl.sdp.kandle.R;
+import ch.epfl.sdp.kandle.entities.post.Post;
+import ch.epfl.sdp.kandle.entities.user.LoggedInUser;
 import ch.epfl.sdp.kandle.entities.user.User;
 import ch.epfl.sdp.kandle.storage.Database;
 
@@ -35,11 +34,11 @@ public class PostFragment extends Fragment {
     public final static int POST_IMAGE = 20;
     public final static int PROFILE_PICTURE_IMAGE = 21;
     public final static int MAX_DISTANCE = 50;
-    private Database database;
     private final Post post;
     private final User user;
     private final Location location;
     private final int distance;
+    private Database database;
     //Views
     private TextView username, description, numberOfLikes, distanceView;
     private ImageView profilePicture, postImage, isCloseFollowers;
@@ -56,9 +55,10 @@ public class PostFragment extends Fragment {
 
     /**
      * Instantiates a PostFragment and returns it
-     * @param post the post
+     *
+     * @param post     the post
      * @param location the location
-     * @param user the user
+     * @param user     the user
      * @param distance the distance
      * @return a PostFragment
      */
@@ -130,7 +130,7 @@ public class PostFragment extends Fragment {
             if (task.isSuccessful()) {
                 fragmentManager.beginTransaction().replace(R.id.flContent, ListUsersFragment.newInstance(
                         task.getResult(),
-                        post.getType() != null && post.getType().equals(Post.EVENT)? "Participants" : "Likes",
+                        post.getType() != null && post.getType().equals(Post.EVENT) ? "Participants" : "Likes",
                         Integer.toString(task.getResult().size())
                 )).setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
                         .addToBackStack(null)
@@ -139,7 +139,7 @@ public class PostFragment extends Fragment {
             }
         }));
 
-        if (post.getType()!=null && post.getType().equals(Post.EVENT) || distance <= MAX_DISTANCE) {
+        if (post.getType() != null && post.getType().equals(Post.EVENT) || distance <= MAX_DISTANCE) {
 
             likeButton.setOnClickListener(v -> {
 
@@ -178,7 +178,7 @@ public class PostFragment extends Fragment {
             likeButton.setClickable(false);
             followButton.setVisibility(View.GONE);
         }
-        if(post.getIsForCloseFollowers() != null && post.getIsForCloseFollowers().equals(Post.CLOSE_FOLLOWER)){
+        if (post.getIsForCloseFollowers() != null && post.getIsForCloseFollowers().equals(Post.CLOSE_FOLLOWER)) {
             isCloseFollowers.setVisibility(View.VISIBLE);
         }
 

@@ -148,9 +148,9 @@ public class MockDatabase implements Database {
     public Task<Void> setCloseFollower(String userFollowing, String userFollowed) {
         Follow follow = followMap.get(userFollowing);
         Follow follow2 = followMap.get(userFollowed);
-            if (!follow2.closeFollowers.contains(userFollowing) && follow.following.contains(userFollowed)) {
-                follow2.addCloseFollowe(userFollowing);
-                followMap.put(userFollowed, follow2);
+        if (!follow2.closeFollowers.contains(userFollowing) && follow.following.contains(userFollowed)) {
+            follow2.addCloseFollowe(userFollowing);
+            followMap.put(userFollowed, follow2);
         }
 
         TaskCompletionSource<Void> source = new TaskCompletionSource<>();
@@ -221,7 +221,7 @@ public class MockDatabase implements Database {
     public Task<List<User>> userCloseFollowersList(String userId) {
         TaskCompletionSource<List<User>> source = new TaskCompletionSource<>();
         ArrayList<User> closeFollowers = new ArrayList<>();
-        if(followMap.get(userId) != null) {
+        if (followMap.get(userId) != null) {
             for (String id : followMap.get(userId).closeFollowers) {
                 closeFollowers.add(users.get(id));
             }
@@ -356,13 +356,13 @@ public class MockDatabase implements Database {
         userLarge.add("mock9");
         userLarge.add("mock10");
 
-        Post post1=new Post("nearby post 1 ", null, new Date(), "mock user id", 0.0001, 0.0001);
+        Post post1 = new Post("nearby post 1 ", null, new Date(), "mock user id", 0.0001, 0.0001);
         post1.setLikers(userSmall);
 
-        Post post2=new Post("nearby post 2 ", null, new Date(), "mock user id", 0.0001, 0.0001);
+        Post post2 = new Post("nearby post 2 ", null, new Date(), "mock user id", 0.0001, 0.0001);
         post2.setLikers(userMedium);
 
-        Post post3=new Post("nearby post 3 ", null, new Date(), "mock user id", 0.0001, 0.0001);
+        Post post3 = new Post("nearby post 3 ", null, new Date(), "mock user id", 0.0001, 0.0001);
         post3.setLikers(userLarge);
 
         List<Post> posts = new ArrayList<>();
@@ -455,9 +455,13 @@ public class MockDatabase implements Database {
             followers.remove(s);
         }
 
-        public void addCloseFollowe(String s){closeFollowers.add(s);}
+        public void addCloseFollowe(String s) {
+            closeFollowers.add(s);
+        }
 
-        public void removeCLoseFollower(String s){closeFollowers.remove(s);}
+        public void removeCLoseFollower(String s) {
+            closeFollowers.remove(s);
+        }
 
     }
 

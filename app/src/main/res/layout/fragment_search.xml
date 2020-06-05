@@ -3,14 +3,13 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    tools:context=".fragment.SearchFragment"
-    >
+    tools:context=".fragment.SearchFragment">
 
     <ImageView
         android:layout_width="40dp"
         android:layout_height="40dp"
-        android:src="@drawable/ic_search"
-        android:contentDescription="TODO" />
+        android:contentDescription="TODO"
+        android:src="@drawable/ic_search" />
 
 
     <EditText

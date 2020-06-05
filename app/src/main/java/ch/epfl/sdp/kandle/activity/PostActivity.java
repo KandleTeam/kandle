@@ -1,8 +1,6 @@
 package ch.epfl.sdp.kandle.activity;
 
 
-import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
@@ -31,14 +29,14 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.Random;
 
-import ch.epfl.sdp.kandle.entities.post.Post;
-import ch.epfl.sdp.kandle.utils.PostCamera;
 import ch.epfl.sdp.kandle.R;
 import ch.epfl.sdp.kandle.authentification.Authentication;
-import ch.epfl.sdp.kandle.storage.Database;
+import ch.epfl.sdp.kandle.entities.post.Post;
 import ch.epfl.sdp.kandle.fragment.YourPostListFragment;
-import ch.epfl.sdp.kandle.utils.imagePicker.ImagePicker;
+import ch.epfl.sdp.kandle.storage.Database;
 import ch.epfl.sdp.kandle.storage.caching.CachedFirestoreDatabase;
+import ch.epfl.sdp.kandle.utils.PostCamera;
+import ch.epfl.sdp.kandle.utils.imagePicker.ImagePicker;
 
 import static ch.epfl.sdp.kandle.dependencies.DependencyManager.getAuthSystem;
 
@@ -325,7 +323,7 @@ public class PostActivity extends AppCompatActivity {
             mPostImage.setImageURI(imageUri);
         } else if (requestCode == EDIT_PIC_REQUEST && resultCode == RESULT_CANCELED) {
             mPostImageLayout.setVisibility(View.GONE);
-        }else {
+        } else {
             imageUri = ImagePicker.handleActivityResultAndGetUri(requestCode, resultCode, data);
             if (imageUri != null) {
                 mPostImageLayout.setVisibility(View.VISIBLE);
@@ -340,11 +338,11 @@ public class PostActivity extends AppCompatActivity {
                                            @NonNull String[] permissions,
                                            @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode,
-                        permissions,
-                        grantResults);
+                permissions,
+                grantResults);
 
         if (requestCode == PERMISSION_CODE) {
-            if (grantResults.length>0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 launchImageEditor();
             }
         }

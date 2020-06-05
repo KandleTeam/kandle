@@ -20,17 +20,26 @@ import java.util.List;
 import java.util.Map;
 
 import ch.epfl.sdp.kandle.R;
+import ch.epfl.sdp.kandle.authentification.Authentication;
+import ch.epfl.sdp.kandle.dependencies.DependencyManager;
 import ch.epfl.sdp.kandle.entities.user.User;
 import ch.epfl.sdp.kandle.entities.user.UserAdapter;
-import ch.epfl.sdp.kandle.authentification.Authentication;
 import ch.epfl.sdp.kandle.storage.Database;
-import ch.epfl.sdp.kandle.dependencies.DependencyManager;
 import ch.epfl.sdp.kandle.storage.caching.CachedFirestoreDatabase;
 
 public class PopularUserFragment extends Fragment {
 
     public final static int USERS_ARRAY_SIZE = 5;
     TextView mTitle, mNumber;
+    Comparator<Map.Entry<User, Integer>> valueComparator = new Comparator<Map.Entry<User, Integer>>() {
+
+        @Override
+        public int compare(Map.Entry<User, Integer> e1, Map.Entry<User, Integer> e2) {
+            Integer v1 = e1.getValue();
+            Integer v2 = e2.getValue();
+            return v2.compareTo(v1);
+        }
+    };
     private Authentication auth;
     private Database database;
     private RecyclerView mRecyclerView;
@@ -38,7 +47,6 @@ public class PopularUserFragment extends Fragment {
     private List<User> mUsers;
     private UserAdapter userAdapter = new UserAdapter(mUsers);
     private User currentUser;
-
 
     public PopularUserFragment() {
         this.mUsersnbFollowers = new HashMap<>();
@@ -50,7 +58,6 @@ public class PopularUserFragment extends Fragment {
     public static PopularUserFragment newInstance() {
         return new PopularUserFragment();
     }
-
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -110,18 +117,6 @@ public class PopularUserFragment extends Fragment {
         });
         return view;
     }
-
-
-    Comparator<Map.Entry<User, Integer>> valueComparator = new Comparator<Map.Entry<User, Integer>>() {
-
-        @Override
-        public int compare(Map.Entry<User, Integer> e1, Map.Entry<User, Integer> e2) {
-            Integer v1 = e1.getValue();
-            Integer v2 = e2.getValue();
-            return v2.compareTo(v1);
-        }
-    };
-
 
 
 }

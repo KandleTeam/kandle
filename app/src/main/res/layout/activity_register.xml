@@ -10,10 +10,10 @@
         android:id="@+id/connectionBar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginBottom="5dp"
         android:background="@android:color/transparent"
         app:layout_constraintBottom_toTopOf="@+id/logo"
         app:layout_constraintTop_toTopOf="parent"
-        android:layout_marginBottom="5dp"
         app:layout_constraintVertical_bias="0.0"
         tools:layout_editor_absoluteX="0dp" />
 
@@ -61,9 +61,9 @@
         android:layout_width="341dp"
         android:layout_height="38dp"
         android:backgroundTint="@color/backGroundRed"
+        android:digits="abcdefghijklmnopqrstuvwxyz1234567890_"
         android:ems="10"
         android:hint="@string/registerUsernameHint"
-        android:digits="abcdefghijklmnopqrstuvwxyz1234567890_"
         android:inputType="textFilter|textNoSuggestions"
         app:layout_constraintBottom_toTopOf="@+id/email"
         app:layout_constraintEnd_toEndOf="parent"

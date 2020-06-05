@@ -25,14 +25,15 @@ public class RecyclerViewMatcher {
         return new TypeSafeMatcher<View>() {
             Resources resources = null;
             View childView;
+
             public void describeTo(Description description) {
                 String idDescription = Integer.toString(recyclerViewId);
-                if(this.resources != null) {
+                if (this.resources != null) {
                     try {
                         idDescription = this.resources.getResourceName(recyclerViewId);
                     } catch (Resources.NotFoundException var4) {
                         idDescription = String.format("%s (resource name not found)",
-                                new Object[] {Integer.valueOf(recyclerViewId) });
+                                new Object[]{Integer.valueOf(recyclerViewId)});
                     }
                 }
                 description.appendText("with id: " + idDescription);

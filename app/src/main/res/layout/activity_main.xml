@@ -3,10 +3,9 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/drawer_layout"
-    tools:openDrawer="end"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    >
+    tools:openDrawer="end">
 
     <!-- This LinearLayout represents the contents of the screen  -->
 
@@ -27,7 +26,7 @@
             android:id="@+id/flContent"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            app:layout_behavior="@string/appbar_scrolling_view_behavior"/>
+            app:layout_behavior="@string/appbar_scrolling_view_behavior" />
 
 
     </LinearLayout>
@@ -40,16 +39,14 @@
         android:layout_height="match_parent"
         android:layout_gravity="start"
         android:background="@android:color/white"
-        app:menu="@menu/menu_item"
         app:headerLayout="@layout/header"
+        app:itemBackground="@android:color/transparent"
         app:itemIconTint="@color/drawer_item"
         app:itemTextColor="@color/drawer_item"
-        app:itemBackground="@android:color/transparent">
-
+        app:menu="@menu/menu_item">
 
 
     </com.google.android.material.navigation.NavigationView>
-
 
 
 </androidx.drawerlayout.widget.DrawerLayout>

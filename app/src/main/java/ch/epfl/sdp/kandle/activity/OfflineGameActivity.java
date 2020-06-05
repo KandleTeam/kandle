@@ -11,9 +11,9 @@ import androidx.constraintlayout.widget.ConstraintLayout;
 import java.util.Timer;
 import java.util.TimerTask;
 
-import ch.epfl.sdp.kandle.entities.user.LoggedInUser;
 import ch.epfl.sdp.kandle.R;
 import ch.epfl.sdp.kandle.dependencies.DependencyManager;
+import ch.epfl.sdp.kandle.entities.user.LoggedInUser;
 
 public class OfflineGameActivity extends AppCompatActivity {
 
@@ -65,8 +65,8 @@ public class OfflineGameActivity extends AppCompatActivity {
 
         mScoreText.setText(getString(R.string.scoreText));
         mScore.setText(getString(R.string.initialScore));
-        
-        if(DependencyManager.getAuthSystem().getCurrentUser()!=null){
+
+        if (DependencyManager.getAuthSystem().getCurrentUser() != null) {
             nbPoints[2] = DependencyManager.getAuthSystem().getCurrentUser().getHighScore();
         }
         mMaxScoreText.setText(getString(R.string.recordText));
@@ -150,7 +150,7 @@ public class OfflineGameActivity extends AppCompatActivity {
             if (nbPoints[1] > nbPoints[2]) {
                 setRecord(nbPoints, nbPoints[1]);
                 mMaxScore.setText(Integer.toString(nbPoints[2]));
-                if(DependencyManager.getAuthSystem().getCurrentUser()!=null){
+                if (DependencyManager.getAuthSystem().getCurrentUser() != null) {
                     DependencyManager.getInternalStorageSystem().getCurrentUser().setHighScore(nbPoints[2]);
                     LoggedInUser.getInstance().setHighScore(nbPoints[2]);
                 }

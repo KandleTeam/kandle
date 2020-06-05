@@ -4,8 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".activity.PostActivity"
-    >
+    tools:context=".activity.PostActivity">
 
     <RelativeLayout
         android:id="@+id/backBar"
@@ -20,8 +19,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
-            android:background="@drawable/ic_arrow_back_white_24dp"
-            android:layout_marginStart="10dp"/>
+            android:layout_marginStart="10dp"
+            android:background="@drawable/ic_arrow_back_white_24dp" />
 
         <TextView
             android:id="@+id/postPageTitle"
@@ -43,18 +42,16 @@
     </RelativeLayout>
 
 
-
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/backBar"
-        android:layout_above="@+id/optionMenu">
+        android:layout_above="@+id/optionMenu"
+        android:layout_below="@id/backBar">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
-            >
+            android:orientation="vertical">
 
 
             <LinearLayout
@@ -63,19 +60,19 @@
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
                 android:visibility="gone">
+
                 <DatePicker
                     android:id="@+id/dateSelector"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:datePickerMode="spinner"
-                    android:calendarViewShown="false"/>
+                    android:calendarViewShown="false"
+                    android:datePickerMode="spinner" />
 
                 <TimePicker
                     android:id="@+id/timeSelector"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:timePickerMode="spinner"
-                    />
+                    android:timePickerMode="spinner" />
             </LinearLayout>
 
 
@@ -100,15 +97,15 @@
                     android:layout_height="wrap_content"
                     android:layout_margin="10dp"
                     android:contentDescription="Posted image"
-                    android:scaleType="centerInside"/>
+                    android:scaleType="centerInside" />
 
                 <ImageButton
                     android:id="@+id/postImageEdit"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_alignEnd="@+id/postImage"
                     android:layout_alignTop="@+id/postImage"
-                    android:src="@drawable/ic_brush_black_24dp"/>
+                    android:layout_alignEnd="@+id/postImage"
+                    android:src="@drawable/ic_brush_black_24dp" />
             </RelativeLayout>
 
         </LinearLayout>
@@ -119,22 +116,21 @@
         android:id="@+id/optionMenu"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        >
+        android:layout_alignParentBottom="true">
 
         <ImageButton
             android:id="@+id/galleryButton"
-            android:layout_centerVertical="true"
             android:layout_width="48dp"
             android:layout_height="48dp"
+            android:layout_centerVertical="true"
             android:contentDescription="Gallery icon"
             app:srcCompat="@drawable/ic_menu_gallery" />
 
         <ImageButton
             android:id="@+id/cameraButton"
-            android:layout_centerVertical="true"
             android:layout_width="48dp"
             android:layout_height="48dp"
+            android:layout_centerVertical="true"
             android:layout_toEndOf="@+id/galleryButton"
             android:contentDescription="Camera icon"
             app:srcCompat="@drawable/ic_menu_camera" />
@@ -151,7 +147,6 @@
             app:srcCompat="@drawable/ic_people_outline_black_24dp" />
 
 
-
         <RelativeLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -163,9 +158,9 @@
                 android:layout_width="48dp"
                 android:layout_height="48dp"
                 android:layout_margin="5dp"
+                android:background="@drawable/add_background"
                 android:clickable="false"
-                android:src="@drawable/ic_whatshot_24dp"
-                android:background="@drawable/add_background"/>
+                android:src="@drawable/ic_whatshot_24dp" />
 
             <ImageButton
                 android:id="@+id/selectEventButton"
@@ -173,8 +168,8 @@
                 android:layout_height="48dp"
                 android:layout_margin="5dp"
                 android:layout_toEndOf="@+id/selectMessageButton"
-                android:src="@drawable/ic_event_black_24dp"
-                android:background="@drawable/add_background_grey"/>
+                android:background="@drawable/add_background_grey"
+                android:src="@drawable/ic_event_black_24dp" />
 
         </RelativeLayout>
 

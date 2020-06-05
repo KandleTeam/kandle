@@ -1,5 +1,12 @@
 package ch.epfl.sdp.kandle;
 
+import androidx.room.Room;
+import androidx.test.rule.ActivityTestRule;
+import androidx.test.rule.GrantPermissionRule;
+import androidx.test.uiautomator.By;
+import androidx.test.uiautomator.UiDevice;
+import androidx.test.uiautomator.Until;
+
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Rule;
@@ -7,24 +14,18 @@ import org.junit.Test;
 
 import java.util.HashMap;
 
-import androidx.room.Room;
-import androidx.test.rule.ActivityTestRule;
-import androidx.test.rule.GrantPermissionRule;
-import androidx.test.uiautomator.By;
-import androidx.test.uiautomator.UiDevice;
-import androidx.test.uiautomator.Until;
 import ch.epfl.sdp.kandle.activity.MainActivity;
 import ch.epfl.sdp.kandle.dependencies.DependencyManager;
 import ch.epfl.sdp.kandle.dependencies.MockAuthentication;
 import ch.epfl.sdp.kandle.dependencies.MockDatabase;
+import ch.epfl.sdp.kandle.dependencies.MockImageStorage;
 import ch.epfl.sdp.kandle.dependencies.MockInternalStorage;
 import ch.epfl.sdp.kandle.dependencies.MockNetwork;
-import ch.epfl.sdp.kandle.dependencies.MockImageStorage;
+import ch.epfl.sdp.kandle.entities.post.Post;
 import ch.epfl.sdp.kandle.entities.user.LoggedInUser;
 import ch.epfl.sdp.kandle.entities.user.User;
 import ch.epfl.sdp.kandle.fragment.LandmarkFragment;
 import ch.epfl.sdp.kandle.fragment.MapViewFragment;
-import ch.epfl.sdp.kandle.entities.post.Post;
 import ch.epfl.sdp.kandle.storage.room.LocalDatabase;
 
 import static androidx.test.espresso.Espresso.onView;
@@ -80,7 +81,6 @@ public class LandmarkFragmentTest {
         onView(withId(R.id.landmarkFragmentPostsList)).check(new RecyclerViewItemCountAssertion(5));
 
     }
-
 
 
 }

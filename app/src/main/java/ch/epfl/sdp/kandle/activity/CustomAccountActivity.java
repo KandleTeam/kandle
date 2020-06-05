@@ -14,8 +14,8 @@ import com.google.android.gms.tasks.Task;
 
 import ch.epfl.sdp.kandle.R;
 import ch.epfl.sdp.kandle.storage.Database;
-import ch.epfl.sdp.kandle.utils.imagePicker.ProfilePicPicker;
 import ch.epfl.sdp.kandle.storage.caching.CachedFirestoreDatabase;
+import ch.epfl.sdp.kandle.utils.imagePicker.ProfilePicPicker;
 
 //TODO: handle case when user leaves activity before saving
 
