@@ -21,14 +21,12 @@ import ch.epfl.sdp.kandle.activity.MainActivity;
 import ch.epfl.sdp.kandle.dependencies.DependencyManager;
 import ch.epfl.sdp.kandle.dependencies.MockAuthentication;
 import ch.epfl.sdp.kandle.dependencies.MockDatabase;
+import ch.epfl.sdp.kandle.dependencies.MockImageStorage;
 import ch.epfl.sdp.kandle.dependencies.MockInternalStorage;
 import ch.epfl.sdp.kandle.dependencies.MockNetwork;
-import ch.epfl.sdp.kandle.dependencies.MockImageStorage;
+import ch.epfl.sdp.kandle.entities.post.Post;
 import ch.epfl.sdp.kandle.entities.user.LoggedInUser;
 import ch.epfl.sdp.kandle.entities.user.User;
-import ch.epfl.sdp.kandle.fragment.LandmarkFragment;
-import ch.epfl.sdp.kandle.fragment.MapViewFragment;
-import ch.epfl.sdp.kandle.entities.post.Post;
 import ch.epfl.sdp.kandle.storage.room.LocalDatabase;
 
 import static androidx.test.espresso.Espresso.onView;
@@ -84,7 +82,6 @@ public class LandmarkFragmentTest {
         onView(withId(R.id.landmarkFragmentPostsList)).check(new RecyclerViewItemCountAssertion(5));
 
     }
-
 
 
 }

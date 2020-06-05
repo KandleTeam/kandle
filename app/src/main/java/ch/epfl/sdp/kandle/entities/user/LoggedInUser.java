@@ -1,8 +1,6 @@
 package ch.epfl.sdp.kandle.entities.user;
 
 
-import ch.epfl.sdp.kandle.entities.user.User;
-
 public final class LoggedInUser {
 
     private static final User GUEST = new User("guest", "guest", "guestEmail", "Guest", null);

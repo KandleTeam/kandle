@@ -14,31 +14,29 @@ import java.util.List;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import ch.epfl.sdp.kandle.R;
 import ch.epfl.sdp.kandle.entities.post.Post;
 import ch.epfl.sdp.kandle.entities.post.PostAdapter;
-import ch.epfl.sdp.kandle.R;
 
 
 public class LandmarkFragment extends Fragment {
 
 
+    public final static int LANDMARK_IMAGE = 31;
     private String title;
     private String imageUri;
     private List<Post> posts;
     private PostAdapter postAdapter;
-
     private TextView titleView;
     private RecyclerView postsListView;
     private ImageView imageLandmark;
 
-    public final static int LANDMARK_IMAGE = 31;
-
-    public LandmarkFragment( String title, String imageUri, List<Post> posts) {
+    public LandmarkFragment(String title, String imageUri, List<Post> posts) {
         this.title = title;
         this.imageUri = imageUri;
-        if (posts.size()>5) {
+        if (posts.size() > 5) {
             this.posts = posts.subList(0, 5);
-        }else {
+        } else {
             this.posts = posts;
         }
     }
@@ -59,7 +57,7 @@ public class LandmarkFragment extends Fragment {
 
         titleView.setText(title);
 
-        if (imageUri!= null) {
+        if (imageUri != null) {
             imageLandmark.setTag(LANDMARK_IMAGE);
             Picasso.get().load(imageUri).into(imageLandmark);
         }

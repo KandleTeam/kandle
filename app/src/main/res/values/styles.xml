@@ -19,7 +19,7 @@
 
 
     <style name="AppTheme.PopUpTheme">
-        <item name= "android:windowCloseOnTouchOutside">true</item>
+        <item name="android:windowCloseOnTouchOutside">true</item>
         <item name="android:windowIsTranslucent">true</item>
     </style>
 

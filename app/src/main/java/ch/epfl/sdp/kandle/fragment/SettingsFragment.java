@@ -13,12 +13,11 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.fragment.app.Fragment;
-
-import ch.epfl.sdp.kandle.entities.user.LoggedInUser;
 import ch.epfl.sdp.kandle.R;
 import ch.epfl.sdp.kandle.activity.LoginActivity;
 import ch.epfl.sdp.kandle.authentication.Authentication;
 import ch.epfl.sdp.kandle.dependencies.DependencyManager;
+import ch.epfl.sdp.kandle.entities.user.LoggedInUser;
 
 public class SettingsFragment extends Fragment {
 
@@ -104,7 +103,6 @@ public class SettingsFragment extends Fragment {
         });
 
 
-
         return view;
     }
 
@@ -132,7 +130,6 @@ public class SettingsFragment extends Fragment {
             iv.setImageDrawable(getResources().getDrawable(R.drawable.ic_expand_more_black_24dp));
         }
     }
-
 
 
 }

@@ -1,18 +1,17 @@
 package ch.epfl.sdp.kandle.entities.post;
 
-import androidx.annotation.NonNull;
-import androidx.room.ColumnInfo;
-import androidx.room.Entity;
-import androidx.room.Ignore;
-import androidx.room.PrimaryKey;
-import androidx.room.TypeConverters;
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
+import androidx.annotation.NonNull;
+import androidx.room.ColumnInfo;
+import androidx.room.Entity;
+import androidx.room.Ignore;
+import androidx.room.PrimaryKey;
+import androidx.room.TypeConverters;
 import ch.epfl.sdp.kandle.storage.room.Converters;
 
 import static ch.epfl.sdp.kandle.storage.room.PostDao.POSTS_TABLE_NAME;
@@ -204,9 +203,13 @@ public class Post {
         this.latitude = latitude;
     }
 
-    public String getType() { return type; }
+    public String getType() {
+        return type;
+    }
 
-    public void setType(String type) { this.type = type; }
+    public void setType(String type) {
+        this.type = type;
+    }
 
     public boolean isEditable() {
         return ((new Date().getTime() - this.getDate().getTime()) / MILLISECONDS_PER_MINUTE) < EDITABLE_TIME;
@@ -225,11 +228,11 @@ public class Post {
         return otherPost.getPostId().equals(getPostId());
     }
 
-    public String getIsForCloseFollowers(){
+    public String getIsForCloseFollowers() {
         return this.isForCloseFollowers;
     }
 
-    public void setIsForCloseFollowers(String isForCloseFollowers){
+    public void setIsForCloseFollowers(String isForCloseFollowers) {
         this.isForCloseFollowers = isForCloseFollowers;
     }
 }

@@ -11,7 +11,7 @@ import static junit.framework.TestCase.assertEquals;
 public class RecyclerViewItemCountAssertion implements ViewAssertion {
     private final int expectedCount;
 
-    RecyclerViewItemCountAssertion(int expectedCount) {
+    public RecyclerViewItemCountAssertion(int expectedCount) {
         this.expectedCount = expectedCount;
     }
 

@@ -3,16 +3,6 @@ package ch.epfl.sdp.kandle.fragment;
 import android.view.Gravity;
 import android.view.View;
 
-import androidx.room.Room;
-import androidx.test.espresso.UiController;
-import androidx.test.espresso.ViewAction;
-import androidx.test.espresso.contrib.DrawerActions;
-import androidx.test.espresso.contrib.NavigationViewActions;
-import androidx.test.espresso.contrib.RecyclerViewActions;
-import androidx.test.espresso.matcher.ViewMatchers;
-import androidx.test.rule.ActivityTestRule;
-import androidx.test.rule.GrantPermissionRule;
-
 import org.hamcrest.Matcher;
 import org.junit.After;
 import org.junit.Before;
@@ -22,6 +12,15 @@ import org.junit.Test;
 import java.util.HashMap;
 import java.util.LinkedList;
 
+import androidx.room.Room;
+import androidx.test.espresso.UiController;
+import androidx.test.espresso.ViewAction;
+import androidx.test.espresso.contrib.DrawerActions;
+import androidx.test.espresso.contrib.NavigationViewActions;
+import androidx.test.espresso.contrib.RecyclerViewActions;
+import androidx.test.espresso.matcher.ViewMatchers;
+import androidx.test.rule.ActivityTestRule;
+import androidx.test.rule.GrantPermissionRule;
 import ch.epfl.sdp.kandle.Kandle;
 import ch.epfl.sdp.kandle.R;
 import ch.epfl.sdp.kandle.activity.MainActivity;
@@ -46,8 +45,8 @@ import static androidx.test.espresso.contrib.DrawerMatchers.isClosed;
 import static androidx.test.espresso.matcher.ViewMatchers.hasDescendant;
 import static androidx.test.espresso.matcher.ViewMatchers.withId;
 import static androidx.test.espresso.matcher.ViewMatchers.withText;
-import static ch.epfl.sdp.kandle.fragment.ProfileFragmentTest.atPosition;
 import static ch.epfl.sdp.kandle.dependencies.DependencyManager.getDatabaseSystem;
+import static ch.epfl.sdp.kandle.fragment.ProfileFragmentTest.atPosition;
 
 public class SearchFragmentTest {
 

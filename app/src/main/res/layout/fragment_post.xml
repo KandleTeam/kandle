@@ -6,34 +6,6 @@
     android:layout_height="match_parent"
     tools:context=".fragment.PostFragment">
 
-    <de.hdodenhof.circleimageview.CircleImageView
-        android:id="@+id/postFragmentProfilePicture"
-        android:layout_width="104dp"
-        android:layout_height="98dp"
-        android:src="@mipmap/ic_launcher"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.214"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.06" />
-
-    <TextView
-        android:id="@+id/postFragmentUsername"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="568dp"
-        android:text="TextView"
-        android:textAlignment="center"
-        android:textSize="24sp"
-        android:textStyle="bold"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.212"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/postFragmentProfilePicture"
-        app:layout_constraintVertical_bias="0.0" />
-
     <Button
         android:id="@+id/postFragmentFollowButton"
         android:layout_width="88dp"
@@ -48,7 +20,6 @@
         app:layout_constraintStart_toEndOf="@+id/postFragmentProfilePicture"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.055" />
-
 
     <ImageButton
         android:id="@+id/postFragmentLikeButton"
@@ -78,6 +49,52 @@
         app:layout_constraintHorizontal_bias="0.556"
         app:layout_constraintStart_toStartOf="@+id/postFragmentNumberOfLikes"
         app:srcCompat="@drawable/ic_people_outline_black_24dp" />
+
+
+    <ImageView
+        android:id="@+id/postFragmentPostImage"
+        android:layout_width="250dp"
+        android:layout_height="250dp"
+        android:layout_centerHorizontal="true"
+        android:layout_marginVertical="20dp"
+        android:layout_marginTop="451dp"
+        android:adjustViewBounds="true"
+        android:contentDescription="Posted image"
+        android:cropToPadding="true"
+        android:scaleType="centerCrop"
+        android:visibility="gone"
+        app:layout_constraintBottom_toTopOf="@+id/postFragmentLikeButton"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/postFragmentDescription" />
+
+    <ImageView
+        android:id="@+id/postFragmentDistanceImage"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/ic_place_red_50dp"
+        app:layout_constraintBottom_toTopOf="@+id/postDateTime"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.481"
+        app:layout_constraintStart_toEndOf="@+id/postFragmentProfilePicture"
+        app:layout_constraintTop_toBottomOf="@+id/postFragmentFollowButton"
+        app:layout_constraintVertical_bias="0.663" />
+
+    <TextView
+        android:id="@+id/postFragmentUsername"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="568dp"
+        android:text="TextView"
+        android:textAlignment="center"
+        android:textSize="24sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.212"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/postFragmentProfilePicture"
+        app:layout_constraintVertical_bias="0.0" />
 
     <TextView
         android:id="@+id/postFragmentNumberOfLikes"
@@ -123,35 +140,6 @@
         app:layout_constraintTop_toBottomOf="@+id/postDateTime"
         app:layout_constraintVertical_bias="0.029" />
 
-    <ImageView
-        android:id="@+id/postFragmentPostImage"
-        android:layout_width="250dp"
-        android:layout_height="250dp"
-        android:layout_centerHorizontal="true"
-        android:layout_marginVertical="20dp"
-        android:layout_marginTop="451dp"
-        android:adjustViewBounds="true"
-        android:contentDescription="Posted image"
-        android:cropToPadding="true"
-        android:scaleType="centerCrop"
-        android:visibility="gone"
-        app:layout_constraintBottom_toTopOf="@+id/postFragmentLikeButton"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/postFragmentDescription" />
-
-    <ImageView
-        android:id="@+id/postFragmentDistanceImage"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:src="@drawable/ic_place_red_50dp"
-        app:layout_constraintBottom_toTopOf="@+id/postDateTime"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.481"
-        app:layout_constraintStart_toEndOf="@+id/postFragmentProfilePicture"
-        app:layout_constraintTop_toBottomOf="@+id/postFragmentFollowButton"
-        app:layout_constraintVertical_bias="0.663" />
-
     <TextView
         android:id="@+id/postFragmentDistanceText"
         android:layout_width="wrap_content"
@@ -166,6 +154,18 @@
         app:layout_constraintStart_toEndOf="@+id/postFragmentDistanceImage"
         app:layout_constraintTop_toBottomOf="@+id/postFragmentFollowButton"
         app:layout_constraintVertical_bias="0.619" />
+
+    <de.hdodenhof.circleimageview.CircleImageView
+        android:id="@+id/postFragmentProfilePicture"
+        android:layout_width="104dp"
+        android:layout_height="98dp"
+        android:src="@mipmap/ic_launcher"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.214"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.06" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

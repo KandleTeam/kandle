@@ -7,6 +7,17 @@ import android.net.Uri;
 import android.view.Gravity;
 import android.view.View;
 
+import org.hamcrest.Matcher;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Rule;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.room.Room;
 import androidx.test.espresso.Espresso;
@@ -22,18 +33,6 @@ import androidx.test.espresso.intent.rule.IntentsTestRule;
 import androidx.test.espresso.matcher.ViewMatchers;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 import androidx.test.rule.GrantPermissionRule;
-
-import org.hamcrest.Matcher;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-
 import ch.epfl.sdp.kandle.Kandle;
 import ch.epfl.sdp.kandle.R;
 import ch.epfl.sdp.kandle.RecyclerViewMatcher;

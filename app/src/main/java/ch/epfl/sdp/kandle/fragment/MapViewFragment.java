@@ -12,6 +12,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.Toast;
+
 import com.google.maps.android.SphericalUtil;
 import com.mapbox.android.core.location.LocationEngine;
 import com.mapbox.android.core.location.LocationEngineCallback;
@@ -36,8 +37,10 @@ import com.mapbox.mapboxsdk.maps.MapboxMap;
 import com.mapbox.mapboxsdk.maps.OnMapReadyCallback;
 import com.mapbox.mapboxsdk.maps.Style;
 import com.mapbox.mapboxsdk.utils.BitmapUtils;
+
 import java.util.Date;
 import java.util.List;
+
 import androidx.annotation.NonNull;
 import androidx.core.content.res.ResourcesCompat;
 import androidx.fragment.app.Fragment;
@@ -49,7 +52,6 @@ import ch.epfl.sdp.kandle.activity.PostActivity;
 import ch.epfl.sdp.kandle.dependencies.DependencyManager;
 import ch.epfl.sdp.kandle.entities.post.Post;
 import ch.epfl.sdp.kandle.entities.user.LoggedInUser;
-import ch.epfl.sdp.kandle.entities.user.User;
 import ch.epfl.sdp.kandle.storage.Database;
 import ch.epfl.sdp.kandle.storage.caching.CachedFirestoreDatabase;
 
@@ -59,7 +61,7 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback, Per
     private static final long DEFAULT_MAX_WAIT_TIME = DEFAULT_INTERVAL_IN_MILLISECONDS * 5;
 
     private static final int RADIUS = 2000;
-    private static final int RADIUS_LANDMARK = RADIUS/2;
+    private static final int RADIUS_LANDMARK = RADIUS / 2;
     private static final int FETCH_NEW_POSTS_DISTANCE = 50;
 
     private static final int SMALL_POSTS_LIKES = 5;
@@ -91,7 +93,7 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback, Per
             public void onSuccess(LocationEngineResult result) {
                 if (result.getLastLocation() != null) {
                     currentLocation = result.getLastLocation();
-                    if(computeDistance(currentLocation.getLatitude(),currentLocation.getLongitude(),lastPostsFetchLocation.getLatitude(),lastPostsFetchLocation.getLongitude()) > FETCH_NEW_POSTS_DISTANCE) {
+                    if (computeDistance(currentLocation.getLatitude(), currentLocation.getLongitude(), lastPostsFetchLocation.getLatitude(), lastPostsFetchLocation.getLongitude()) > FETCH_NEW_POSTS_DISTANCE) {
                         lastPostsFetchLocation = currentLocation;
                         populateWithMarkers();
                     }
@@ -199,7 +201,7 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback, Per
                     }
                 }
             }
-                });
+        });
 
 
         mapboxMap.setOnMarkerClickListener(marker -> {

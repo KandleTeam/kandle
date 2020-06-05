@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
     tools:context=".fragment.SettingsFragment">
 
@@ -11,36 +11,34 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
-        >
+        android:orientation="vertical">
 
         <LinearLayout
             android:id="@+id/modifyPassword"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:weightSum="1"
-            android:orientation="horizontal"
             android:clickable="true"
-            >
+            android:orientation="horizontal"
+            android:weightSum="1">
+
+            <ImageView
+                android:id="@+id/expandPassword"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:layout_weight="0.1"
+                app:srcCompat="@drawable/ic_expand_more_black_24dp" />
+
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginHorizontal="20dp"
                 android:layout_marginVertical="20dp"
 
-                android:text="Modify Password"
-                android:textStyle="bold"
-                android:textSize="20sp"
                 android:layout_weight="0.9"
-                />
-            <ImageView
-                android:id="@+id/expandPassword"
-                android:layout_gravity="center_vertical"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="0.1"
-                app:srcCompat="@drawable/ic_expand_more_black_24dp"
-                />
+                android:text="Modify Password"
+                android:textSize="20sp"
+                android:textStyle="bold" />
 
 
         </LinearLayout>
@@ -52,23 +50,22 @@
             android:orientation="vertical"
             android:visibility="gone">
 
-            <EditText
-                android:id="@+id/oldPassword"
-                android:layout_width="341dp"
-                android:layout_height="38dp"
-                android:layout_marginStart="20dp"
+            <Button
+                android:id="@+id/validatePasswordButton"
+                android:layout_width="80dp"
+                android:layout_height="45dp"
+                android:layout_gravity="center_horizontal"
                 android:layout_marginVertical="5dp"
-                android:backgroundTint="@color/backGroundRed"
-                android:ems="10"
-                android:hint="Former Password"
-                android:inputType="textPassword" />
+                android:background="@drawable/button_background"
+                android:text="save"
+                android:textStyle="bold" />
 
             <EditText
                 android:id="@+id/newPassword"
                 android:layout_width="341dp"
                 android:layout_height="38dp"
-                android:layout_marginStart="20dp"
                 android:layout_marginVertical="5dp"
+                android:layout_marginStart="20dp"
                 android:backgroundTint="@color/backGroundRed"
                 android:ems="10"
                 android:hint="New Password"
@@ -78,67 +75,59 @@
                 android:id="@+id/newPasswordConfirm"
                 android:layout_width="341dp"
                 android:layout_height="38dp"
-                android:layout_marginStart="20dp"
                 android:layout_marginVertical="5dp"
+                android:layout_marginStart="20dp"
                 android:backgroundTint="@color/backGroundRed"
                 android:ems="10"
                 android:hint="Confirm your new password"
                 android:inputType="textPassword" />
 
-            <Button
-                android:id="@+id/validatePasswordButton"
-                android:layout_width="80dp"
-                android:layout_height="45dp"
+            <EditText
+                android:id="@+id/oldPassword"
+                android:layout_width="341dp"
+                android:layout_height="38dp"
                 android:layout_marginVertical="5dp"
-                android:background="@drawable/button_background"
-                android:text="save"
-                android:textStyle="bold"
-                android:layout_gravity="center_horizontal"/>
+                android:layout_marginStart="20dp"
+                android:backgroundTint="@color/backGroundRed"
+                android:ems="10"
+                android:hint="Former Password"
+                android:inputType="textPassword" />
 
         </LinearLayout>
 
     </LinearLayout>
 
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:background="@android:color/darker_gray"/>
-
-
-
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
-        >
+        android:orientation="vertical">
 
         <LinearLayout
             android:id="@+id/otherSettings"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
             android:clickable="true"
-            android:weightSum="1"
-            >
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginHorizontal="20dp"
-                android:layout_marginVertical="20dp"
+            android:orientation="horizontal"
+            android:weightSum="1">
 
-                android:text="Other Settings"
-                android:textStyle="bold"
-                android:textSize="20sp"
-                android:layout_weight="0.9"
-                />
             <ImageView
                 android:id="@+id/expandOtherSettings"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
                 android:layout_weight="0.1"
-                app:srcCompat="@drawable/ic_expand_more_black_24dp"
-                />
+                app:srcCompat="@drawable/ic_expand_more_black_24dp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="20dp"
+                android:layout_marginVertical="20dp"
+
+                android:layout_weight="0.9"
+                android:text="Other Settings"
+                android:textSize="20sp"
+                android:textStyle="bold" />
 
         </LinearLayout>
 
@@ -146,18 +135,13 @@
             android:id="@+id/otherSettingsContent"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Not available yet"
             android:layout_gravity="center_horizontal"
+            android:text="Not available yet"
             android:textStyle="bold"
-            android:visibility="gone"
-            />
+            android:visibility="gone" />
 
     </LinearLayout>
 
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:background="@android:color/darker_gray"/>
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -172,6 +156,14 @@
             android:orientation="horizontal"
             android:weightSum="1">
 
+            <Button
+                android:id="@+id/deleteAccountButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:layout_weight="0.1"
+                android:text="Delete" />
+
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -182,21 +174,8 @@
                 android:text="Delete Account"
                 android:textSize="20sp"
                 android:textStyle="bold" />
-
-            <Button
-                android:id="@+id/deleteAccountButton"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_vertical"
-                android:layout_weight="0.1"
-                android:text="Delete" />
         </LinearLayout>
     </LinearLayout>
-
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:background="@android:color/darker_gray"/>
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -211,29 +190,45 @@
             android:orientation="horizontal"
             android:weightSum="1">
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginHorizontal="20dp"
+            <Button
+                android:id="@+id/clearCacheButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:layout_weight="0.1"
+                android:text="Clear" />
 
-            android:layout_marginVertical="20dp"
-            android:layout_weight="0.9"
-            android:text="Clear Cache"
-            android:textSize="20sp"
-            android:textStyle="bold" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="20dp"
 
-        <Button
-            android:id="@+id/clearCacheButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_vertical"
-            android:layout_weight="0.1"
-            android:text="Clear" />
+                android:layout_marginVertical="20dp"
+                android:layout_weight="0.9"
+                android:text="Clear Cache"
+                android:textSize="20sp"
+                android:textStyle="bold" />
         </LinearLayout>
     </LinearLayout>
+
     <View
         android:layout_width="match_parent"
         android:layout_height="1dp"
-        android:background="@android:color/darker_gray"/>
+        android:background="@android:color/darker_gray" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@android:color/darker_gray" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@android:color/darker_gray" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@android:color/darker_gray" />
 
 </LinearLayout>

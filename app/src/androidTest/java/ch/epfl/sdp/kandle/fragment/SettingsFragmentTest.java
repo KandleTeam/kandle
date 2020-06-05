@@ -2,14 +2,6 @@ package ch.epfl.sdp.kandle.fragment;
 
 import android.view.Gravity;
 
-import androidx.room.Room;
-import androidx.test.espresso.contrib.DrawerActions;
-import androidx.test.espresso.contrib.NavigationViewActions;
-import androidx.test.espresso.intent.Intents;
-import androidx.test.espresso.matcher.ViewMatchers;
-import androidx.test.rule.ActivityTestRule;
-import androidx.test.rule.GrantPermissionRule;
-
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Rule;
@@ -17,19 +9,26 @@ import org.junit.Test;
 
 import java.util.HashMap;
 
+import androidx.room.Room;
+import androidx.test.espresso.contrib.DrawerActions;
+import androidx.test.espresso.contrib.NavigationViewActions;
+import androidx.test.espresso.intent.Intents;
+import androidx.test.espresso.matcher.ViewMatchers;
+import androidx.test.rule.ActivityTestRule;
+import androidx.test.rule.GrantPermissionRule;
 import ch.epfl.sdp.kandle.Kandle;
 import ch.epfl.sdp.kandle.R;
 import ch.epfl.sdp.kandle.activity.LoginActivity;
-import ch.epfl.sdp.kandle.entities.post.Post;
-import ch.epfl.sdp.kandle.entities.user.User;
-import ch.epfl.sdp.kandle.storage.room.LocalDatabase;
 import ch.epfl.sdp.kandle.activity.MainActivity;
 import ch.epfl.sdp.kandle.dependencies.DependencyManager;
 import ch.epfl.sdp.kandle.dependencies.MockAuthentication;
 import ch.epfl.sdp.kandle.dependencies.MockDatabase;
+import ch.epfl.sdp.kandle.dependencies.MockImageStorage;
 import ch.epfl.sdp.kandle.dependencies.MockInternalStorage;
 import ch.epfl.sdp.kandle.dependencies.MockNetwork;
-import ch.epfl.sdp.kandle.dependencies.MockImageStorage;
+import ch.epfl.sdp.kandle.entities.post.Post;
+import ch.epfl.sdp.kandle.entities.user.User;
+import ch.epfl.sdp.kandle.storage.room.LocalDatabase;
 
 import static androidx.test.espresso.Espresso.onView;
 import static androidx.test.espresso.action.ViewActions.click;
@@ -44,7 +43,8 @@ import static androidx.test.espresso.matcher.ViewMatchers.hasErrorText;
 import static androidx.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static androidx.test.espresso.matcher.ViewMatchers.withId;
 import static androidx.test.espresso.matcher.ViewMatchers.withText;
-import static ch.epfl.sdp.kandle.entities.user.LoggedInUser.*;
+import static ch.epfl.sdp.kandle.entities.user.LoggedInUser.clear;
+import static ch.epfl.sdp.kandle.entities.user.LoggedInUser.init;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.not;
 

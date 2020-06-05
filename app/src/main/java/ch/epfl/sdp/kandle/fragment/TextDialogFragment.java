@@ -18,7 +18,6 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.DialogFragment;
-
 import ch.epfl.sdp.kandle.R;
 
 public class TextDialogFragment extends DialogFragment {
@@ -29,10 +28,6 @@ public class TextDialogFragment extends DialogFragment {
     private InputMethodManager mInputMethodManager;
     private TextEditor mTextEditor;
     private int mColorCode;
-
-    public interface TextEditor {
-        void onDone(String inputText);
-    }
 
     public static TextDialogFragment show(@NonNull AppCompatActivity appCompatActivity, @ColorInt int colorCode) {
         Bundle args = new Bundle();
@@ -85,5 +80,9 @@ public class TextDialogFragment extends DialogFragment {
 
     public void setOnTextEditorListener(TextEditor textEditor) {
         mTextEditor = textEditor;
+    }
+
+    public interface TextEditor {
+        void onDone(String inputText);
     }
 }

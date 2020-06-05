@@ -1,26 +1,43 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:padding="8dp"
-    android:layout_height="wrap_content">
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:padding="8dp">
 
-    <de.hdodenhof.circleimageview.CircleImageView
-        android:layout_width="50dp"
-        android:layout_height="50dp"
-        android:id="@+id/search_image_user"
-        android:src="@mipmap/ic_launcher"/>
+    <Button
+        android:id="@+id/btn_follow"
+        android:layout_width="wrap_content"
+        android:layout_height="30dp"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"
+        android:layout_centerVertical="true"
+        android:background="@drawable/button_background"
+        android:clickable="true"
+        android:textColor="#C1000000" />
+
+    <ImageButton
+        android:id="@+id/userCloseFriends"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:layout_centerVertical="true"
+        android:layout_marginStart="155dp"
+        android:background="@drawable/add_background_grey"
+        android:contentDescription="Is close friend"
+        android:visibility="invisible"
+        app:srcCompat="@drawable/ic_people_outline_black_24dp" />
+
 
     <LinearLayout
-        android:clickable="true"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_toRightOf="@id/search_image_user"
-        android:layout_toEndOf="@id/search_image_user"
-        android:layout_marginLeft="5dp"
         android:layout_centerVertical="true"
-        android:orientation="vertical"
-        android:layout_marginStart="5dp">
+        android:layout_marginStart="5dp"
+        android:layout_marginLeft="5dp"
+        android:layout_toEndOf="@id/search_image_user"
+        android:layout_toRightOf="@id/search_image_user"
+        android:clickable="true"
+        android:orientation="vertical">
 
         <TextView
             android:id="@+id/search_fullName"
@@ -37,31 +54,13 @@
             android:layout_height="wrap_content"
             android:maxLines="1"
             android:text="\@username"
-            android:textColor="#000000"/>
+            android:textColor="#000000" />
 
     </LinearLayout>
 
-
-    <ImageButton
-        android:id="@+id/userCloseFriends"
-        android:visibility="invisible"
-        android:layout_width="48dp"
-        android:layout_height="48dp"
-        android:layout_centerVertical="true"
-        android:layout_marginStart="155dp"
-        android:contentDescription="Is close friend"
-        android:background="@drawable/add_background_grey"
-        app:srcCompat="@drawable/ic_people_outline_black_24dp" />
-
-    <Button
-        android:clickable="true"
-        android:id="@+id/btn_follow"
-        android:layout_width="wrap_content"
-        android:layout_height="30dp"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentRight="true"
-        android:layout_centerVertical="true"
-        android:background="@drawable/button_background"
-        android:textColor="#C1000000"
-        />
+    <de.hdodenhof.circleimageview.CircleImageView
+        android:id="@+id/search_image_user"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:src="@mipmap/ic_launcher" />
 </RelativeLayout>

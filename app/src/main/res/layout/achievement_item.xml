@@ -1,12 +1,39 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="vertical"
     android:layout_marginTop="10dp"
-    android:layout_marginBottom="10dp">
+    android:layout_marginBottom="10dp"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="horizontal"
+        android:paddingTop="0dp">
+
+        <ImageView
+            android:id="@+id/achievement_trophy"
+            android:layout_width="117dp"
+            android:layout_height="49dp"
+            android:layout_weight="0.5"
+            android:src="@drawable/ic_trophy_none" />
+
+        <TextView
+            android:id="@+id/achievement_title"
+            android:layout_width="250dp"
+            android:layout_height="84dp"
+            android:layout_marginStart="25dp"
+            android:paddingBottom="10dp"
+            android:text="@string/place_holder_string"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+
+    </LinearLayout>
 
     <TextView
         android:id="@+id/achievement_description"
@@ -22,39 +49,10 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.789" />
 
-    <LinearLayout
+    <View
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="horizontal"
-        android:paddingTop="0dp">
-
-        <TextView
-            android:id="@+id/achievement_title"
-            android:layout_width="250dp"
-            android:layout_height="84dp"
-            android:layout_marginStart="25dp"
-            android:paddingBottom="10dp"
-            android:text="@string/place_holder_string"
-            android:textSize="18sp"
-            android:textStyle="bold"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
-
-        <ImageView
-            android:id="@+id/achievement_trophy"
-            android:layout_width="117dp"
-            android:layout_height="49dp"
-            android:layout_weight="0.5"
-            android:src="@drawable/ic_trophy_none"
-            />
-
-
-    </LinearLayout>
-
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="2dp"
-            android:background="@color/dark_grey"
-            android:alpha="0.3"/>
+        android:layout_height="2dp"
+        android:alpha="0.3"
+        android:background="@color/dark_grey" />
 
 </LinearLayout>

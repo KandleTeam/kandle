@@ -30,7 +30,7 @@ public class ProfilePicPicker extends ImagePicker {
         try {
             Bitmap bitmap = MediaStore.Images.Media.getBitmap(Kandle.getContext().getContentResolver(), imageUri);
             DependencyManager.getInternalStorageSystem().saveImageToInternalStorage(bitmap, auth.getCurrentUser().getId());
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
 

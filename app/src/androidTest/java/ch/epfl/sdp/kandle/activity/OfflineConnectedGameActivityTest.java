@@ -2,13 +2,6 @@ package ch.epfl.sdp.kandle.activity;
 
 import android.view.Gravity;
 
-import androidx.room.Room;
-import androidx.test.espresso.contrib.DrawerActions;
-import androidx.test.espresso.contrib.NavigationViewActions;
-import androidx.test.espresso.matcher.ViewMatchers;
-import androidx.test.ext.junit.runners.AndroidJUnit4;
-import androidx.test.rule.ActivityTestRule;
-
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Rule;
@@ -17,10 +10,14 @@ import org.junit.runner.RunWith;
 
 import java.util.HashMap;
 
+import androidx.room.Room;
+import androidx.test.espresso.contrib.DrawerActions;
+import androidx.test.espresso.contrib.NavigationViewActions;
+import androidx.test.espresso.matcher.ViewMatchers;
+import androidx.test.ext.junit.runners.AndroidJUnit4;
+import androidx.test.rule.ActivityTestRule;
 import ch.epfl.sdp.kandle.Kandle;
 import ch.epfl.sdp.kandle.R;
-import ch.epfl.sdp.kandle.activity.MainActivity;
-import ch.epfl.sdp.kandle.activity.OfflineGameActivity;
 import ch.epfl.sdp.kandle.dependencies.DependencyManager;
 import ch.epfl.sdp.kandle.dependencies.MockAuthentication;
 import ch.epfl.sdp.kandle.dependencies.MockDatabase;
@@ -47,7 +44,7 @@ public class OfflineConnectedGameActivityTest {
     private MockNetwork network;
     @Rule
     public ActivityTestRule<MainActivity> intentsRule =
-            new ActivityTestRule<MainActivity>(MainActivity.class, true, true){
+            new ActivityTestRule<MainActivity>(MainActivity.class, true, true) {
                 @Override
                 protected void beforeActivityLaunched() {
                     LoggedInUser.init(new User("loggedInUserId", "LoggedInUser", "loggedInUser@kandle.ch", "nickname", "image"));
@@ -82,9 +79,9 @@ public class OfflineConnectedGameActivityTest {
 
 
     @Test
-    public void userPlayAndSetsRecordThenCached(){
+    public void userPlayAndSetsRecordThenCached() {
         onView(withId(R.id.startButton)).perform(click());
-        for(int i=0; i < OfflineGameActivity.MAX_NB_VIRUS; i++){
+        for (int i = 0; i < OfflineGameActivity.MAX_NB_VIRUS; i++) {
             onView(withId(R.id.virusButton)).perform(click());
         }
         onView(withId(R.id.maxScore)).check(matches((withText(is(Integer.toString(OfflineGameActivity.MAX_NB_VIRUS))))));

@@ -3,14 +3,6 @@ package ch.epfl.sdp.kandle.fragment;
 
 import android.location.Location;
 
-import androidx.room.Room;
-import androidx.test.espresso.matcher.ViewMatchers;
-import androidx.test.rule.ActivityTestRule;
-import androidx.test.rule.GrantPermissionRule;
-import androidx.test.uiautomator.By;
-import androidx.test.uiautomator.UiDevice;
-import androidx.test.uiautomator.Until;
-
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Rule;
@@ -21,22 +13,27 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.LinkedList;
 
+import androidx.room.Room;
+import androidx.test.espresso.matcher.ViewMatchers;
+import androidx.test.rule.ActivityTestRule;
+import androidx.test.rule.GrantPermissionRule;
+import androidx.test.uiautomator.By;
+import androidx.test.uiautomator.UiDevice;
+import androidx.test.uiautomator.Until;
 import ch.epfl.sdp.kandle.Kandle;
 import ch.epfl.sdp.kandle.R;
 import ch.epfl.sdp.kandle.RecyclerViewItemCountAssertion;
-import ch.epfl.sdp.kandle.entities.post.Post;
-import ch.epfl.sdp.kandle.entities.user.LoggedInUser;
-import ch.epfl.sdp.kandle.entities.user.User;
-import ch.epfl.sdp.kandle.storage.room.LocalDatabase;
 import ch.epfl.sdp.kandle.activity.MainActivity;
 import ch.epfl.sdp.kandle.dependencies.DependencyManager;
 import ch.epfl.sdp.kandle.dependencies.MockAuthentication;
 import ch.epfl.sdp.kandle.dependencies.MockDatabase;
+import ch.epfl.sdp.kandle.dependencies.MockImageStorage;
 import ch.epfl.sdp.kandle.dependencies.MockInternalStorage;
 import ch.epfl.sdp.kandle.dependencies.MockNetwork;
-import ch.epfl.sdp.kandle.dependencies.MockImageStorage;
-import ch.epfl.sdp.kandle.fragment.MapViewFragment;
-import ch.epfl.sdp.kandle.fragment.PostFragment;
+import ch.epfl.sdp.kandle.entities.post.Post;
+import ch.epfl.sdp.kandle.entities.user.LoggedInUser;
+import ch.epfl.sdp.kandle.entities.user.User;
+import ch.epfl.sdp.kandle.storage.room.LocalDatabase;
 
 import static androidx.test.espresso.Espresso.onView;
 import static androidx.test.espresso.action.ViewActions.click;
@@ -73,10 +70,10 @@ public class MapViewFragmentTest {
                     accounts.put(user3.getEmail(), user3.getId());
                     HashMap<String, User> users = new HashMap<>();
                     HashMap<String, MockDatabase.Follow> followMap = new HashMap<>();
-                    followMap.put(LoggedInUser.getInstance().getId(),new MockDatabase.Follow(new LinkedList<>(),new LinkedList<>()));
-                    followMap.put(user1.getId(),new MockDatabase.Follow(new LinkedList<>(),new LinkedList<>()));
-                    followMap.put(user2.getId(),new MockDatabase.Follow(new LinkedList<>(),new LinkedList<>()));
-                    followMap.put(user3.getId(),new MockDatabase.Follow(new LinkedList<>(),new LinkedList<>()));
+                    followMap.put(LoggedInUser.getInstance().getId(), new MockDatabase.Follow(new LinkedList<>(), new LinkedList<>()));
+                    followMap.put(user1.getId(), new MockDatabase.Follow(new LinkedList<>(), new LinkedList<>()));
+                    followMap.put(user2.getId(), new MockDatabase.Follow(new LinkedList<>(), new LinkedList<>()));
+                    followMap.put(user3.getId(), new MockDatabase.Follow(new LinkedList<>(), new LinkedList<>()));
                     HashMap<String, Post> posts = new HashMap<>();
                     Post closePost = new Post("closePostDesciption", null, new Date(), LoggedInUser.getInstance().getId(), "closePostId");
                     closePost.setLatitude(0.00015);
@@ -84,7 +81,7 @@ public class MapViewFragmentTest {
                     Post farPost = new Post("farPostDesciption", "image", new Date(), "user1Id", "farPostId");
                     farPost.setLatitude(0.0015);
                     farPost.setLongitude(0.0015);
-                    Post closeFollowerPost = new Post("closeFOllowerPost", null,new Date(), "user2Id", "closeFollowerPostId");
+                    Post closeFollowerPost = new Post("closeFOllowerPost", null, new Date(), "user2Id", "closeFollowerPostId");
                     closeFollowerPost.setIsForCloseFollowers(Post.CLOSE_FOLLOWER);
                     closeFollowerPost.setLatitude(0.00015);
                     closeFollowerPost.setLongitude(0.00015);

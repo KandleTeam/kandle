@@ -13,10 +13,10 @@ import com.google.firebase.iid.FirebaseInstanceId;
 import java.util.HashMap;
 import java.util.Map;
 
+import ch.epfl.sdp.kandle.dependencies.DependencyManager;
 import ch.epfl.sdp.kandle.entities.user.LoggedInUser;
 import ch.epfl.sdp.kandle.entities.user.User;
 import ch.epfl.sdp.kandle.storage.Database;
-import ch.epfl.sdp.kandle.dependencies.DependencyManager;
 import ch.epfl.sdp.kandle.storage.caching.CachedFirestoreDatabase;
 
 public class FirebaseAuthentication implements Authentication {
@@ -40,7 +40,7 @@ public class FirebaseAuthentication implements Authentication {
      * @return boolean that indicates if there is a current user logged in or not
      */
     public boolean getCurrentUserAtApplicationStart() {
-        User localUser =DependencyManager.getInternalStorageSystem().getCurrentUser();
+        User localUser = DependencyManager.getInternalStorageSystem().getCurrentUser();
         if (LoggedInUser.getInstance() != null) {
             return true;
         }
@@ -59,7 +59,6 @@ public class FirebaseAuthentication implements Authentication {
         return false;
 
     }
-
 
 
     /**
@@ -120,7 +119,7 @@ public class FirebaseAuthentication implements Authentication {
                     FirebaseInstanceId.getInstance().getInstanceId().addOnSuccessListener(instanceIdResult -> {
                         String token = instanceIdResult.getToken();
                         Map<String, Object> deviceMap = new HashMap<>();
-                        deviceMap.put("deviceId", token );
+                        deviceMap.put("deviceId", token);
                         FirebaseFirestore.getInstance().collection("users").document(userId).set(deviceMap, SetOptions.merge());
                     });
 
@@ -174,7 +173,6 @@ public class FirebaseAuthentication implements Authentication {
         DependencyManager.getLocalDatabase().clearAllTables();
         return FAUTH.getCurrentUser().delete();
     }
-
 
 
 }

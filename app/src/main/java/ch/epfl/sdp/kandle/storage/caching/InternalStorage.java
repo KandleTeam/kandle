@@ -2,10 +2,9 @@ package ch.epfl.sdp.kandle.storage.caching;
 
 import android.graphics.Bitmap;
 
-import androidx.annotation.NonNull;
-
 import java.io.File;
 
+import androidx.annotation.NonNull;
 import ch.epfl.sdp.kandle.entities.user.User;
 
 
@@ -19,9 +18,9 @@ public interface InternalStorage {
 
     void deleteUser();
 
-    void saveImageToInternalStorage(Bitmap imageBitMap,String id);
+    void saveImageToInternalStorage(Bitmap imageBitMap, String id);
 
-    File getImageFileById(String id) ;
+    File getImageFileById(String id);
 
     void deleteAllPictures();
 
