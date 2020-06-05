@@ -328,7 +328,7 @@ public class YourPostsListTest {
         onView(withId(R.id.postText)).perform(replaceText("Salut Salut"));
         onView(withId(R.id.postText)).perform(closeSoftKeyboard());
         onView(withId(R.id.postButton)).perform(click());
-        loadPostView();
+        loadPostView();  
         onView(new RecyclerViewMatcher(R.id.rvPosts)
                 .atPositionOnView(0, R.id.title))
                 .check(matches(withText(is("Salut Salut"))));
