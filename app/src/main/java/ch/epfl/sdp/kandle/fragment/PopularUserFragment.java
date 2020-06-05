@@ -75,6 +75,7 @@ public class PopularUserFragment extends Fragment {
         database.usersList().addOnCompleteListener(task -> {
             if (task.isSuccessful()) {
                 for (User user : task.getResult()) {
+                    System.out.println(user.getUsername());
                     database.userFollowersList(user.getId()).addOnCompleteListener(task1 -> {
                         if (task1.isSuccessful()) {
                             mUsersnbFollowers.put(user, task1.getResult().size());
