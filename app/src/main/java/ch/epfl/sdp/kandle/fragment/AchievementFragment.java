@@ -36,15 +36,14 @@ public class AchievementFragment extends Fragment {
     /**
      * inserts Achievements in the list achievements
      * @param achievements
-     * @param achievementAdapter
      */
-    public static void getAchievements(List<Achievement> achievements, AchievementAdapter achievementAdapter) {
-        createAchievements(achievements, NUMBER_POSTS_ACHIEVEMENTS, SCALE_POSTS_ACHIEVEMENTS, Achievement.Achievement_type.NB_POSTS, achievementAdapter);
-        createAchievements(achievements, NUMBER_FOLLOWING_ACHIEVEMENTS, SCALE_FOLLOWING_ACHIEVEMENTS, Achievement.Achievement_type.FOLLOWING, achievementAdapter);
-        createAchievements(achievements, NUMBER_FOLLOWERS_ACHIEVEMENTS, SCALE_FOLLOWERS_ACHIEVEMENTS, Achievement.Achievement_type.FOLLOWERS, achievementAdapter);
-        createAchievements(achievements, NUMBER_LIKES_POST_ACHIEVEMENTS, SCALE_LIKES_POST_ACHIEVEMENTS, Achievement.Achievement_type.NB_LIKES_POST, achievementAdapter);
-        createAchievements(achievements, NUMBER_LIKES_TOTAL_ACHIEVEMENTS, SCALE_LIKES_TOTAL_ACHIEVEMENTS, Achievement.Achievement_type.NB_LIKES_POSTS_TOTAL, achievementAdapter);
-        createAchievements(achievements, 2, 5, Achievement.Achievement_type.OFFLINE_GAME_POINTS, achievementAdapter);
+    public static void getAchievements(List<Achievement> achievements){
+        createAchievements(achievements, NUMBER_POSTS_ACHIEVEMENTS, SCALE_POSTS_ACHIEVEMENTS, Achievement.Achievement_type.NB_POSTS, null);
+        createAchievements(achievements, NUMBER_FOLLOWING_ACHIEVEMENTS, SCALE_FOLLOWING_ACHIEVEMENTS, Achievement.Achievement_type.FOLLOWING, null);
+        createAchievements(achievements, NUMBER_FOLLOWERS_ACHIEVEMENTS, SCALE_FOLLOWERS_ACHIEVEMENTS, Achievement.Achievement_type.FOLLOWERS, null);
+        createAchievements(achievements, NUMBER_LIKES_POST_ACHIEVEMENTS, SCALE_LIKES_POST_ACHIEVEMENTS, Achievement.Achievement_type.NB_LIKES_POST, null);
+        createAchievements(achievements, NUMBER_LIKES_TOTAL_ACHIEVEMENTS, SCALE_LIKES_TOTAL_ACHIEVEMENTS, Achievement.Achievement_type.NB_LIKES_POSTS_TOTAL, null);
+        createAchievements(achievements, 2, 5, Achievement.Achievement_type.OFFLINE_GAME_POINTS, null);
     }
 
     @Nullable
@@ -52,7 +51,12 @@ public class AchievementFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         List<Achievement> achievements = new ArrayList<>();
         AchievementAdapter achievementAdapter = new AchievementAdapter(achievements);
-        getAchievements(achievements, achievementAdapter);
+        createAchievements(achievements, NUMBER_POSTS_ACHIEVEMENTS, SCALE_POSTS_ACHIEVEMENTS, Achievement.Achievement_type.NB_POSTS, achievementAdapter);
+        createAchievements(achievements, NUMBER_FOLLOWING_ACHIEVEMENTS, SCALE_FOLLOWING_ACHIEVEMENTS, Achievement.Achievement_type.FOLLOWING, achievementAdapter);
+        createAchievements(achievements, NUMBER_FOLLOWERS_ACHIEVEMENTS, SCALE_FOLLOWERS_ACHIEVEMENTS, Achievement.Achievement_type.FOLLOWERS, achievementAdapter);
+        createAchievements(achievements, NUMBER_LIKES_POST_ACHIEVEMENTS, SCALE_LIKES_POST_ACHIEVEMENTS, Achievement.Achievement_type.NB_LIKES_POST, achievementAdapter);
+        createAchievements(achievements, NUMBER_LIKES_TOTAL_ACHIEVEMENTS, SCALE_LIKES_TOTAL_ACHIEVEMENTS, Achievement.Achievement_type.NB_LIKES_POSTS_TOTAL, achievementAdapter);
+        createAchievements(achievements, 2, 5, Achievement.Achievement_type.OFFLINE_GAME_POINTS, achievementAdapter);
         View view = inflater.inflate(R.layout.fragment_achievement, container, false);
         achievementAdapter.changeList(achievements);
         RecyclerView flAchievements = view.findViewById(R.id.flAchievements);
