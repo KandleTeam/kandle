@@ -47,7 +47,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="20dp"
-        android:text="@string/appName"
+        android:text="@string/app_name"
         android:textAlignment="center"
         android:textColor="#090909"
         android:textSize="36sp"
