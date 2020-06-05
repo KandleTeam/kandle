@@ -30,6 +30,7 @@ public class AboutFragment extends Fragment {
                 .addFacebook(getString(R.string.facebook))
                 .addGitHub(getString(R.string.github))
                 .addInstagram(getString(R.string.instagram))
+                .addYoutube("https://www.youtube.com/watch?v=ArbPaEIKSLc")
                 .create();
 
         return aboutPage;
