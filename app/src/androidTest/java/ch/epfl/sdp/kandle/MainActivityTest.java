@@ -15,6 +15,9 @@ import org.junit.Test;
 
 import java.util.HashMap;
 
+import ch.epfl.sdp.kandle.entities.post.Post;
+import ch.epfl.sdp.kandle.entities.user.LoggedInUser;
+import ch.epfl.sdp.kandle.entities.user.User;
 import ch.epfl.sdp.kandle.storage.room.LocalDatabase;
 import ch.epfl.sdp.kandle.activity.MainActivity;
 import ch.epfl.sdp.kandle.activity.PostActivity;
@@ -92,8 +95,6 @@ public class MainActivityTest {
 
     @Test
     public void openMenuNavigateToSettings() {
-
-
         onView(withId(R.id.drawer_layout)).check(matches(isClosed(Gravity.LEFT))).perform(DrawerActions.open());
         onView(withId(R.id.navigation_view)).perform(NavigationViewActions.navigateTo(R.id.settings));
         onView(withId(R.id.toolbar)).check(matches(hasDescendant(withText("Settings"))));
@@ -102,7 +103,6 @@ public class MainActivityTest {
 
     @Test
     public void openMenuNavigateToMap() {
-
         onView(withId(R.id.drawer_layout)).check(matches(isClosed(Gravity.LEFT))).perform(DrawerActions.open());
         onView(withId(R.id.navigation_view)).perform(NavigationViewActions.navigateTo(R.id.map_support));
         onView(withId(R.id.toolbar)).check(matches(hasDescendant(withText("Map"))));
@@ -125,6 +125,13 @@ public class MainActivityTest {
         onView(withId(R.id.navigation_view)).perform(NavigationViewActions.navigateTo(R.id.follow));
         onView(withId(R.id.toolbar)).check(matches(hasDescendant(withText("Follow"))));
 
+    }
+
+    @Test
+    public void openMenuNavigateToEvents() {
+        onView(withId(R.id.drawer_layout)).check(matches(isClosed(Gravity.LEFT))).perform(DrawerActions.open());
+        onView(withId(R.id.navigation_view)).perform(NavigationViewActions.navigateTo(R.id.incoming_events));
+        onView(withId(R.id.toolbar)).check(matches(hasDescendant(withText("Incoming Events"))));
     }
 
     @Test

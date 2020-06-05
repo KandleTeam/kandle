@@ -5,15 +5,15 @@ import com.google.android.gms.tasks.TaskCompletionSource;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
-import ch.epfl.sdp.kandle.LoggedInUser;
-import ch.epfl.sdp.kandle.Post;
-import ch.epfl.sdp.kandle.User;
+import ch.epfl.sdp.kandle.entities.post.Post;
+import ch.epfl.sdp.kandle.entities.user.LoggedInUser;
+import ch.epfl.sdp.kandle.entities.user.User;
+import ch.epfl.sdp.kandle.storage.Database;
 
 /**
  * A mocked database. Upon creation, it contains:
@@ -79,18 +79,8 @@ public class MockDatabase implements Database {
 
         TaskCompletionSource<Void> task = new TaskCompletionSource<>();
 
-       /* if(users.containsKey(user.getId())) {
-            task.setException(new IllegalArgumentException("User with this id already exists"));
-        } else if(findUserByName(user.getUsername()).isPresent()) {
-            task.setException(new IllegalArgumentException("User with this username already exists"));
-        } else {
-
-
-        */
         users.put(user.getId(), user);
         followMap.put(user.getId(), new Follow());
-        //task.setResult(null);
-        //}
         return task.getTask();
     }
 
@@ -103,26 +93,21 @@ public class MockDatabase implements Database {
                 results.add(u);
             }
         }
-/*
-        results.sort(new Comparator<User>() {
-            @Override
-            public int compare(User u1, User u2) {
-                return u1.getUsername().compareTo(u2.getUsername());
-            }
-        });
-
- */
-        Collections.sort(results, new Comparator<User>() {
-            @Override
-            public int compare(User o1, User o2) {
-                return o1.getUsername().compareTo(o2.getUsername());
-            }
-        });
+        Collections.sort(results, (o1, o2) -> o1.getUsername().compareTo(o2.getUsername()));
 
         TaskCompletionSource<List<User>> source = new TaskCompletionSource<>();
         source.setResult(new ArrayList<User>(results.subList(0, Math.min(maxNumber, results.size()))));
         return source.getTask();
 
+    }
+
+    @Override
+    public Task<List<User>> usersList() {
+        List<User> results = new ArrayList<>();
+        results.addAll(users.values());
+        TaskCompletionSource<List<User>> source = new TaskCompletionSource<>();
+        source.setResult(new ArrayList<User>(results.subList(0, results.size())));
+        return source.getTask();
     }
 
     @Override
@@ -145,7 +130,6 @@ public class MockDatabase implements Database {
 
     @Override
     public Task<Void> unFollow(String userUnFollowing, String userUnFollowed) {
-
         Follow follow = followMap.get(userUnFollowing);
         Follow follow2 = followMap.get(userUnFollowed);
 
@@ -154,6 +138,33 @@ public class MockDatabase implements Database {
             follow2.removeFollower(userUnFollowing);
             followMap.put(userUnFollowing, follow);
             followMap.put(userUnFollowed, follow2);
+        }
+        TaskCompletionSource<Void> source = new TaskCompletionSource<>();
+        source.setResult(null);
+        return source.getTask();
+    }
+
+    @Override
+    public Task<Void> setCloseFollower(String userFollowing, String userFollowed) {
+        Follow follow = followMap.get(userFollowing);
+        Follow follow2 = followMap.get(userFollowed);
+            if (!follow2.closeFollowers.contains(userFollowing) && follow.following.contains(userFollowed)) {
+                follow2.addCloseFollowe(userFollowing);
+                followMap.put(userFollowed, follow2);
+        }
+
+        TaskCompletionSource<Void> source = new TaskCompletionSource<>();
+        source.setResult(null);
+        return source.getTask();
+    }
+
+    @Override
+    public Task<Void> unsetCloseFollower(String userFollowing, String userFollowed) {
+        Follow follow2 = followMap.get(userFollowed);
+
+        if (follow2.closeFollowers.contains(userFollowing)) {
+            follow2.removeCLoseFollower(userFollowing);
+            followMap.put(userFollowed, follow2);
         }
         TaskCompletionSource<Void> source = new TaskCompletionSource<>();
         source.setResult(null);
@@ -172,6 +183,13 @@ public class MockDatabase implements Database {
     public Task<List<String>> userIdFollowersList(String userId) {
         TaskCompletionSource<List<String>> source = new TaskCompletionSource<>();
         source.setResult(new ArrayList<String>(followMap.get(userId).followers));
+        return source.getTask();
+    }
+
+    @Override
+    public Task<List<String>> userIdCloseFollowersList(String userId) {
+        TaskCompletionSource<List<String>> source = new TaskCompletionSource<>();
+        source.setResult(new ArrayList<String>(followMap.get(userId).closeFollowers));
         return source.getTask();
     }
 
@@ -196,6 +214,19 @@ public class MockDatabase implements Database {
             followers.add(users.get(id));
         }
         source.setResult(followers);
+        return source.getTask();
+    }
+
+    @Override
+    public Task<List<User>> userCloseFollowersList(String userId) {
+        TaskCompletionSource<List<User>> source = new TaskCompletionSource<>();
+        ArrayList<User> closeFollowers = new ArrayList<>();
+        if(followMap.get(userId) != null) {
+            for (String id : followMap.get(userId).closeFollowers) {
+                closeFollowers.add(users.get(id));
+            }
+        }
+        source.setResult(closeFollowers);
         return source.getTask();
     }
 
@@ -286,15 +317,6 @@ public class MockDatabase implements Database {
 
     }
 
-    /*
-    @Override
-    public Task<List<String>> likers(String postId) {
-        TaskCompletionSource<List<String>> source = new TaskCompletionSource<>();
-        source.setResult(new ArrayList<String>(posts.get(postId).getLikers()));
-        return source.getTask();
-    }
-     */
-
     @Override
     public Task<List<Post>> getPostsByUserId(String userId) {
         List<Post> postsList = new ArrayList<Post>();
@@ -311,12 +333,45 @@ public class MockDatabase implements Database {
     @Override
     public Task<List<Post>> getNearbyPosts(double latitude, double longitude, double distance) {
         TaskCompletionSource<List<Post>> source = new TaskCompletionSource<>();
+        List<String> userSmall = new ArrayList<>();
+        List<String> userMedium = new ArrayList<>();
+        List<String> userLarge = new ArrayList<>();
+
+        userSmall.add("mock0");
+        userMedium.add("mock0");
+        userMedium.add("mock1");
+        userMedium.add("mock2");
+        userMedium.add("mock3");
+        userMedium.add("mock4");
+        userMedium.add("mock6");
+        userLarge.add("mock0");
+        userLarge.add("mock1");
+        userLarge.add("mock2");
+        userLarge.add("mock3");
+        userLarge.add("mock4");
+        userLarge.add("mock5");
+        userLarge.add("mock6");
+        userLarge.add("mock7");
+        userLarge.add("mock8");
+        userLarge.add("mock9");
+        userLarge.add("mock10");
+
+        Post post1=new Post("nearby post 1 ", null, new Date(), "mock user id", 0.0001, 0.0001);
+        post1.setLikers(userSmall);
+
+        Post post2=new Post("nearby post 2 ", null, new Date(), "mock user id", 0.0001, 0.0001);
+        post2.setLikers(userMedium);
+
+        Post post3=new Post("nearby post 3 ", null, new Date(), "mock user id", 0.0001, 0.0001);
+        post3.setLikers(userLarge);
+
         List<Post> posts = new ArrayList<>();
-        posts.add(new Post("nearby post 1 ", null, new Date(), "mock user id", 0.0001, 0.0001));
-        posts.add(new Post("nearby post 2 ", null, new Date(), "mock user id", 0.0001, 0.0001));
-        posts.add(new Post("nearby post 3 ", null, new Date(), "mock user id", 0.0001, 0.0001));
+        posts.add(post1);
+        posts.add(post2);
+        posts.add(post3);
         posts.add(new Post("nearby post 4 ", null, new Date(), "mock user id", 0.0001, 0.0001));
         posts.add(new Post("nearby post 5 ", null, new Date(), "mock user id", 0.0001, 0.0001));
+
         source.setResult(posts);
         return source.getTask();
     }
@@ -334,20 +389,54 @@ public class MockDatabase implements Database {
         return source.getTask();
     }
 
+    @Override
+    public Task<List<Post>> getParticipatingEvents() {
+        TaskCompletionSource<List<Post>> source = new TaskCompletionSource<>();
+        List<Post> events = new ArrayList<>();
+
+        for (Post p : posts.values()) {
+            if (p.getType() != null && p.getType().equals(Post.EVENT)
+                    && p.getLikers().contains(DependencyManager.getAuthSystem().getCurrentUser().getId())) {
+                events.add(p);
+            }
+        }
+        source.setResult(events);
+        return source.getTask();
+    }
+
+    @Override
+    public Task<Void> updateHighScore(int highScore) {
+        TaskCompletionSource<Void> source = new TaskCompletionSource<>();
+        User user = users.get(LoggedInUser.getInstance().getId());
+        user.setHighScore(highScore);
+        source.setResult(null);
+        return source.getTask();
+    }
+
     public static class Follow {
         public List<String> following;
 
         public List<String> followers;
 
+        public List<String> closeFollowers;
+
+
+        public Follow(List<String> following, List<String> followers, List<String> closeFollowers) {
+            this.following = following;
+            this.followers = followers;
+            this.closeFollowers = closeFollowers;
+        }
 
         public Follow(List<String> following, List<String> followers) {
             this.following = following;
             this.followers = followers;
+            this.closeFollowers = new LinkedList<>();
         }
 
         public Follow() {
-            this.followers = new LinkedList<String>();
-            this.following = new LinkedList<String>();
+            this.followers = new LinkedList<>();
+            this.following = new LinkedList<>();
+            this.closeFollowers = new LinkedList<>();
         }
 
         public void addFollowing(String s) {
@@ -365,6 +454,11 @@ public class MockDatabase implements Database {
         public void removeFollower(String s) {
             followers.remove(s);
         }
+
+        public void addCloseFollowe(String s){closeFollowers.add(s);}
+
+        public void removeCLoseFollower(String s){closeFollowers.remove(s);}
+
     }
 
 }

@@ -20,8 +20,11 @@ import ch.epfl.sdp.kandle.dependencies.MockDatabase;
 import ch.epfl.sdp.kandle.dependencies.MockInternalStorage;
 import ch.epfl.sdp.kandle.dependencies.MockNetwork;
 import ch.epfl.sdp.kandle.dependencies.MockImageStorage;
+import ch.epfl.sdp.kandle.entities.user.LoggedInUser;
+import ch.epfl.sdp.kandle.entities.user.User;
 import ch.epfl.sdp.kandle.fragment.LandmarkFragment;
 import ch.epfl.sdp.kandle.fragment.MapViewFragment;
+import ch.epfl.sdp.kandle.entities.post.Post;
 import ch.epfl.sdp.kandle.storage.room.LocalDatabase;
 
 import static androidx.test.espresso.Espresso.onView;
@@ -71,7 +74,7 @@ public class LandmarkFragmentTest {
     public void clickOnLandmark() throws InterruptedException {
         uiDevice.wait(Until.hasObject(By.desc("MAP READY")), 2000);
 
-        ((MapViewFragment) intentsRule.getActivity().getCurrentFragment()).goToEpflLandmarkFragment();
+        ((MapViewFragment) intentsRule.getActivity().getCurrentFragment()).goToEpflLandmarkFragment("EPFL", "image");
 
         onView(withId(R.id.landmarkFragmentImage)).check(matches(withTagValue(is(LandmarkFragment.LANDMARK_IMAGE))));
         onView(withId(R.id.landmarkFragmentPostsList)).check(new RecyclerViewItemCountAssertion(5));

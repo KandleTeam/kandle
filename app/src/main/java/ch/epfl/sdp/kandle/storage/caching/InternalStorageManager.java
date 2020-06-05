@@ -1,26 +1,19 @@
 package ch.epfl.sdp.kandle.storage.caching;
 
 import android.content.Context;
-import android.content.ContextWrapper;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.os.Build;
-import android.os.Environment;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.RequiresApi;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 
 import ch.epfl.sdp.kandle.Kandle;
-import ch.epfl.sdp.kandle.User;
-import ch.epfl.sdp.kandle.dependencies.InternalStorage;
+import ch.epfl.sdp.kandle.entities.user.User;
 
 /**
  * @Author Marc Egli
@@ -52,7 +45,7 @@ public class InternalStorageManager implements InternalStorage {
     private void storeUser(@NonNull User user) {
 
         try {
-            File localUserDirectory = context.getDir(IMAGE_DATA_PATH,Context.MODE_PRIVATE);
+            File localUserDirectory = context.getDir(USER_DATA_PATH,Context.MODE_PRIVATE);
             File localUserPath = new File(localUserDirectory,"localUser");
             FileOutputStream file = new FileOutputStream(localUserPath);
             ObjectOutputStream out = new ObjectOutputStream(file);
@@ -76,7 +69,7 @@ public class InternalStorageManager implements InternalStorage {
 
         User user = null;
         try {
-            File localUserDirectory = context.getDir(IMAGE_DATA_PATH,Context.MODE_PRIVATE);
+            File localUserDirectory = context.getDir(USER_DATA_PATH,Context.MODE_PRIVATE);
             File localUserPath = new File(localUserDirectory,"localUser");
             FileInputStream file = new FileInputStream(localUserPath);
             ObjectInputStream in = new ObjectInputStream(file);
@@ -134,7 +127,7 @@ public class InternalStorageManager implements InternalStorage {
      */
     @Override
     public void deleteUser() {
-        File localUserDirectory = context.getDir(IMAGE_DATA_PATH,Context.MODE_PRIVATE);
+        File localUserDirectory = context.getDir(USER_DATA_PATH,Context.MODE_PRIVATE);
         File localUserPath = new File(localUserDirectory,"localUser");
         localUserPath.delete();
 
@@ -163,11 +156,16 @@ public class InternalStorageManager implements InternalStorage {
 
 
     public File getImageFileById(String id) {
-        File imagePath = null;
         File imageDirectory = context.getDir(IMAGE_DATA_PATH, Context.MODE_PRIVATE);
-        imagePath = new File(imageDirectory, id);
-        System.out.println(new File(String.valueOf(context.getDir(IMAGE_DATA_PATH,Context.MODE_PRIVATE))).listFiles()[0]);
-        return imagePath;
+        File imageFile = new File(imageDirectory, id);
+        return imageFile.length() == 0 ? null : imageFile;
+    }
+
+    public void deleteAllPictures() {
+        File imageDirectory = context.getDir(IMAGE_DATA_PATH,Context.MODE_PRIVATE);
+        for (File file : imageDirectory.listFiles()){
+            file.delete();
+        }
     }
 
 }

@@ -5,6 +5,7 @@ import android.view.Gravity;
 import androidx.room.Room;
 import androidx.test.espresso.contrib.DrawerActions;
 import androidx.test.espresso.contrib.NavigationViewActions;
+import androidx.test.espresso.intent.Intents;
 import androidx.test.rule.ActivityTestRule;
 import androidx.test.rule.GrantPermissionRule;
 
@@ -15,6 +16,9 @@ import org.junit.Test;
 
 import java.util.HashMap;
 
+import ch.epfl.sdp.kandle.activity.LoginActivity;
+import ch.epfl.sdp.kandle.entities.post.Post;
+import ch.epfl.sdp.kandle.entities.user.User;
 import ch.epfl.sdp.kandle.storage.room.LocalDatabase;
 import ch.epfl.sdp.kandle.activity.MainActivity;
 import ch.epfl.sdp.kandle.dependencies.DependencyManager;
@@ -30,11 +34,14 @@ import static androidx.test.espresso.action.ViewActions.closeSoftKeyboard;
 import static androidx.test.espresso.action.ViewActions.typeText;
 import static androidx.test.espresso.assertion.ViewAssertions.matches;
 import static androidx.test.espresso.contrib.DrawerMatchers.isClosed;
+import static androidx.test.espresso.intent.Intents.intended;
+import static androidx.test.espresso.intent.matcher.IntentMatchers.hasComponent;
 import static androidx.test.espresso.matcher.RootMatchers.withDecorView;
 import static androidx.test.espresso.matcher.ViewMatchers.hasErrorText;
 import static androidx.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static androidx.test.espresso.matcher.ViewMatchers.withId;
 import static androidx.test.espresso.matcher.ViewMatchers.withText;
+import static ch.epfl.sdp.kandle.entities.user.LoggedInUser.*;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.not;
 
@@ -49,7 +56,7 @@ public class SettingsFragmentTest {
             ) {
                 @Override
                 protected void beforeActivityLaunched() {
-                    LoggedInUser.init(new User("loggedInUserId", "LoggedInUser", "loggedInUser@kandle.ch", "nickname", "image"));
+                    init(new User("loggedInUserId", "LoggedInUser", "loggedInUser@kandle.ch", "nickname", "image"));
                     HashMap<String, String> accounts = new HashMap<>();
                     HashMap<String, User> users = new HashMap<>();
                     HashMap<String, MockDatabase.Follow> followMap = new HashMap<>();
@@ -69,7 +76,7 @@ public class SettingsFragmentTest {
 
     @After
     public void clearCurrentUserAndLocalDb() {
-        LoggedInUser.clear();
+        clear();
         localDatabase.close();
     }
 
@@ -131,6 +138,22 @@ public class SettingsFragmentTest {
     public void viewsCanBeExpanded() {
         onView(withId(R.id.otherSettings)).perform(click());
         onView(withId(R.id.otherSettings)).perform(click());
+    }
+
+    @Test
+    public void accountDeletion() {
+        Intents.init();
+        onView(withId(R.id.deleteAccountButton)).perform((click()));
+        intended(hasComponent(LoginActivity.class.getName()));
+        Intents.release();
+
+    }
+
+    @Test
+    public void clearCache() {
+        onView(withId(R.id.clearCacheButton)).perform((click()));
+
+
     }
 
 

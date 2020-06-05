@@ -1,6 +1,7 @@
 package ch.epfl.sdp.kandle.fragment;
 
 import android.app.ProgressDialog;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -11,10 +12,12 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 import androidx.fragment.app.Fragment;
-import ch.epfl.sdp.kandle.LoggedInUser;
+
+import ch.epfl.sdp.kandle.entities.user.LoggedInUser;
 import ch.epfl.sdp.kandle.R;
 import ch.epfl.sdp.kandle.dependencies.Authentication;
 import static ch.epfl.sdp.kandle.dependencies.DependencyManager.getAuthSystem;
+import ch.epfl.sdp.kandle.activity.LoginActivity;
 
 public class SettingsFragment extends Fragment {
 
@@ -27,6 +30,8 @@ public class SettingsFragment extends Fragment {
     private TextView mOldPassword, mNewPassword, mNewPasswordConfirm;
     private ImageView mExpandPassword, mExpandOtherSettings;
     private Button mPasswordButton;
+    private Button mDeleteAccount;
+    private Button mClearCache;
 
 
 
@@ -42,6 +47,7 @@ public class SettingsFragment extends Fragment {
         );
         if (LoggedInUser.isGuestMode()) {
             mModifyPasswordLayout.setVisibility(View.GONE);
+            mDeleteAccount.setVisibility(View.GONE);
         }
 
 
@@ -82,6 +88,21 @@ public class SettingsFragment extends Fragment {
             });
         });
 
+
+        mDeleteAccount.setOnClickListener(v -> {
+            auth.deleteUser();
+            startActivity(new Intent(this.getContext().getApplicationContext(), LoginActivity.class));
+            getFragmentManager().popBackStack();
+        });
+
+        mClearCache.setOnClickListener(v -> {
+            DependencyManager.getLocalDatabase().clearAllTables();
+            DependencyManager.getLocalDatabase().userDao().insertUser(LoggedInUser.getInstance());
+            DependencyManager.getInternalStorageSystem().deleteAllPictures();
+        });
+
+
+
         return view;
     }
 
@@ -96,6 +117,8 @@ public class SettingsFragment extends Fragment {
         mNewPasswordConfirm = parent.findViewById(R.id.newPasswordConfirm);
         mExpandPassword = parent.findViewById(R.id.expandPassword);
         mExpandOtherSettings = parent.findViewById(R.id.expandOtherSettings);
+        mDeleteAccount = parent.findViewById(R.id.deleteAccountButton);
+        mClearCache = parent.findViewById(R.id.clearCacheButton);
     }
 
     private void extendOnClick(View view, ImageView iv) {
@@ -107,6 +130,7 @@ public class SettingsFragment extends Fragment {
             iv.setImageDrawable(getResources().getDrawable(R.drawable.ic_expand_more_black_24dp));
         }
     }
+
 
 
 }

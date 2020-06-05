@@ -1,10 +1,13 @@
 package ch.epfl.sdp.kandle;
 
+import android.content.res.Resources;
+
 import org.junit.After;
 import org.junit.Rule;
 import org.junit.Test;
 
 import androidx.room.Room;
+import androidx.test.core.app.ApplicationProvider;
 import androidx.test.espresso.contrib.DrawerActions;
 import androidx.test.espresso.contrib.NavigationViewActions;
 import androidx.test.espresso.intent.rule.IntentsTestRule;
@@ -12,6 +15,9 @@ import androidx.test.espresso.intent.rule.IntentsTestRule;
 import androidx.test.rule.GrantPermissionRule;
 import java.util.HashMap;
 
+import ch.epfl.sdp.kandle.entities.post.Post;
+import ch.epfl.sdp.kandle.entities.user.LoggedInUser;
+import ch.epfl.sdp.kandle.entities.user.User;
 import ch.epfl.sdp.kandle.storage.room.LocalDatabase;
 import ch.epfl.sdp.kandle.activity.CustomAccountActivity;
 import ch.epfl.sdp.kandle.activity.LoginActivity;
@@ -39,6 +45,7 @@ import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.not;
 
 public class RegisterActivityTest {
+    private Resources res = ApplicationProvider.getApplicationContext().getResources();
     private LocalDatabase localDatabase;
     private User userWithSameEmail;
     private User userWithSameUsername;
@@ -82,13 +89,13 @@ public class RegisterActivityTest {
     public void errorsInForm() {
 
         onView(withId(R.id.loginBtn)).perform(click());
-        onView(withId(R.id.username)).check(matches(hasErrorText("Your username is required !")));
+        onView(withId(R.id.username)).check(matches(hasErrorText(res.getString(R.string.registerUsernameRequired))));
 
         onView(withId(R.id.username)).perform(typeText("test"));
         onView(withId(R.id.username)).perform(closeSoftKeyboard());
 
         onView(withId(R.id.loginBtn)).perform(click());
-        onView(withId(R.id.email)).check(matches(hasErrorText("Your email is required !")));
+        onView(withId(R.id.email)).check(matches(hasErrorText(res.getString(R.string.registerEmailRequired))));
 
         onView(withId(R.id.email)).perform(typeText("test@test.com"));
         onView(withId(R.id.email)).perform(closeSoftKeyboard());
@@ -97,7 +104,7 @@ public class RegisterActivityTest {
         onView(withId(R.id.password)).perform(closeSoftKeyboard());
 
         onView(withId(R.id.loginBtn)).perform(click());
-        onView(withId(R.id.password)).check(matches(hasErrorText("Please choose a password of more than 8 characters !")));
+        onView(withId(R.id.password)).check(matches(hasErrorText(res.getString(R.string.registerPasswordLengthError))));
 
         onView(withId(R.id.password)).perform(typeText("12345678"));
         onView(withId(R.id.password)).perform(closeSoftKeyboard());
@@ -105,7 +112,7 @@ public class RegisterActivityTest {
         onView(withId(R.id.passwordConfirm)).perform(closeSoftKeyboard());
 
         onView(withId(R.id.loginBtn)).perform(click());
-        onView(withId(R.id.passwordConfirm)).check(matches(hasErrorText("Your passwords do not match !")));
+        onView(withId(R.id.passwordConfirm)).check(matches(hasErrorText(res.getString(R.string.registerPasswordsMatchingError))));
     }
 
     @Test
@@ -143,7 +150,7 @@ public class RegisterActivityTest {
         onView(withId(R.id.passwordConfirm)).perform(closeSoftKeyboard());
 
         onView(withId(R.id.loginBtn)).perform(click());
-        onView(withId(R.id.username)).check(matches(hasErrorText("This username is already used !")));
+        onView(withId(R.id.username)).check(matches(hasErrorText(res.getString(R.string.registerUsernameAlreadyUsed))));
     }
 
     @Test
@@ -192,7 +199,7 @@ public class RegisterActivityTest {
         onView(withId(R.id.passwordConfirm)).perform(closeSoftKeyboard());
         onView(withId(R.id.loginBtn)).perform(click());
         onView(withId(com.google.android.material.R.id.snackbar_text))
-                .check(matches(withText(R.string.no_connexion)));
+                .check(matches(withText(R.string.noConnexion)));
 
     }
 

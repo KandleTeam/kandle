@@ -6,6 +6,8 @@ import android.location.Location;
 import com.google.android.gms.tasks.Task;
 import com.google.android.gms.tasks.TaskCompletionSource;
 
+import ch.epfl.sdp.kandle.location.MyLocationProvider;
+
 public class MockLocation implements MyLocationProvider {
 
 

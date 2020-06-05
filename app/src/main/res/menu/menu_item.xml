@@ -1,49 +1,59 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
 
-
     <group android:checkableBehavior="single">
         <item
             android:id="@+id/map_support"
             android:checked="true"
             android:icon="@drawable/ic_map_24dp"
-            android:title="Map" />
+            android:title="@string/map_item" />
 
         <item
             android:id="@+id/your_posts"
             android:icon="@drawable/ic_whatshot_24dp"
-            android:title="Your Posts" />
+            android:title="@string/your_posts_item" />
 
         <item
             android:id="@+id/follow"
             android:icon="@drawable/ic_addpost"
-            android:title="Follow" />
+            android:title="@string/follow_item" />
 
         <item
             android:id="@+id/achievements"
             android:icon="@drawable/ic_light"
-            android:title="Your Achievements" />
+            android:title="@string/your_achievements_item" />
 
         <item
             android:id="@+id/following_posts"
             android:icon="@drawable/ic_group_black"
-            android:title="Other Posts" />
+            android:title="@string/other_posts_item" />
 
-        <item android:title="Communication">
+        <item
+            android:id="@+id/incoming_events"
+            android:icon="@drawable/ic_event_black_24dp"
+            android:title="Incoming Events"
+            />
+
+        <item
+            android:id="@+id/popularKandlers"
+            android:icon="@drawable/ic_emoji_events_24px"
+            android:title="@string/popular_kandlers_item" />
+
+        <item android:title="@string/communication_item">
             <menu>
                 <group android:checkableBehavior="single">
                     <item
                         android:id="@+id/settings"
                         android:icon="@drawable/ic_settings_24dp"
-                        android:title="Settings" />
+                        android:title="@string/settings_item" />
                     <item
                         android:id="@+id/about"
                         android:icon="@drawable/ic_about_24dp"
-                        android:title="About us" />
+                        android:title="@string/about_us_item" />
                     <item
                         android:id="@+id/logout"
                         android:icon="@drawable/ic_logout_black_24dp"
-                        android:title="Logout" />
+                        android:title="@string/logout_item" />
                 </group>
             </menu>
         </item>

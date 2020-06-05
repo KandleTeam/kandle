@@ -1,43 +1,61 @@
-<resources xmlns:tools="http://schemas.android.com/tools">
+<resources>
 
     <string name="app_name">Kandle</string>
     <string name="drawer_open">drawerOpen</string>
     <string name="drawer_close">drawerClose</string>
     <string name="title_activity_maps">Map</string>
 
+    <string name="ErrorMessage">An error has occurred</string>
+
     <string name="google_maps_api_key">AIzaSyDFMUOQDRXbnJJbl1QEz0N1MYNcQJ5OlUA</string>
 
+    <!-- Login -->
+    <string name="loginEmailHint">E-mail address</string>
+    <string name="loginPasswordHint">Password</string>
+    <string name="loginBtnText">Log In</string>
+    <string name="loginSignupBtnText">Create an account</string>
+    <string name="loginGuestmodeBtnText">Use in guest mode</string>
+    <string name="appLogoDesc">Kandle logo</string>
+    <string name="loginPasswordRequired">Please enter a password</string>
+    <string name="loginEmailRequired">Please enter an email address</string>
+    <string name="loginSuccess">You are now logged in</string>
+    <string name="loginFailPasswordError">Wrong credentials</string>
+    <string name="loginFailEmailError">Wrong credentials</string>
+    <string name="loginInProgress">Logging in</string>
 
-    <string name="login_email_hint">E-mail address</string>
-    <string name="login_password_hint">Password</string>
-    <string name="login_btn_text">Log In</string>
-    <string name="login_signup_btn_text">Create an account</string>
-    <string name="login_guestmode_btn_text">Use in guest mode</string>
-    <string name="app_logo_desc">Kandle logo</string>
-    <string name="login_password_required">Please enter a password</string>
-    <string name="login_email_required">Please enter an email address</string>
-    <string name="login_success">You are now logged in</string>
-    <string name="login_fail_password_error">Wrong credentials</string>
-    <string name="login_fail_email_error">Wrong credentials</string>
-    <string name="login_in_progress">Logging in</string>
+    <!-- Register -->
+    <string name="registerUsernameAlreadyUsed">This username is already used !</string>
+    <string name="registerAccountBeingCreated">Your account is being created</string>
+    <string name="registerAccountCreated">Your account has been created</string>
+    <string name="registerUsernameRequired">Your username is required !</string>
+    <string name="registerEmailRequired">Your email is required !</string>
+    <string name="registerPasswordLengthError">Please choose a password of more than 8 characters !</string>
+    <string name="registerPasswordsMatchingError">Your passwords do not match !</string>
+    <string name="registerEmailHint">E-mail</string>
+    <string name="registerUsernameHint">username</string>
+    <string name="registerPasswordConfirmationHint">Confirm your password</string>
+    <string name="registerPasswordHint">Password</string>
+    <string name="registerSignUp">Sign Up</string>
+    <string name="registerSignInLink">Already have an account ?</string>
+
+    <!-- Achievements -->
     <string name="achievement">Achievement Completed</string>
     <string name="achievement_nb_posts">You have done 10 posts !!</string>
     <string name="achievement_congratulations">Congratulations</string>
     <string name="achievement_posts">Do 10 posts </string>
     <string name="achievement_following">Follow 3 persons </string>
     <string name="achievement_followers">Have 3 followers </string>
-    <string name="message_hint">What\'s on your mind today ? </string>
-    <string name="event_hint">Enter a description for your event… </string>
     <string name="badge_default">Badge Default</string>
 
+    <string name="confirm_message">Are your sure ? </string>
+    <string name="alert_title">Delete Account</string>
+    <string name="alert_box_confirm">Confirm </string>
+    <string name="alert_box_cancel">Cancel</string>
 
-
-    <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_addPost_fragment">Add a Post</string>
     <string name="hello_search_fragment">Search</string>
     <string name="hello_profile_fragment">Profile</string>
 
-    <!-- TODO: Remove or change this placeholder text -->
     <string name="followBtnNotFollowing">follow</string>
     <string name="followBtnAlreadyFollowing">unfollow</string>
 
@@ -46,15 +64,81 @@
     <string name="switch_cam">Switch Camera</string>
 
     <!-- Exceptions -->
-    <string name="no_connexion">Please check your internet connexion</string>
-    <string name="incomplete_data">The data returned is not complete</string>
+    <string name="noConnexion">Please check your internet connection</string>
+    <string name="incompleteData">The data returned is not complete</string>
 
     <string name="mapbox_access_token">pk.eyJ1IjoiYS1pYm0iLCJhIjoiY2s4cmpoamd6MGEyeTNlbXNyaXZmcXNveiJ9.B5j1E7U4A_Pon-mHaRKrnQ</string>
 
-    <string name="hello_blank_fragment">Hello blank fragment</string>
 
     <!-- Guest mode -->
     <string name="guestModeCannotAccess">You need to be logged in to do that!</string>
+    <string name="your_posts_item">Your Posts</string>
+    <string name="map_item">Map</string>
+    <string name="follow_item">Follow</string>
+    <string name="your_achievements_item">Your Achievements</string>
+    <string name="other_posts_item">Other Posts</string>
+    <string name="popular_kandlers_item">Popular Kandlers</string>
+    <string name="communication_item">Communication</string>
+    <string name="settings_item">Settings</string>
+    <string name="about_us_item">About us</string>
+    <string name="logout_item">Logout</string>
+    <string name="place_holder_string">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed non risus. Suspendisse lectus tortor, dignissim sit amet, adipiscing nec, ultricies sed, dolor. Cras elementum ultrices diam. Maecenas ligula massa, varius a, semper congue, euismod non, mi. Proin porttitor, orci nec nonummy molestie, enim est eleifend mi, non fermentum diam nisl sit amet erat. Duis semper.</string>
+
+    <!-- CustomAccountActivity -->
+    <string name="accountFinalization">Finalizing your account</string>
+    <string name="welcomingCustomAccountMessage">Welcome to Kandle !</string>
+    <string name="customNicknameHint">Your Nickname</string>
+    <string name="customNicknameText">Choose a nickname :</string>
+    <string name="customNicknamePrecision">It can be changed at any time</string>
+    <string name="customProfilePictureText">Choose a profile picture :</string>
+    <string name="customProfilePictureBrowse">Browse</string>
+    <string name="customAccountValidation">Continue to the app</string>
+
+
+    <!-- MainActivity -->
+    <string name="yourProfile">Your Profile</string>
+
+    <!-- PostActivity -->
+    <string name="postPageTitle">Create a post</string>
+    <string name="editPageTitle">Edit your post</string>
+    <string name="postButtonText">POST</string>
+    <string name="editButtonText">EDIT</string>
+    <string name="postMessageHint">What\'s on your mind today ?</string>
+    <string name="emptyPostError">Your post is empty...</string>
+    <string name="uploadImageError">Unable to upload image</string>
+    <string name="postSuccessful">You have successfully posted</string>
+    <string name="postEditSuccessful">You have successfully edited your post</string>
+    <string name="createEventHint">Enter a description for your event… </string>
+
+    <!-- About Fragment -->
+    <string name="appVersion">Version 1.0.0</string>
+    <string name="advertisements">Some advertisements here...</string>
+    <string name="appDescription">Welcome to Kandle ! Share your best pictures and jokes with nearby Kandlers :)</string>
+    <string name="joinUs">Connect with us</string>
+    <string name="website">https://www.google.ch/</string>
+    <string name="email">yanisepfl@gmail.com</string>
+    <string name="github">yanisepfl</string>
+    <string name="facebook">Yanis Berkani</string>
+    <string name="instagram">yanisbrk</string>
+
+    <!-- Post Fragment -->
+    <string name="tooFarToLikePost">You are too far away from the post to like it</string>
+
+    <!-- Offline Game Activity -->
+    <string name="gameDescription">Stay at home and click on the virus to destroy it to limit the spread of the pandemic ! Ready ?</string>
+    <string name="endText">FINISH</string>
+    <string name="scoreText">Score : </string>
+    <string name="recordText">Record : </string>
+    <string name="initialScore">0</string>
+
+    <!-- Permission stuffs -->
+    <string name="locationPermissionDeniedToastMsg">Please enable location to make full use of the app</string>
+    <string name="locationPermissionExplanation">Please enable location to see nearby posts</string>
+    <string name="profileFragmentUploadingDialog">Uploading...</string>
+    <string name="userAdapterHolderDescriptionCloseFriend">Is close friend</string>
+    <string name="userAdapterHolderDescriptionNotCloseFriend">Is not close friend</string>
+    <string name="profileFragmentFollowersListTitle">Followers</string>
+    <string name="profileFragmentFollowingListTitle">Following</string>
 
     <!-- SettingsFragment -->
     <string name="updating_password">Updating password</string>

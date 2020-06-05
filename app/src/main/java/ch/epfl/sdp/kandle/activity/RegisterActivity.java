@@ -8,48 +8,43 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.material.snackbar.Snackbar;
+
+import java.util.Objects;
+
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.coordinatorlayout.widget.CoordinatorLayout;
 import androidx.core.content.ContextCompat;
-
-import com.google.android.material.snackbar.Snackbar;
-
 import ch.epfl.sdp.kandle.R;
-import ch.epfl.sdp.kandle.dependencies.Authentication;
-import ch.epfl.sdp.kandle.dependencies.Database;
 import ch.epfl.sdp.kandle.dependencies.DependencyManager;
+import ch.epfl.sdp.kandle.storage.Database;
 import ch.epfl.sdp.kandle.storage.caching.CachedFirestoreDatabase;
 
 public class RegisterActivity extends AppCompatActivity {
 
 
     private EditText mUsername, mEmail, mPassword, mPasswordConfirm;
-    private Button mSignUpBtn;
-    private TextView mSignInLink;
-    private Authentication auth;
-    private CoordinatorLayout CNetworkBar;
     private Database database;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_register);
 
         mUsername = findViewById(R.id.username);
         mEmail = findViewById(R.id.email);
         mPassword = findViewById(R.id.password);
-
         mPasswordConfirm = findViewById(R.id.passwordConfirm);
-        mSignUpBtn = findViewById(R.id.loginBtn);
-        mSignInLink = findViewById(R.id.signInLink);
+        Button mSignUpBtn = findViewById(R.id.loginBtn);
+        TextView mSignInLink = findViewById(R.id.signInLink);
         database = new CachedFirestoreDatabase();
-        auth = DependencyManager.getAuthSystem();
+
         mSignInLink.setOnClickListener(v -> {
             startActivity(new Intent(getApplicationContext(), LoginActivity.class));
             finish();
         });
-
 
         mSignUpBtn.setOnClickListener(v -> {
             final String username = mUsername.getText().toString();
@@ -60,7 +55,7 @@ public class RegisterActivity extends AppCompatActivity {
                 database.getUserByName(username).addOnCompleteListener(task -> {
                     if (task.isSuccessful()) {
                         if (task.getResult() != null) {
-                            mUsername.setError(("This username is already used !"));
+                            mUsername.setError((getString(R.string.registerUsernameAlreadyUsed)));
                         } else {
                             performRegisterViaFirebase(username, email, password);
                         }
@@ -69,60 +64,61 @@ public class RegisterActivity extends AppCompatActivity {
             }
         });
 
-
     }
 
 
     private void performRegisterViaFirebase(final String username, final String email, String password) {
 
         ProgressDialog pd = new ProgressDialog(RegisterActivity.this);
-        pd.setMessage("Your account is being created");
+        pd.setMessage(getString(R.string.registerAccountBeingCreated));
         pd.show();
-        auth.createUserWithEmailAndPassword(username, email, password).addOnCompleteListener(task -> {
+        DependencyManager.getAuthSystem().createUserWithEmailAndPassword(username, email, password).addOnCompleteListener(task -> {
             if (task.isSuccessful()) {
                 pd.dismiss();
-                Toast.makeText(RegisterActivity.this, "User has been created", Toast.LENGTH_LONG).show();
+                Toast.makeText(RegisterActivity.this, getString(R.string.registerAccountCreated), Toast.LENGTH_LONG).show();
                 startActivity(new Intent(getApplicationContext(), CustomAccountActivity.class));
                 finishAffinity();
             } else {
                 pd.dismiss();
-                System.out.println("Task creation was sucessfull" + task.getException().getMessage());
+                String errorMsg = String.format("%s : %s", getString(R.string.ErrorMessage), Objects.requireNonNull(task.getException()).getMessage());
+                Toast.makeText(RegisterActivity.this, errorMsg, Toast.LENGTH_SHORT).show();
                 task.getException().printStackTrace();
-                Toast.makeText(RegisterActivity.this, "An error has occurred : " + task.getException().getMessage(), Toast.LENGTH_SHORT).show();
             }
         });
-    }
 
+    }
 
     private boolean checkFields(String username, String email, String password, String passwordConfirm) {
 
-        boolean bool = true;
+        boolean isValid = true;
 
         if (username.isEmpty()) {
-            mUsername.setError("Your username is required !");
-            bool = false;
+            mUsername.setError(getString(R.string.registerUsernameRequired));
+            isValid = false;
         }
 
         if (email.isEmpty()) {
-            mEmail.setError("Your email is required !");
-            bool = false;
-        } else if (password.length() < 8) {
-
-            mPassword.setError("Please choose a password of more than 8 characters !");
-            bool = false;
-        } else if (!password.equals(passwordConfirm)) {
-            mPasswordConfirm.setError("Your passwords do not match !");
-            bool = false;
+            mEmail.setError(getString(R.string.registerEmailRequired));
+            isValid = false;
         }
 
-        return bool;
+        if (password.length() < 8) {
+
+            mPassword.setError(getString(R.string.registerPasswordLengthError));
+            isValid = false;
+        } else if (!password.equals(passwordConfirm)) {
+            mPasswordConfirm.setError(getString(R.string.registerPasswordsMatchingError));
+            isValid = false;
+        }
+
+        return isValid;
 
     }
 
     private boolean checkForInternetConnection() {
         if (!DependencyManager.getNetworkStateSystem().isConnected()) {
-            CNetworkBar = findViewById(R.id.connectionBar);
-            Snackbar snackbar = Snackbar.make(CNetworkBar, R.string.no_connexion, Snackbar.LENGTH_SHORT);
+            CoordinatorLayout CNetworkBar = findViewById(R.id.connectionBar);
+            Snackbar snackbar = Snackbar.make(CNetworkBar, R.string.noConnexion, Snackbar.LENGTH_SHORT);
             snackbar.setTextColor(ContextCompat.getColor(this, R.color.white));
             CNetworkBar.setBackgroundColor(ContextCompat.getColor(this, R.color.colorAccent));
             snackbar.show();

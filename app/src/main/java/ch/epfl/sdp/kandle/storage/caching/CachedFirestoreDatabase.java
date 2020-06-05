@@ -9,15 +9,13 @@ import com.google.android.gms.tasks.TaskCompletionSource;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.concurrent.Executor;
 import java.util.concurrent.TimeUnit;
 
-import ch.epfl.sdp.kandle.LoggedInUser;
-import ch.epfl.sdp.kandle.Post;
-import ch.epfl.sdp.kandle.User;
-import ch.epfl.sdp.kandle.dependencies.Database;
+import ch.epfl.sdp.kandle.entities.user.LoggedInUser;
+import ch.epfl.sdp.kandle.entities.post.Post;
+import ch.epfl.sdp.kandle.entities.user.User;
+import ch.epfl.sdp.kandle.storage.Database;
 import ch.epfl.sdp.kandle.dependencies.DependencyManager;
-import ch.epfl.sdp.kandle.dependencies.InternalStorage;
 import ch.epfl.sdp.kandle.exceptions.NoInternetException;
 import ch.epfl.sdp.kandle.storage.firebase.FirestoreDatabase;
 import ch.epfl.sdp.kandle.storage.room.LocalDatabase;
@@ -121,6 +119,11 @@ public class CachedFirestoreDatabase implements Database {
     }
 
     @Override
+    public Task<List<User>> usersList() {
+        return database.usersList();
+    }
+
+    @Override
     public Task<Void> follow(String userFollowing, String userFollowed) {
         return database.follow(userFollowing, userFollowed);
     }
@@ -128,6 +131,16 @@ public class CachedFirestoreDatabase implements Database {
     @Override
     public Task<Void> unFollow(String userUnFollowing, String userUnFollowed) {
         return database.unFollow(userUnFollowing, userUnFollowed);
+    }
+
+    @Override
+    public Task<Void> setCloseFollower(String userFollowing, String userFollowed) {
+        return database.setCloseFollower(userFollowing, userFollowed);
+    }
+
+    @Override
+    public Task<Void> unsetCloseFollower(String userFollowing, String userFollowed) {
+        return database.unsetCloseFollower(userFollowing, userFollowed);
     }
 
     @Override
@@ -141,6 +154,11 @@ public class CachedFirestoreDatabase implements Database {
     }
 
     @Override
+    public Task<List<String>> userIdCloseFollowersList(String userId) {
+        return null;
+    }
+
+    @Override
     public Task<List<User>> userFollowingList(String userId) {
         return database.userFollowingList(userId);
     }
@@ -148,6 +166,11 @@ public class CachedFirestoreDatabase implements Database {
     @Override
     public Task<List<User>> userFollowersList(String userId) {
         return database.userFollowersList(userId);
+    }
+
+    @Override
+    public Task<List<User>> userCloseFollowersList(String userId) {
+        return database.userCloseFollowersList(userId);
     }
 
     @Override
@@ -337,6 +360,20 @@ public class CachedFirestoreDatabase implements Database {
         }
     }
 
+    @Override
+    public Task<List<Post>> getParticipatingEvents() {
+        if (DependencyManager.getNetworkStateSystem().isConnected()) {
+            return database.getParticipatingEvents().addOnCompleteListener( v -> {
+                if (v.isSuccessful()) {
+                    postDao.insertPostList(v.getResult());
+                }
+            });
+        } else {
+            TaskCompletionSource<List<Post>> source = new TaskCompletionSource<>();
+            source.setResult(new ArrayList<>());
+            return source.getTask();
+        }
+    }
 
     //-----------------This part handles the local user-----------------------
     @Override
@@ -371,6 +408,23 @@ public class CachedFirestoreDatabase implements Database {
             });
         } else {
            return NoInternetExpcetionTask();
+        }
+    }
+
+    @Override
+    public Task<Void> updateHighScore(int highScore) {
+        if (DependencyManager.getNetworkStateSystem().isConnected()) {
+            return database.updateHighScore(highScore).addOnCompleteListener(v -> {
+                if (v.isSuccessful()) {
+                    LoggedInUser.getInstance().setHighScore(highScore);
+                    User user = internalStorage.getCurrentUser();
+                    user.setHighScore(highScore);
+                    internalStorage.updateUser(user);
+                    userDao.updateUser(user);
+                }
+            });
+        } else {
+            return NoInternetExpcetionTask();
         }
     }
 

@@ -6,7 +6,7 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
-import ch.epfl.sdp.kandle.dependencies.ImageStorage;
+import ch.epfl.sdp.kandle.storage.ImageStorage;
 
 public class FirebaseImageStorage implements ImageStorage {
 

@@ -20,6 +20,7 @@ import androidx.test.espresso.contrib.NavigationViewActions;
 import androidx.test.espresso.contrib.RecyclerViewActions;
 import androidx.test.espresso.intent.rule.IntentsTestRule;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
+import androidx.test.rule.GrantPermissionRule;
 
 import org.hamcrest.Matcher;
 import org.junit.After;
@@ -28,22 +29,23 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import androidx.test.rule.GrantPermissionRule;
-
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 
-import ch.epfl.sdp.kandle.activity.PostActivity;
-
-import ch.epfl.sdp.kandle.storage.room.LocalDatabase;
 import ch.epfl.sdp.kandle.activity.MainActivity;
+import ch.epfl.sdp.kandle.activity.PostActivity;
 import ch.epfl.sdp.kandle.dependencies.DependencyManager;
 import ch.epfl.sdp.kandle.dependencies.MockAuthentication;
 import ch.epfl.sdp.kandle.dependencies.MockDatabase;
+import ch.epfl.sdp.kandle.dependencies.MockImageStorage;
 import ch.epfl.sdp.kandle.dependencies.MockInternalStorage;
 import ch.epfl.sdp.kandle.dependencies.MockNetwork;
-import ch.epfl.sdp.kandle.dependencies.MockImageStorage;
+import ch.epfl.sdp.kandle.entities.post.Post;
+import ch.epfl.sdp.kandle.entities.post.PostAdapter;
+import ch.epfl.sdp.kandle.entities.user.LoggedInUser;
+import ch.epfl.sdp.kandle.entities.user.User;
+import ch.epfl.sdp.kandle.storage.room.LocalDatabase;
 
 import static androidx.test.espresso.Espresso.onView;
 import static androidx.test.espresso.action.ViewActions.click;
@@ -65,11 +67,15 @@ import static org.hamcrest.Matchers.not;
 
 @RunWith(AndroidJUnit4.class)
 public class YourPostsListTest {
+
+    @Rule
+    public GrantPermissionRule permissionRule = GrantPermissionRule.grant(android.Manifest.permission.ACCESS_FINE_LOCATION);
+
+    private Post p1, p2;
     private User user1, user2;
-    public static Post p1;
-    public static Post p2;
     private LocalDatabase localDatabase;
     private MockNetwork network;
+
     @Rule
     public IntentsTestRule<MainActivity> intentsRule =
             new IntentsTestRule<MainActivity>(MainActivity.class, true, true) {
@@ -110,9 +116,26 @@ public class YourPostsListTest {
                 }
             };
 
-    @Rule
-    public GrantPermissionRule permissionRule = GrantPermissionRule.grant(android.Manifest.permission.ACCESS_FINE_LOCATION);
+    private static ViewAction clickChildViewWithId(final int id) {
 
+        return new ViewAction() {
+            @Override
+            public Matcher<View> getConstraints() {
+                return null;
+            }
+
+            @Override
+            public String getDescription() {
+                return "Click on a child view with specified id.";
+            }
+
+            @Override
+            public void perform(UiController uiController, View view) {
+                View v = view.findViewById(id);
+                v.performClick();
+            }
+        };
+    }
 
     @After
     public void clearCurrentUserAndLocalDb() {
@@ -126,7 +149,6 @@ public class YourPostsListTest {
         onView(withId(R.id.navigation_view)).perform(NavigationViewActions.navigateTo(R.id.your_posts));
         onView(withId(R.id.drawer_layout)).perform(DrawerActions.close());
     }
-
 
     @Test
     public void likesThenUnlikesAlreadyCreatedPostsAndDeleteOne() throws InterruptedException {
@@ -165,7 +187,6 @@ public class YourPostsListTest {
     @Test
     public void getErrorIfNoPostInLocalDbAndOffline() {
 
-
         onView(withId(R.id.rvPosts)).check(new RecyclerViewItemCountAssertion(2));
         network.setIsOnline(false);
         localDatabase.clearAllTables();
@@ -175,7 +196,6 @@ public class YourPostsListTest {
 
         onView(withId(R.id.rvPosts)).check(new RecyclerViewItemCountAssertion(0));
 
-
     }
 
     @Test
@@ -183,7 +203,6 @@ public class YourPostsListTest {
 
         // 2 posts should be displayed
         onView(withId(R.id.rvPosts)).check(new RecyclerViewItemCountAssertion(2));
-
 
         // Move back to map
         onView(withId(R.id.drawer_layout)).check(matches(isClosed(Gravity.LEFT))).perform(DrawerActions.open());
@@ -209,7 +228,6 @@ public class YourPostsListTest {
         onView(withId(R.id.rvPosts)).perform(RecyclerViewActions.actionOnItemAtPosition(0, clickChildViewWithId(R.id.deleteButton)));
         onView(withId(android.R.id.button1)).perform(click());
 
-
     }
 
     @Test
@@ -219,15 +237,13 @@ public class YourPostsListTest {
         onView(withId(R.id.rvPosts)).check(new RecyclerViewItemCountAssertion(2));
 
         onView(new RecyclerViewMatcher(R.id.rvPosts)
-                .atPositionOnView(1, R.id.postImageInPost))
+                .atPositionOnView(0, R.id.postImageInPost))
                 .check(matches(withTagValue(is(PostAdapter.POST_IMAGE))));
 
         onView(new RecyclerViewMatcher(R.id.rvPosts)
-                .atPositionOnView(0, R.id.postImageInPost))
+                .atPositionOnView(1, R.id.postImageInPost))
                 .check(matches(not(withTagValue(is(PostAdapter.POST_IMAGE)))));
-
     }
-
 
     @Test
     public void likesListInteractionTestWithNoUserStoredLocally() throws InterruptedException {
@@ -245,7 +261,6 @@ public class YourPostsListTest {
         Thread.sleep(1000);
         onView(withId(R.id.list_user_number)).check(matches(withText("3")));
 
-
     }
 
     @Test
@@ -256,10 +271,6 @@ public class YourPostsListTest {
 
     }
 
-
-
-
-
     @Test
     public void performingALikeDuringAnOfflineStateShouldReturnANoInternetException() {
         network.setIsOnline(false);
@@ -267,12 +278,11 @@ public class YourPostsListTest {
         onView(withId(R.id.navigation_view)).perform(NavigationViewActions.navigateTo(R.id.your_posts));
         onView(withId(R.id.drawer_layout)).perform(DrawerActions.close());
         onView(withId(R.id.rvPosts)).perform(RecyclerViewActions.actionOnItemAtPosition(1, clickChildViewWithId(R.id.likeButton)));
-        onView(withText(R.string.no_connexion)).inRoot(withDecorView(not(is(intentsRule.getActivity().getWindow().getDecorView())))).check(matches(isDisplayed()));
+        onView(withText(R.string.noConnexion)).inRoot(withDecorView(not(is(intentsRule.getActivity().getWindow().getDecorView())))).check(matches(isDisplayed()));
     }
 
-
     @Test
-    public void shouldOnlyShowtoStoredLikersIfTheAppIsOffline(){
+    public void shouldOnlyShowToStoredLikersIfTheAppIsOffline() {
         network.setIsOnline(false);
         onView(withId(R.id.drawer_layout)).check(matches(isClosed(Gravity.LEFT))).perform(DrawerActions.open());
         onView(withId(R.id.navigation_view)).perform(NavigationViewActions.navigateTo(R.id.your_posts));
@@ -287,11 +297,6 @@ public class YourPostsListTest {
         onView(withId(R.id.list_user_number)).check(matches(withText("1")));
 
     }
-
-
-
-
-
 
     @Test
     public void EditPostImageTest() throws InterruptedException {
@@ -321,42 +326,16 @@ public class YourPostsListTest {
         onView(withId(R.id.rvPosts)).perform(RecyclerViewActions.actionOnItemAtPosition(0, clickChildViewWithId(R.id.editButton)));
         Thread.sleep(1000);
         onView(withId(R.id.postText)).perform(replaceText("   Salut Salut  "));
-        onView(withId (R.id.postText)).perform(closeSoftKeyboard());
+        onView(withId(R.id.postText)).perform(closeSoftKeyboard());
         onView(withId(R.id.postButton)).perform(click());
-
         loadPostView();
-
         onView(new RecyclerViewMatcher(R.id.rvPosts)
                 .atPositionOnView(0, R.id.title))
                 .check(matches(withText(is("Salut Salut"))));
 
     }
 
-
-
-    private static ViewAction clickChildViewWithId(final int id) {
-
-        return new ViewAction() {
-            @Override
-            public Matcher<View> getConstraints() {
-                return null;
-            }
-
-            @Override
-            public String getDescription() {
-                return "Click on a child view with specified id.";
-            }
-
-            @Override
-            public void perform(UiController uiController, View view) {
-                View v = view.findViewById(id);
-                v.performClick();
-            }
-        };
-    }
-
-
-    private class RecyclerViewItemCountAssertion implements ViewAssertion {
+    private static class RecyclerViewItemCountAssertion implements ViewAssertion {
         private final int expectedCount;
 
         RecyclerViewItemCountAssertion(int expectedCount) {
@@ -374,7 +353,6 @@ public class YourPostsListTest {
             assertEquals(adapter.getItemCount(), expectedCount);
         }
     }
-
 
 
 }

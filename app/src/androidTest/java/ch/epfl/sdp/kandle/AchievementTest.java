@@ -20,9 +20,10 @@ import static androidx.test.espresso.contrib.RecyclerViewActions.scrollToPositio
 import static androidx.test.espresso.matcher.ViewMatchers.hasDescendant;
 import static androidx.test.espresso.matcher.ViewMatchers.withId;
 import static androidx.test.espresso.matcher.ViewMatchers.withText;
-import static ch.epfl.sdp.kandle.YourProfileFragmentTest.atPosition;
+import static ch.epfl.sdp.kandle.ProfileFragmentTest.atPosition;
 import static ch.epfl.sdp.kandle.dependencies.DependencyManager.getDatabaseSystem;
 import static junit.framework.TestCase.assertEquals;
+import static org.hamcrest.Matchers.is;
 
 
 import org.junit.After;
@@ -33,6 +34,10 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.LinkedList;
 
+import ch.epfl.sdp.kandle.activity.OfflineGameActivity;
+import ch.epfl.sdp.kandle.entities.post.Post;
+import ch.epfl.sdp.kandle.entities.user.LoggedInUser;
+import ch.epfl.sdp.kandle.entities.user.User;
 import ch.epfl.sdp.kandle.storage.room.LocalDatabase;
 import ch.epfl.sdp.kandle.activity.MainActivity;
 import ch.epfl.sdp.kandle.dependencies.DependencyManager;
@@ -55,6 +60,7 @@ public class AchievementTest {
     MockDatabase db;
 
     private LocalDatabase localDatabase;
+    private MockNetwork network;
 
     @Rule
     public GrantPermissionRule permissionRule = GrantPermissionRule.grant(android.Manifest.permission.ACCESS_FINE_LOCATION);
@@ -94,10 +100,11 @@ public class AchievementTest {
                      db = new MockDatabase(true, users, followMap, posts);
                     MockAuthentication authentication = new MockAuthentication(true, accounts, "password");
                     MockImageStorage storage = new MockImageStorage();
-                    MockInternalStorage internalStorage = new MockInternalStorage(new HashMap<>());
-                    MockNetwork network = new MockNetwork(true);
+                    MockInternalStorage internalStorage = new MockInternalStorage(true, new HashMap<>());
+                    network = new MockNetwork(true);
                     localDatabase = Room.inMemoryDatabaseBuilder(Kandle.getContext(), LocalDatabase.class).allowMainThreadQueries().build();
-                    DependencyManager.setFreshTestDependencies(authentication, db, storage,internalStorage,network,localDatabase);
+                    localDatabase.userDao().insertUser(LoggedInUser.getInstance());
+                    DependencyManager.setFreshTestDependencies(authentication, db, storage, internalStorage, network, localDatabase);
                     getDatabaseSystem().createUser(user1);
                     getDatabaseSystem().createUser(user2);
                     getDatabaseSystem().createUser(user3);
@@ -125,13 +132,14 @@ public class AchievementTest {
     @Test
     public void allTypesOfAchievementsNotDone(){
         setFragment();
-        onView(withId(R.id.flAchievements)).check(new AchievementTest.RecyclerViewItemCountAssertion(11));
+        onView(withId(R.id.flAchievements)).check(new AchievementTest.RecyclerViewItemCountAssertion(13));
         //onView(withId(R.id.flPosts)).perform(RecyclerViewActions.actionOnItemAtPosition(0, click()));
         onView(withId(R.id.flAchievements)).check(matches(atPosition(0, hasDescendant(withText("Still Not Completed !")))));
         onView(withId(R.id.flAchievements)).check(matches(atPosition(3, hasDescendant(withText("Still Not Completed !")))));
         onView(withId(R.id.flAchievements)).perform(scrollToPosition(5)).check(matches(atPosition(5, hasDescendant(withText("Still Not Completed !")))));
         onView(withId(R.id.flAchievements)).perform(scrollToPosition(7)).check(matches(atPosition(7, hasDescendant(withText("Still Not Completed !")))));
         onView(withId(R.id.flAchievements)).perform(scrollToPosition(10)).check(matches(atPosition(10, hasDescendant(withText("Still Not Completed !")))));
+        onView(withId(R.id.flAchievements)).perform(scrollToPosition(12)).check(matches(atPosition(12, hasDescendant(withText("Still Not Completed !")))));
     }
 
     @Test
@@ -167,6 +175,32 @@ public class AchievementTest {
         getDatabaseSystem().likePost(user3.getId(), p2.getPostId());
         setFragment();
         onView(withId(R.id.flAchievements)).perform(scrollToPosition(9)).check(matches(atPosition(9, hasDescendant(withText("Achievement Completed !")))));
+    }
+
+    @Test
+    public void AchievementOfflineGamePointsWorks() {
+        navigateToOfflineGame();
+        onView(withId(R.id.startButton)).perform(click());
+        for(int i = 0; i < OfflineGameActivity.MAX_NB_VIRUS; i++){
+            onView(withId(R.id.virusButton)).perform(click());
+        }
+        onView(withId(R.id.maxScore)).check(matches((withText(is(Integer.toString(OfflineGameActivity.MAX_NB_VIRUS))))));
+        onView(withId(R.id.backButton)).perform(click());
+        network.setIsOnline(true);
+        network.setPreviouslyOnline(false);
+        onView(withId(R.id.drawer_layout)).check(matches(isClosed(Gravity.LEFT))).perform(DrawerActions.open());
+        onView(withId(R.id.navigation_view)).perform(NavigationViewActions.navigateTo(R.id.your_posts));
+        onView(withId(R.id.drawer_layout)).perform(DrawerActions.close());
+        setFragment();
+        onView(withId(R.id.flAchievements)).perform(scrollToPosition(12)).check(matches(atPosition(12, hasDescendant(withText("Achievement Completed !")))));
+    }
+
+    private void navigateToOfflineGame(){
+        network.setIsOnline(false);
+        onView(withId(R.id.drawer_layout)).check(matches(isClosed(Gravity.LEFT))).perform(DrawerActions.open());
+        onView(withId(R.id.navigation_view)).perform(NavigationViewActions.navigateTo(R.id.map_support));
+        onView(withId(R.id.toolbar)).check(matches(hasDescendant(withText("Map"))));
+        onView(withId(R.id.startOfflineGameConnectedButton)).perform(click());
     }
 
     private void setFragment(){

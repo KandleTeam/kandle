@@ -1,10 +1,16 @@
 package ch.epfl.sdp.kandle.dependencies;
 
+import ch.epfl.sdp.kandle.authentification.Authentication;
+import ch.epfl.sdp.kandle.location.GoogleLocationServices;
+import ch.epfl.sdp.kandle.location.MyLocationProvider;
 import ch.epfl.sdp.kandle.network.NetworkState;
 import ch.epfl.sdp.kandle.network.UserNetworkStatus;
+import ch.epfl.sdp.kandle.storage.Database;
+import ch.epfl.sdp.kandle.storage.ImageStorage;
+import ch.epfl.sdp.kandle.storage.caching.InternalStorage;
 import ch.epfl.sdp.kandle.storage.caching.InternalStorageManager;
 import ch.epfl.sdp.kandle.storage.firebase.FirebaseImageStorage;
-import ch.epfl.sdp.kandle.storage.firebase.FirebaseAuthentication;
+import ch.epfl.sdp.kandle.authentification.FirebaseAuthentication;
 import ch.epfl.sdp.kandle.storage.firebase.FirestoreDatabase;
 import ch.epfl.sdp.kandle.storage.room.LocalDatabase;
 
@@ -14,10 +20,10 @@ public final class DependencyManager {
     private static Database db = FirestoreDatabase.getInstance();
     private static ImageStorage storage = FirebaseImageStorage.getInstance();
     private static MyLocationProvider locationProvider = new GoogleLocationServices();
-    private static NetworkState networkState = UserNetworkStatus.getInstance();
     private static InternalStorage internalStorage = InternalStorageManager.getInstance();
     private static LocalDatabase localDatabase = LocalDatabase.getInstance();
     private static Authentication auth = FirebaseAuthentication.getInstance();
+    private static NetworkState networkState = UserNetworkStatus.getInstance();
 
 
     private DependencyManager() {

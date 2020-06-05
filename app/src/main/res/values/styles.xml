@@ -9,9 +9,19 @@
 
     </style>
 
+    <style name="AppThemeDark" parent="Theme.AppCompat.DayNight.NoActionBar">
+        <!-- Customize your theme here. -->
+        <item name="colorPrimary">@color/mapbox_blue</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="colorAccent">@color/colorAccent</item>
+
+    </style>
+
+
     <style name="AppTheme.PopUpTheme">
         <item name= "android:windowCloseOnTouchOutside">true</item>
         <item name="android:windowIsTranslucent">true</item>
     </style>
+
 
 </resources>

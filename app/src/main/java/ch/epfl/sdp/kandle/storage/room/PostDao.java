@@ -9,7 +9,7 @@ import androidx.room.Update;
 
 import java.util.List;
 
-import ch.epfl.sdp.kandle.Post;
+import ch.epfl.sdp.kandle.entities.post.Post;
 
 
 @Dao
@@ -25,6 +25,7 @@ public interface PostDao {
     String POST_ATTR_EDITABLE = "editable";
     String POST_ATTR_DATE = "date";
     String POST_ATTR_TYPE = "type";
+    String POST_ATTR_IS_CLOSE_FOLLOWERS = "isForCloseFollowers";
 
 
     @Query("SELECT * from Posts")

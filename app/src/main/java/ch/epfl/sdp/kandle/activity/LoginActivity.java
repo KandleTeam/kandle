@@ -9,49 +9,36 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
-
+import com.google.android.material.snackbar.Snackbar;
+import java.util.Objects;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.coordinatorlayout.widget.CoordinatorLayout;
 import androidx.core.content.ContextCompat;
-
-import com.google.android.material.snackbar.Snackbar;
-
-import ch.epfl.sdp.kandle.LoggedInUser;
 import ch.epfl.sdp.kandle.R;
-import ch.epfl.sdp.kandle.dependencies.Authentication;
 import ch.epfl.sdp.kandle.dependencies.DependencyManager;
+import ch.epfl.sdp.kandle.entities.user.LoggedInUser;
 
 public class LoginActivity extends AppCompatActivity {
 
-
-    private TextView mSignIn;
     private EditText mEmail, mPassword;
-    private Button mSignUpBtn;
-    private ImageButton mGameButton;
-    private Authentication auth;
-    private CoordinatorLayout CNetworkBar;
-
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
-
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
-        auth = DependencyManager.getAuthSystem();
 
-        if (auth.getCurrentUserAtApplicationStart()) {
+        if (DependencyManager.getAuthSystem().getCurrentUserAtApplicationStart()) {
             startActivity(new Intent(getApplicationContext(), MainActivity.class));
             finish();
         }
 
-        mSignIn = findViewById(R.id.signUpLink);
+        TextView mSignIn = findViewById(R.id.signUpLink);
         mSignIn.setOnClickListener(v -> startActivity(new Intent(getApplicationContext(), RegisterActivity.class)));
         mEmail = findViewById(R.id.email);
         mPassword = findViewById(R.id.password);
-        mSignUpBtn = findViewById(R.id.loginBtn);
-        mGameButton = findViewById(R.id.startOfflineGameButton);
+        Button mSignUpBtn = findViewById(R.id.loginBtn);
+        ImageButton mGameButton = findViewById(R.id.startOfflineGameButton);
         TextView mGuestMode = findViewById(R.id.guestModeLink);
 
         mSignUpBtn.setOnClickListener(v -> {
@@ -62,7 +49,7 @@ public class LoginActivity extends AppCompatActivity {
             }
         });
 
-        if(!checkForInternetConnection()){
+        if (!checkForInternetConnection()) {
             mGameButton.setVisibility(View.VISIBLE);
             mGameButton.setOnClickListener(v -> {
                 startActivity(new Intent(getApplicationContext(), OfflineGameActivity.class));
@@ -80,11 +67,11 @@ public class LoginActivity extends AppCompatActivity {
     private boolean checkFields(String email, String password) {
 
         if (email.isEmpty()) {
-            mEmail.setError(getString(R.string.login_email_required));
+            mEmail.setError(getString(R.string.loginEmailRequired));
             return false;
         }
         if (password.isEmpty()) {
-            mPassword.setError(getString(R.string.login_password_required));
+            mPassword.setError(getString(R.string.loginPasswordRequired));
             return false;
         }
 
@@ -94,8 +81,8 @@ public class LoginActivity extends AppCompatActivity {
 
     private boolean checkForInternetConnection() {
         if (!DependencyManager.getNetworkStateSystem().isConnected()) {
-            CNetworkBar = findViewById(R.id.connectionBar);
-            Snackbar snackbar = Snackbar.make(CNetworkBar, R.string.no_connexion, Snackbar.LENGTH_SHORT);
+            CoordinatorLayout CNetworkBar = findViewById(R.id.connectionBar);
+            Snackbar snackbar = Snackbar.make(CNetworkBar, R.string.noConnexion, Snackbar.LENGTH_SHORT);
             snackbar.setTextColor(ContextCompat.getColor(this, R.color.white));
             CNetworkBar.setBackgroundColor(ContextCompat.getColor(this, R.color.colorAccent));
             snackbar.show();
@@ -108,22 +95,22 @@ public class LoginActivity extends AppCompatActivity {
 
     private void attemptLogin(String email, String password) {
         final ProgressDialog pd = new ProgressDialog(LoginActivity.this);
-        pd.setMessage(getString(R.string.login_in_progress));
+        pd.setMessage(getString(R.string.loginInProgress));
         pd.show();
-        auth.signInWithEmailAndPassword(email, password).addOnCompleteListener(task -> {
+        DependencyManager.getAuthSystem().signInWithEmailAndPassword(email, password).addOnCompleteListener(task -> {
             if (task.isSuccessful()) {
                 pd.dismiss();
-                Toast.makeText(LoginActivity.this, getString(R.string.login_success), Toast.LENGTH_SHORT).show();
+                Toast.makeText(LoginActivity.this, getString(R.string.loginSuccess), Toast.LENGTH_SHORT).show();
                 startActivity(new Intent(getApplicationContext(), MainActivity.class));
                 finish();
             } else {
                 pd.dismiss();
-                Toast.makeText(LoginActivity.this, "An error has occurred : " + task.getException().getMessage(), Toast.LENGTH_SHORT).show();
+                String errorMsg = String.format("%s : %s", getString(R.string.ErrorMessage), Objects.requireNonNull(task.getException()).getMessage());
+                Toast.makeText(LoginActivity.this, errorMsg, Toast.LENGTH_SHORT).show();
                 task.getException().printStackTrace();
             }
         });
 
     }
-
 
 }

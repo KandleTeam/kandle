@@ -18,37 +18,50 @@ import com.squareup.picasso.Picasso;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 
-import ch.epfl.sdp.kandle.LoggedInUser;
-import ch.epfl.sdp.kandle.Post;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
+
+import ch.epfl.sdp.kandle.entities.user.LoggedInUser;
+import ch.epfl.sdp.kandle.entities.post.Post;
 import ch.epfl.sdp.kandle.R;
-import ch.epfl.sdp.kandle.User;
-import ch.epfl.sdp.kandle.dependencies.Database;
-import ch.epfl.sdp.kandle.dependencies.DependencyManager;
+import ch.epfl.sdp.kandle.entities.user.User;
+import ch.epfl.sdp.kandle.storage.Database;
+
+import static ch.epfl.sdp.kandle.dependencies.DependencyManager.getDatabaseSystem;
 
 
 public class PostFragment extends Fragment {
 
     public final static int POST_IMAGE = 20;
     public final static int PROFILE_PICTURE_IMAGE = 21;
-    Database database;
-    private Post post;
-    private User user;
-    private Location location;
-    private int distance;
+    public final static int MAX_DISTANCE = 50;
+    private Database database;
+    private final Post post;
+    private final User user;
+    private final Location location;
+    private final int distance;
     //Views
     private TextView username, description, numberOfLikes, distanceView;
-    private ImageView profilePicture, postImage;
+    private ImageView profilePicture, postImage, isCloseFollowers;
     private Button followButton;
     private ImageButton likeButton;
     private TextView date;
 
     private PostFragment(Post post, Location location, User user, int distance) {
         this.post = post;
-        this.location = location;
         this.user = user;
+        this.location = location;
         this.distance = distance;
     }
 
+    /**
+     * Instantiates a PostFragment and returns it
+     * @param post the post
+     * @param location the location
+     * @param user the user
+     * @param distance the distance
+     * @return a PostFragment
+     */
     public static PostFragment newInstance(Post post, Location location, User user, int distance) {
         return new PostFragment(post, location, user, distance);
     }
@@ -64,6 +77,8 @@ public class PostFragment extends Fragment {
         likeButton = parent.findViewById(R.id.postFragmentLikeButton);
         distanceView = parent.findViewById(R.id.postFragmentDistanceText);
         date = parent.findViewById(R.id.postDateTime);
+        isCloseFollowers = parent.findViewById(R.id.postCloseFriends);
+
     }
 
     @Override
@@ -74,7 +89,7 @@ public class PostFragment extends Fragment {
         getViews(view);
         final User currentUser = LoggedInUser.getInstance();
         final String currentUserId = currentUser.getId();
-        database = DependencyManager.getDatabaseSystem();
+        database = getDatabaseSystem();
 
         if (post.getType() != null && post.getType().equals(Post.EVENT)) {
             likeButton.setImageDrawable(getResources().getDrawable(R.drawable.ic_event_red_24dp));
@@ -82,8 +97,7 @@ public class PostFragment extends Fragment {
         }
 
         username.setText(user.getUsername());
-        distanceView.setText(distance + " m");
-
+        distanceView.setText(String.format("%d m", distance));
 
         if (user.getImageURL() != null) {
             profilePicture.setTag(PROFILE_PICTURE_IMAGE);
@@ -111,7 +125,22 @@ public class PostFragment extends Fragment {
 
         numberOfLikes.setText(String.valueOf(post.getLikes()));
 
-        if (post.getType()!=null && post.getType().equals(Post.EVENT) || distance <= 30) {
+        final FragmentManager fragmentManager = this.getActivity().getSupportFragmentManager();
+        numberOfLikes.setOnClickListener(v -> database.getLikers(post.getPostId()).addOnCompleteListener(task -> {
+            if (task.isSuccessful()) {
+                fragmentManager.beginTransaction().replace(R.id.flContent, ListUsersFragment.newInstance(
+                        task.getResult(),
+                        post.getType() != null && post.getType().equals(Post.EVENT)? "Participants" : "Likes",
+                        Integer.toString(task.getResult().size())
+                )).setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
+                        .addToBackStack(null)
+                        .commit();
+
+            }
+        }));
+
+        if (post.getType()!=null && post.getType().equals(Post.EVENT) || distance <= MAX_DISTANCE) {
+
             likeButton.setOnClickListener(v -> {
 
                 if (post.getLikers().contains(currentUserId)) {
@@ -120,7 +149,7 @@ public class PostFragment extends Fragment {
                             post.unlikePost(currentUserId);
                             numberOfLikes.setText(String.valueOf(post.getLikes()));
                         } else {
-                            Toast.makeText(PostFragment.this.getContext(), R.string.no_connexion, Toast.LENGTH_SHORT).show();
+                            Toast.makeText(PostFragment.this.getContext(), R.string.noConnexion, Toast.LENGTH_SHORT).show();
                         }
                     });
 
@@ -134,9 +163,9 @@ public class PostFragment extends Fragment {
                 }
             });
         } else {
-            distanceView.setAlpha((float) 0.5);
-            likeButton.setAlpha((float) 0.5);
-            likeButton.setOnClickListener(v -> Toast.makeText(PostFragment.this.getContext(), "You are too far away from the post to like it", Toast.LENGTH_SHORT).show());
+            distanceView.setAlpha(0.5f);
+            likeButton.setAlpha(0.5f);
+            likeButton.setOnClickListener(v -> Toast.makeText(PostFragment.this.getContext(), getString(R.string.tooFarToLikePost), Toast.LENGTH_SHORT).show());
         }
 
         if (post.getImageURL() != null) {
@@ -148,6 +177,9 @@ public class PostFragment extends Fragment {
         if (LoggedInUser.isGuestMode()) {
             likeButton.setClickable(false);
             followButton.setVisibility(View.GONE);
+        }
+        if(post.getIsForCloseFollowers() != null && post.getIsForCloseFollowers().equals(Post.CLOSE_FOLLOWER)){
+            isCloseFollowers.setVisibility(View.VISIBLE);
         }
 
         return view;
@@ -170,4 +202,6 @@ public class PostFragment extends Fragment {
             }
         };
     }
+
+
 }

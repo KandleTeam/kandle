@@ -21,6 +21,8 @@ import androidx.test.rule.GrantPermissionRule;
 import java.util.HashMap;
 
 
+import ch.epfl.sdp.kandle.entities.user.LoggedInUser;
+import ch.epfl.sdp.kandle.entities.user.User;
 import ch.epfl.sdp.kandle.storage.room.LocalDatabase;
 import ch.epfl.sdp.kandle.activity.LoginActivity;
 
@@ -45,6 +47,7 @@ import static androidx.test.espresso.matcher.ViewMatchers.hasErrorText;
 import static androidx.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static androidx.test.espresso.matcher.ViewMatchers.withId;
 import static androidx.test.espresso.matcher.ViewMatchers.withText;
+import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.not;
 
@@ -68,7 +71,7 @@ public class LoginActivityTest {
                     accounts.put(alreadyHasAnAccount.getEmail(), alreadyHasAnAccount.getId());
                     HashMap<String,User> users = new HashMap<>();
                     users.put(alreadyHasAnAccount.getId(),alreadyHasAnAccount);
-                    MockDatabase db = new MockDatabase(false, users, null, null);
+                    MockDatabase db = new MockDatabase(false, users, new HashMap<String, MockDatabase.Follow>(), null);
                     MockAuthentication authentication = new MockAuthentication(false, accounts, "password");
                     MockImageStorage storage = new MockImageStorage();
                     MockInternalStorage internalStorage = new MockInternalStorage(new HashMap<>());
@@ -105,7 +108,7 @@ public class LoginActivityTest {
     @Test
     public void emptyEmailTest() {
         onView(withId(R.id.loginBtn)).perform(click());
-        onView(withId(R.id.email)).check(matches(hasErrorText(res.getString(R.string.login_email_required))));
+        onView(withId(R.id.email)).check(matches(hasErrorText(res.getString(R.string.loginEmailRequired))));
     }
 
     @Test
@@ -113,28 +116,17 @@ public class LoginActivityTest {
         onView(withId(R.id.email)).perform(typeText("test@test.com"));
         onView(withId(R.id.email)).perform(closeSoftKeyboard());
         onView(withId(R.id.loginBtn)).perform(click());
-        onView(withId(R.id.password)).check(matches(hasErrorText(res.getString(R.string.login_password_required))));
+        onView(withId(R.id.password)).check(matches(hasErrorText(res.getString(R.string.loginPasswordRequired))));
     }
 
     @Test
-    public void wrongCredentialsTest() {
-        onView(withId(R.id.email)).perform(typeText("zzzz@test.com"));
-        onView(withId(R.id.email)).perform(closeSoftKeyboard());
-        onView(withId(R.id.password)).perform(typeText("zzzzzzzzzz"));
-        onView(withId(R.id.password)).perform(closeSoftKeyboard());
-        onView(withId(R.id.loginBtn)).perform(click());
-        //TODO check toast
-    }
-
-    @Test
-    public void authenticationShouldFail() {
+    public void authenticationShouldFailWhenWrongCredentials() {
         onView(withId(R.id.email)).perform(typeText("user2@test.com"));
         onView(withId(R.id.email)).perform(closeSoftKeyboard());
         onView(withId(R.id.password)).perform(typeText("123456789"));
         onView(withId(R.id.password)).perform(closeSoftKeyboard());
         onView(withId(R.id.loginBtn)).perform(click());
         onView(withText("An error has occurred : You do not have an account yet")).inRoot(withDecorView(not(is(intentsRule.getActivity().getWindow().getDecorView())))).check(matches(isDisplayed()));
-
 
     }
 

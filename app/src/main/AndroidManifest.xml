@@ -6,6 +6,7 @@
          Google Maps Android API v2, but you must specify either coarse or fine
          location permissions for the 'MyLocation' functionality.
     -->
+
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="com.example.mapdemo.permission.MAPS_RECEIVE" />
     <uses-permission android:name="android.permission.INTERNET" />
@@ -23,6 +24,7 @@
         android:required="false" />
 
     <application
+
         android:name=".Kandle"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
@@ -30,7 +32,10 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.AppCompat.Light.NoActionBar">
+
+        <activity android:name=".activity.PhotoEditorActivity"></activity>
         <activity android:name=".activity.OfflineGameActivity"></activity>
+
         <!--
              The API key for Google Maps-based APIs is defined as a string resource.
              (See the file "res/values/google_maps_api.xml").
@@ -67,6 +72,7 @@
         <uses-library
             android:name="org.apache.http.legacy"
             android:required="false" />
+
     </application>
 
 </manifest>

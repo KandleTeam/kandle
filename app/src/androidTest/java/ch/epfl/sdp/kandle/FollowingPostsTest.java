@@ -23,6 +23,10 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.LinkedList;
 
+import ch.epfl.sdp.kandle.entities.post.Post;
+import ch.epfl.sdp.kandle.entities.post.PostAdapter;
+import ch.epfl.sdp.kandle.entities.user.LoggedInUser;
+import ch.epfl.sdp.kandle.entities.user.User;
 import ch.epfl.sdp.kandle.storage.room.LocalDatabase;
 import ch.epfl.sdp.kandle.activity.MainActivity;
 import ch.epfl.sdp.kandle.dependencies.DependencyManager;
@@ -66,11 +70,11 @@ public class FollowingPostsTest {
                     HashMap<String, String> accounts = new HashMap<>();
                     accounts.put(u1.getEmail(), u1.getId());
                     accounts.put(u2.getEmail(), u2.getId());
-                    HashMap<String,User> users = new HashMap<>();
+                    HashMap<String, User> users = new HashMap<>();
                     HashMap<String, MockDatabase.Follow> followMap = new HashMap<>();
                     followMap.put(u1.getId(),new MockDatabase.Follow(new LinkedList<>(),new LinkedList<>()));
                     followMap.put(u2.getId(),new MockDatabase.Follow(new LinkedList<>(),new LinkedList<>()));
-                    HashMap<String,Post> posts = new HashMap<>();
+                    HashMap<String, Post> posts = new HashMap<>();
                     posts.put(p1.getPostId(),p1);
                     posts.put(p2.getPostId(),p2);
                     db = new MockDatabase(true, users, followMap, posts);
@@ -106,7 +110,7 @@ public class FollowingPostsTest {
     }
 
     @Test
-    public void ChecksOnePostHasAnImageNotTheOther() throws Throwable {
+    public void ChecksOnePostHasAnImageNotTheOther() {
 
         //2 posts should be displayed
         onView(withId(R.id.flPosts)).check(new FollowingPostsTest.RecyclerViewItemCountAssertion(2));

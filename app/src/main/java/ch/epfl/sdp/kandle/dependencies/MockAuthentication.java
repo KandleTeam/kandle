@@ -5,8 +5,9 @@ import com.google.android.gms.tasks.TaskCompletionSource;
 
 import java.util.Map;
 
-import ch.epfl.sdp.kandle.LoggedInUser;
-import ch.epfl.sdp.kandle.User;
+import ch.epfl.sdp.kandle.authentification.Authentication;
+import ch.epfl.sdp.kandle.entities.user.LoggedInUser;
+import ch.epfl.sdp.kandle.entities.user.User;
 
 public class MockAuthentication implements Authentication {
 
@@ -39,6 +40,7 @@ public class MockAuthentication implements Authentication {
         }
         return false;
     }
+
 
     @Override
     public Task<User> createUserWithEmailAndPassword(String username, String email, String password) {
@@ -106,6 +108,17 @@ public class MockAuthentication implements Authentication {
     @Override
     public User getCurrentUser() {
         return LoggedInUser.getInstance();
+    }
+
+    @Override
+    public Task<Void> deleteUser() {
+        TaskCompletionSource source = new TaskCompletionSource<Void>();
+        isConnected = false;
+        DependencyManager.getInternalStorageSystem().deleteUser();
+        accounts.remove(LoggedInUser.getInstance().getEmail());
+        DependencyManager.getLocalDatabase().clearAllTables();
+        LoggedInUser.clear();
+        return source.getTask();
     }
 
 
