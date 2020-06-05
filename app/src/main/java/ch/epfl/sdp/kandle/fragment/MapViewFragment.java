@@ -164,33 +164,34 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback, Per
                 if (!marker.getSnippet().equals("EPFL Landmark")) marker.remove();
             }
             for (Post p : posts) {
-                        if (p.getType() == null || !p.equals(Post.EVENT) || p.getDate().getTime() > new Date().getTime()) {
-                            numMarkers++;
+                if (numMarkers < 20) {
+                    if (p.getType() == null || !p.equals(Post.EVENT) || p.getDate().getTime() > new Date().getTime()) {
+                        numMarkers++;
 
-                            if (p.getLikers().size() < 5) {
-                                mapboxMap.addMarker(new MarkerOptions()
-                                        .position(new LatLng(p.getLatitude(), p.getLongitude()))
-                                        .title("A post !")
-                                        .icon(postIconSmall))
-                                        .setSnippet(p.getPostId());
-                            } else if (p.getLikers().size() < 10) {
-                                mapboxMap.addMarker(new MarkerOptions()
-                                        .position(new LatLng(p.getLatitude(), p.getLongitude()))
-                                        .title("A post !")
-                                        .icon(postIconMedium))
-                                        .setSnippet(p.getPostId());
-                            } else {
-                                mapboxMap.addMarker(new MarkerOptions()
-                                        .position(new LatLng(p.getLatitude(), p.getLongitude()))
-                                        .title("A post !")
-                                        .icon(postIconLarge))
-                                        .setSnippet(p.getPostId());
-                            }
+                        if (p.getLikers().size() < 5) {
+                            mapboxMap.addMarker(new MarkerOptions()
+                                    .position(new LatLng(p.getLatitude(), p.getLongitude()))
+                                    .title("A post !")
+                                    .icon(postIconSmall))
+                                    .setSnippet(p.getPostId());
+                        } else if (p.getLikers().size() < 10) {
+                            mapboxMap.addMarker(new MarkerOptions()
+                                    .position(new LatLng(p.getLatitude(), p.getLongitude()))
+                                    .title("A post !")
+                                    .icon(postIconMedium))
+                                    .setSnippet(p.getPostId());
+                        } else {
+                            mapboxMap.addMarker(new MarkerOptions()
+                                    .position(new LatLng(p.getLatitude(), p.getLongitude()))
+                                    .title("A post !")
+                                    .icon(postIconLarge))
+                                    .setSnippet(p.getPostId());
                         }
                     }
+                }
+            }
                 });
 
-     //   });
 
         mapboxMap.setOnMarkerClickListener(marker -> {
             if (marker.getSnippet().equals("EPFL Landmark")) {
