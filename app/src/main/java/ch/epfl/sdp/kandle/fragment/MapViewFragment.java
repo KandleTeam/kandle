@@ -164,23 +164,7 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback, Per
                 if (!marker.getSnippet().equals("EPFL Landmark")) marker.remove();
             }
             for (Post p : posts) {
-                if (numMarkers < 20) {
-                    database.userCloseFollowersList(p.getUserId()).addOnSuccessListener(closeFollowers -> {
-                        boolean isCloseFollower = false;
-                        if (LoggedInUser.getInstance() != null) {
-                            if (p.getUserId().equals(LoggedInUser.getInstance().getId())) {
-                                isCloseFollower = true;
-                            } else {
-                                for (User user : closeFollowers) {
-                                    if (user.getId().equals(LoggedInUser.getInstance().getId()))
-                                        isCloseFollower = true;
-                                }
-                            }
-                        }
-
-                        if ((isCloseFollower || p.getIsForCloseFollowers() == null
-                                || (p.getIsForCloseFollowers() != null && p.getIsForCloseFollowers().equals(Post.NOT_CLOSE_FOLLOWER)))
-                                && (p.getType() == null || !p.equals(Post.EVENT) || p.getDate().getTime() > new Date().getTime())) {
+                        if (p.getType() == null || !p.equals(Post.EVENT) || p.getDate().getTime() > new Date().getTime()) {
                             numMarkers++;
 
                             if (p.getLikers().size() < 5) {
@@ -203,10 +187,10 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback, Per
                                         .setSnippet(p.getPostId());
                             }
                         }
-                    });
-                }
-            }
-        });
+                    }
+                });
+
+     //   });
 
         mapboxMap.setOnMarkerClickListener(marker -> {
             if (marker.getSnippet().equals("EPFL Landmark")) {
