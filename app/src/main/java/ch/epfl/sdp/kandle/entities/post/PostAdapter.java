@@ -28,7 +28,7 @@ import ch.epfl.sdp.kandle.Kandle;
 import ch.epfl.sdp.kandle.R;
 import ch.epfl.sdp.kandle.entities.user.User;
 import ch.epfl.sdp.kandle.activity.PostActivity;
-import ch.epfl.sdp.kandle.authentification.Authentication;
+import ch.epfl.sdp.kandle.authentication.Authentication;
 import ch.epfl.sdp.kandle.storage.Database;
 import ch.epfl.sdp.kandle.dependencies.DependencyManager;
 import ch.epfl.sdp.kandle.fragment.ListUsersFragment;

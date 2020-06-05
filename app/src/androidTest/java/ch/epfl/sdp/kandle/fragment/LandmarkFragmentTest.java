@@ -1,4 +1,4 @@
-package ch.epfl.sdp.kandle;
+package ch.epfl.sdp.kandle.fragment;
 
 import org.junit.After;
 import org.junit.Before;
@@ -8,11 +8,15 @@ import org.junit.Test;
 import java.util.HashMap;
 
 import androidx.room.Room;
+import androidx.test.espresso.matcher.ViewMatchers;
 import androidx.test.rule.ActivityTestRule;
 import androidx.test.rule.GrantPermissionRule;
 import androidx.test.uiautomator.By;
 import androidx.test.uiautomator.UiDevice;
 import androidx.test.uiautomator.Until;
+import ch.epfl.sdp.kandle.Kandle;
+import ch.epfl.sdp.kandle.R;
+import ch.epfl.sdp.kandle.RecyclerViewItemCountAssertion;
 import ch.epfl.sdp.kandle.activity.MainActivity;
 import ch.epfl.sdp.kandle.dependencies.DependencyManager;
 import ch.epfl.sdp.kandle.dependencies.MockAuthentication;
@@ -76,7 +80,7 @@ public class LandmarkFragmentTest {
 
         ((MapViewFragment) intentsRule.getActivity().getCurrentFragment()).goToEpflLandmarkFragment("EPFL", "image");
 
-        onView(withId(R.id.landmarkFragmentImage)).check(matches(withTagValue(is(LandmarkFragment.LANDMARK_IMAGE))));
+        onView(ViewMatchers.withId(R.id.landmarkFragmentImage)).check(matches(withTagValue(is(LandmarkFragment.LANDMARK_IMAGE))));
         onView(withId(R.id.landmarkFragmentPostsList)).check(new RecyclerViewItemCountAssertion(5));
 
     }

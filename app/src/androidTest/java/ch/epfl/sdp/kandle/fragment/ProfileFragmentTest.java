@@ -1,4 +1,4 @@
-package ch.epfl.sdp.kandle;
+package ch.epfl.sdp.kandle.fragment;
 
 import android.app.Activity;
 import android.app.Instrumentation;
@@ -28,6 +28,9 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.LinkedList;
 
+import ch.epfl.sdp.kandle.Kandle;
+import ch.epfl.sdp.kandle.R;
+import ch.epfl.sdp.kandle.RecyclerViewMatcher;
 import ch.epfl.sdp.kandle.activity.MainActivity;
 import ch.epfl.sdp.kandle.dependencies.DependencyManager;
 import ch.epfl.sdp.kandle.dependencies.MockAuthentication;
@@ -147,7 +150,7 @@ public class ProfileFragmentTest {
 
     @Before
     public void loadFragment() {
-        onView(withId(R.id.drawer_layout)).check(matches(isClosed(Gravity.LEFT))).perform(DrawerActions.open());
+        onView(ViewMatchers.withId(R.id.drawer_layout)).check(matches(isClosed(Gravity.LEFT))).perform(DrawerActions.open());
         onView(withId(R.id.profilePicInMenu)).perform(click());
     }
 

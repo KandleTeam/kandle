@@ -1,4 +1,4 @@
-package ch.epfl.sdp.kandle.authentification;
+package ch.epfl.sdp.kandle.authentication;
 
 import com.google.android.gms.tasks.Task;
 import com.google.android.gms.tasks.TaskCompletionSource;

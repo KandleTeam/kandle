@@ -1,4 +1,4 @@
-package ch.epfl.sdp.kandle;
+package ch.epfl.sdp.kandle.activity;
 
 import android.content.res.Resources;
 
@@ -12,9 +12,12 @@ import androidx.test.espresso.contrib.DrawerActions;
 import androidx.test.espresso.contrib.NavigationViewActions;
 import androidx.test.espresso.intent.rule.IntentsTestRule;
 
+import androidx.test.espresso.matcher.ViewMatchers;
 import androidx.test.rule.GrantPermissionRule;
 import java.util.HashMap;
 
+import ch.epfl.sdp.kandle.Kandle;
+import ch.epfl.sdp.kandle.R;
 import ch.epfl.sdp.kandle.entities.post.Post;
 import ch.epfl.sdp.kandle.entities.user.LoggedInUser;
 import ch.epfl.sdp.kandle.entities.user.User;
@@ -88,7 +91,7 @@ public class RegisterActivityTest {
     @Test
     public void errorsInForm() {
 
-        onView(withId(R.id.loginBtn)).perform(click());
+        onView(ViewMatchers.withId(R.id.loginBtn)).perform(click());
         onView(withId(R.id.username)).check(matches(hasErrorText(res.getString(R.string.registerUsernameRequired))));
 
         onView(withId(R.id.username)).perform(typeText("test"));

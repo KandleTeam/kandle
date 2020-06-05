@@ -5,7 +5,7 @@ import com.google.android.gms.tasks.TaskCompletionSource;
 
 import java.util.Map;
 
-import ch.epfl.sdp.kandle.authentification.Authentication;
+import ch.epfl.sdp.kandle.authentication.Authentication;
 import ch.epfl.sdp.kandle.entities.user.LoggedInUser;
 import ch.epfl.sdp.kandle.entities.user.User;
 

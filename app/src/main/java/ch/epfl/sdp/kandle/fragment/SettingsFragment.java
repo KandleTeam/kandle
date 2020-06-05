@@ -17,7 +17,7 @@ import androidx.fragment.app.Fragment;
 import ch.epfl.sdp.kandle.entities.user.LoggedInUser;
 import ch.epfl.sdp.kandle.R;
 import ch.epfl.sdp.kandle.activity.LoginActivity;
-import ch.epfl.sdp.kandle.authentification.Authentication;
+import ch.epfl.sdp.kandle.authentication.Authentication;
 import ch.epfl.sdp.kandle.dependencies.DependencyManager;
 
 public class SettingsFragment extends Fragment {

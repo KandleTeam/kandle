@@ -1,4 +1,4 @@
-package ch.epfl.sdp.kandle;
+package ch.epfl.sdp.kandle.fragment;
 
 import android.view.Gravity;
 import android.view.View;
@@ -9,6 +9,7 @@ import androidx.test.espresso.NoMatchingViewException;
 import androidx.test.espresso.ViewAssertion;
 import androidx.test.espresso.contrib.DrawerActions;
 import androidx.test.espresso.contrib.NavigationViewActions;
+import androidx.test.espresso.matcher.ViewMatchers;
 import androidx.test.rule.ActivityTestRule;
 import androidx.test.rule.GrantPermissionRule;
 
@@ -20,7 +21,7 @@ import static androidx.test.espresso.contrib.RecyclerViewActions.scrollToPositio
 import static androidx.test.espresso.matcher.ViewMatchers.hasDescendant;
 import static androidx.test.espresso.matcher.ViewMatchers.withId;
 import static androidx.test.espresso.matcher.ViewMatchers.withText;
-import static ch.epfl.sdp.kandle.ProfileFragmentTest.atPosition;
+import static ch.epfl.sdp.kandle.fragment.ProfileFragmentTest.atPosition;
 import static ch.epfl.sdp.kandle.dependencies.DependencyManager.getDatabaseSystem;
 import static junit.framework.TestCase.assertEquals;
 import static org.hamcrest.Matchers.is;
@@ -34,6 +35,8 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.LinkedList;
 
+import ch.epfl.sdp.kandle.Kandle;
+import ch.epfl.sdp.kandle.R;
 import ch.epfl.sdp.kandle.activity.OfflineGameActivity;
 import ch.epfl.sdp.kandle.entities.post.Post;
 import ch.epfl.sdp.kandle.entities.user.LoggedInUser;
@@ -132,7 +135,7 @@ public class AchievementTest {
     @Test
     public void allTypesOfAchievementsNotDone(){
         setFragment();
-        onView(withId(R.id.flAchievements)).check(new AchievementTest.RecyclerViewItemCountAssertion(13));
+        onView(ViewMatchers.withId(R.id.flAchievements)).check(new AchievementTest.RecyclerViewItemCountAssertion(13));
         //onView(withId(R.id.flPosts)).perform(RecyclerViewActions.actionOnItemAtPosition(0, click()));
         onView(withId(R.id.flAchievements)).check(matches(atPosition(0, hasDescendant(withText("Still Not Completed !")))));
         onView(withId(R.id.flAchievements)).check(matches(atPosition(3, hasDescendant(withText("Still Not Completed !")))));

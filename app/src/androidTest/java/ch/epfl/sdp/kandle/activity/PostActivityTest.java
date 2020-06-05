@@ -1,4 +1,4 @@
-package ch.epfl.sdp.kandle;
+package ch.epfl.sdp.kandle.activity;
 
 import android.app.Activity;
 import android.app.Instrumentation;
@@ -9,6 +9,7 @@ import android.provider.MediaStore;
 import androidx.room.Room;
 import androidx.test.espresso.contrib.PickerActions;
 import androidx.test.espresso.intent.rule.IntentsTestRule;
+import androidx.test.espresso.matcher.ViewMatchers;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 import androidx.test.rule.GrantPermissionRule;
 
@@ -19,6 +20,8 @@ import org.junit.runner.RunWith;
 
 import java.util.HashMap;
 
+import ch.epfl.sdp.kandle.Kandle;
+import ch.epfl.sdp.kandle.R;
 import ch.epfl.sdp.kandle.activity.PhotoEditorActivity;
 import ch.epfl.sdp.kandle.activity.PostActivity;
 import ch.epfl.sdp.kandle.dependencies.DependencyManager;
@@ -90,7 +93,7 @@ public class PostActivityTest {
     }
     @Test
     public void postEmptyGetsErrorMessage(){
-        onView(withId(R.id.postText)).perform(typeText("     "));
+        onView(ViewMatchers.withId(R.id.postText)).perform(typeText("     "));
         onView(withId (R.id.postText)).perform(closeSoftKeyboard());
         onView(withId(R.id.postButton)).perform(click());
         onView(withId(R.id.postText)).check(matches(hasErrorText("Your post is empty...")));

@@ -1,4 +1,4 @@
-package ch.epfl.sdp.kandle;
+package ch.epfl.sdp.kandle.activity;
 
 
 import android.Manifest;
@@ -14,6 +14,7 @@ import androidx.test.core.app.ApplicationProvider;
 import androidx.test.espresso.contrib.DrawerActions;
 import androidx.test.espresso.contrib.NavigationViewActions;
 import androidx.test.espresso.intent.Intents;
+import androidx.test.espresso.matcher.ViewMatchers;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 import androidx.test.rule.ActivityTestRule;
 import androidx.test.rule.GrantPermissionRule;
@@ -21,6 +22,8 @@ import androidx.test.rule.GrantPermissionRule;
 import java.util.HashMap;
 
 
+import ch.epfl.sdp.kandle.Kandle;
+import ch.epfl.sdp.kandle.R;
 import ch.epfl.sdp.kandle.entities.user.LoggedInUser;
 import ch.epfl.sdp.kandle.entities.user.User;
 import ch.epfl.sdp.kandle.storage.room.LocalDatabase;
@@ -94,7 +97,7 @@ public class LoginActivityTest {
     @Test
     public void authenticationTestWhereUserExists() {
         Intents.init();
-        onView(withId(R.id.email)).perform(typeText(alreadyHasAnAccount.getEmail()));
+        onView(ViewMatchers.withId(R.id.email)).perform(typeText(alreadyHasAnAccount.getEmail()));
         onView(withId(R.id.email)).perform(closeSoftKeyboard());
         onView(withId(R.id.password)).perform(typeText("123456789"));
         onView(withId(R.id.password)).perform(closeSoftKeyboard());

@@ -1,4 +1,4 @@
-package ch.epfl.sdp.kandle;
+package ch.epfl.sdp.kandle.activity;
 
 import android.view.Gravity;
 import org.junit.After;
@@ -6,11 +6,14 @@ import org.junit.Rule;
 import org.junit.Test;
 
 import androidx.room.Room;
+import androidx.test.espresso.matcher.ViewMatchers;
 import androidx.test.rule.GrantPermissionRule;
 import androidx.test.rule.ActivityTestRule;
 
 import java.util.HashMap;
 
+import ch.epfl.sdp.kandle.Kandle;
+import ch.epfl.sdp.kandle.R;
 import ch.epfl.sdp.kandle.entities.post.Post;
 import ch.epfl.sdp.kandle.entities.user.LoggedInUser;
 import ch.epfl.sdp.kandle.entities.user.User;
@@ -71,7 +74,7 @@ public class LoginActivityTestAlreadyLoggedIn {
 
     @Test
     public void checkAutomaticLogIn(){
-        onView(withId(R.id.drawer_layout)).check(matches(isClosed(Gravity.LEFT)));
+        onView(ViewMatchers.withId(R.id.drawer_layout)).check(matches(isClosed(Gravity.LEFT)));
     }
 
 

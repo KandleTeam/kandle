@@ -1,8 +1,6 @@
 package ch.epfl.sdp.kandle.activity;
 
 
-import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
@@ -34,7 +32,7 @@ import java.util.Random;
 import ch.epfl.sdp.kandle.entities.post.Post;
 import ch.epfl.sdp.kandle.utils.PostCamera;
 import ch.epfl.sdp.kandle.R;
-import ch.epfl.sdp.kandle.authentification.Authentication;
+import ch.epfl.sdp.kandle.authentication.Authentication;
 import ch.epfl.sdp.kandle.storage.Database;
 import ch.epfl.sdp.kandle.fragment.YourPostListFragment;
 import ch.epfl.sdp.kandle.utils.imagePicker.ImagePicker;

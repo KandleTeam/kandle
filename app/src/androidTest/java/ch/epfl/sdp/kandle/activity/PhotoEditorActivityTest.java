@@ -1,5 +1,6 @@
-package ch.epfl.sdp.kandle;
+package ch.epfl.sdp.kandle.activity;
 
+import androidx.test.espresso.matcher.ViewMatchers;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 import androidx.test.rule.ActivityTestRule;
 
@@ -7,6 +8,7 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import ch.epfl.sdp.kandle.R;
 import ch.epfl.sdp.kandle.activity.PhotoEditorActivity;
 
 import static androidx.test.espresso.Espresso.onView;
@@ -31,7 +33,7 @@ public class PhotoEditorActivityTest {
 
     @Test
     public void brushAndColor()  {
-        onView(withId(R.id.brushButton)).perform(click());
+        onView(ViewMatchers.withId(R.id.brushButton)).perform(click());
         onView(withId(R.id.okColorButton)).perform(click());
     }
 

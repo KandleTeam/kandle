@@ -20,7 +20,7 @@ import com.squareup.picasso.Picasso;
 
 import ch.epfl.sdp.kandle.entities.user.LoggedInUser;
 import ch.epfl.sdp.kandle.R;
-import ch.epfl.sdp.kandle.authentification.Authentication;
+import ch.epfl.sdp.kandle.authentication.Authentication;
 import ch.epfl.sdp.kandle.fragment.AboutFragment;
 import ch.epfl.sdp.kandle.fragment.AchievementFragment;
 import ch.epfl.sdp.kandle.fragment.EventListFragment;

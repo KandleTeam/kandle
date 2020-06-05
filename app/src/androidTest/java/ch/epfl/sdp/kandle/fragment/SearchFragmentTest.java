@@ -1,4 +1,4 @@
-package ch.epfl.sdp.kandle;
+package ch.epfl.sdp.kandle.fragment;
 
 import android.view.Gravity;
 import android.view.View;
@@ -9,6 +9,7 @@ import androidx.test.espresso.ViewAction;
 import androidx.test.espresso.contrib.DrawerActions;
 import androidx.test.espresso.contrib.NavigationViewActions;
 import androidx.test.espresso.contrib.RecyclerViewActions;
+import androidx.test.espresso.matcher.ViewMatchers;
 import androidx.test.rule.ActivityTestRule;
 import androidx.test.rule.GrantPermissionRule;
 
@@ -21,6 +22,8 @@ import org.junit.Test;
 import java.util.HashMap;
 import java.util.LinkedList;
 
+import ch.epfl.sdp.kandle.Kandle;
+import ch.epfl.sdp.kandle.R;
 import ch.epfl.sdp.kandle.activity.MainActivity;
 import ch.epfl.sdp.kandle.dependencies.DependencyManager;
 import ch.epfl.sdp.kandle.dependencies.MockAuthentication;
@@ -43,7 +46,7 @@ import static androidx.test.espresso.contrib.DrawerMatchers.isClosed;
 import static androidx.test.espresso.matcher.ViewMatchers.hasDescendant;
 import static androidx.test.espresso.matcher.ViewMatchers.withId;
 import static androidx.test.espresso.matcher.ViewMatchers.withText;
-import static ch.epfl.sdp.kandle.ProfileFragmentTest.atPosition;
+import static ch.epfl.sdp.kandle.fragment.ProfileFragmentTest.atPosition;
 import static ch.epfl.sdp.kandle.dependencies.DependencyManager.getDatabaseSystem;
 
 public class SearchFragmentTest {
@@ -122,7 +125,7 @@ public class SearchFragmentTest {
 
     @Before
     public void loadFragment() {
-        onView(withId(R.id.drawer_layout)).check(matches(isClosed(Gravity.LEFT))).perform(DrawerActions.open());
+        onView(ViewMatchers.withId(R.id.drawer_layout)).check(matches(isClosed(Gravity.LEFT))).perform(DrawerActions.open());
         onView(withId(R.id.navigation_view)).perform(NavigationViewActions.navigateTo(R.id.follow));
     }
 

@@ -1,4 +1,4 @@
-package ch.epfl.sdp.kandle;
+package ch.epfl.sdp.kandle.activity;
 
 import android.Manifest;
 import android.app.Activity;
@@ -8,6 +8,7 @@ import android.net.Uri;
 
 import androidx.room.Room;
 import androidx.test.espresso.intent.rule.IntentsTestRule;
+import androidx.test.espresso.matcher.ViewMatchers;
 import androidx.test.rule.GrantPermissionRule;
 
 import org.junit.After;
@@ -16,6 +17,8 @@ import org.junit.Test;
 
 import java.util.HashMap;
 
+import ch.epfl.sdp.kandle.Kandle;
+import ch.epfl.sdp.kandle.R;
 import ch.epfl.sdp.kandle.entities.post.Post;
 import ch.epfl.sdp.kandle.entities.user.LoggedInUser;
 import ch.epfl.sdp.kandle.entities.user.User;
@@ -85,7 +88,7 @@ public class CustomAccountActivityTest {
 
     @Test
     public void enterUsername() {
-        onView(withId(R.id.nickname)).perform(typeText("User 1"));
+        onView(ViewMatchers.withId(R.id.nickname)).perform(typeText("User 1"));
         onView(withId(R.id.nickname)).perform(closeSoftKeyboard());
         onView(withId(R.id.startButton)).perform(click());
         String nickname = DependencyManager.getAuthSystem().getCurrentUser().getNickname();

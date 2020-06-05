@@ -1,10 +1,11 @@
-package ch.epfl.sdp.kandle;
+package ch.epfl.sdp.kandle.fragment;
 
 import android.view.Gravity;
 
 import androidx.room.Room;
 import androidx.test.espresso.contrib.DrawerActions;
 import androidx.test.espresso.contrib.NavigationViewActions;
+import androidx.test.espresso.matcher.ViewMatchers;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 import androidx.test.rule.ActivityTestRule;
 
@@ -19,6 +20,9 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
+import ch.epfl.sdp.kandle.Kandle;
+import ch.epfl.sdp.kandle.R;
+import ch.epfl.sdp.kandle.RecyclerViewMatcher;
 import ch.epfl.sdp.kandle.activity.MainActivity;
 import ch.epfl.sdp.kandle.dependencies.DependencyManager;
 import ch.epfl.sdp.kandle.dependencies.MockAuthentication;
@@ -84,7 +88,7 @@ public class EventListFragmentTest {
 
     @Before
     public void loadPostView() {
-        onView(withId(R.id.drawer_layout)).check(matches(isClosed(Gravity.LEFT))).perform(DrawerActions.open());
+        onView(ViewMatchers.withId(R.id.drawer_layout)).check(matches(isClosed(Gravity.LEFT))).perform(DrawerActions.open());
         onView(withId(R.id.navigation_view)).perform(NavigationViewActions.navigateTo(R.id.incoming_events));
         onView(withId(R.id.drawer_layout)).perform(DrawerActions.close());
     }

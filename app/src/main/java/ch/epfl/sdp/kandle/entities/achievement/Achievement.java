@@ -2,7 +2,7 @@ package ch.epfl.sdp.kandle.entities.achievement;
 
 import android.util.Log;
 
-import ch.epfl.sdp.kandle.authentification.Authentication;
+import ch.epfl.sdp.kandle.authentication.Authentication;
 import ch.epfl.sdp.kandle.storage.Database;
 import ch.epfl.sdp.kandle.dependencies.DependencyManager;
 import ch.epfl.sdp.kandle.fragment.ProfileFragment;

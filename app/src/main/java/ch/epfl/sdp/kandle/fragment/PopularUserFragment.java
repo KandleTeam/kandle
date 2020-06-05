@@ -22,7 +22,7 @@ import java.util.Map;
 import ch.epfl.sdp.kandle.R;
 import ch.epfl.sdp.kandle.entities.user.User;
 import ch.epfl.sdp.kandle.entities.user.UserAdapter;
-import ch.epfl.sdp.kandle.authentification.Authentication;
+import ch.epfl.sdp.kandle.authentication.Authentication;
 import ch.epfl.sdp.kandle.storage.Database;
 import ch.epfl.sdp.kandle.dependencies.DependencyManager;
 import ch.epfl.sdp.kandle.storage.caching.CachedFirestoreDatabase;

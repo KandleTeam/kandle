@@ -1,4 +1,4 @@
-package ch.epfl.sdp.kandle;
+package ch.epfl.sdp.kandle.fragment;
 
 
 import android.location.Location;
@@ -21,6 +21,9 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.LinkedList;
 
+import ch.epfl.sdp.kandle.Kandle;
+import ch.epfl.sdp.kandle.R;
+import ch.epfl.sdp.kandle.RecyclerViewItemCountAssertion;
 import ch.epfl.sdp.kandle.entities.post.Post;
 import ch.epfl.sdp.kandle.entities.user.LoggedInUser;
 import ch.epfl.sdp.kandle.entities.user.User;
@@ -130,7 +133,7 @@ public class MapViewFragmentTest {
         Thread.sleep(2000);
         ((MapViewFragment) intentsRule.getActivity().getCurrentFragment()).goToPostFragment("closePostId", new Location("mock"));
 
-        onView(withId(R.id.postFragmentProfilePicture)).check(matches(withTagValue(is(PostFragment.PROFILE_PICTURE_IMAGE))));
+        onView(ViewMatchers.withId(R.id.postFragmentProfilePicture)).check(matches(withTagValue(is(PostFragment.PROFILE_PICTURE_IMAGE))));
         onView(withId(R.id.postFragmentPostImage)).check(matches(not(withTagValue(is(PostFragment.POST_IMAGE)))));
 
         onView(withId(R.id.postFragmentFollowButton)).check(matches(withEffectiveVisibility(ViewMatchers.Visibility.GONE)));

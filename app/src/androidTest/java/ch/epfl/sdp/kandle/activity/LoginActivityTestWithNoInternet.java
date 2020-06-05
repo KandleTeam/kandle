@@ -1,10 +1,11 @@
-package ch.epfl.sdp.kandle;
+package ch.epfl.sdp.kandle.activity;
 
 import android.Manifest;
 import android.content.res.Resources;
 
 import androidx.room.Room;
 import androidx.test.core.app.ApplicationProvider;
+import androidx.test.espresso.matcher.ViewMatchers;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 import androidx.test.rule.ActivityTestRule;
 import androidx.test.rule.GrantPermissionRule;
@@ -15,6 +16,8 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import java.util.HashMap;
 
+import ch.epfl.sdp.kandle.Kandle;
+import ch.epfl.sdp.kandle.R;
 import ch.epfl.sdp.kandle.entities.user.LoggedInUser;
 import ch.epfl.sdp.kandle.entities.user.User;
 import ch.epfl.sdp.kandle.storage.room.LocalDatabase;
@@ -71,7 +74,7 @@ public class LoginActivityTestWithNoInternet {
 
     @Test
     public void doNotHaveInternetWhenLoginIn() {
-        onView(withId(R.id.email)).perform(typeText("user1@kandle.ch"));
+        onView(ViewMatchers.withId(R.id.email)).perform(typeText("user1@kandle.ch"));
         onView(withId(R.id.email)).perform(closeSoftKeyboard());
         onView(withId(R.id.password)).perform(typeText("123456789"));
         onView(withId(R.id.password)).perform(closeSoftKeyboard());

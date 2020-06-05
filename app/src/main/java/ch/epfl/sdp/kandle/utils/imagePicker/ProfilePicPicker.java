@@ -7,7 +7,7 @@ import android.provider.MediaStore;
 import com.google.android.gms.tasks.Task;
 
 import ch.epfl.sdp.kandle.Kandle;
-import ch.epfl.sdp.kandle.authentification.Authentication;
+import ch.epfl.sdp.kandle.authentication.Authentication;
 import ch.epfl.sdp.kandle.dependencies.DependencyManager;
 import ch.epfl.sdp.kandle.storage.caching.CachedFirestoreDatabase;
 
