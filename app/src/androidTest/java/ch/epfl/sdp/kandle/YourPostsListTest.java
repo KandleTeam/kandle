@@ -325,7 +325,7 @@ public class YourPostsListTest {
     public void EditPostTextTest() throws InterruptedException {
         onView(withId(R.id.rvPosts)).perform(RecyclerViewActions.actionOnItemAtPosition(0, clickChildViewWithId(R.id.editButton)));
         Thread.sleep(1000);
-        onView(withId(R.id.postText)).perform(replaceText("   Salut Salut  "));
+        onView(withId(R.id.postText)).perform(replaceText("Salut Salut"));
         onView(withId(R.id.postText)).perform(closeSoftKeyboard());
         onView(withId(R.id.postButton)).perform(click());
         loadPostView();
