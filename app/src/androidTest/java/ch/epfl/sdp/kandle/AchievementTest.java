@@ -38,7 +38,6 @@ import ch.epfl.sdp.kandle.activity.OfflineGameActivity;
 import ch.epfl.sdp.kandle.entities.post.Post;
 import ch.epfl.sdp.kandle.entities.user.LoggedInUser;
 import ch.epfl.sdp.kandle.entities.user.User;
-import ch.epfl.sdp.kandle.storage.caching.CachedFirestoreDatabase;
 import ch.epfl.sdp.kandle.storage.room.LocalDatabase;
 import ch.epfl.sdp.kandle.activity.MainActivity;
 import ch.epfl.sdp.kandle.dependencies.DependencyManager;
@@ -105,7 +104,7 @@ public class AchievementTest {
                     network = new MockNetwork(true);
                     localDatabase = Room.inMemoryDatabaseBuilder(Kandle.getContext(), LocalDatabase.class).allowMainThreadQueries().build();
                     localDatabase.userDao().insertUser(LoggedInUser.getInstance());
-                    DependencyManager.setFreshTestDependencies(authentication, db, storage, internalStorage, network, localDatabase,  CachedFirestoreDatabase.getInstance());
+                    DependencyManager.setFreshTestDependencies(authentication, db, storage, internalStorage, network, localDatabase);
                     getDatabaseSystem().createUser(user1);
                     getDatabaseSystem().createUser(user2);
                     getDatabaseSystem().createUser(user3);

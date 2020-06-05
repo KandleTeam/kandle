@@ -77,7 +77,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder> {
         final Post post = mPosts.get(position);
 
         auth = DependencyManager.getAuthSystem();
-        database = DependencyManager.getCachedDatabase();
+        database = new CachedFirestoreDatabase();
 
         userId = auth.getCurrentUser().getId();
         DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");

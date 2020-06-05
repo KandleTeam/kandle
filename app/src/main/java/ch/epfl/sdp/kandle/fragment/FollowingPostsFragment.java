@@ -45,7 +45,7 @@ public class FollowingPostsFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
         auth = DependencyManager.getAuthSystem();
-        database = DependencyManager.getCachedDatabase();
+        database = new CachedFirestoreDatabase();
         rootView = inflater.inflate(R.layout.fragment_following_posts, container, false);
         flPosts = rootView.findViewById(R.id.flPosts);
         flPosts.setLayoutManager(new LinearLayoutManager(this.getContext()));

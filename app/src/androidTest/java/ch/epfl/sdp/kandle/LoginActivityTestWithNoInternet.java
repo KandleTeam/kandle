@@ -17,7 +17,6 @@ import java.util.HashMap;
 
 import ch.epfl.sdp.kandle.entities.user.LoggedInUser;
 import ch.epfl.sdp.kandle.entities.user.User;
-import ch.epfl.sdp.kandle.storage.caching.CachedFirestoreDatabase;
 import ch.epfl.sdp.kandle.storage.room.LocalDatabase;
 import ch.epfl.sdp.kandle.activity.LoginActivity;
 import ch.epfl.sdp.kandle.dependencies.DependencyManager;
@@ -56,7 +55,7 @@ public class LoginActivityTestWithNoInternet {
                     MockInternalStorage internalStorage = new MockInternalStorage(false,new HashMap<>());
                     MockNetwork network = new MockNetwork(false);
                     localDatabase = Room.inMemoryDatabaseBuilder(Kandle.getContext(), LocalDatabase.class).allowMainThreadQueries().build();
-                    DependencyManager.setFreshTestDependencies(authentication, db, storage, internalStorage, network, localDatabase,  CachedFirestoreDatabase.getInstance());
+                    DependencyManager.setFreshTestDependencies(authentication, db, storage,internalStorage,network,localDatabase);
                 }
             };
 

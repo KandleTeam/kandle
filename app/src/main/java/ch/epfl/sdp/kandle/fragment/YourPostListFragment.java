@@ -34,7 +34,7 @@ public class YourPostListFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
 
-        Database database = DependencyManager.getCachedDatabase();
+        Database database = new CachedFirestoreDatabase();
         String userId = DependencyManager.getAuthSystem().getCurrentUser().getId();
 
         database.getPostsByUserId(userId).addOnSuccessListener(posts -> {

@@ -52,7 +52,7 @@ public class OfflineUnconnectedGameActivityTest {
                     MockInternalStorage internalStorage = new MockInternalStorage(new HashMap<>());
                     network = new MockNetwork(false);
                     localDatabase = Room.inMemoryDatabaseBuilder(Kandle.getContext(), LocalDatabase.class).allowMainThreadQueries().build();
-                    DependencyManager.setFreshTestDependencies(authentication, db, storage, internalStorage, network, localDatabase,  CachedFirestoreDatabase.getInstance());
+                    DependencyManager.setFreshTestDependencies(authentication, db, storage, internalStorage, network, localDatabase);
                 }
             };
 

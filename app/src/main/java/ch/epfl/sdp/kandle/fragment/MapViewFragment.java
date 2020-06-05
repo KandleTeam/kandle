@@ -120,7 +120,7 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback, Per
         Bitmap mBitmapLandmark = BitmapUtils.getBitmapFromDrawable(drawableLandMark);
         landmarkIcon = iconFactory.fromBitmap(mBitmapLandmark);
 
-        database = DependencyManager.getCachedDatabase();
+        database = new CachedFirestoreDatabase();
 
         ImageButton mGameButton = view.findViewById(R.id.startOfflineGameConnectedButton);
 

@@ -57,7 +57,7 @@ public class PopularUserFragment extends Fragment {
                              Bundle savedInstanceState) {
 
         auth = DependencyManager.getAuthSystem();
-        database = DependencyManager.getCachedDatabase();
+        database = new CachedFirestoreDatabase();
 
         View view = inflater.inflate(R.layout.fragment_list_users, container, false);
 

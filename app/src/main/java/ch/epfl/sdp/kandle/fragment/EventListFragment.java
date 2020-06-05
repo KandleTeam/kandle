@@ -32,7 +32,7 @@ public class EventListFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
-        Database database = DependencyManager.getCachedDatabase();
+        Database database = new CachedFirestoreDatabase();
 
         database.getParticipatingEvents().addOnCompleteListener(task -> {
             if (task.isSuccessful() && task.getResult()!=null) {

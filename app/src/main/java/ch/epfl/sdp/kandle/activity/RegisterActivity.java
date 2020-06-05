@@ -39,7 +39,7 @@ public class RegisterActivity extends AppCompatActivity {
         mPasswordConfirm = findViewById(R.id.passwordConfirm);
         Button mSignUpBtn = findViewById(R.id.loginBtn);
         TextView mSignInLink = findViewById(R.id.signInLink);
-        database = DependencyManager.getCachedDatabase();
+        database = new CachedFirestoreDatabase();
 
         mSignInLink.setOnClickListener(v -> {
             startActivity(new Intent(getApplicationContext(), LoginActivity.class));

@@ -2,12 +2,15 @@ package ch.epfl.sdp.kandle.storage.caching;
 
 
 import android.util.Log;
+
 import com.google.android.gms.tasks.Task;
 import com.google.android.gms.tasks.TaskCompletionSource;
+
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
+
 import ch.epfl.sdp.kandle.entities.user.LoggedInUser;
 import ch.epfl.sdp.kandle.entities.post.Post;
 import ch.epfl.sdp.kandle.entities.user.User;
@@ -20,21 +23,17 @@ import ch.epfl.sdp.kandle.storage.room.PostDao;
 import ch.epfl.sdp.kandle.storage.room.UserDao;
 
 public class CachedFirestoreDatabase implements Database {
-    private static final CachedFirestoreDatabase INSTANCE = new CachedFirestoreDatabase();
+
     private final Database database = DependencyManager.getDatabaseSystem();
     private final InternalStorage internalStorage = DependencyManager.getInternalStorageSystem();
     private final LocalDatabase localDatabase = DependencyManager.getLocalDatabase();
     private final UserDao userDao;
     private final PostDao postDao;
 
-    private  CachedFirestoreDatabase() {
+    public CachedFirestoreDatabase() {
         userDao = localDatabase.userDao();
         postDao = localDatabase.postDao();
 
-    }
-
-    public static CachedFirestoreDatabase getInstance() {
-        return INSTANCE;
     }
 
     @SuppressWarnings("unchecked")

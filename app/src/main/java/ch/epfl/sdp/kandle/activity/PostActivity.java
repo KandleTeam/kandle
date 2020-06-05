@@ -31,7 +31,6 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.Random;
 
-import ch.epfl.sdp.kandle.dependencies.DependencyManager;
 import ch.epfl.sdp.kandle.entities.post.Post;
 import ch.epfl.sdp.kandle.utils.PostCamera;
 import ch.epfl.sdp.kandle.R;
@@ -105,7 +104,7 @@ public class PostActivity extends AppCompatActivity {
         postCamera = new PostCamera(this);
 
         auth = getAuthSystem();
-        database = DependencyManager.getCachedDatabase();
+        database = new CachedFirestoreDatabase();
 
         if (postId != null) {
             database.getPostByPostId(postId).addOnCompleteListener(task -> {
