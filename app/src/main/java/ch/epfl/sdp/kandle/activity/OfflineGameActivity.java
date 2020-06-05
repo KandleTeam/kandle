@@ -18,7 +18,7 @@ import ch.epfl.sdp.kandle.dependencies.DependencyManager;
 public class OfflineGameActivity extends AppCompatActivity {
 
     public final static int MAX_NB_VIRUS = 10;
-    public final int APPEARING_TIME = 3000; //in ms
+    public final static int APPEARING_TIME = 750; //in ms - it will determine the game difficulty
 
     private ImageButton mVirusButton;
     private ImageButton mStartButton;
