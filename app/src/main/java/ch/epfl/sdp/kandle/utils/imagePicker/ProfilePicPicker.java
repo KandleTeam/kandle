@@ -9,6 +9,7 @@ import com.google.android.gms.tasks.Task;
 import ch.epfl.sdp.kandle.Kandle;
 import ch.epfl.sdp.kandle.authentification.Authentication;
 import ch.epfl.sdp.kandle.dependencies.DependencyManager;
+import ch.epfl.sdp.kandle.storage.Database;
 import ch.epfl.sdp.kandle.storage.caching.CachedFirestoreDatabase;
 
 public class ProfilePicPicker extends ImagePicker {
@@ -21,7 +22,7 @@ public class ProfilePicPicker extends ImagePicker {
      * @return a task finishing when the new profile picture has been stored and set in the database
      */
     public static Task<Void> setProfilePicture(Uri imageUri) {
-        CachedFirestoreDatabase database = new CachedFirestoreDatabase();
+        Database database = DependencyManager.getCachedDatabase();
         Authentication auth = DependencyManager.getAuthSystem();
         String url = auth.getCurrentUser().getImageURL();
         if (url != null) {

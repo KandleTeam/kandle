@@ -20,6 +20,7 @@ import java.util.List;
 import ch.epfl.sdp.kandle.Kandle;
 import ch.epfl.sdp.kandle.R;
 import ch.epfl.sdp.kandle.dependencies.DependencyManager;
+import ch.epfl.sdp.kandle.storage.Database;
 import ch.epfl.sdp.kandle.storage.caching.CachedFirestoreDatabase;
 import de.hdodenhof.circleimageview.CircleImageView;
 
@@ -66,7 +67,7 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.ViewHolder> {
 
 
         final User currentUser = DependencyManager.getAuthSystem().getCurrentUser();
-        final CachedFirestoreDatabase database = new CachedFirestoreDatabase();
+        final CachedFirestoreDatabase database =(CachedFirestoreDatabase) DependencyManager.getCachedDatabase();
 
         setupUserImage(holder, user);
 

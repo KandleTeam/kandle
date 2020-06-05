@@ -50,6 +50,7 @@ import ch.epfl.sdp.kandle.dependencies.DependencyManager;
 import ch.epfl.sdp.kandle.entities.post.Post;
 import ch.epfl.sdp.kandle.entities.user.LoggedInUser;
 import ch.epfl.sdp.kandle.entities.user.User;
+import ch.epfl.sdp.kandle.storage.Database;
 import ch.epfl.sdp.kandle.storage.caching.CachedFirestoreDatabase;
 
 public class MapViewFragment extends Fragment implements OnMapReadyCallback, PermissionsListener {
@@ -66,7 +67,7 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback, Per
     private static Icon postIconSmall, postIconMedium, postIconLarge, landmarkIcon;
     private int numMarkers;
 
-    private CachedFirestoreDatabase database;
+    private Database database;
 
     private Location currentLocation;
     private MapView mapView;
@@ -119,7 +120,7 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback, Per
         Bitmap mBitmapLandmark = BitmapUtils.getBitmapFromDrawable(drawableLandMark);
         landmarkIcon = iconFactory.fromBitmap(mBitmapLandmark);
 
-        database = new CachedFirestoreDatabase();
+        database = DependencyManager.getCachedDatabase();
 
         ImageButton mGameButton = view.findViewById(R.id.startOfflineGameConnectedButton);
 

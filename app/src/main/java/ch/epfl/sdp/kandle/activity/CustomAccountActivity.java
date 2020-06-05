@@ -13,6 +13,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.google.android.gms.tasks.Task;
 
 import ch.epfl.sdp.kandle.R;
+import ch.epfl.sdp.kandle.dependencies.DependencyManager;
 import ch.epfl.sdp.kandle.storage.Database;
 import ch.epfl.sdp.kandle.utils.imagePicker.ProfilePicPicker;
 import ch.epfl.sdp.kandle.storage.caching.CachedFirestoreDatabase;
@@ -36,7 +37,7 @@ public class CustomAccountActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_custom_account);
 
-        database = new CachedFirestoreDatabase();
+        database = DependencyManager.getCachedDatabase();
 
         Button uploadButton = findViewById(R.id.button);
         Button leaveButton = findViewById(R.id.startButton);
