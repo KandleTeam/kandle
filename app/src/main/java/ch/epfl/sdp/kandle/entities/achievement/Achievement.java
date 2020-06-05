@@ -1,5 +1,6 @@
 package ch.epfl.sdp.kandle.entities.achievement;
 
+import android.annotation.SuppressLint;
 import android.util.Log;
 
 import ch.epfl.sdp.kandle.authentification.Authentication;
@@ -68,7 +69,7 @@ public class Achievement {
             case NB_LIKES_POSTS_TOTAL:
                 return String.format("You need to have in total with %d likes in a post", goalValue);
             case OFFLINE_GAME_POINTS:
-                return String.format("You need to have in total %d points in the Offline Game", goalValue)
+                return String.format("You need to have in total %d points in the Offline Game", goalValue);
             //THIS CASE IS NEVER REACHED
             default:
                 return String.format("");
@@ -223,7 +224,7 @@ public class Achievement {
     }
 
     public void checkPointsOfflineGame(boolean isAchievementFragment){
-        if(auth.getCurrentUser().getHighScore() >= goal_value){
+        if(auth.getCurrentUser().getHighScore() >= goalValue){
             state_achievement = true;
             if(isAchievementFragment){
                 try {

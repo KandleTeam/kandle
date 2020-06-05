@@ -132,7 +132,7 @@ public class ProfileFragment extends Fragment {
     }
 
     private void setupAchievements() {
-        AchievementFragment.getAchievements(achievements);
+        AchievementFragment.getAchievements(achievements, null);
         nbValidatedAchievements = 0;
         for (Achievement achievement : achievements) {
             achievement.setProfileFragment(this);

@@ -44,6 +44,7 @@ public class AchievementFragment extends Fragment {
         createAchievements(achievements, NUMBER_FOLLOWERS_ACHIEVEMENTS, SCALE_FOLLOWERS_ACHIEVEMENTS, Achievement.Achievement_type.FOLLOWERS, achievementAdapter);
         createAchievements(achievements, NUMBER_LIKES_POST_ACHIEVEMENTS, SCALE_LIKES_POST_ACHIEVEMENTS, Achievement.Achievement_type.NB_LIKES_POST, achievementAdapter);
         createAchievements(achievements, NUMBER_LIKES_TOTAL_ACHIEVEMENTS, SCALE_LIKES_TOTAL_ACHIEVEMENTS, Achievement.Achievement_type.NB_LIKES_POSTS_TOTAL, achievementAdapter);
+        createAchievements(achievements, 2, 5, Achievement.Achievement_type.OFFLINE_GAME_POINTS, achievementAdapter);
     }
 
     @Nullable
@@ -65,6 +66,4 @@ public class AchievementFragment extends Fragment {
             achievements.add(new Achievement(typeOfAchievement, i * scaleIncrementation, achievementAdapter, null));
         }
     }
-
-
 }
