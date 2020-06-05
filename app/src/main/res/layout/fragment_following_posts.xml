@@ -3,14 +3,13 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    tools:context=".fragment.FollowingPostsFragment"
-    android:layout_marginTop="10dp">
+    android:layout_marginTop="10dp"
+    tools:context=".fragment.FollowingPostsFragment">
 
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/flPosts"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        />
+        android:layout_height="match_parent" />
 
 </FrameLayout>

@@ -1,17 +1,16 @@
 package ch.epfl.sdp.kandle.entities.user;
 
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
 import androidx.annotation.NonNull;
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 import androidx.room.Ignore;
 import androidx.room.PrimaryKey;
 import androidx.room.TypeConverters;
-
-import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-
 import ch.epfl.sdp.kandle.storage.room.Converters;
 
 import static ch.epfl.sdp.kandle.storage.room.UserDao.USER_ATTR_EMAIL;

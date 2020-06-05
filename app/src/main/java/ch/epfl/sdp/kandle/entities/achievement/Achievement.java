@@ -3,9 +3,9 @@ package ch.epfl.sdp.kandle.entities.achievement;
 import android.util.Log;
 
 import ch.epfl.sdp.kandle.authentification.Authentication;
-import ch.epfl.sdp.kandle.storage.Database;
 import ch.epfl.sdp.kandle.dependencies.DependencyManager;
 import ch.epfl.sdp.kandle.fragment.ProfileFragment;
+import ch.epfl.sdp.kandle.storage.Database;
 
 import static androidx.constraintlayout.widget.Constraints.TAG;
 
@@ -27,7 +27,7 @@ public class Achievement {
         auth = DependencyManager.getAuthSystem();
         database = DependencyManager.getDatabaseSystem();
         this.fragment = fragment;
-        if(auth.getCurrentUser() == null){
+        if (auth.getCurrentUser() == null) {
         }
     }
 
@@ -35,7 +35,7 @@ public class Achievement {
         return state_achievement ? "Achievement Completed !" : "Still Not Completed !";
     }
 
-    public void setProfileFragment(ProfileFragment fragment){
+    public void setProfileFragment(ProfileFragment fragment) {
         this.fragment = fragment;
     }
 
@@ -72,54 +72,52 @@ public class Achievement {
     }
 
     public void checkAchievement(boolean isAchievementFragment) {
-            if(state_achievement){
+        if (state_achievement) {
+        } else {
+            switch (type) {
+                case FOLLOWERS:
+                    checkFollowers(isAchievementFragment);
+                    break;
+
+                case FOLLOWING:
+                    checkFollowing(isAchievementFragment);
+                    break;
+
+                case NB_POSTS:
+                    checkPosts(isAchievementFragment);
+                    break;
+
+                case NB_LIKES_POST:
+                    checkOnePostLikes(isAchievementFragment);
+                    break;
+
+                case NB_LIKES_POSTS_TOTAL:
+                    checkPostsLikes(isAchievementFragment);
+                    break;
+
+                case OFFLINE_GAME_POINTS:
+                    checkPointsOfflineGame(isAchievementFragment);
+                    break;
+
+                default:
+                    break;
             }
-            else {
-                switch (type) {
-                    case FOLLOWERS:
-                        checkFollowers(isAchievementFragment);
-                        break;
-
-                    case FOLLOWING:
-                        checkFollowing(isAchievementFragment);
-                        break;
-
-                    case NB_POSTS:
-                        checkPosts(isAchievementFragment);
-                        break;
-
-                    case NB_LIKES_POST:
-                        checkOnePostLikes(isAchievementFragment);
-                        break;
-
-                    case NB_LIKES_POSTS_TOTAL:
-                        checkPostsLikes(isAchievementFragment);
-                        break;
-
-                    case OFFLINE_GAME_POINTS:
-                        checkPointsOfflineGame(isAchievementFragment);
-                        break;
-
-                    default:
-                        break;
-                }
-            }
+        }
     }
 
-    public AchievementAdapter getAchievementAdapter(){
+    public AchievementAdapter getAchievementAdapter() {
         return this.achievementAdapter;
     }
 
     public void checkFollowers(boolean isAchievementFragment) {
         database.userIdFollowersList(auth.getCurrentUser().getId()).addOnCompleteListener(task -> {
             if (task.isSuccessful()) {
-                System.out.println("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!¨¨  " +  task.getResult().size());
+                System.out.println("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!¨¨  " + task.getResult().size());
                 if (task.getResult().size() >= goal_value) {
                     state_achievement = true;
-                    if(isAchievementFragment){
+                    if (isAchievementFragment) {
                         achievementAdapter.notifyDataSetChanged();
-                    }
-                    else{
+                    } else {
                         fragment.notifyChange();
                     }
                 }
@@ -135,10 +133,9 @@ public class Achievement {
             if (task.isSuccessful()) {
                 if (task.getResult().size() >= goal_value) {
                     state_achievement = true;
-                    if(isAchievementFragment){
+                    if (isAchievementFragment) {
                         achievementAdapter.notifyDataSetChanged();
-                    }
-                    else{
+                    } else {
                         fragment.notifyChange();
                     }
                 }
@@ -155,10 +152,9 @@ public class Achievement {
 
                 if (task.getResult().size() >= goal_value) {
                     state_achievement = true;
-                    if(isAchievementFragment){
+                    if (isAchievementFragment) {
                         achievementAdapter.notifyDataSetChanged();
-                    }
-                    else{
+                    } else {
                         fragment.notifyChange();
                     }
                 }
@@ -178,11 +174,10 @@ public class Achievement {
                 }
                 if (number_likes >= goal_value) {
                     state_achievement = true;
-                    if(isAchievementFragment){
+                    if (isAchievementFragment) {
 
                         achievementAdapter.notifyDataSetChanged();
-                    }
-                    else{
+                    } else {
                         fragment.notifyChange();
                     }
                 }
@@ -199,10 +194,9 @@ public class Achievement {
                     if (task.getResult().get(i).getLikes() >= goal_value) {
                         state_achievement = true;
                         i = task.getResult().size();
-                        if(isAchievementFragment){
+                        if (isAchievementFragment) {
                             achievementAdapter.notifyDataSetChanged();
-                        }
-                        else{
+                        } else {
                             fragment.notifyChange();
                         }
 
@@ -215,17 +209,16 @@ public class Achievement {
         });
     }
 
-    public void checkPointsOfflineGame(boolean isAchievementFragment){
-        if(auth.getCurrentUser().getHighScore() >= goal_value){
+    public void checkPointsOfflineGame(boolean isAchievementFragment) {
+        if (auth.getCurrentUser().getHighScore() >= goal_value) {
             state_achievement = true;
-            if(isAchievementFragment){
+            if (isAchievementFragment) {
                 try {
                     achievementAdapter.notifyDataSetChanged();
                 } catch (Exception e) {
                     Log.d(TAG, e.toString());
                 }
-            }
-            else{
+            } else {
                 fragment.notifyChange();
             }
         }

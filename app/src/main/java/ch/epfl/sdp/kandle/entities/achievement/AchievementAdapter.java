@@ -7,11 +7,10 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import androidx.annotation.NonNull;
-import androidx.recyclerview.widget.RecyclerView;
-
 import java.util.List;
 
+import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.RecyclerView;
 import ch.epfl.sdp.kandle.R;
 
 
@@ -45,8 +44,7 @@ public class AchievementAdapter extends RecyclerView.Adapter<AchievementAdapter.
         ImageView imageView = holder.mImageView;
         if (achievement.checkAchievementState()) {
             imageView.setImageResource(R.drawable.ic_trophy_done);
-        }
-        else{
+        } else {
             imageView.setImageResource(R.drawable.ic_trophy_none);
         }
         TextView titleView = holder.mtitleText;

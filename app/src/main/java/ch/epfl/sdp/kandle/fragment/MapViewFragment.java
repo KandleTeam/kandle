@@ -12,6 +12,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.Toast;
+
 import com.google.maps.android.SphericalUtil;
 import com.mapbox.android.core.location.LocationEngine;
 import com.mapbox.android.core.location.LocationEngineCallback;
@@ -36,8 +37,10 @@ import com.mapbox.mapboxsdk.maps.MapboxMap;
 import com.mapbox.mapboxsdk.maps.OnMapReadyCallback;
 import com.mapbox.mapboxsdk.maps.Style;
 import com.mapbox.mapboxsdk.utils.BitmapUtils;
+
 import java.util.Date;
 import java.util.List;
+
 import androidx.annotation.NonNull;
 import androidx.core.content.res.ResourcesCompat;
 import androidx.fragment.app.Fragment;
@@ -49,7 +52,6 @@ import ch.epfl.sdp.kandle.activity.PostActivity;
 import ch.epfl.sdp.kandle.dependencies.DependencyManager;
 import ch.epfl.sdp.kandle.entities.post.Post;
 import ch.epfl.sdp.kandle.entities.user.LoggedInUser;
-import ch.epfl.sdp.kandle.entities.user.User;
 import ch.epfl.sdp.kandle.storage.Database;
 import ch.epfl.sdp.kandle.storage.caching.CachedFirestoreDatabase;
 
@@ -59,7 +61,11 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback, Per
     private static final long DEFAULT_MAX_WAIT_TIME = DEFAULT_INTERVAL_IN_MILLISECONDS * 5;
 
     private static final int RADIUS = 2000;
-    private static final int RADIUS_LANDMARK = RADIUS/2;
+    private static final int RADIUS_LANDMARK = RADIUS / 2;
+    private static final int FETCH_NEW_POSTS_DISTANCE = 50;
+
+    private static final int SMALL_POSTS_LIKES = 5;
+    private static final int MEDIUM_POSTS_LIKES = 10;
 
     private static final double EPFLLatitude = 46.5190;
     private static final double EPFLLongitude = 6.5667;
@@ -70,6 +76,7 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback, Per
     private Database database;
 
     private Location currentLocation;
+    private Location lastPostsFetchLocation;
     private MapView mapView;
     private MapboxMap mapboxMap;
     private PermissionsManager permissionsManager;
@@ -85,11 +92,11 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback, Per
             @Override
             public void onSuccess(LocationEngineResult result) {
                 if (result.getLastLocation() != null) {
-                    if(computeDistance(currentLocation.getLatitude(),currentLocation.getLongitude(),result.getLastLocation().getLatitude(),result.getLastLocation().getLongitude()) > 50) {
-                        currentLocation = result.getLastLocation();
-                        //populateWithMarkers();
-                    }
                     currentLocation = result.getLastLocation();
+                    if (computeDistance(currentLocation.getLatitude(), currentLocation.getLongitude(), lastPostsFetchLocation.getLatitude(), lastPostsFetchLocation.getLongitude()) > FETCH_NEW_POSTS_DISTANCE) {
+                        lastPostsFetchLocation = currentLocation;
+                        populateWithMarkers();
+                    }
                     mapboxMap.getLocationComponent().forceLocationUpdate(result.getLastLocation());
                 }
             }
@@ -172,13 +179,13 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback, Per
                     if (p.getType() == null || !p.equals(Post.EVENT) || p.getDate().getTime() > new Date().getTime()) {
                         numMarkers++;
 
-                        if (p.getLikers().size() < 5) {
+                        if (p.getLikers().size() < SMALL_POSTS_LIKES) {
                             mapboxMap.addMarker(new MarkerOptions()
                                     .position(new LatLng(p.getLatitude(), p.getLongitude()))
                                     .title("A post !")
                                     .icon(postIconSmall))
                                     .setSnippet(p.getPostId());
-                        } else if (p.getLikers().size() < 10) {
+                        } else if (p.getLikers().size() < MEDIUM_POSTS_LIKES) {
                             mapboxMap.addMarker(new MarkerOptions()
                                     .position(new LatLng(p.getLatitude(), p.getLongitude()))
                                     .title("A post !")
@@ -194,7 +201,7 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback, Per
                     }
                 }
             }
-                });
+        });
 
 
         mapboxMap.setOnMarkerClickListener(marker -> {
@@ -281,6 +288,7 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback, Per
 
             DependencyManager.getLocationProvider().getLocation(getActivity()).addOnSuccessListener(firstLocation -> {
                 currentLocation = firstLocation;
+                lastPostsFetchLocation = firstLocation;
                 populateWithMarkers();
                 mapboxMap.addMarker(new MarkerOptions()
                         .position(new LatLng(EPFLLatitude, EPFLLongitude))

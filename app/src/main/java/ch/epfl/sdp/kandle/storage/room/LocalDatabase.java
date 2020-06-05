@@ -3,7 +3,6 @@ package ch.epfl.sdp.kandle.storage.room;
 import androidx.room.Database;
 import androidx.room.Room;
 import androidx.room.RoomDatabase;
-
 import ch.epfl.sdp.kandle.Kandle;
 import ch.epfl.sdp.kandle.entities.post.Post;
 import ch.epfl.sdp.kandle.entities.user.User;

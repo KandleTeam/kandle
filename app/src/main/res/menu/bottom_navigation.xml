@@ -3,20 +3,20 @@
 
 
     <item
-        android:id = "@+id/nav_map"
-        android:icon = "@drawable/ic_map"
-        android:title=""/>
+        android:id="@+id/nav_map"
+        android:icon="@drawable/ic_map"
+        android:title="" />
     <item
-        android:id = "@+id/nav_addPost"
+        android:id="@+id/nav_addPost"
         android:icon="@drawable/ic_addpost"
-        android:title=""/>
+        android:title="" />
     <item
-        android:id = "@+id/nav_profile"
-        android:icon = "@drawable/ic_profile"
-        android:title=""/>
+        android:id="@+id/nav_profile"
+        android:icon="@drawable/ic_profile"
+        android:title="" />
     <item
-        android:id = "@+id/nav_search"
-        android:icon = "@drawable/ic_search"
-        android:title=""/>
+        android:id="@+id/nav_search"
+        android:icon="@drawable/ic_search"
+        android:title="" />
 
 </menu>

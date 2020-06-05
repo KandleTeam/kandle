@@ -23,9 +23,9 @@
         android:layout_width="96dp"
         android:layout_height="40dp"
         android:layout_marginLeft="300dp"
-        android:textColor="@color/dark_grey"
         android:layout_marginTop="10dp"
         android:text="Number"
+        android:textColor="@color/dark_grey"
         android:textSize="20sp"
         android:textStyle="bold" />
 

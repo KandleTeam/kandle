@@ -11,12 +11,6 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentTransaction;
-import androidx.recyclerview.widget.RecyclerView;
-
 import com.squareup.picasso.Picasso;
 
 import java.io.File;
@@ -24,14 +18,19 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.List;
 
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
+import androidx.recyclerview.widget.RecyclerView;
 import ch.epfl.sdp.kandle.Kandle;
 import ch.epfl.sdp.kandle.R;
-import ch.epfl.sdp.kandle.entities.user.User;
 import ch.epfl.sdp.kandle.activity.PostActivity;
 import ch.epfl.sdp.kandle.authentification.Authentication;
-import ch.epfl.sdp.kandle.storage.Database;
 import ch.epfl.sdp.kandle.dependencies.DependencyManager;
+import ch.epfl.sdp.kandle.entities.user.User;
 import ch.epfl.sdp.kandle.fragment.ListUsersFragment;
+import ch.epfl.sdp.kandle.storage.Database;
 import ch.epfl.sdp.kandle.storage.caching.CachedFirestoreDatabase;
 import de.hdodenhof.circleimageview.CircleImageView;
 
@@ -95,7 +94,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder> {
         final ImageButton editPostView = holder.mEditButton;
         final ImageButton deletePostView = holder.mDeleteButton;
 
-        if (post.getType()!=null && post.getType().equals(Post.EVENT)) {
+        if (post.getType() != null && post.getType().equals(Post.EVENT)) {
             holder.mlikeButton.setBackgroundResource(R.drawable.ic_event_black_24dp);
             holder.mlikeButton.setOnClickListener(v -> {
 
@@ -123,10 +122,9 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder> {
 
         }
 
-        if(post.getIsForCloseFollowers() != null && post.getIsForCloseFollowers().equals(Post.CLOSE_FOLLOWER)){
+        if (post.getIsForCloseFollowers() != null && post.getIsForCloseFollowers().equals(Post.CLOSE_FOLLOWER)) {
             holder.mIsForCloseFollowers.setVisibility(View.VISIBLE);
-        }
-        else{
+        } else {
             holder.mIsForCloseFollowers.setVisibility(View.GONE);
         }
 
@@ -135,8 +133,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder> {
             postImageView.setVisibility(View.VISIBLE);
             postImageView.setTag(POST_IMAGE);
             Picasso.get().load(post.getImageURL()).into(postImageView);
-        }
-        else{
+        } else {
             postImageView.setVisibility(View.GONE);
         }
 
@@ -146,13 +143,12 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder> {
 
                 if (user.getImageURL() != null) {
                     File image = DependencyManager.getInternalStorageSystem().getImageFileById(user.getId());
-                    if(image != null) {
+                    if (image != null) {
                         Picasso.get().load(image).into(profilePicView);
-                    }else {
+                    } else {
                         Picasso.get().load(user.getImageURL()).into(profilePicView);
                     }
-                }
-                else {
+                } else {
                     profilePicView.setImageDrawable(Kandle.getContext().getDrawable(R.drawable.ic_launcher_foreground));
                     profilePicView.setBackground(Kandle.getContext().getDrawable(R.drawable.ic_launcher_circle_background));
                 }
@@ -204,7 +200,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder> {
             if (task.isSuccessful()) {
                 fragmentManager.beginTransaction().replace(R.id.flContent, ListUsersFragment.newInstance(
                         task.getResult(),
-                        post.getType() != null && post.getType().equals(Post.EVENT)? "Participants" : "Likes",
+                        post.getType() != null && post.getType().equals(Post.EVENT) ? "Participants" : "Likes",
                         Integer.toString(task.getResult().size())
                 )).setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
                         .addToBackStack(null)
@@ -255,9 +251,6 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder> {
         }
 
     }
-
-
-
 
 
 }

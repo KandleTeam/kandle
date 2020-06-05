@@ -6,28 +6,27 @@ import org.junit.After;
 import org.junit.Rule;
 import org.junit.Test;
 
+import java.util.HashMap;
+
 import androidx.room.Room;
 import androidx.test.core.app.ApplicationProvider;
 import androidx.test.espresso.contrib.DrawerActions;
 import androidx.test.espresso.contrib.NavigationViewActions;
 import androidx.test.espresso.intent.rule.IntentsTestRule;
-
 import androidx.test.rule.GrantPermissionRule;
-import java.util.HashMap;
-
-import ch.epfl.sdp.kandle.entities.post.Post;
-import ch.epfl.sdp.kandle.entities.user.LoggedInUser;
-import ch.epfl.sdp.kandle.entities.user.User;
-import ch.epfl.sdp.kandle.storage.room.LocalDatabase;
 import ch.epfl.sdp.kandle.activity.CustomAccountActivity;
 import ch.epfl.sdp.kandle.activity.LoginActivity;
 import ch.epfl.sdp.kandle.activity.RegisterActivity;
 import ch.epfl.sdp.kandle.dependencies.DependencyManager;
 import ch.epfl.sdp.kandle.dependencies.MockAuthentication;
 import ch.epfl.sdp.kandle.dependencies.MockDatabase;
+import ch.epfl.sdp.kandle.dependencies.MockImageStorage;
 import ch.epfl.sdp.kandle.dependencies.MockInternalStorage;
 import ch.epfl.sdp.kandle.dependencies.MockNetwork;
-import ch.epfl.sdp.kandle.dependencies.MockImageStorage;
+import ch.epfl.sdp.kandle.entities.post.Post;
+import ch.epfl.sdp.kandle.entities.user.LoggedInUser;
+import ch.epfl.sdp.kandle.entities.user.User;
+import ch.epfl.sdp.kandle.storage.room.LocalDatabase;
 
 import static androidx.test.espresso.Espresso.onView;
 import static androidx.test.espresso.action.ViewActions.click;
@@ -45,6 +44,8 @@ import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.not;
 
 public class RegisterActivityTest {
+    @Rule
+    public GrantPermissionRule permissionRule = GrantPermissionRule.grant(android.Manifest.permission.ACCESS_FINE_LOCATION);
     private Resources res = ApplicationProvider.getApplicationContext().getResources();
     private LocalDatabase localDatabase;
     private User userWithSameEmail;
@@ -52,18 +53,18 @@ public class RegisterActivityTest {
     private MockNetwork network;
     @Rule
     public IntentsTestRule<RegisterActivity> intentsRule =
-            new IntentsTestRule<RegisterActivity>(RegisterActivity.class,true,true
-            ){
+            new IntentsTestRule<RegisterActivity>(RegisterActivity.class, true, true
+            ) {
                 @Override
                 protected void beforeActivityLaunched() {
-                    userWithSameEmail = new User("userIdE","randomusername","sameEmail@kandle.ch","nickname",null);
-                    userWithSameUsername = new User("userIdU","sameusername","randomEmail@kandle.ch","nickname",null);
+                    userWithSameEmail = new User("userIdE", "randomusername", "sameEmail@kandle.ch", "nickname", null);
+                    userWithSameUsername = new User("userIdU", "sameusername", "randomEmail@kandle.ch", "nickname", null);
                     HashMap<String, String> accounts = new HashMap<>();
                     accounts.put(userWithSameEmail.getEmail(), userWithSameEmail.getId());
                     accounts.put(userWithSameUsername.getEmail(), userWithSameUsername.getId());
-                    HashMap<String,User> users = new HashMap<>();
-                    users.put(userWithSameUsername.getId(),userWithSameUsername);
-                    users.put(userWithSameEmail.getId(),userWithSameEmail);
+                    HashMap<String, User> users = new HashMap<>();
+                    users.put(userWithSameUsername.getId(), userWithSameUsername);
+                    users.put(userWithSameEmail.getId(), userWithSameEmail);
                     HashMap<String, MockDatabase.Follow> followMap = new HashMap<>();
                     HashMap<String, Post> posts = new HashMap<>();
                     MockDatabase db = new MockDatabase(false, users, followMap, posts);
@@ -72,19 +73,16 @@ public class RegisterActivityTest {
                     MockInternalStorage internalStorage = new MockInternalStorage(new HashMap<>());
                     network = new MockNetwork(true);
                     localDatabase = Room.inMemoryDatabaseBuilder(Kandle.getContext(), LocalDatabase.class).allowMainThreadQueries().build();
-                    DependencyManager.setFreshTestDependencies(authentication, db, storage,internalStorage,network,localDatabase);
+                    DependencyManager.setFreshTestDependencies(authentication, db, storage, internalStorage, network, localDatabase);
                 }
             };
 
-    @Rule
-    public GrantPermissionRule permissionRule = GrantPermissionRule.grant(android.Manifest.permission.ACCESS_FINE_LOCATION);
-
-
     @After
-    public void clearCurrentUserAndLocalDb(){
+    public void clearCurrentUserAndLocalDb() {
         LoggedInUser.clear();
         localDatabase.close();
     }
+
     @Test
     public void errorsInForm() {
 
@@ -157,8 +155,8 @@ public class RegisterActivityTest {
     public void accountCreation() {
 
 
-        onView(withId (R.id.username)).perform(typeText ("newUserId"));
-        onView(withId (R.id.username)).perform(closeSoftKeyboard());
+        onView(withId(R.id.username)).perform(typeText("newUserId"));
+        onView(withId(R.id.username)).perform(closeSoftKeyboard());
 
 
         onView(withId(R.id.email)).perform(typeText("newedfgfdsgdfgdf@kandle.ch"));
@@ -189,8 +187,8 @@ public class RegisterActivityTest {
     @Test
     public void doNotHaveInternetWhenLoginIn() {
         network.setIsOnline(false);
-        onView(withId (R.id.username)).perform(typeText ("newUserId"));
-        onView(withId (R.id.username)).perform(closeSoftKeyboard());
+        onView(withId(R.id.username)).perform(typeText("newUserId"));
+        onView(withId(R.id.username)).perform(closeSoftKeyboard());
         onView(withId(R.id.email)).perform(typeText("newedfgfdsgdfgdf@kandle.ch"));
         onView(withId(R.id.email)).perform(closeSoftKeyboard());
         onView(withId(R.id.password)).perform(typeText("12345678"));

@@ -9,129 +9,6 @@
     <!-- TODO: Update blank fragment layout -->
 
 
-    <de.hdodenhof.circleimageview.CircleImageView
-        android:id="@+id/profilePicture"
-        android:layout_width="180dp"
-        android:layout_height="180dp"
-        android:src="@mipmap/ic_launcher"
-        app:layout_constraintBottom_toTopOf="@+id/profileFollowers"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.502"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/profileNickname" />
-
-    <ViewSwitcher
-        android:id="@+id/profileNickname"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:layout_constraintBottom_toTopOf="@+id/profilePicture"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        android:measureAllChildren="false">
-
-        <TextView
-            android:id="@+id/text_view"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="TextView"
-            android:textColor="@color/dark_grey"
-            android:textAlignment="center"
-            android:textSize="24sp"
-            android:textStyle="bold" />
-
-        <EditText
-            android:id="@+id/edit_view"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="TextView"
-            android:textAlignment="center"
-            android:textSize="24sp"
-            android:textStyle="bold" />
-    </ViewSwitcher>
-
-    <ImageView
-        android:id="@+id/badgePicture"
-        android:layout_width="50dp"
-        android:layout_height="50dp"
-        android:tag="@string/badge_default"
-        app:layout_constraintBottom_toTopOf="@+id/profileFollowers"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.502"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/profilePicture" />
-
-    <TextView
-        android:id="@+id/profileUsername"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="\@textview"
-        android:textAlignment="center"
-        android:textSize="20sp"
-        android:textColor="@color/dark_grey"
-        app:layout_constraintBottom_toTopOf="@+id/profilePicture"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/profileNickname"
-        app:layout_constraintVertical_bias="0.1" />
-
-    <TextView
-        android:id="@+id/profileFollowers"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Followers"
-        android:textAlignment="center"
-        android:textSize="18sp"
-        android:textStyle="bold"
-        android:textColor="@color/dark_grey"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/profileFollowing"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/profilePicture" />
-
-    <TextView
-        android:id="@+id/profileFollowing"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Following"
-        android:textAlignment="center"
-        android:textSize="18sp"
-        android:textStyle="bold"
-        android:textColor="@color/dark_grey"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toEndOf="@+id/profileFollowers"
-        app:layout_constraintTop_toTopOf="@+id/profileFollowers" />
-
-    <TextView
-        android:id="@+id/profileNumberOfFollowers"
-        android:layout_width="wrap_content"
-        android:layout_height="24dp"
-        android:clickable="true"
-        android:text="0"
-        android:textAlignment="center"
-        android:textSize="18sp"
-        android:textStyle="bold"
-        android:textColor="@color/dark_grey"
-        app:layout_constraintEnd_toEndOf="@+id/profileFollowers"
-        app:layout_constraintStart_toStartOf="@+id/profileFollowers"
-        app:layout_constraintTop_toBottomOf="@+id/profileFollowers" />
-
-    <TextView
-        android:id="@+id/profileNumberOfFollowing"
-        android:layout_width="wrap_content"
-        android:layout_height="24dp"
-        android:clickable="true"
-        android:text="0"
-        android:textAlignment="center"
-        android:textSize="18sp"
-        android:textStyle="bold"
-        android:textColor="@color/dark_grey"
-        app:layout_constraintEnd_toEndOf="@+id/profileFollowing"
-        app:layout_constraintStart_toStartOf="@+id/profileFollowing"
-        app:layout_constraintTop_toBottomOf="@+id/profileFollowing" />
-
     <Button
         android:id="@+id/profileFollowButton"
         android:layout_width="88dp"
@@ -143,6 +20,41 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/profileUsername"
         app:layout_constraintTop_toTopOf="@+id/profileUsername" />
+
+    <Button
+        android:id="@+id/profileValidateNameButton"
+        android:layout_width="80dp"
+        android:layout_height="45dp"
+        android:background="@drawable/button_background"
+        android:text="save"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="@id/profileNickname"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/profileNickname"
+        app:layout_constraintTop_toTopOf="@id/profileNickname" />
+
+    <Button
+        android:id="@+id/profileValidatePictureButton"
+        android:layout_width="80dp"
+        android:layout_height="45dp"
+        android:background="@drawable/button_background"
+        android:text="save"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="@id/profilePicture"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/profilePicture"
+        app:layout_constraintTop_toTopOf="@id/profilePicture" />
+
+    <ImageView
+        android:id="@+id/badgePicture"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:tag="@string/badge_default"
+        app:layout_constraintBottom_toTopOf="@+id/profileFollowers"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.502"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/profilePicture" />
 
     <ImageView
         android:id="@+id/profileEditPictureButton"
@@ -170,29 +82,117 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.39" />
 
-    <Button
-        android:id="@+id/profileValidateNameButton"
-        android:layout_width="80dp"
-        android:layout_height="45dp"
-        android:background="@drawable/button_background"
-        android:text="save"
-        android:textStyle="bold"
-        app:layout_constraintBottom_toBottomOf="@id/profileNickname"
+    <TextView
+        android:id="@+id/profileUsername"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="\@textview"
+        android:textAlignment="center"
+        android:textColor="@color/dark_grey"
+        android:textSize="20sp"
+        app:layout_constraintBottom_toTopOf="@+id/profilePicture"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@id/profileNickname"
-        app:layout_constraintTop_toTopOf="@id/profileNickname" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/profileNickname"
+        app:layout_constraintVertical_bias="0.1" />
+
+    <TextView
+        android:id="@+id/profileFollowers"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Followers"
+        android:textAlignment="center"
+        android:textColor="@color/dark_grey"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/profileFollowing"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/profilePicture" />
+
+    <TextView
+        android:id="@+id/profileFollowing"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Following"
+        android:textAlignment="center"
+        android:textColor="@color/dark_grey"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toEndOf="@+id/profileFollowers"
+        app:layout_constraintTop_toTopOf="@+id/profileFollowers" />
+
+    <TextView
+        android:id="@+id/profileNumberOfFollowers"
+        android:layout_width="wrap_content"
+        android:layout_height="24dp"
+        android:clickable="true"
+        android:text="0"
+        android:textAlignment="center"
+        android:textColor="@color/dark_grey"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="@+id/profileFollowers"
+        app:layout_constraintStart_toStartOf="@+id/profileFollowers"
+        app:layout_constraintTop_toBottomOf="@+id/profileFollowers" />
+
+    <TextView
+        android:id="@+id/profileNumberOfFollowing"
+        android:layout_width="wrap_content"
+        android:layout_height="24dp"
+        android:clickable="true"
+        android:text="0"
+        android:textAlignment="center"
+        android:textColor="@color/dark_grey"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="@+id/profileFollowing"
+        app:layout_constraintStart_toStartOf="@+id/profileFollowing"
+        app:layout_constraintTop_toBottomOf="@+id/profileFollowing" />
+
+    <ViewSwitcher
+        android:id="@+id/profileNickname"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:measureAllChildren="false"
+        app:layout_constraintBottom_toTopOf="@+id/profilePicture"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <EditText
+            android:id="@+id/edit_view"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="TextView"
+            android:textAlignment="center"
+            android:textSize="24sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/text_view"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="TextView"
+            android:textAlignment="center"
+            android:textColor="@color/dark_grey"
+            android:textSize="24sp"
+            android:textStyle="bold" />
+    </ViewSwitcher>
 
 
-    <Button
-        android:id="@+id/profileValidatePictureButton"
-        android:layout_width="80dp"
-        android:layout_height="45dp"
-        android:background="@drawable/button_background"
-        android:text="save"
-        android:textStyle="bold"
-        app:layout_constraintBottom_toBottomOf="@id/profilePicture"
+    <de.hdodenhof.circleimageview.CircleImageView
+        android:id="@+id/profilePicture"
+        android:layout_width="180dp"
+        android:layout_height="180dp"
+        android:src="@mipmap/ic_launcher"
+        app:layout_constraintBottom_toTopOf="@+id/profileFollowers"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@id/profilePicture"
-        app:layout_constraintTop_toTopOf="@id/profilePicture" />
+        app:layout_constraintHorizontal_bias="0.502"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/profileNickname" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

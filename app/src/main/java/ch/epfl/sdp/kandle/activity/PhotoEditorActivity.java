@@ -6,19 +6,14 @@ import android.graphics.Typeface;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
-import android.text.style.TtsSpan;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 
-import androidx.appcompat.app.AppCompatActivity;
-
 import com.pes.androidmaterialcolorpickerdialog.ColorPicker;
-import com.pes.androidmaterialcolorpickerdialog.ColorPickerCallback;
 import com.squareup.picasso.Picasso;
 
-import org.w3c.dom.Text;
-
+import androidx.appcompat.app.AppCompatActivity;
 import ch.epfl.sdp.kandle.R;
 import ch.epfl.sdp.kandle.fragment.TextDialogFragment;
 import ja.burhanrashid52.photoeditor.OnSaveBitmap;
@@ -92,7 +87,7 @@ public class PhotoEditorActivity extends AppCompatActivity {
 
 
                 String path = MediaStore.Images.Media.insertImage(getContentResolver(), saveBitmap,
-                         "image", "edited from Kandle");
+                        "image", "edited from Kandle");
 
                 Intent i = new Intent();
                 if (path != null)

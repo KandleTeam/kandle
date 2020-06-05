@@ -6,24 +6,27 @@ import android.app.Instrumentation.ActivityResult;
 import android.content.Intent;
 import android.net.Uri;
 
-import androidx.room.Room;
-import androidx.test.espresso.intent.rule.IntentsTestRule;
-import androidx.test.rule.GrantPermissionRule;
-
 import org.junit.After;
 import org.junit.Rule;
 import org.junit.Test;
 
 import java.util.HashMap;
 
+import androidx.room.Room;
+import androidx.test.espresso.intent.rule.IntentsTestRule;
+import androidx.test.rule.GrantPermissionRule;
+import ch.epfl.sdp.kandle.activity.CustomAccountActivity;
+import ch.epfl.sdp.kandle.activity.MainActivity;
+import ch.epfl.sdp.kandle.dependencies.DependencyManager;
+import ch.epfl.sdp.kandle.dependencies.MockAuthentication;
+import ch.epfl.sdp.kandle.dependencies.MockDatabase;
+import ch.epfl.sdp.kandle.dependencies.MockImageStorage;
+import ch.epfl.sdp.kandle.dependencies.MockInternalStorage;
+import ch.epfl.sdp.kandle.dependencies.MockNetwork;
 import ch.epfl.sdp.kandle.entities.post.Post;
 import ch.epfl.sdp.kandle.entities.user.LoggedInUser;
 import ch.epfl.sdp.kandle.entities.user.User;
 import ch.epfl.sdp.kandle.storage.room.LocalDatabase;
-import ch.epfl.sdp.kandle.activity.CustomAccountActivity;
-import ch.epfl.sdp.kandle.activity.MainActivity;
-import ch.epfl.sdp.kandle.dependencies.DependencyManager;
-import ch.epfl.sdp.kandle.dependencies.MockDatabase;
 
 import static androidx.test.espresso.Espresso.onView;
 import static androidx.test.espresso.action.ViewActions.click;
@@ -41,21 +44,19 @@ import static org.hamcrest.CoreMatchers.not;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.core.IsEqual.equalTo;
 
-import ch.epfl.sdp.kandle.dependencies.MockAuthentication;
-import ch.epfl.sdp.kandle.dependencies.MockInternalStorage;
-import ch.epfl.sdp.kandle.dependencies.MockNetwork;
-import ch.epfl.sdp.kandle.dependencies.MockImageStorage;
-
 
 public class CustomAccountActivityTest {
 
+    @Rule
+
+    public GrantPermissionRule grantLocation = GrantPermissionRule.grant(Manifest.permission.ACCESS_FINE_LOCATION);
     private LocalDatabase localDatabase;
     @Rule
     public IntentsTestRule<CustomAccountActivity> intentsRule =
             new IntentsTestRule<CustomAccountActivity>(CustomAccountActivity.class, true, true) {
                 @Override
                 protected void beforeActivityLaunched() {
-                    LoggedInUser.init(new User("loggedInUserId","LoggedInUser","loggedInUser@kandle.ch",null,null));
+                    LoggedInUser.init(new User("loggedInUserId", "LoggedInUser", "loggedInUser@kandle.ch", null, null));
                     HashMap<String, String> accounts = new HashMap<>();
                     HashMap<String, User> users = new HashMap<>();
                     HashMap<String, MockDatabase.Follow> followMap = new HashMap<>();
@@ -63,24 +64,19 @@ public class CustomAccountActivityTest {
                     MockDatabase db = new MockDatabase(true, users, followMap, posts);
                     MockAuthentication authentication = new MockAuthentication(true, accounts, "password");
                     MockImageStorage storage = new MockImageStorage();
-                    MockInternalStorage internalStorage = new MockInternalStorage(true,new HashMap<>());
+                    MockInternalStorage internalStorage = new MockInternalStorage(true, new HashMap<>());
                     MockNetwork network = new MockNetwork(true);
                     localDatabase = Room.inMemoryDatabaseBuilder(Kandle.getContext(), LocalDatabase.class).allowMainThreadQueries().build();
-                    DependencyManager.setFreshTestDependencies(authentication, db, storage,internalStorage,network,localDatabase);
+                    DependencyManager.setFreshTestDependencies(authentication, db, storage, internalStorage, network, localDatabase);
 
                 }
             };
-
-    @Rule
-
-    public GrantPermissionRule grantLocation = GrantPermissionRule.grant(Manifest.permission.ACCESS_FINE_LOCATION);
 
     @After
     public void signoutAndCloseLocalDb() {
         DependencyManager.getAuthSystem().signOut();
         localDatabase.close();
     }
-
 
 
     @Test
@@ -110,8 +106,6 @@ public class CustomAccountActivityTest {
         assertThat(uri, is(not(equalTo(null))));
 
     }
-
-
 
 
     @Test

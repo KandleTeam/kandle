@@ -3,6 +3,14 @@ package ch.epfl.sdp.kandle;
 import android.view.Gravity;
 import android.view.View;
 
+import org.junit.After;
+import org.junit.Rule;
+import org.junit.Test;
+
+import java.util.Date;
+import java.util.HashMap;
+import java.util.LinkedList;
+
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.room.Room;
 import androidx.test.espresso.NoMatchingViewException;
@@ -12,15 +20,6 @@ import androidx.test.espresso.contrib.NavigationViewActions;
 import androidx.test.espresso.matcher.ViewMatchers;
 import androidx.test.rule.ActivityTestRule;
 import androidx.test.rule.GrantPermissionRule;
-
-import org.junit.After;
-import org.junit.Rule;
-import org.junit.Test;
-
-import java.util.Date;
-import java.util.HashMap;
-import java.util.LinkedList;
-
 import ch.epfl.sdp.kandle.activity.MainActivity;
 import ch.epfl.sdp.kandle.dependencies.MockAuthentication;
 import ch.epfl.sdp.kandle.dependencies.MockDatabase;
@@ -37,12 +36,14 @@ import static androidx.test.espresso.assertion.ViewAssertions.matches;
 import static androidx.test.espresso.contrib.DrawerMatchers.isClosed;
 import static androidx.test.espresso.matcher.ViewMatchers.withEffectiveVisibility;
 import static androidx.test.espresso.matcher.ViewMatchers.withId;
-import static ch.epfl.sdp.kandle.entities.post.Post.CLOSE_FOLLOWER;
 import static ch.epfl.sdp.kandle.dependencies.DependencyManager.getDatabaseSystem;
 import static ch.epfl.sdp.kandle.dependencies.DependencyManager.setFreshTestDependencies;
+import static ch.epfl.sdp.kandle.entities.post.Post.CLOSE_FOLLOWER;
 import static junit.framework.TestCase.assertEquals;
 
 public class CloseFollowerFragmentTest {
+    @Rule
+    public GrantPermissionRule permissionRule = GrantPermissionRule.grant(android.Manifest.permission.ACCESS_FINE_LOCATION);
     private Post p1;
     private Post p2;
     private Post p3;
@@ -53,21 +54,18 @@ public class CloseFollowerFragmentTest {
     private User u3;
     private MockDatabase db;
     private LocalDatabase localDatabase;
-    private LinkedList<String> user12;
-    private LinkedList<String> loggedUserList;
-
     @Rule
     public ActivityTestRule<MainActivity> intentsRule =
             new ActivityTestRule<MainActivity>(MainActivity.class, true, true) {
                 @Override
                 protected void beforeActivityLaunched() {
-                    LoggedInUser.init(new User("loggedInUserId","LoggedInUser","loggedInUser@kandle.ch","nickname","image"));
-                    u1 = new User("u1Id","u1","u2@kandle.ch","u1","image1");
-                    u2 = new User("u2Id","u2","u2@kandle.ch","u2","image2");
-                    u3 = new User("u3Id","u3","u3@kandle.ch","u3",null);
-                    p1 =  new Post("Hello", null, new Date(), "loggedInUserId", "post1Id");
+                    LoggedInUser.init(new User("loggedInUserId", "LoggedInUser", "loggedInUser@kandle.ch", "nickname", "image"));
+                    u1 = new User("u1Id", "u1", "u2@kandle.ch", "u1", "image1");
+                    u2 = new User("u2Id", "u2", "u2@kandle.ch", "u2", "image2");
+                    u3 = new User("u3Id", "u3", "u3@kandle.ch", "u3", null);
+                    p1 = new Post("Hello", null, new Date(), "loggedInUserId", "post1Id");
                     p2 = new Post("There", "image1", new Date(), "loggedInUserId", "post2Id", CLOSE_FOLLOWER);
-                    p3 =  new Post("Hello", null, new Date(), "u1Id", "post3Id");
+                    p3 = new Post("Hello", null, new Date(), "u1Id", "post3Id");
                     p4 = new Post("There", "image1", new Date(), "u2Id", "post4Id", CLOSE_FOLLOWER);
                     p5 = new Post("Ther", "image3", new Date(), "u3Id", "post5Id", CLOSE_FOLLOWER);
                     LoggedInUser.getInstance().addPostId(p1.getPostId());
@@ -79,14 +77,14 @@ public class CloseFollowerFragmentTest {
                     accounts.put(u2.getEmail(), u2.getId());
                     accounts.put(LoggedInUser.getInstance().getEmail(), LoggedInUser.getInstance().getId());
                     accounts.put(u3.getEmail(), u3.getId());
-                    HashMap<String,User> users = new HashMap<>();
+                    HashMap<String, User> users = new HashMap<>();
                     HashMap<String, MockDatabase.Follow> followMap = new HashMap<>();
-                    followMap.put(u1.getId(),new MockDatabase.Follow(new LinkedList<>(),new LinkedList<>()));
-                    followMap.put(u2.getId(),new MockDatabase.Follow(new LinkedList<>(),new LinkedList<>(), new LinkedList<>()));
+                    followMap.put(u1.getId(), new MockDatabase.Follow(new LinkedList<>(), new LinkedList<>()));
+                    followMap.put(u2.getId(), new MockDatabase.Follow(new LinkedList<>(), new LinkedList<>(), new LinkedList<>()));
                     followMap.put(LoggedInUser.getInstance().getId(), new MockDatabase.Follow(new LinkedList<>(), new LinkedList<>(), new LinkedList<>()));
-                    HashMap<String,Post> posts = new HashMap<>();
-                    posts.put(p1.getPostId(),p1);
-                    posts.put(p2.getPostId(),p2);
+                    HashMap<String, Post> posts = new HashMap<>();
+                    posts.put(p1.getPostId(), p1);
+                    posts.put(p2.getPostId(), p2);
                     posts.put(p3.getPostId(), p3);
                     posts.put(p4.getPostId(), p4);
                     posts.put(p5.getPostId(), p5);
@@ -96,23 +94,22 @@ public class CloseFollowerFragmentTest {
                     MockInternalStorage internalStorage = new MockInternalStorage(new HashMap<>());
                     MockNetwork network = new MockNetwork(true);
                     localDatabase = Room.inMemoryDatabaseBuilder(Kandle.getContext(), LocalDatabase.class).allowMainThreadQueries().build();
-                    setFreshTestDependencies(authentication, db, storage,internalStorage,network,localDatabase);
+                    setFreshTestDependencies(authentication, db, storage, internalStorage, network, localDatabase);
                     getDatabaseSystem().createUser(u1);
                     getDatabaseSystem().createUser(u2);
                     getDatabaseSystem().createUser(u3);
-                    getDatabaseSystem().follow(LoggedInUser.getInstance().getId(),u1.getId());
+                    getDatabaseSystem().follow(LoggedInUser.getInstance().getId(), u1.getId());
                     getDatabaseSystem().follow(LoggedInUser.getInstance().getId(), u2.getId());
                     getDatabaseSystem().follow(LoggedInUser.getInstance().getId(), u3.getId());
                     getDatabaseSystem().setCloseFollower(LoggedInUser.getInstance().getId(), u2.getId());
                 }
 
             };
-    @Rule
-    public GrantPermissionRule permissionRule = GrantPermissionRule.grant(android.Manifest.permission.ACCESS_FINE_LOCATION);
-
+    private LinkedList<String> user12;
+    private LinkedList<String> loggedUserList;
 
     @After
-    public void clearCurrentUser(){
+    public void clearCurrentUser() {
         LoggedInUser.clear();
     }
 
@@ -123,7 +120,7 @@ public class CloseFollowerFragmentTest {
     }
 
     @Test
-    public void CheckPostP2IsCloseFollowersAndP1Not(){
+    public void CheckPostP2IsCloseFollowersAndP1Not() {
         loadView(R.id.your_posts);
         onView(withId(R.id.rvPosts)).check(new RecyclerViewItemCountAssertion(2));
         onView(new RecyclerViewMatcher(R.id.rvPosts)
@@ -133,7 +130,7 @@ public class CloseFollowerFragmentTest {
     }
 
     @Test
-    public void CheckPostCloseFollowersOnOtherPosts(){
+    public void CheckPostCloseFollowersOnOtherPosts() {
         loadView(R.id.following_posts);
         onView(withId(R.id.flPosts)).check(new RecyclerViewItemCountAssertion(2));
 

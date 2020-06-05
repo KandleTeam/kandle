@@ -5,23 +5,22 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-
-import java.util.ArrayList;
-import java.util.List;
-
-import ch.epfl.sdp.kandle.entities.user.LoggedInUser;
+import ch.epfl.sdp.kandle.R;
+import ch.epfl.sdp.kandle.authentification.Authentication;
+import ch.epfl.sdp.kandle.dependencies.DependencyManager;
 import ch.epfl.sdp.kandle.entities.post.Post;
 import ch.epfl.sdp.kandle.entities.post.PostAdapter;
-import ch.epfl.sdp.kandle.R;
+import ch.epfl.sdp.kandle.entities.user.LoggedInUser;
 import ch.epfl.sdp.kandle.entities.user.User;
-import ch.epfl.sdp.kandle.authentification.Authentication;
 import ch.epfl.sdp.kandle.storage.Database;
-import ch.epfl.sdp.kandle.dependencies.DependencyManager;
 import ch.epfl.sdp.kandle.storage.caching.CachedFirestoreDatabase;
 
 public class FollowingPostsFragment extends Fragment {
@@ -61,30 +60,29 @@ public class FollowingPostsFragment extends Fragment {
                             database.getPostsByUserId(user.getId()).addOnCompleteListener(task1 -> {
                                 if (task1.isSuccessful()) {
                                     if (task1.getResult() != null) {
-                                        database.userCloseFollowersList(user.getId()).addOnCompleteListener(task2-> {
-                                            if(task2.isSuccessful()) {
+                                        database.userCloseFollowersList(user.getId()).addOnCompleteListener(task2 -> {
+                                            if (task2.isSuccessful()) {
                                                 boolean isCloseFollower = false;
-                                                    if (task2.getResult() != null) {
-                                                        System.out.println("IT WORKS !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!   " + task2.getResult().size());
-                                                        for (User user1 : task2.getResult()) {
-                                                            if (user1.getId().equals(currentUserId)) {
-                                                                posts.addAll(task1.getResult());
-                                                                isCloseFollower = true;
-                                                            }
-                                                        }
-
-
-                                                }
-                                                    if (!isCloseFollower) {
-                                                        for (Post post : task1.getResult()) {
-                                                            if (post.getIsForCloseFollowers() == null || (post.getIsForCloseFollowers() != null && post.getIsForCloseFollowers().equals(Post.NOT_CLOSE_FOLLOWER))) {
-                                                                posts.add(post);
-                                                            }
+                                                if (task2.getResult() != null) {
+                                                    System.out.println("IT WORKS !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!   " + task2.getResult().size());
+                                                    for (User user1 : task2.getResult()) {
+                                                        if (user1.getId().equals(currentUserId)) {
+                                                            posts.addAll(task1.getResult());
+                                                            isCloseFollower = true;
                                                         }
                                                     }
-                                                    adapter.setPost(posts);
+
+
                                                 }
-                                            else {
+                                                if (!isCloseFollower) {
+                                                    for (Post post : task1.getResult()) {
+                                                        if (post.getIsForCloseFollowers() == null || (post.getIsForCloseFollowers() != null && post.getIsForCloseFollowers().equals(Post.NOT_CLOSE_FOLLOWER))) {
+                                                            posts.add(post);
+                                                        }
+                                                    }
+                                                }
+                                                adapter.setPost(posts);
+                                            } else {
                                                 System.out.println(task2.getException().getMessage());
                                             }
                                         });

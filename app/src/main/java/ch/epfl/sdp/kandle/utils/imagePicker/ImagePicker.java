@@ -6,10 +6,9 @@ import android.content.Intent;
 import android.net.Uri;
 import android.webkit.MimeTypeMap;
 
-import androidx.fragment.app.Fragment;
-
 import com.google.android.gms.tasks.Task;
 
+import androidx.fragment.app.Fragment;
 import ch.epfl.sdp.kandle.Kandle;
 import ch.epfl.sdp.kandle.dependencies.DependencyManager;
 import ch.epfl.sdp.kandle.storage.ImageStorage;

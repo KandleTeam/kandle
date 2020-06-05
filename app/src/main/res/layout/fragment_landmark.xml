@@ -1,25 +1,51 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".fragment.LandmarkFragment"
-    android:background="#F6F4F4">
+    android:background="#F6F4F4"
+    tools:context=".fragment.LandmarkFragment">
 
 
-    <de.hdodenhof.circleimageview.CircleImageView
-        android:id="@+id/landmarkFragmentImage"
-        android:layout_width="171dp"
-        android:layout_height="100dp"
-        android:src="@drawable/epfl"
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginLeft="10dp"
+        android:layout_marginTop="170dp"
+        android:layout_marginRight="10dp"
+        android:background="#FFFFFF"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.066"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.025" />
+        app:layout_constraintTop_toBottomOf="@+id/landmarkFragmentTrendingPosts"
+        app:layout_constraintVertical_bias="0.084">
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/landmarkFragmentPostsList"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="10dp"
+            android:layout_marginBottom="10dp"
+            tools:layout_editor_absoluteX="185dp"
+            tools:layout_editor_absoluteY="270dp" />
+    </FrameLayout>
+
+    <TextView
+        android:id="@+id/landmarkFragmentTrendingPosts"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Trending Posts"
+        android:textAlignment="center"
+        android:textSize="24sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.497"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/landmarkFragmentImage"
+        app:layout_constraintVertical_bias="0.024" />
 
     <TextView
         android:id="@+id/landmarkFragmentTitle"
@@ -37,45 +63,17 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.052" />
 
-    <TextView
-        android:id="@+id/landmarkFragmentTrendingPosts"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Trending Posts"
-        android:textAlignment="center"
-        android:textSize="24sp"
-        android:textStyle="bold"
+    <de.hdodenhof.circleimageview.CircleImageView
+        android:id="@+id/landmarkFragmentImage"
+        android:layout_width="171dp"
+        android:layout_height="100dp"
+        android:src="@drawable/epfl"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.497"
+        app:layout_constraintHorizontal_bias="0.066"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/landmarkFragmentImage"
-        app:layout_constraintVertical_bias="0.024" />
-
-    <FrameLayout
-        android:background="#FFFFFF"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_marginLeft="10dp"
-        android:layout_marginTop="170dp"
-        android:layout_marginRight="10dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/landmarkFragmentTrendingPosts"
-        app:layout_constraintVertical_bias="0.084">
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/landmarkFragmentPostsList"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            tools:layout_editor_absoluteX="185dp"
-            tools:layout_editor_absoluteY="270dp"
-            android:layout_marginRight="10dp"
-            android:layout_marginBottom="10dp"/>
-    </FrameLayout>
-
-
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.025" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>
